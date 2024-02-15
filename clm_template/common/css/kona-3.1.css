@@ -267,7 +267,7 @@ body[data-screen-orientation="portrait"] > [data-type="com.idc.ui.contentSize"] 
     margin: 0;
     height: 48px;
     padding: 0;
-    background: url(../../common/img/utilitiesMenu/modal_close.png) no-repeat 0 0 / 48px!IMPORTANT;
+    background: url(../img/utilitiesMenu/modal_close.png) no-repeat 0 0 / 48px!IMPORTANT;
 }
 [data-type="com.idc.ui.core.modal.popUp"] > [data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.core.modal.closeButton"][data-should-be-hidden="true"] {
     display: none; /*used to hide close menu of standalone modals in dynamic presentations*/
@@ -471,10 +471,10 @@ body[data-screen-orientation="portrait"] > [data-type="com.idc.ui.contentSize"] 
     margin-top: 14px;
 }
 [data-type="com.idc.ui.utilitiesMenu"] [data-type="com.idc.ui.utilitiesMenu.separator"][data-style="dark"] {
-    background: url(../../common/img/utilitiesMenu/separator_dark.png) no-repeat 0 0 / 48px;
+    background: url(../img/utilitiesMenu/separator_dark.png) no-repeat 0 0 / 48px;
 }
 [data-type="com.idc.ui.utilitiesMenu"] [data-type="com.idc.ui.utilitiesMenu.separator"][data-style="light"] {
-    background: url(../../common/img/utilitiesMenu/separator_light.png) no-repeat 0 0 / 48px;
+    background: url(../img/utilitiesMenu/separator_light.png) no-repeat 0 0 / 48px;
 }
 
 /* items (buttons, links) */
@@ -489,60 +489,60 @@ body[data-screen-orientation="portrait"] > [data-type="com.idc.ui.contentSize"] 
 
 /* dark style */
 [data-type="com.idc.ui.utilitiesMenu"] #safetyButton[data-style="dark"] {
-    background: url(../../common/img/utilitiesMenu/icon_safety_dark.png) no-repeat 0 0 / 48px;
+    background: url(../img/utilitiesMenu/icon_safety_dark.png) no-repeat 0 0 / 48px;
 }
 [data-type="com.idc.ui.utilitiesMenu"] #additionalResourcesOpenButton[data-style="dark"] {
-    background: url(../../common/img/utilitiesMenu/icon_resources_dark.png) no-repeat 0 0 / 48px;
+    background: url(../img/utilitiesMenu/icon_resources_dark.png) no-repeat 0 0 / 48px;
 }
 [data-type="com.idc.ui.utilitiesMenu"] #siteMapOpenButton[data-style="dark"] {
-    background: url(../../common/img/utilitiesMenu/icon_sitemap_dark.png) no-repeat 0 0 / 48px;
+    background: url(../img/utilitiesMenu/icon_sitemap_dark.png) no-repeat 0 0 / 48px;
 }
 [data-type="com.idc.ui.utilitiesMenu"] #referencesOpenButton[data-style="dark"] {
-    background: url(../../common/img/utilitiesMenu/icon_refs_dark.png) no-repeat 0 0 / 48px;
+    background: url(../img/utilitiesMenu/icon_refs_dark.png) no-repeat 0 0 / 48px;
 }
 [data-type="com.idc.ui.utilitiesMenu"] #emailButton[data-style="dark"] {
-    background: url(../../common/img/utilitiesMenu/icon_emailCart_dark.png) no-repeat 0 0 / 48px;
+    background: url(../img/utilitiesMenu/icon_emailCart_dark.png) no-repeat 0 0 / 48px;
 }
 [data-type="com.idc.ui.utilitiesMenu"] #emailCartOpenButton[data-style="dark"] {
-    background: url(../../common/img/utilitiesMenu/icon_emailCart_dark.png) no-repeat 0 0 / 48px;
+    background: url(../img/utilitiesMenu/icon_emailCart_dark.png) no-repeat 0 0 / 48px;
 }
 [data-type="com.idc.ui.utilitiesMenu"] #quickTourOpenButton[data-style="dark"] {
-    background: url(../../common/img/utilitiesMenu/icon_quickTour_dark.png) no-repeat 0 0 / 48px;
+    background: url(../img/utilitiesMenu/icon_quickTour_dark.png) no-repeat 0 0 / 48px;
 }
 [data-type="com.idc.ui.utilitiesMenu"] #langOpenButton[data-style="dark"] {
-    background: url(../../common/img/utilitiesMenu/icon_lang_dark.png) no-repeat 0 0 / 48px;
+    background: url(../img/utilitiesMenu/icon_lang_dark.png) no-repeat 0 0 / 48px;
 }
 [data-type="com.idc.ui.utilitiesMenu"] #historyOpenButton[data-style="dark"] {
-    background: url(../../common/img/utilitiesMenu/icon_history_dark.png) no-repeat 0 0 / 48px;
+    background: url(../img/utilitiesMenu/icon_history_dark.png) no-repeat 0 0 / 48px;
 }
 
 /*light style */
 [data-type="com.idc.ui.utilitiesMenu"] #safetyButton[data-style="light"] {
-    background: url(../../common/img/utilitiesMenu/icon_safety_light.png) no-repeat 0 0 / 48px;
+    background: url(../img/utilitiesMenu/icon_safety_light.png) no-repeat 0 0 / 48px;
 }
 [data-type="com.idc.ui.utilitiesMenu"] #additionalResourcesOpenButton[data-style="light"] {
-    background: url(../../common/img/utilitiesMenu/icon_resources_light.png) no-repeat 0 0 / 48px;
+    background: url(../img/utilitiesMenu/icon_resources_light.png) no-repeat 0 0 / 48px;
 }
 [data-type="com.idc.ui.utilitiesMenu"] #siteMapOpenButton[data-style="light"] {
-    background: url(../../common/img/utilitiesMenu/icon_sitemap_light.png) no-repeat 0 0 / 48px;
+    background: url(../img/utilitiesMenu/icon_sitemap_light.png) no-repeat 0 0 / 48px;
 }
 [data-type="com.idc.ui.utilitiesMenu"] #referencesOpenButton[data-style="light"] {
-    background: url(../../common/img/utilitiesMenu/icon_refs_light.png) no-repeat 0 0 / 48px;
+    background: url(../img/utilitiesMenu/icon_refs_light.png) no-repeat 0 0 / 48px;
 }
 [data-type="com.idc.ui.utilitiesMenu"] #emailButton[data-style="light"] {
-    background: url(../../common/img/utilitiesMenu/icon_emailCart_light.png) no-repeat 0 0 / 48px;
+    background: url(../img/utilitiesMenu/icon_emailCart_light.png) no-repeat 0 0 / 48px;
 }
 [data-type="com.idc.ui.utilitiesMenu"] #emailCartOpenButton[data-style="light"] {
-    background: url(../../common/img/utilitiesMenu/icon_emailCart_light.png) no-repeat 0 0 / 48px;
+    background: url(../img/utilitiesMenu/icon_emailCart_light.png) no-repeat 0 0 / 48px;
 }
 [data-type="com.idc.ui.utilitiesMenu"] #quickTourOpenButton[data-style="light"] {
-    background: url(../../common/img/utilitiesMenu/icon_quickTour_light.png) no-repeat 0 0 / 48px;
+    background: url(../img/utilitiesMenu/icon_quickTour_light.png) no-repeat 0 0 / 48px;
 }
 [data-type="com.idc.ui.utilitiesMenu"] #langOpenButton[data-style="light"] {
-    background: url(../../common/img/utilitiesMenu/icon_lang_light.png) no-repeat 0 0 / 48px;
+    background: url(../img/utilitiesMenu/icon_lang_light.png) no-repeat 0 0 / 48px;
 }
 [data-type="com.idc.ui.utilitiesMenu"] #historyOpenButton[data-style="light"] {
-    background: url(../../common/img/utilitiesMenu/icon_history_light.png) no-repeat 0 0 / 48px;
+    background: url(../img/utilitiesMenu/icon_history_light.png) no-repeat 0 0 / 48px;
 }
 
 /* disabled view state */
@@ -596,12 +596,12 @@ body[data-screen-orientation="portrait"] > [data-type="com.idc.ui.contentSize"] 
 /* dual button */
 [data-type="com.idc.ui.utilitiesMenu"] [data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.core.modal.dualButton"][data-acting-as="closeButton"] {
     border-radius: 8% 8% 0% 0%;
-    background: white url(../../common/img/utilitiesMenu/modal_close.png) no-repeat 0 0 / 48px!IMPORTANT;
+    background: white url(../img/utilitiesMenu/modal_close.png) no-repeat 0 0 / 48px!IMPORTANT;
 }
 
 /* modal close button */
 [data-type="com.idc.ui.utilitiesMenu"] [data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.core.modal.closeButton"] {
-    background: url(../../common/img/utilitiesMenu/modal_close.png) no-repeat 0 0 / 48px!IMPORTANT;
+    background: url(../img/utilitiesMenu/modal_close.png) no-repeat 0 0 / 48px!IMPORTANT;
 }
 
 /* ICONS -------------------------------------------- */
