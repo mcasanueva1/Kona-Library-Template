@@ -110,6 +110,7 @@ let com_idc_params = {
     "swippingPopUpGroups": {}
   },
   "commonHTML": {
+    "active": true,
     "elements": [
     ]
   },
