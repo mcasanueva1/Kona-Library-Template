@@ -2695,7 +2695,7 @@ com.idc.ui = {
             el.components.backModal = {
               element: com.idc.util.jsonToHTML(com.idc.templates.core.modal.backModal, null, el, "before"),
             };
-            el.components.backModal.element.setAttribute("data-back-modal-for", el.id);
+            el.components.backModal.element.setAttribute("back-modal-for", el.id);
             if (el.params.backModalStyle !== null) {
               el.components.backModal.element.classList.add(el.params.backModalStyle);
             }
@@ -3111,7 +3111,7 @@ com.idc.ui = {
             el.components.backModal = {
               element: com.idc.util.jsonToHTML(com.idc.templates.core.modal.backModal, null, el, "before"),
             };
-            el.components.backModal.element.setAttribute("data-back-modal-for", el.id);
+            el.components.backModal.element.setAttribute("back-modal-for", el.id);
             if (el.params.backModalStyle !== null) {
               el.components.backModal.element.classList.add(el.params.backModalStyle);
             }
