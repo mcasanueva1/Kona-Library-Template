@@ -174,6 +174,7 @@ com.idc.clm = {
       },
     },
     commonHTML: {
+      active: null,
       elements: [],
     },
     slides: [
@@ -237,7 +238,7 @@ com.idc.clm = {
       overWrite: {
         nextSlide: null,
         prevSlide: null,
-      }
+      },
     },
     emailCart: {
       active: null,
@@ -392,6 +393,7 @@ com.idc.clm = {
     }
 
     //common html
+    vars.commonHTML.active = util.readSetting(com_idc_params, "commonHTML.active", "boolean", true);
     vars.commonHTML.elements = util.readSetting(com_idc_params, "commonHTML.elements", "object", []);
 
     //mandatory popUp
@@ -784,7 +786,7 @@ com.idc.clm = {
       vars.slides.forEach((slide) => {
         vars.navigation.allAvaliableSlides.push(slide.id);
       });
-    }
+    };
     const setDynamicSlidesSequence = function (activeMode) {
       let util = com.idc.util;
       let vars = __this.vars;
@@ -804,14 +806,14 @@ com.idc.clm = {
         let treatStandaloneModalsAsMainSlides = vars.navigation.dynamicPresentation.treatStandaloneModalsAsMainSlides;
         let isPDF = slide.pdf.isPDF;
         let doNotConsiderInMainSequence = slide.doNotConsiderInMainSequence;
-  
+
         if ((!isStandalone || (isStandalone && treatStandaloneModalsAsMainSlides)) && !isPDF) {
           vars.navigation.actualSlidesSequence.push(slide.id);
         }
       });
       //assign all available slides
       vars.navigation.allAvaliableSlides = activeMode.slidesSequence;
-    }
+    };
 
     return new Promise((resolve) => {
       (async () => {
@@ -1794,7 +1796,7 @@ com.idc.clm = {
     com.idc.util.log("com.idc.clm.uiInit()");
 
     //load common html
-    if (this.vars.options.browserMode.active) {
+    if (this.vars.options.browserMode.active && this.vars.commonHTML.active) {
       this.loadCommonHTML();
     }
 
@@ -2112,20 +2114,20 @@ com.idc.util = {
   getSharedResourcesPath: function () {
     let path = "";
 
-    if (com.idc.clm.vars.options.browserMode.active) {
-      path = "../common/";
-    } else {
-      for (let item in document.getElementsByTagName("script")) {
-        let scriptTag = document.getElementsByTagName("script")[item];
-        if (scriptTag.src) {
-          if (scriptTag.src.indexOf("common/") >= 0) {
+    for (let item in document.getElementsByTagName("script")) {
+      let scriptTag = document.getElementsByTagName("script")[item];
+      if (scriptTag.src) {
+        if (scriptTag.src.indexOf("common/") >= 0) {
+          if (!com.idc.clm.vars.options.browserMode.active) {
             path = "common/";
-            continue;
           } else {
-            if (scriptTag.src.indexOf("shared/") >= 0) {
-              path = "./shared/";
-              continue;
-            }
+            path = "../common/";
+          }
+          continue;
+        } else {
+          if (scriptTag.src.indexOf("shared/") >= 0) {
+            path = "./shared/";
+            continue;
           }
         }
       }
@@ -3111,7 +3113,7 @@ com.idc.ui = {
             el.components.backModal = {
               element: com.idc.util.jsonToHTML(com.idc.templates.core.modal.backModal, null, el, "before"),
             };
-            el.components.backModal.element.setAttribute("back-modal-for", el.id);
+            el.components.backModal.element.setAttribute("data-back-modal-for", el.id);
             if (el.params.backModalStyle !== null) {
               el.components.backModal.element.classList.add(el.params.backModalStyle);
             }
@@ -3430,6 +3432,7 @@ com.idc.ui = {
         //reset and move items (links, buttons)
         let nodesList = this.components.containers[containerName].childNodes;
         for (let i = 0; i < nodesList.length; i++) {
+          if (!nodesList[i].getAttribute) continue;
           let dataType = nodesList[i].getAttribute("data-type");
           switch (dataType) {
             case "com.idc.ui.core.button":
@@ -3955,7 +3958,25 @@ com.idc.ui = {
     tempState: {
       selectedItems: [],
     },
+    elements: {
+      openButton: null,
+      modal: null,
+      emailButton: null,
+    },
     init: function () {
+      let vars = com.idc.clm.vars;
+
+      //elements
+      if (vars.emailCart.components.openButton.id) {
+        this.elements.openButton = document.querySelector(`#${vars.emailCart.components.openButton.id}`);
+      }
+      if (vars.emailCart.components.modal.id) {
+        this.elements.modal = document.querySelector(`#${vars.emailCart.components.modal.id}`);
+      }
+      if (vars.emailCart.components.emailButton.id) {
+        this.elements.emailButton = document.querySelector(`#${vars.emailCart.components.emailButton.id}`);
+      }
+
       this.populateItems();
       this.setEvents();
       this.updateBadge();
@@ -3967,11 +3988,10 @@ com.idc.ui = {
       let vars = com.idc.clm.vars;
       let util = com.idc.util;
 
-      if (!vars.emailCart.components.modal.id || !document.querySelector(`#${vars.emailCart.components.modal.id}`) || vars.emailCart.mode == "emailButton")
-        return;
+      if (!this.elements.modal || vars.emailCart.mode == "emailButton") return;
 
       let items = vars.emailCart[vars.emailCart.mode];
-      let container = document.querySelector(`#${vars.emailCart.components.modal.id} [data-type="com.idc.ui.emailCart.items"]`);
+      let container = this.elements.modal.querySelector(`[data-type="com.idc.ui.emailCart.items"]`);
       let template = container.querySelector('[data-type="com.idc.ui.emailCart.itemTemplate"]');
 
       items.forEach((item) => {
@@ -4010,17 +4030,15 @@ com.idc.ui = {
       let vars = com.idc.clm.vars;
       let clm = com.idc.clm;
 
-      //before open and after close
-      let modal = document.querySelector(`#${vars.emailCart.components.modal.id}`);
-      if (modal) {
-        modal.overwriteParameterFunction("beforeOpen", this.beforeOpen);
-        modal.overwriteParameterFunction("afterClose", this.afterClose);
-      }
+      if (this.elements.modal) {
+        //before open and after close
+        if (this.elements.modal) {
+          this.elements.modal.overwriteParameterFunction("beforeOpen", this.beforeOpen);
+          this.elements.modal.overwriteParameterFunction("afterClose", this.afterClose);
+        }
 
-      //items
-      document
-        .querySelectorAll(`#${vars.emailCart.components.modal.id} [data-type="com.idc.ui.emailCart.items"] [data-type="com.idc.ui.emailCart.item"]`)
-        .forEach((itemElement) => {
+        //items
+        this.elements.modal.querySelectorAll(`[data-type="com.idc.ui.emailCart.items"] [data-type="com.idc.ui.emailCart.item"]`).forEach((itemElement) => {
           itemElement.addEventListener("click", (event) => {
             let target = event.currentTarget;
             let itemId = target.getAttribute("data-item-id");
@@ -4042,8 +4060,8 @@ com.idc.ui = {
 
             //for templates mode, acts as a radio button, deselect all others
             if (vars.emailCart.mode == "templates") {
-              document
-                .querySelectorAll(`#${vars.emailCart.components.modal.id} [data-type="com.idc.ui.emailCart.items"] [data-type="com.idc.ui.emailCart.item"]`)
+              this.elements.modal
+                .querySelectorAll(`[data-type="com.idc.ui.emailCart.items"] [data-type="com.idc.ui.emailCart.item"]`)
                 .forEach((itemElement) => {
                   if (itemElement.getAttribute("data-item-id") != itemId) {
                     itemElement.setAttribute("data-status", "unChecked");
@@ -4060,57 +4078,51 @@ com.idc.ui = {
           });
         });
 
-      //send button
-      let sendButton = document.querySelector(
-        `#${vars.emailCart.components.modal.id} [data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.emailCart.sendButton"]`
-      );
-      if (sendButton) {
-        sendButton.addEventListener("click", (event) => {
-          if (event.currentTarget.getAttribute("data-state") == "active") {
-            clm.updateEmailCart(this.tempState.selectedItems);
-            this.updateBadge();
+        //send button
+        let sendButton = this.elements.modal.querySelector(`[data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.emailCart.sendButton"]`);
+        if (sendButton) {
+          sendButton.addEventListener("click", (event) => {
+            if (event.currentTarget.getAttribute("data-state") == "active") {
+              clm.updateEmailCart(this.tempState.selectedItems);
+              this.updateBadge();
 
-            //close modal: the following will be executed after close: resetTempSelectedItems(), toggleItemsState(), toggleButtonsState())
-            document.querySelector(`#${vars.emailCart.components.modal.id}`).close();
+              //close modal: the following will be executed after close: resetTempSelectedItems(), toggleItemsState(), toggleButtonsState())
+              this.elements.modal.close();
 
-            //launch approved email
-            com.idc.clm.launchApprovedEmail(true); //selected only
-          }
-        });
-      }
+              //launch approved email
+              com.idc.clm.launchApprovedEmail(true); //selected only
+            }
+          });
+        }
 
-      //cancel button
-      let cancelButton = document.querySelector(
-        `#${vars.emailCart.components.modal.id} [data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.emailCart.cancelButton"]`
-      );
-      if (cancelButton) {
-        cancelButton.addEventListener("click", (event) => {
-          if (event.currentTarget.getAttribute("data-state") == "active") {
-            //close modal: the following will be executed after close: resetTempSelectedItems(), toggleItemsState(), toggleButtonsState())
-            document.querySelector(`#${vars.emailCart.components.modal.id}`).close();
-          }
-        });
-      }
+        //cancel button
+        let cancelButton = this.elements.modal.querySelector(`[data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.emailCart.cancelButton"]`);
+        if (cancelButton) {
+          cancelButton.addEventListener("click", (event) => {
+            if (event.currentTarget.getAttribute("data-state") == "active") {
+              //close modal: the following will be executed after close: resetTempSelectedItems(), toggleItemsState(), toggleButtonsState())
+              this.elements.modal.close();
+            }
+          });
+        }
 
-      //done button
-      let doneButton = document.querySelector(
-        `#${vars.emailCart.components.modal.id} [data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.emailCart.doneButton"]`
-      );
-      if (doneButton) {
-        doneButton.addEventListener("click", (event) => {
-          if (event.currentTarget.getAttribute("data-state") == "active") {
-            clm.updateEmailCart(this.tempState.selectedItems);
-            this.updateBadge();
+        //done button
+        let doneButton = this.elements.modal.querySelector(`[data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.emailCart.doneButton"]`);
+        if (doneButton) {
+          doneButton.addEventListener("click", (event) => {
+            if (event.currentTarget.getAttribute("data-state") == "active") {
+              clm.updateEmailCart(this.tempState.selectedItems);
+              this.updateBadge();
 
-            //close modal: the following will be executed after close: resetTempSelectedItems(), toggleItemsState(), toggleButtonsState())
-            document.querySelector(`#${vars.emailCart.components.modal.id}`).close();
-          }
-        });
+              //close modal: the following will be executed after close: resetTempSelectedItems(), toggleItemsState(), toggleButtonsState())
+              this.elements.modal.close();
+            }
+          });
+        }
       }
 
       //email button
-      let emailButton = document.querySelector(`#${vars.emailCart.components.emailButton.id}`);
-      if (emailButton) {
+      if (this.elements.emailButton) {
         emailButton.addEventListener("click", (event) => {
           if (event.currentTarget.getAttribute("data-state") == "active") {
             com.idc.clm.launchApprovedEmail(false); //all fragments
@@ -4147,16 +4159,14 @@ com.idc.ui = {
       let vars = com.idc.clm.vars;
       let selectedItems = this.tempState.selectedItems;
 
-      document
-        .querySelectorAll(`#${vars.emailCart.components.modal.id} [data-type="com.idc.ui.emailCart.items"] [data-type="com.idc.ui.emailCart.item"]`)
-        .forEach((itemElement) => {
-          let itemId = itemElement.getAttribute("data-item-id");
-          if (selectedItems.includes(itemId)) {
-            itemElement.setAttribute("data-status", "checked");
-          } else {
-            itemElement.setAttribute("data-status", "unChecked");
-          }
-        });
+      this.elements.modal.querySelectorAll(`[data-type="com.idc.ui.emailCart.items"] [data-type="com.idc.ui.emailCart.item"]`).forEach((itemElement) => {
+        let itemId = itemElement.getAttribute("data-item-id");
+        if (selectedItems.includes(itemId)) {
+          itemElement.setAttribute("data-status", "checked");
+        } else {
+          itemElement.setAttribute("data-status", "unChecked");
+        }
+      });
     },
     toggleButtonsState: function () {
       let vars = com.idc.clm.vars;
@@ -4190,41 +4200,36 @@ com.idc.ui = {
         itemsHaveCrmId = templateHasCrmId && fragmentsHaveCrmId;
       }
 
-      //send button state
-      let sendButton = document.querySelector(
-        `#${vars.emailCart.components.modal.id} [data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.emailCart.sendButton"]`
-      );
-      if (sendButton) {
-        if (selectedItemsCount > 0 && (inACall || browserMode) && itemsHaveCrmId) {
-          sendButton.setAttribute("data-state", "active");
-        } else {
-          sendButton.setAttribute("data-state", "disabled");
+      if (this.elements.modal) {
+        //send button state
+        let sendButton = this.elements.modal.querySelector(`[data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.emailCart.sendButton"]`);
+        if (sendButton) {
+          if (selectedItemsCount > 0 && (inACall || browserMode) && itemsHaveCrmId) {
+            sendButton.setAttribute("data-state", "active");
+          } else {
+            sendButton.setAttribute("data-state", "disabled");
+          }
         }
-      }
 
-      //done button state
-      let doneButton = document.querySelector(
-        `#${vars.emailCart.components.modal.id} [data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.emailCart.doneButton"]`
-      );
-      if (doneButton) {
-        if (!areEqualBaseAndTemp) {
-          doneButton.setAttribute("data-state", "active");
-        } else {
-          doneButton.setAttribute("data-state", "disabled");
+        //done button state
+        let doneButton = this.elements.modal.querySelector(`[data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.emailCart.doneButton"]`);
+        if (doneButton) {
+          if (!areEqualBaseAndTemp) {
+            doneButton.setAttribute("data-state", "active");
+          } else {
+            doneButton.setAttribute("data-state", "disabled");
+          }
         }
-      }
 
-      //cancel button state
-      let cancelButton = document.querySelector(
-        `#${vars.emailCart.components.modal.id} [data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.emailCart.cancelButton"]`
-      );
-      if (cancelButton) {
-        cancelButton.setAttribute("data-state", "active");
+        //cancel button state
+        let cancelButton = this.elements.modal.querySelector(`[data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.emailCart.cancelButton"]`);
+        if (cancelButton) {
+          cancelButton.setAttribute("data-state", "active");
+        }
       }
 
       //email button
-      let emailButton = document.querySelector(`#${vars.emailCart.components.emailButton.id}`);
-      if (emailButton) {
+      if (this.elements.emailButton) {
         if ((inACall || browserMode) && itemsHaveCrmId) {
           emailButton.setAttribute("data-state", "active");
         } else {
@@ -4234,13 +4239,12 @@ com.idc.ui = {
     },
     updateBadge: function () {
       let vars = com.idc.clm.vars;
-      let openButton = document.querySelector(`#${vars.emailCart.components.openButton.id}`);
       let selectedItemsCount = vars.emailCart[vars.emailCart.mode].filter((item) => {
         return item.selected;
       }).length;
 
-      if (openButton) {
-        let badge = openButton.querySelector('[data-type="com.idc.ui.emailCart.badge"]');
+      if (this.elements.openButton) {
+        let badge = this.elements.openButton.querySelector('[data-type="com.idc.ui.emailCart.badge"]');
         if (badge) {
           badge.innerHTML = selectedItemsCount;
           if (selectedItemsCount > 0) {
