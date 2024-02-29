@@ -1910,9 +1910,14 @@ com.idc.clm = {
       }
     }
     if (this.vars.emailCart.mode == "templates") {
-      //email cart functionality (selected template only)
-      if (this.vars.emailCart.templates.length > 0) {
-        templateID = this.vars.emailCart.templates.find((item) => item.selected).crmId;
+      if (selectedOnly) {
+        //email cart functionality (selected template only)
+        if (this.vars.emailCart.templates.length > 0) {
+          templateID = this.vars.emailCart.templates.find((item) => item.selected).crmId;
+        }
+      } else {
+        //email button functionality
+        templateID = this.vars.emailCart.templates[0].crmId;
       }
     }
 
