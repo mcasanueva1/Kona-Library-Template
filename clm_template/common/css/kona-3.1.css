@@ -248,7 +248,7 @@ body[data-screen-orientation="portrait"] > [data-type="com.idc.ui.contentSize"] 
     left: 0%;
     width: 100%;
     height: 300px;
-    top: -300px;
+    top: -800px;
     border-radius: 5px;
     background-color: #fff;
     z-index: 1;
