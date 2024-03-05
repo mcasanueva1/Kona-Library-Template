@@ -1,10 +1,9 @@
-/* menu button style (kona demo) *****************************************************************************/
-[data-type="com.idc.ui.core.link"][data-sub-type="com.idc.ui.core.menu.button"] {
-    margin: 5px;
-    padding: 3px;
-    border: 1px solid grey;
-    border-radius: 6px;
+/*modal*/
+
+[data-type="com.idc.ui.core.modal.popUp"] > [data-type="com.idc.ui.core.modal.contentArea"], [data-type="com.idc.ui.core.modal.dropDown"] > [data-type="com.idc.ui.core.modal.contentArea"] {
+    padding: 20px;
 }
+
 
 /* sample code for image testing with common html ************************************************************/
 [data-common-html="companyLogo"] {
@@ -110,6 +109,19 @@
     /* Scaling button to 0.98 to its original size */
     box-shadow: 3px 2px 22px 1px rgba(0, 0, 0, 0.24);
     /* Lowering the shadow */
+}
+
+[data-type="com.idc.ui.core.button"] {
+    background-color: #818286;
+    color: #ffffff;
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 11px;
+    font-weight: 300;
+    padding: 8px 20px;
+    border-radius: 8px;
+    width: 100px;
+    margin-bottom: 5px;
 }
 
 

@@ -1,6 +1,29 @@
 body {
-    font-family: 'verdana';
     background-color: black;
+}
+
+/* fonts ************************************************************/
+body {
+    font-family: AvenirNext, 'AvenirNext-Regular', Arial;
+    font-weight: 300;
+}
+
+b, strong {
+    font-family: AvenirNext, 'AvenirNext-Bold', Arial;
+    font-weight: 500;
+
+}
+
+i, em {
+    font-family: AvenirNext, 'AvenirNext-Italic', Arial;
+    font-weight: 300;
+    font-style: italic;
+}
+
+strong  {
+    font-family: AvenirNext, 'AvenirNext-BoldItalic', Arial;
+    font-weight: 500;
+    font-style: italic;
 }
 
 /* CONTENT RESIZER AND ORIENTATION ------------------ */
@@ -60,6 +83,8 @@ body[data-screen-orientation="portrait"] > [data-type="com.idc.ui.contentSize"] 
     display: none;
     opacity: 0.8;
     z-index: 1;
+    -webkit-animation: fadeBG .3s 0s 1 normal both;
+    animation: fadeBG .3s 0s 1 normal both;
 }
 [data-type="com.idc.ui.backModal"].transparent {
     opacity: 0.2;
@@ -67,16 +92,6 @@ body[data-screen-orientation="portrait"] > [data-type="com.idc.ui.contentSize"] 
 
 /* BUTTON -------------------------------------------- */
 [data-type="com.idc.ui.core.button"] {
-    background-color: #818286;
-    color: #ffffff;
-    text-align: center;
-    text-transform: uppercase;
-    font-size: 11px;
-    font-weight: 300;
-    padding: 8px 20px;
-    border-radius: 8px;
-    width: 100px;
-    margin-bottom: 5px;
     cursor: default;
 }
 
@@ -159,6 +174,12 @@ body[data-screen-orientation="portrait"] > [data-type="com.idc.ui.contentSize"] 
     display: flex;
     justify-self: center;
 }
+[data-type="com.idc.ui.core.link"][data-sub-type="com.idc.ui.core.menu.button"] {
+    margin: 5px;
+    padding: 3px;
+    border: 1px solid grey;
+    border-radius: 6px;
+}
 
 /* DYNAMIC MENU ---------------------------- */
 [data-type="com.idc.ui.dynamicMenuBundle"] {
@@ -234,6 +255,8 @@ body[data-screen-orientation="portrait"] > [data-type="com.idc.ui.contentSize"] 
 }
 [data-type="com.idc.ui.core.modal.popUp"][data-view-state="active"] {
     display: block;
+    -webkit-animation: growUpPopUp 0.4s 0s 1 normal both;
+    animation: growUpPopUp 0.4s 0s 1 normal both;
 }
 [data-type="com.idc.ui.core.modal.modalObject"] {
     position: absolute;
@@ -248,7 +271,7 @@ body[data-screen-orientation="portrait"] > [data-type="com.idc.ui.contentSize"] 
     left: 0%;
     width: 100%;
     height: 300px;
-    top: -800px;
+    top: -300px;
     border-radius: 5px;
     background-color: #fff;
     z-index: 1;
@@ -267,16 +290,10 @@ body[data-screen-orientation="portrait"] > [data-type="com.idc.ui.contentSize"] 
     display: none; /*used to hide close menu of standalone modals in dynamic presentations*/
 }
 
-[data-type="com.idc.ui.core.modal.popUp"] > [data-type="com.idc.ui.core.modal.contentArea"] {
-    padding: 20px;
-}
 [data-type="com.idc.ui.core.modal.dropDown"] > [data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.core.modal.closeButton"] {
     position: absolute;
     bottom: 5px;
     right: 5px;
-}
-[data-type="com.idc.ui.core.modal.dropDown"] > [data-type="com.idc.ui.core.modal.contentArea"] {
-    padding: 20px;
 }
 
 /* NON WORKING LINK ALERT POPUP---------------------- */
@@ -1106,3 +1123,691 @@ body[data-screen-orientation="portrait"] > [data-type="com.idc.ui.contentSize"] 
 #com_idc_ui_inspector_dropDown [data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.inspector.execute.button"][data-view-state="active"] {
     opacity: 1;
 }
+
+
+/* animations-----------------------------------------------*/
+
+/*inDown*/
+.r0 {
+    -webkit-animation: inDown .5s 0s 1 normal both;
+    animation: inDown .5s 0s 1 normal both;
+}
+
+.r1 {
+    -webkit-animation: inDown .6s 0s 1 normal both;
+    animation: inDown .6s 0s 1 normal both;
+}
+
+.r2 {
+    -webkit-animation: inDown .6s .1s 1 normal both;
+    animation: inDown .6s .1s 1 normal both;
+}
+
+.r3 {
+    -webkit-animation: inDown .6s .2s 1 normal both;
+    animation: inDown .6s .2s 1 normal both;
+}
+
+.r4 {
+    -webkit-animation: inDown .6s .3s 1 normal both;
+    animation: inDown .6s .3s 1 normal both;
+}
+
+.r5 {
+    -webkit-animation: inDown .6s .4s 1 normal both;
+    animation: inDown .6s .4s 1 normal both;
+}
+
+.r6 {
+    -webkit-animation: inDown .6s .5s 1 normal both;
+    animation: inDown .6s .5s 1 normal both;
+}
+
+.r7 {
+    -webkit-animation: inDown .6s .6s 1 normal both;
+    animation: inDown .6s .6s 1 normal both;
+}
+
+.r8 {
+    -webkit-animation: inDown .6s .7s 1 normal both;
+    animation: inDown .6s .7s 1 normal both;
+}
+
+.r9 {
+    -webkit-animation: inDown .6s .8s 1 normal both;
+    animation: inDown .6s .8s 1 normal both;
+}
+
+.r10 {
+    -webkit-animation: inDown .6s .9s 1 normal both;
+    animation: inDown .6s .9s 1 normal both;
+}
+
+.r11 {
+    -webkit-animation: inDown .6s 1s 1 normal both;
+    animation: inDown .6s 1s 1 normal both;
+}
+
+.r12 {
+    -webkit-animation: inDown .6s 1.1s 1 normal both;
+    animation: inDown .6s 1.1s 1 normal both;
+}
+
+.r13 {
+    -webkit-animation: inDown .6s 1.2s 1 normal both;
+    animation: inDown .6s 1.2s 1 normal both;
+}
+
+.r14 {
+    -webkit-animation: inDown .6s 1.3s 1 normal both;
+    animation: inDown .6s 1.3s 1 normal both;
+}
+
+.r15 {
+    -webkit-animation: inDown .6s 1.4s 1 normal both;
+    animation: inDown .6s 1.4s 1 normal both;
+}
+
+/*InLeft*/
+
+.inL0 {
+    -webkit-animation: inLeft .5s 0s 1 normal both;
+    animation: inLeft .5s 0s 1 normal both;
+}
+
+.inL1 {
+    -webkit-animation: inLeft .6s 0s 1 normal both;
+    animation: inLeft .6s 0s 1 normal both;
+}
+
+.inL2 {
+    -webkit-animation: inLeft .6s .1s 1 normal both;
+    animation: inLeft .6s .1s 1 normal both;
+}
+
+.inL3 {
+    -webkit-animation: inLeft .6s .2s 1 normal both;
+    animation: inLeft .6s .2s 1 normal both;
+}
+
+.inL4 {
+    -webkit-animation: inLeft .6s .3s 1 normal both;
+    animation: inLeft .6s .3s 1 normal both;
+}
+
+.inL5 {
+    -webkit-animation: inLeft .6s .4s 1 normal both;
+    animation: inLeft .6s .4s 1 normal both;
+}
+
+.inL6 {
+    -webkit-animation: inLeft .6s .5s 1 normal both;
+    animation: inLeft .6s .5s 1 normal both;
+}
+
+.inL7 {
+    -webkit-animation: inLeft .6s .6s 1 normal both;
+    animation: inLeft .6s .6s 1 normal both;
+}
+
+.inL8 {
+    -webkit-animation: inLeft .6s .7s 1 normal both;
+    animation: inLeft .6s .7s 1 normal both;
+}
+
+.inL9 {
+    -webkit-animation: inLeft .6s .8s 1 normal both;
+    animation: inLeft .6s .8s 1 normal both;
+}
+
+.inL10 {
+    -webkit-animation: inLeft .6s .9s 1 normal both;
+    animation: inLeft .6s .9s 1 normal both;
+}
+
+.inL11 {
+    -webkit-animation: inLeft .6s 1s 1 normal both;
+    animation: inLeft .6s 1s 1 normal both;
+}
+
+.inL12 {
+    -webkit-animation: inLeft .6s 1.1s 1 normal both;
+    animation: inLeft .6s 1.1s 1 normal both;
+}
+
+.inL13 {
+    -webkit-animation: inLeft .6s 1.2s 1 normal both;
+    animation: inLeft .6s 1.2s 1 normal both;
+}
+
+.inL14 {
+    -webkit-animation: inLeft .6s 1.3s 1 normal both;
+    animation: inLeft .6s 1.3s 1 normal both;
+}
+
+.inL15 {
+    -webkit-animation: inLeft .6s 1.4s 1 normal both;
+    animation: inLeft .6s 1.4s 1 normal both;
+}
+
+/*InRight*/
+
+.inR0 {
+    -webkit-animation: inRight 0.75s 0s 1 normal both;
+    animation: inRight 0.75s 0s 1 normal both;
+}
+
+.inR1 {
+    -webkit-animation: inRight .5s 0s 1 normal both;
+    animation: inRight .5s 0s 1 normal both;
+}
+
+.inR2 {
+    -webkit-animation: inRight .5s .1s 1 normal both;
+    animation: inRight .5s .1s 1 normal both;
+}
+
+.inR3 {
+    -webkit-animation: inRight .5s .2s 1 normal both;
+    animation: inRight .5s .2s 1 normal both;
+}
+
+.inR4 {
+    -webkit-animation: inRight .5s .3s 1 normal both;
+    animation: inRight .5s .3s 1 normal both;
+}
+
+.inR5 {
+    -webkit-animation: inRight .5s .4s 1 normal both;
+    animation: inRight .5s .4s 1 normal both;
+}
+
+.inR6 {
+    -webkit-animation: inRight .5s .5s 1 normal both;
+    animation: inRight .5s .5s 1 normal both;
+}
+
+.inR7 {
+    -webkit-animation: inRight .5s .6s 1 normal both;
+    animation: inRight .5s .6s 1 normal both;
+}
+
+.inR8 {
+    -webkit-animation: inRight .5s .7s 1 normal both;
+    animation: inRight .5s .7s 1 normal both;
+}
+
+.inR9 {
+    -webkit-animation: inRight .5s .8s 1 normal both;
+    animation: inRight .5s .8s 1 normal both;
+}
+
+.inR10 {
+    -webkit-animation: inRight .5s .9s 1 normal both;
+    animation: inRight .5s .9s 1 normal both;
+}
+
+.inR11 {
+    -webkit-animation: inRight .5s 1s 1 normal both;
+    animation: inRight .5s 1s 1 normal both;
+}
+
+.inR12 {
+    -webkit-animation: inRight .5s 1.1s 1 normal both;
+    animation: inRight .5s 1.1s 1 normal both;
+}
+
+.inR13 {
+    -webkit-animation: inRight .5s 1.2s 1 normal both;
+    animation: inRight .5s 1.2s 1 normal both;
+}
+
+.inR14 {
+    -webkit-animation: inRight .5s 1.3s 1 normal both;
+    animation: inRight .5s 1.3s 1 normal both;
+}
+
+.inR15 {
+    -webkit-animation: inRight .5s 1.4s 1 normal both;
+    animation: inRight .5s 1.4s 1 normal both;
+}
+
+/* FADE anime --*/
+
+.fd0 {
+    -webkit-animation: fadeIn .5s 0s 1 normal both;
+    animation: fadeIn .5s 0s 1 normal both;
+}
+
+.fd1 {
+    -webkit-animation: fadeIn 0.8s 0s 1 normal both;
+    animation: fadeIn 0.8s 0s 1 normal both;
+}
+
+.fd2 {
+    -webkit-animation: fadeIn 0.8s .1s 1 normal both;
+    animation: fadeIn 0.8s .1s 1 normal both;
+}
+
+.fd3 {
+    -webkit-animation: fadeIn 0.8s .2s 1 normal both;
+    animation: fadeIn 0.8s .2s 1 normal both;
+}
+
+.fd4 {
+    -webkit-animation: fadeIn 0.8s .3s 1 normal both;
+    animation: fadeIn 0.8s .3s 1 normal both;
+}
+
+.fd5 {
+    -webkit-animation: fadeIn 0.8s .4s 1 normal both;
+    animation: fadeIn 0.8s .4s 1 normal both;
+}
+
+.fd6 {
+    -webkit-animation: fadeIn 0.8s .5s 1 normal both;
+    animation: fadeIn 0.8s .5s 1 normal both;
+}
+
+.fd7 {
+    -webkit-animation: fadeIn 0.8s .6s 1 normal both;
+    animation: fadeIn 0.8s .6s 1 normal both;
+}
+
+.fd8 {
+    -webkit-animation: fadeIn 0.8s .7s 1 normal both;
+    animation: fadeIn 0.8s .7s 1 normal both;
+}
+
+.fd9 {
+    -webkit-animation: fadeIn 0.8s .8s 1 normal both;
+    animation: fadeIn 0.8s .8s 1 normal both;
+}
+
+.fd10 {
+    -webkit-animation: fadeIn 0.8s .9s 1 normal both;
+    animation: fadeIn 0.8s .9s 1 normal both;
+}
+
+.fd11 {
+    -webkit-animation: fadeIn 0.8s 1s 1 normal both;
+    animation: fadeIn 0.8s 1s 1 normal both;
+}
+
+.fd12 {
+    -webkit-animation: fadeIn 0.8s 1.1s 1 normal both;
+    animation: fadeIn 0.8s 1.1s 1 normal both;
+}
+
+.fd13 {
+    -webkit-animation: fadeIn 0.8s 1.2s 1 normal both;
+    animation: fadeIn 0.8s 1.2s 1 normal both;
+}
+
+.fd14 {
+    -webkit-animation: fadeIn 0.8s 1.3s 1 normal both;
+    animation: fadeIn 0.8s 1.3s 1 normal both;
+}
+
+.fd15 {
+    -webkit-animation: fadeIn 0.8s 1.4s 1 normal both;
+    animation: fadeIn 0.8s 1.4s 1 normal both;
+}
+
+/* --- */
+
+.inUp0 {
+    -webkit-animation: inUp 0.75s 0s 1 normal both;
+    animation: inUp 0.5s 0s 1 normal both;
+}
+
+.inUp1 {
+    -webkit-animation: inUp .5s 0s 1 normal both;
+    animation: inUp .5s 0s 1 normal both;
+}
+
+.inUp2 {
+    -webkit-animation: inUp .5s .1s 1 normal both;
+    animation: inUp .5s .1s 1 normal both;
+}
+
+.inUp3 {
+    -webkit-animation: inUp .5s .2s 1 normal both;
+    animation: inUp .5s .2s 1 normal both;
+}
+
+.inUp4 {
+    -webkit-animation: inUp .5s .3s 1 normal both;
+    animation: inUp .5s .3s 1 normal both;
+}
+
+.inUp5 {
+    -webkit-animation: inUp .5s .4s 1 normal both;
+    animation: inUp .5s .4s 1 normal both;
+}
+
+.inUp6 {
+    -webkit-animation: inUp .5s .5s 1 normal both;
+    animation: inUp .5s .5s 1 normal both;
+}
+
+.inUp7 {
+    -webkit-animation: inUp .5s .6s 1 normal both;
+    animation: inUp .5s .6s 1 normal both;
+}
+
+.inUp8 {
+    -webkit-animation: inUp .5s .7s 1 normal both;
+    animation: inUp .5s .7s 1 normal both;
+}
+
+.inUp9 {
+    -webkit-animation: inUp .5s .8s 1 normal both;
+    animation: inUp .5s .8s 1 normal both;
+}
+
+.inUp10 {
+    -webkit-animation: inUp .5s .9s 1 normal both;
+    animation: inUp .5s .9s 1 normal both;
+}
+
+.inUp11 {
+    -webkit-animation: inUp .5s 1s 1 normal both;
+    animation: inUp .5s 1s 1 normal both;
+}
+
+.inUp12 {
+    -webkit-animation: inUp .5s 1.1s 1 normal both;
+    animation: inUp .5s 1.1s 1 normal both;
+}
+
+.inUp13 {
+    -webkit-animation: inUp .5s 1.2s 1 normal both;
+    animation: inUp .5s 1.2s 1 normal both;
+}
+
+.inUp14 {
+    -webkit-animation: inUp .5s 1.3s 1 normal both;
+    animation: inUp .5s 1.3s 1 normal both;
+}
+
+.inUp15 {
+    -webkit-animation: inUp .5s 1.4s 1 normal both;
+    animation: inUp .5s 1.4s 1 normal both;
+}
+
+/*growUp*/
+
+.gu1 {
+    -webkit-animation: growUp 1s 0s 1 normal both;
+    animation: growUp 1s 0s 1 normal both;
+}
+
+.gu2 {
+    -webkit-animation: growUp 1s 0.1s 1 normal both;
+    animation: growUp 1s 0.1s 1 normal both;
+}
+
+.gu3 {
+    -webkit-animation: growUp 1s 0.2s 1 normal both;
+    animation: growUp 1s 0.2s 1 normal both;
+}
+
+.gu4 {
+    -webkit-animation: growUp 1s 0.3s 1 normal both;
+    animation: growUp 1s 0.3s 1 normal both;
+}
+
+.gu5 {
+    -webkit-animation: growUp 1s 0.4s 1 normal both;
+    animation: growUp 1s 0.4s 1 normal both;
+}
+
+.gu6 {
+    -webkit-animation: growUp 1s 0.5s 1 normal both;
+    animation: growUp 1s 0.5s 1 normal both;
+}
+
+.gu7 {
+    -webkit-animation: growUp 1s 0.6s 1 normal both;
+    animation: growUp 1s 0.6s 1 normal both;
+}
+
+.gu8 {
+    -webkit-animation: growUp 1s 0.7s 1 normal both;
+    animation: growUp 1s 0.7s 1 normal both;
+}
+
+.gu9 {
+    -webkit-animation: growUp 1s 0.8s 1 normal both;
+    animation: growUp 1s 0.8s 1 normal both;
+}
+
+.gu10 {
+    -webkit-animation: growUp 1s 0.9s 1 normal both;
+    animation: growUp 1s 0.9s 1 normal both;
+}
+
+.gu11 {
+    -webkit-animation: growUp 1s 1s 1 normal both;
+    animation: growUp 1s 1s 1 normal both;
+}
+
+.gu12 {
+    -webkit-animation: growUp 1s 1.1s 1 normal both;
+    animation: growUp 1s 1.1s 1 normal both;
+}
+
+.gu13 {
+    -webkit-animation: growUp 1s 1.2s 1 normal both;
+    animation: growUp 1s 1.2s 1 normal both;
+}
+
+.gu14 {
+    -webkit-animation: growUp 1s 1.3s 1 normal both;
+    animation: growUp 1s 1.3s 1 normal both;
+}
+
+.gu15 {
+    -webkit-animation: growUp 1s 1.4s 1 normal both;
+    animation: growUp 1s 1.4s 1 normal both;
+}
+
+/*--------------*/
+
+@-webkit-keyframes fadeBG {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: .95;
+    }
+}
+
+@keyframes fadeBG {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: .95;
+    }
+}
+
+/*-------------*/
+
+@-webkit-keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+/*---------*/
+
+@-webkit-keyframes inLeft {
+    0% {
+        -webkit-transform: translate(-25px, 0);
+        opacity: 0;
+    }
+    100% {
+        -webkit-transform: translate(0, 0);
+        opacity: 1;
+    }
+}
+
+@keyframes inLeft {
+    0% {
+        transform: translate(-25px, 0);
+        opacity: 0;
+    }
+    100% {
+        transform: translate(0, 0);
+        opacity: 1;
+    }
+}
+
+/*---------*/
+
+@-webkit-keyframes inRight {
+    0% {
+        -webkit-transform: translate(25px, 0);
+        opacity: 0;
+    }
+    100% {
+        -webkit-transform: translate(0, 0);
+        opacity: 1;
+    }
+}
+
+@keyframes inRight {
+    0% {
+        transform: translate(25px, 0);
+        opacity: 0;
+    }
+    100% {
+        transform: translate(0, 0);
+        opacity: 1;
+    }
+}
+
+/*---------*/
+
+@-webkit-keyframes inDown {
+    0% {
+        -webkit-transform: translate(0, 25px);
+        opacity: 0;
+    }
+    100% {
+        -webkit-transform: translate(0, 0);
+        opacity: 1;
+    }
+}
+
+@keyframes inDown {
+    0% {
+        transform: translate(0, 25px);
+        opacity: 0;
+    }
+    100% {
+        transform: translate(0, 0);
+        opacity: 1;
+    }
+}
+
+/*---------*/
+
+@-webkit-keyframes inUp {
+    0% {
+        -webkit-transform: translate(0, -25px);
+        opacity: 0;
+    }
+    100% {
+        -webkit-transform: translate(0, 0);
+        opacity: 1;
+    }
+}
+
+@keyframes inUp {
+    0% {
+        transform: translate(0, -25px);
+        opacity: 0;
+    }
+    100% {
+        transform: translate(0, 0);
+        opacity: 1;
+    }
+}
+
+
+/*-------------*/
+
+@-webkit-keyframes growUp {
+    0% {
+        opacity: 0;
+        -webkit-transform: scale(.1, .1)
+    }
+    60% {
+        opacity: 1;
+        -webkit-transform: scale(1.2, 1.2)
+    }
+    100% {
+        opacity: 1;
+        -webkit-transform: scale(1, 1)
+    }
+}
+
+@keyframes growUp {
+    0% {
+        opacity: 0;
+        transform: scale(.1, .1)
+    }
+    60% {
+        opacity: 1;
+        transform: scale(1.2, 1.2)
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1, 1)
+    }
+}
+
+/*-------------*/
+
+
+/*-------------*/
+
+@-webkit-keyframes growUpPopUp {
+    0% {
+        opacity: 0;
+        -webkit-transform: scale(.8, .8)
+    }
+    100% {
+        opacity: 1;
+        -webkit-transform: scale(1, 1)
+    }
+}
+
+@keyframes growUpPopUp {
+    0% {
+        opacity: 0;
+        transform: scale(.8, .8)
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1, 1)
+    }
+}
+
+/*-------------*/
