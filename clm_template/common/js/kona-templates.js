@@ -45,6 +45,20 @@ com.idc.templates = {
         ],
       },
     ],
+    "link": [
+      {
+        "type": "DIV",
+        "attributes": [
+          {
+            "data-type": "com.idc.ui.core.link",
+          },
+          {
+            "data-target-id": "",
+          },
+        ],
+        "childNodes": [],
+      }
+    ],
     "modal": {
       "backModal": [
         {
