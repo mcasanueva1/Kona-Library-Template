@@ -177,12 +177,6 @@ body[data-screen-orientation="portrait"] > [data-type="com.idc.ui.contentSize"] 
     display: flex;
     justify-self: center;
 }
-[data-type="com.idc.ui.core.link"][data-sub-type="com.idc.ui.core.menu.button"] {
-    margin: 5px;
-    padding: 3px;
-    border: 1px solid grey;
-    border-radius: 6px;
-}
 
 /* DYNAMIC MENU ---------------------------- */
 [data-type="com.idc.ui.dynamicMenuBundle"] {
