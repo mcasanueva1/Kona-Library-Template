@@ -2,11 +2,11 @@ if (com == null) var com = {};
 if (com.idc == undefined) com.idc = {};
 
 com.idc.templates = {
-  core: {
-    accordion: [
+  "core": {
+    "accordion": [
       {
-        type: "DIV",
-        attributes: [
+        "type": "DIV",
+        "attributes": [
           {
             "data-type": "com.idc.ui.core.accordion",
           },
@@ -14,10 +14,10 @@ com.idc.templates = {
             "data-options": "",
           },
         ],
-        childNodes: [
+        "childNodes": [
           {
-            type: "DIV",
-            attributes: [
+            "type": "DIV",
+            "attributes": [
               {
                 "data-type": "com.idc.ui.core.button",
               },
@@ -28,11 +28,11 @@ com.idc.templates = {
                 "data-instance": "instance-id",
               },
             ],
-            childNodes: [],
+            "childNodes": [],
           },
           {
-            type: "DIV",
-            attributes: [
+            "type": "DIV",
+            "attributes": [
               {
                 "data-type": "com.idc.ui.core.accordion.content",
               },
@@ -40,26 +40,26 @@ com.idc.templates = {
                 "data-instance": "instance-id",
               },
             ],
-            childNodes: [],
+            "childNodes": [],
           },
         ],
       },
     ],
-    modal: {
-      backModal: [
+    "modal": {
+      "backModal": [
         {
-          type: "DIV",
-          attributes: [
+          "type": "DIV",
+          "attributes": [
             {
               "data-type": "com.idc.ui.backModal",
             },
           ],
         },
       ],
-      popUp: [
+      "popUp": [
         {
-          type: "DIV",
-          attributes: [
+          "type": "DIV",
+          "attributes": [
             {
               "data-type": "com.idc.ui.core.modal.popUp",
             },
@@ -67,10 +67,10 @@ com.idc.templates = {
               "data-options": "",
             },
           ],
-          childNodes: [
+          "childNodes": [
             {
-              type: "DIV",
-              attributes: [
+              "type": "DIV",
+              "attributes": [
                 {
                   "data-type": "com.idc.ui.core.button",
                 },
@@ -78,29 +78,29 @@ com.idc.templates = {
                   "data-sub-type": "com.idc.ui.core.modal.closeButton",
                 },
               ],
-              childNodes: [
+              "childNodes": [
                 {
-                  type: "#text",
-                  text: "Close",
+                  "type": "#text",
+                  "text": "Close",
                 },
               ],
             },
             {
-              type: "DIV",
-              attributes: [
+              "type": "DIV",
+              "attributes": [
                 {
                   "data-type": "com.idc.ui.core.modal.contentArea",
                 },
               ],
-              childNodes: [],
+              "childNodes": [],
             },
           ],
         },
       ],
-      dropDown: [
+      "dropDown": [
         {
-          type: "DIV",
-          attributes: [
+          "type": "DIV",
+          "attributes": [
             {
               "data-type": "com.idc.ui.core.modal.dropDown",
             },
@@ -108,19 +108,19 @@ com.idc.templates = {
               "data-options": "backModalStyle=transparent",
             },
           ],
-          childNodes: [
+          "childNodes": [
             {
-              type: "DIV",
-              attributes: [
+              "type": "DIV",
+              "attributes": [
                 {
                   "data-type": "com.idc.ui.core.modal.contentArea",
                 },
               ],
-              childNodes: [],
+              "childNodes": [],
             },
             {
-              type: "DIV",
-              attributes: [
+              "type": "DIV",
+              "attributes": [
                 {
                   "data-type": "com.idc.ui.core.button",
                 },
@@ -128,10 +128,10 @@ com.idc.templates = {
                   "data-sub-type": "com.idc.ui.core.modal.closeButton",
                 },
               ],
-              childNodes: [
+              "childNodes": [
                 {
-                  type: "#text",
-                  text: "Close",
+                  "type": "#text",
+                  "text": "Close",
                 },
               ],
             },
@@ -139,10 +139,10 @@ com.idc.templates = {
         },
       ],
     },
-    tab: [
+    "tab": [
       {
-        type: "DIV",
-        attributes: [
+        "type": "DIV",
+        "attributes": [
           {
             "data-type": "com.idc.ui.core.tab",
           },
@@ -150,26 +150,26 @@ com.idc.templates = {
             "data-options": "",
           },
         ],
-        childNodes: [
+        "childNodes": [
           {
-            type: "DIV",
-            attributes: [
+            "type": "DIV",
+            "attributes": [
               {
                 "data-type": "com.idc.ui.core.tab.cover",
               },
             ],
-            childNodes: [
+            "childNodes": [
               {
-                type: "DIV",
-                attributes: [
+                "type": "DIV",
+                "attributes": [
                   {
                     "data-type": "com.idc.ui.core.tab.buttons",
                   },
                 ],
-                childNodes: [
+                "childNodes": [
                   {
-                    type: "DIV",
-                    attributes: [
+                    "type": "DIV",
+                    "attributes": [
                       {
                         "data-type": "com.idc.ui.core.button",
                       },
@@ -180,31 +180,31 @@ com.idc.templates = {
                         "data-instance": "instance-id",
                       },
                     ],
-                    childNodes: [],
+                    "childNodes": [],
                   },
                 ],
               },
             ],
           },
           {
-            type: "DIV",
-            attributes: [
+            "type": "DIV",
+            "attributes": [
               {
                 "data-type": "com.idc.ui.core.tab.container",
               },
             ],
-            childNodes: [
+            "childNodes": [
               {
-                type: "DIV",
-                attributes: [
+                "type": "DIV",
+                "attributes": [
                   {
                     "data-type": "com.idc.ui.core.tab.buttons",
                   },
                 ],
-                childNodes: [
+                "childNodes": [
                   {
-                    type: "DIV",
-                    attributes: [
+                    "type": "DIV",
+                    "attributes": [
                       {
                         "data-type": "com.idc.ui.core.button",
                       },
@@ -215,13 +215,13 @@ com.idc.templates = {
                         "data-instance": "instance-id",
                       },
                     ],
-                    childNodes: [],
+                    "childNodes": [],
                   },
                 ],
               },
               {
-                type: "DIV",
-                attributes: [
+                "type": "DIV",
+                "attributes": [
                   {
                     "data-type": "com.idc.ui.core.tab.content",
                   },
@@ -229,7 +229,7 @@ com.idc.templates = {
                     "data-instance": "instance-id",
                   },
                 ],
-                childNodes: [],
+                "childNodes": [],
               },
             ],
           },
@@ -237,19 +237,19 @@ com.idc.templates = {
       },
     ],
   },
-  dynamicPresentation: {
-    menuBundle: [
+  "dynamicPresentation": {
+    "menuBundle": [
       {
-        type: "DIV",
-        attributes: [
+        "type": "DIV",
+        "attributes": [
           {
             "data-type": "com.idc.ui.dynamicMenuBundle",
           },
         ],
-        childNodes: [
+        "childNodes": [
           {
-            type: "DIV",
-            attributes: [
+            "type": "DIV",
+            "attributes": [
               {
                 "data-type": "com.idc.ui.core.button",
               },
@@ -260,19 +260,19 @@ com.idc.templates = {
                 "data-target-id": "com_idc_ui_dynamic_menu_modal",
               },
               {
-                id: "com_idc_ui_dynamic_menu_modal_open",
+                "id": "com_idc_ui_dynamic_menu_modal_open",
               },
             ],
-            childNodes: [
+            "childNodes": [
               {
-                type: "#text",
-                text: "DYNAMIC MENU",
+                "type": "#text",
+                "text": "DYNAMIC MENU",
               },
             ],
           },
           {
-            type: "DIV",
-            attributes: [
+            "type": "DIV",
+            "attributes": [
               {
                 "data-type": "com.idc.ui.core.modal.modalObject",
               },
@@ -280,37 +280,37 @@ com.idc.templates = {
                 "data-options": "backModalStyle=transparentBackground",
               },
               {
-                id: "com_idc_ui_dynamic_menu_modal",
+                "id": "com_idc_ui_dynamic_menu_modal",
               },
             ],
-            childNodes: [
+            "childNodes": [
               {
-                type: "DIV",
-                attributes: [
+                "type": "DIV",
+                "attributes": [
                   {
                     "data-type": "com.idc.ui.core.modal.contentArea",
                   },
                 ],
-                childNodes: [
+                "childNodes": [
                   {
-                    type: "DIV",
-                    attributes: [
+                    "type": "DIV",
+                    "attributes": [
                       {
                         "data-type": "com.idc.ui.core.menu",
                       },
                     ],
-                    childNodes: [
+                    "childNodes": [
                       {
-                        type: "DIV",
-                        attributes: [
+                        "type": "DIV",
+                        "attributes": [
                           {
                             "data-type": "com.idc.ui.core.menu.container",
                           },
                         ],
-                        childNodes: [
+                        "childNodes": [
                           {
-                            type: "DIV",
-                            attributes: [
+                            "type": "DIV",
+                            "attributes": [
                               {
                                 "data-type": "com.idc.ui.core.button",
                               },
@@ -318,11 +318,11 @@ com.idc.templates = {
                                 "data-sub-type": "com.idc.ui.core.modal.closeButton",
                               },
                             ],
-                            childNodes: [],
+                            "childNodes": [],
                           },
                           {
-                            type: "DIV",
-                            attributes: [
+                            "type": "DIV",
+                            "attributes": [
                               {
                                 "data-type": "com.idc.ui.core.menu.buttonTemplate",
                               },
@@ -345,58 +345,58 @@ com.idc.templates = {
         ],
       },
     ],
-    alertPopUp: [
+    "alertPopUp": [
       {
-        type: "DIV",
-        attributes: [
+        "type": "DIV",
+        "attributes": [
           {
             "data-type": "com.idc.ui.core.modal.popUp",
           },
         ],
-        childNodes: [
+        "childNodes": [
           {
-            type: "DIV",
-            attributes: [
+            "type": "DIV",
+            "attributes": [
               {
                 "data-type": "com.idc.ui.core.modal.contentArea",
               },
             ],
-            childNodes: [
+            "childNodes": [
               {
-                type: "H2",
-                attributes: [],
-                childNodes: [
+                "type": "H2",
+                "attributes": [],
+                "childNodes": [
                   {
-                    type: "#text",
-                    text: "This slide is not available",
+                    "type": "#text",
+                    "text": "This slide is not available",
                   },
                 ],
               },
               {
-                type: "DIV",
-                attributes: [],
-                childNodes: [
+                "type": "DIV",
+                "attributes": [],
+                "childNodes": [
                   {
-                    type: "#text",
-                    text: 'The slide is not available for this presentation.',
+                    "type": "#text",
+                    "text": 'The slide is not available for this presentation.',
                   },
                   {
-                    type: "BR",
-                    attributes: [],
+                    "type": "BR",
+                    "attributes": [],
                   },
                   {
-                    type: "BR",
-                    attributes: [],
+                    "type": "BR",
+                    "attributes": [],
                   },
                   {
-                    type: "BR",
-                    attributes: [],
+                    "type": "BR",
+                    "attributes": [],
                   },
                 ],
               },
               {
-                type: "DIV",
-                attributes: [
+                "type": "DIV",
+                "attributes": [
                   {
                     "data-type": "com.idc.ui.core.button",
                   },
@@ -404,10 +404,10 @@ com.idc.templates = {
                     "data-sub-type": "com.idc.ui.core.modal.closeButton",
                   },
                 ],
-                childNodes: [
+                "childNodes": [
                   {
-                    type: "#text",
-                    text: "Close",
+                    "type": "#text",
+                    "text": "Close",
                   },
                 ],
               },
@@ -417,11 +417,11 @@ com.idc.templates = {
       },
     ],
   },
-  inspector: {
-    button: [
+  "inspector": {
+    "button": [
       {
-        type: "DIV",
-        attributes: [
+        "type": "DIV",
+        "attributes": [
           {
             "data-type": "com.idc.ui.core.button",
           },
@@ -432,34 +432,34 @@ com.idc.templates = {
             "data-view-state": "",
           },
         ],
-        childNodes: [
+        "childNodes": [
           {
-            type: "SPAN",
-            attributes: [
+            "type": "SPAN",
+            "attributes": [
               {
                 "data-type": "com.idc.ui.inspector.button.draggable",
               },
             ],
           },
           {
-            type: "SPAN",
-            attributes: [
+            "type": "SPAN",
+            "attributes": [
               {
                 "data-type": "com.idc.ui.inspector.button.label",
               },
             ],
-            childNodes: [
+            "childNodes": [
               {
-                type: "#text",
-                text: "Inspector",
+                "type": "#text",
+                "text": "Inspector",
               },
             ],
           },
           {
-            type: "I",
-            attributes: [
+            "type": "I",
+            "attributes": [
               {
-                class: "gg-close-o",
+                "class": "gg-close-o",
               },
               {
                 "data-type": "com.idc.ui.inspector.button.close",
@@ -469,10 +469,10 @@ com.idc.templates = {
         ],
       },
     ],
-    dropDown: [
+    "dropDown": [
       {
-        type: "DIV",
-        attributes: [
+        "type": "DIV",
+        "attributes": [
           {
             "data-type": "com.idc.ui.core.modal.dropDown",
           },
@@ -483,18 +483,18 @@ com.idc.templates = {
             "data-options": "backModalStyle=transparent",
           },
         ],
-        childNodes: [
+        "childNodes": [
           {
-            type: "DIV",
-            attributes: [
+            "type": "DIV",
+            "attributes": [
               {
                 "data-type": "com.idc.ui.core.modal.contentArea",
               },
             ],
-            childNodes: [
+            "childNodes": [
               {
-                type: "DIV",
-                attributes: [
+                "type": "DIV",
+                "attributes": [
                   {
                     "data-type": "com.idc.ui.core.tab",
                   },
@@ -502,26 +502,26 @@ com.idc.templates = {
                     "data-options": "",
                   },
                 ],
-                childNodes: [
+                "childNodes": [
                   {
-                    type: "DIV",
-                    attributes: [
+                    "type": "DIV",
+                    "attributes": [
                       {
                         "data-type": "com.idc.ui.core.tab.container",
                       },
                     ],
-                    childNodes: [
+                    "childNodes": [
                       {
-                        type: "DIV",
-                        attributes: [
+                        "type": "DIV",
+                        "attributes": [
                           {
                             "data-type": "com.idc.ui.core.tab.buttons",
                           },
                         ],
-                        childNodes: [
+                        "childNodes": [
                           {
-                            type: "DIV",
-                            attributes: [
+                            "type": "DIV",
+                            "attributes": [
                               {
                                 "data-type": "com.idc.ui.core.button",
                               },
@@ -532,31 +532,31 @@ com.idc.templates = {
                                 "data-instance": "log",
                               },
                             ],
-                            childNodes: [
+                            "childNodes": [
                               {
-                                type: "I",
-                                attributes: [
+                                "type": "I",
+                                "attributes": [
                                   {
-                                    class: "gg-play-list-remove",
+                                    "class": "gg-play-list-remove",
                                   },
                                 ],
-                                childNodes: [],
+                                "childNodes": [],
                               },
                               {
-                                type: "SPAN",
-                                attributes: [],
-                                childNodes: [
+                                "type": "SPAN",
+                                "attributes": [],
+                                "childNodes": [
                                   {
-                                    type: "#text",
-                                    text: "Log",
+                                    "type": "#text",
+                                    "text": "Log",
                                   },
                                 ],
                               },
                             ],
                           },
                           {
-                            type: "DIV",
-                            attributes: [
+                            "type": "DIV",
+                            "attributes": [
                               {
                                 "data-type": "com.idc.ui.core.button",
                               },
@@ -567,31 +567,31 @@ com.idc.templates = {
                                 "data-instance": "params",
                               },
                             ],
-                            childNodes: [
+                            "childNodes": [
                               {
-                                type: "I",
-                                attributes: [
+                                "type": "I",
+                                "attributes": [
                                   {
-                                    class: "gg-code",
+                                    "class": "gg-code",
                                   },
                                 ],
-                                childNodes: [],
+                                "childNodes": [],
                               },
                               {
-                                type: "SPAN",
-                                attributes: [],
-                                childNodes: [
+                                "type": "SPAN",
+                                "attributes": [],
+                                "childNodes": [
                                   {
-                                    type: "#text",
-                                    text: "Params",
+                                    "type": "#text",
+                                    "text": "Params",
                                   },
                                 ],
                               },
                             ],
                           },
                           {
-                            type: "DIV",
-                            attributes: [
+                            "type": "DIV",
+                            "attributes": [
                               {
                                 "data-type": "com.idc.ui.core.button",
                               },
@@ -602,31 +602,31 @@ com.idc.templates = {
                                 "data-instance": "vars",
                               },
                             ],
-                            childNodes: [
+                            "childNodes": [
                               {
-                                type: "I",
-                                attributes: [
+                                "type": "I",
+                                "attributes": [
                                   {
-                                    class: "gg-code",
+                                    "class": "gg-code",
                                   },
                                 ],
-                                childNodes: [],
+                                "childNodes": [],
                               },
                               {
-                                type: "SPAN",
-                                attributes: [],
-                                childNodes: [
+                                "type": "SPAN",
+                                "attributes": [],
+                                "childNodes": [
                                   {
-                                    type: "#text",
-                                    text: "Vars",
+                                    "type": "#text",
+                                    "text": "Vars",
                                   },
                                 ],
                               },
                             ],
                           },
                           {
-                            type: "DIV",
-                            attributes: [
+                            "type": "DIV",
+                            "attributes": [
                               {
                                 "data-type": "com.idc.ui.core.button",
                               },
@@ -637,23 +637,23 @@ com.idc.templates = {
                                 "data-instance": "persistentData",
                               },
                             ],
-                            childNodes: [
+                            "childNodes": [
                               {
-                                type: "I",
-                                attributes: [
+                                "type": "I",
+                                "attributes": [
                                   {
-                                    class: "gg-database",
+                                    "class": "gg-database",
                                   },
                                 ],
-                                childNodes: [],
+                                "childNodes": [],
                               },
                               {
-                                type: "SPAN",
-                                attributes: [],
-                                childNodes: [
+                                "type": "SPAN",
+                                "attributes": [],
+                                "childNodes": [
                                   {
-                                    type: "#text",
-                                    text: "Persistent data",
+                                    "type": "#text",
+                                    "text": "Persistent data",
                                   },
                                 ],
                               },
@@ -662,8 +662,8 @@ com.idc.templates = {
                         ],
                       },
                       {
-                        type: "DIV",
-                        attributes: [
+                        "type": "DIV",
+                        "attributes": [
                           {
                             "data-type": "com.idc.ui.core.tab.content",
                           },
@@ -671,17 +671,17 @@ com.idc.templates = {
                             "data-instance": "log",
                           },
                         ],
-                        childNodes: [
+                        "childNodes": [
                           {
-                            type: "TEXTAREA",
-                            attributes: [],
-                            childNodes: [],
+                            "type": "TEXTAREA",
+                            "attributes": [],
+                            "childNodes": [],
                           },
                         ],
                       },
                       {
-                        type: "DIV",
-                        attributes: [
+                        "type": "DIV",
+                        "attributes": [
                           {
                             "data-type": "com.idc.ui.core.tab.content",
                           },
@@ -689,17 +689,17 @@ com.idc.templates = {
                             "data-instance": "params",
                           },
                         ],
-                        childNodes: [
+                        "childNodes": [
                           {
-                            type: "TEXTAREA",
-                            attributes: [],
-                            childNodes: [],
+                            "type": "TEXTAREA",
+                            "attributes": [],
+                            "childNodes": [],
                           },
                         ],
                       },
                       {
-                        type: "DIV",
-                        attributes: [
+                        "type": "DIV",
+                        "attributes": [
                           {
                             "data-type": "com.idc.ui.core.tab.content",
                           },
@@ -707,17 +707,17 @@ com.idc.templates = {
                             "data-instance": "vars",
                           },
                         ],
-                        childNodes: [
+                        "childNodes": [
                           {
-                            type: "TEXTAREA",
-                            attributes: [],
-                            childNodes: [],
+                            "type": "TEXTAREA",
+                            "attributes": [],
+                            "childNodes": [],
                           },
                         ],
                       },
                       {
-                        type: "DIV",
-                        attributes: [
+                        "type": "DIV",
+                        "attributes": [
                           {
                             "data-type": "com.idc.ui.core.tab.content",
                           },
@@ -725,11 +725,11 @@ com.idc.templates = {
                             "data-instance": "persistentData",
                           },
                         ],
-                        childNodes: [
+                        "childNodes": [
                           {
-                            type: "TEXTAREA",
-                            attributes: [],
-                            childNodes: [],
+                            "type": "TEXTAREA",
+                            "attributes": [],
+                            "childNodes": [],
                           },
                         ],
                       },
@@ -738,71 +738,71 @@ com.idc.templates = {
                 ],
               },
               {
-                type: "DIV",
-                attributes: [
+                "type": "DIV",
+                "attributes": [
                   {
                     "data-type": "com.idc.ui.inspector.bottom",
                   },
                 ],
-                childNodes: [
+                "childNodes": [
                   {
-                    type: "DIV",
-                    attributes: [
+                    "type": "DIV",
+                    "attributes": [
                       {
                         "data-type": "com.idc.ui.inspector.copyToCliboard",
                       },
                     ],
-                    childNodes: [
+                    "childNodes": [
                       {
-                        type: "I",
-                        attributes: [
+                        "type": "I",
+                        "attributes": [
                           {
-                            class: "gg-copy",
+                            "class": "gg-copy",
                           },
                         ],
-                        childNodes: [],
+                        "childNodes": [],
                       },
                       {
-                        type: "SPAN",
-                        attributes: [
+                        "type": "SPAN",
+                        "attributes": [
                           {
                             "data-type": "com.idc.ui.inspector.copyToCliboard.label",
                           },
                         ],
-                        childNodes: [
+                        "childNodes": [
                           {
-                            type: "#text",
-                            text: "Copy to clipboard",
+                            "type": "#text",
+                            "text": "Copy to clipboard",
                           },
                         ],
                       },
                       {
-                        type: "SPAN",
-                        attributes: [
+                        "type": "SPAN",
+                        "attributes": [
                           {
                             "data-type": "com.idc.ui.inspector.copyToCliboard.copied",
                           },
                         ],
-                        childNodes: [
+                        "childNodes": [
                           {
-                            type: "#text",
-                            text: " > copied to clipboard",
+                            "type": "#text",
+                            "text": " > copied to clipboard",
                           },
                         ],
                       },
                     ],
                   },
                   {
-                    type: "DIV",
-                    attributes: [
+                    "type": "DIV",
+                    "attributes": [
                       {
                         "data-type": "com.idc.ui.inspector.execute",
                       },
                     ],
-                    childNodes: [
+                    "childNodes": [
                       {
-                        type: "DIV",
-                        attributes: [
+                        "type": "DIV",
+                        "attributes": [
                           {
                             "data-type": "com.idc.ui.core.button",
                           },
@@ -810,24 +810,24 @@ com.idc.templates = {
                             "data-sub-type": "com.idc.ui.inspector.execute.button",
                           },
                         ],
-                        childNodes: [
+                        "childNodes": [
                           {
-                            type: "#text",
-                            text: "EXECUTE",
+                            "type": "#text",
+                            "text": "EXECUTE",
                           },
                         ],
                       },
                       {
-                        type: "INPUT",
-                        attributes: [
+                        "type": "INPUT",
+                        "attributes": [
                           {
-                            type: "text",
+                            "type": "text",
                           },
                           {
                             "data-type": "com.idc.ui.inspector.execute.input",
                           },
                         ],
-                        childNodes: [],
+                        "childNodes": [],
                       },
                     ],
                   },
