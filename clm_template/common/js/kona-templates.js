@@ -70,6 +70,23 @@ com.idc.templates = {
           ],
         },
       ],
+      "openButton": [
+        {
+          "type": "DIV",
+          "attributes": [
+            {
+              "data-type": "com.idc.ui.core.button",
+            },
+            {
+              "data-sub-type": "com.idc.ui.core.modal.openButton",
+            },
+            {
+              "data-target-id": "",
+            },
+          ],
+          "childNodes": [],
+        }
+      ],
       "popUp": [
         {
           "type": "DIV",
