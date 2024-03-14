@@ -378,7 +378,7 @@ com.idc.templates = {
                 "childNodes": [
                   {
                     "type": "#text",
-                    "text": 'The slide is not available for this presentation.',
+                    "text": "The slide is not available for this presentation.",
                   },
                   {
                     "type": "BR",
