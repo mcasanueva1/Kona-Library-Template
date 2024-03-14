@@ -59,43 +59,46 @@ com.idc.templates = {
         "childNodes": [],
       }
     ],
-    "menu": [
-      {
-        "type": "DIV",
-        "attributes": [
-            {
-                "data-type": "com.idc.ui.core.menu"
-            }
-        ],
-        "childNodes": [
-            {
-                "type": "DIV",
-                "attributes": [
-                    {
-                        "data-type": "com.idc.ui.core.menu.container"
-                    }
-                ],
-                "childNodes": [
-                    {
-                        "type": "DIV",
-                        "attributes": [
-                            {
-                                "data-type": "com.idc.ui.core.link"
-                            },
-                            {
-                                "data-sub-type": "com.idc.ui.core.menu.button"
-                            },
-                            {
-                                "data-target-id": ""
-                            }
-                        ],
-                        "childNodes": []
-                    }
-                ]
-            }
-        ]
-      }
-    ],
+    "menu": {
+      "container": [
+        {
+          "type": "DIV",
+          "attributes": [
+              {
+                  "data-type": "com.idc.ui.core.menu"
+              }
+          ],
+          "childNodes": [
+              {
+                  "type": "DIV",
+                  "attributes": [
+                      {
+                          "data-type": "com.idc.ui.core.menu.container"
+                      }
+                  ],
+                  "childNodes": []
+              }
+          ]
+        }
+      ],
+      "button": [
+        {
+            "type": "DIV",
+            "attributes": [
+                {
+                    "data-type": "com.idc.ui.core.link"
+                },
+                {
+                    "data-sub-type": "com.idc.ui.core.menu.button"
+                },
+                {
+                    "data-target-id": ""
+                }
+            ],
+            "childNodes": []
+        }
+      ]
+    },
     "modal": {
       "backModal": [
         {
