@@ -961,6 +961,14 @@ body[data-screen-orientation="portrait"] > [data-type="com.idc.ui.contentSize"] 
     color: black;
     border: 1px solid grey;
     display: none;
+    padding: 8px 20px;
+    border-radius: 8px;
+    text-transform: uppercase;
+    text-align: center;
+    cursor: default;
+    font-family: Verdana;
+    font-size: 11px;
+    font-weight: 300;
 }
 #com_idc_ui_inspector_button[data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.inspector.button"][data-view-state="active"] {
     display: block;
