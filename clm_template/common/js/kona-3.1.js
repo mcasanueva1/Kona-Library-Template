@@ -1811,6 +1811,7 @@ com.idc.clm = {
     com.idc.ui.core.modal.awake();
     com.idc.ui.core.tab.awake();
     com.idc.ui.core.navigationArrows.awake();
+    com.idc.ui.core.menu.setActiveInstance();
     com.idc.ui.core.link.awake();
 
     //utilities menu
@@ -2902,6 +2903,20 @@ com.idc.ui = {
           document.querySelector("body").removeAttribute("data-active-modal-id");
         }
       },
+    },
+    menu: {
+      selector: '[data-type="com.idc.ui.core.menu"]',
+      setActiveInstance: function () {
+        document.querySelectorAll(this.selector).forEach((el) => {
+          el.querySelectorAll(`[data-sub-type="com.idc.ui.core.menu.button"]`).forEach((button) => {
+            if (button.getAttribute("data-target-id") == com.idc.clm.vars.navigation.currentSlide.id) {
+              button.setAttribute("data-view-state", "on");
+            } else {
+              button.setAttribute("data-view-state", "off");
+            }
+          });
+        });
+      }
     },
     navigationArrows: {
       prevArrow: null,

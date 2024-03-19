@@ -960,16 +960,22 @@ body[data-screen-orientation="portrait"] > [data-type="com.idc.ui.contentSize"] 
     background-color: white;
     color: black;
     border: 1px solid grey;
-    display: none;
-    padding: 8px 20px;
-    border-radius: 8px;
-    text-transform: uppercase;
     text-align: center;
-    cursor: default;
-    font-family: Verdana;
+    text-transform: uppercase;
     font-size: 11px;
     font-weight: 300;
+    padding: 8px 20px;
+    border-radius: 8px;
+    display: none;
 }
+
+#com_idc_ui_inspector_button[data-type="com.idc.ui.core.button"]:active {
+    transform: scale(0.98);
+    /* Scaling button to 0.98 to its original size */
+    box-shadow: 3px 2px 22px 1px rgba(0, 0, 0, 0.24);
+    /* Lowering the shadow */
+}
+
 #com_idc_ui_inspector_button[data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.inspector.button"][data-view-state="active"] {
     display: block;
     z-index: 3;
@@ -1034,7 +1040,7 @@ body[data-screen-orientation="portrait"] > [data-type="com.idc.ui.contentSize"] 
 }
 #com_idc_ui_inspector_dropDown[data-type="com.idc.ui.core.modal.dropDown"][data-sub-type="com.idc.ui.inspector"] [data-type="com.idc.ui.core.tab"] [data-sub-type="com.idc.ui.core.tab.button"] span {
     position: absolute;
-    margin-left: 20px;
+    margin-left: 28px;
 }
 #com_idc_ui_inspector_dropDown[data-type="com.idc.ui.core.modal.dropDown"][data-sub-type="com.idc.ui.inspector"] [data-type="com.idc.ui.core.tab"] [data-sub-type="com.idc.ui.core.tab.button"][data-instance="params"] span {
     margin-left: 27px;
@@ -1124,6 +1130,15 @@ body[data-screen-orientation="portrait"] > [data-type="com.idc.ui.contentSize"] 
     top: 1px;
     height: 10px;
     opacity: 0.5;
+    background-color: #818286;
+    color: #ffffff;
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 11px;
+    font-weight: 300;
+    padding: 8px 20px;
+    border-radius: 8px;
+    margin-bottom: 5px;
 }
 #com_idc_ui_inspector_dropDown [data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.inspector.execute.button"][data-view-state="active"] {
     opacity: 1;
