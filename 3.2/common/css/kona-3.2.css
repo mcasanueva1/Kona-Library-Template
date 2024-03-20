@@ -241,11 +241,6 @@ body[data-screen-orientation="portrait"] > [data-type="com.idc.ui.contentSize"] 
 /* MODAL / DROPDOWN / MODAL OBJECT ------------------ */
 [data-type="com.idc.ui.core.modal.popUp"] {
     position: absolute;
-    top: 50px;
-    left: 3%;
-    width: 94%;
-    height: 90%;
-    border-radius: 5px;
     display: none;
     z-index: 1;
 }
@@ -264,11 +259,6 @@ body[data-screen-orientation="portrait"] > [data-type="com.idc.ui.contentSize"] 
 }
 [data-type="com.idc.ui.core.modal.dropDown"] {
     position: absolute;
-    left: 0%;
-    width: 100%;
-    height: 300px;
-    top: -300px;
-    border-radius: 5px;
     z-index: 1;
 }
 [data-type="com.idc.ui.core.modal.popUp"] > [data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.core.modal.closeButton"][data-should-be-hidden="true"] {

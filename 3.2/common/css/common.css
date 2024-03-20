@@ -5,9 +5,19 @@ body {
 /*modal*/
 [data-type="com.idc.ui.core.modal.popUp"] {
     background-color: #fff;
+    top: 50px;
+    left: 3%;
+    width: 94%;
+    height: 90%;
+    border-radius: 5px;
 }
 [data-type="com.idc.ui.core.modal.dropDown"] {
     background-color: #fff;
+    left: 0%;
+    width: 100%;
+    height: 300px;
+    top: -300px;
+    border-radius: 5px;
 }
 
 [data-type="com.idc.ui.core.modal.popUp"] > [data-type="com.idc.ui.core.modal.contentArea"], [data-type="com.idc.ui.core.modal.dropDown"] > [data-type="com.idc.ui.core.modal.contentArea"] {
