@@ -127,6 +127,20 @@ com.idc.templates = {
           "childNodes": [],
         }
       ],
+      "closeButton": [
+        {
+          "type": "DIV",
+          "attributes": [
+            {
+              "data-type": "com.idc.ui.core.button",
+            },
+            {
+              "data-sub-type": "com.idc.ui.core.modal.closeButton",
+            },
+          ],
+          "childNodes": [],
+        },
+      ],
       "popUp": [
         {
           "type": "DIV",
@@ -139,18 +153,6 @@ com.idc.templates = {
             },
           ],
           "childNodes": [
-            {
-              "type": "DIV",
-              "attributes": [
-                {
-                  "data-type": "com.idc.ui.core.button",
-                },
-                {
-                  "data-sub-type": "com.idc.ui.core.modal.closeButton",
-                },
-              ],
-              "childNodes": [],
-            },
             {
               "type": "DIV",
               "attributes": [
@@ -180,18 +182,6 @@ com.idc.templates = {
               "attributes": [
                 {
                   "data-type": "com.idc.ui.core.modal.contentArea",
-                },
-              ],
-              "childNodes": [],
-            },
-            {
-              "type": "DIV",
-              "attributes": [
-                {
-                  "data-type": "com.idc.ui.core.button",
-                },
-                {
-                  "data-sub-type": "com.idc.ui.core.modal.closeButton",
                 },
               ],
               "childNodes": [],
@@ -418,16 +408,6 @@ com.idc.templates = {
               },
             ],
             "childNodes": [
-              {
-                "type": "H2",
-                "attributes": [],
-                "childNodes": [],
-              },
-              {
-                "type": "DIV",
-                "attributes": [],
-                "childNodes": [],
-              },
               {
                 "type": "DIV",
                 "attributes": [
