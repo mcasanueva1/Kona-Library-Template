@@ -1,9 +1,5 @@
 "use strict";
 
-//ToDo:
-// - account activity (AE / CLM)
-// - clickstream tracking (any interactive element)
-
 if (com == null) var com = {};
 if (com.idc == undefined) com.idc = {};
 
