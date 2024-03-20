@@ -273,24 +273,8 @@ body[data-screen-orientation="portrait"] > [data-type="com.idc.ui.contentSize"] 
     background-color: #fff;
     z-index: 1;
 }
-[data-type="com.idc.ui.core.modal.popUp"] > [data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.core.modal.closeButton"] {
-    position: absolute;
-    top: -8px;
-    right: -8px;
-    width: 48px;
-    margin: 0;
-    height: 48px;
-    padding: 0;
-    background: url(../img/utilitiesMenu/modal_close.png) no-repeat 0 0 / 48px!IMPORTANT;
-}
 [data-type="com.idc.ui.core.modal.popUp"] > [data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.core.modal.closeButton"][data-should-be-hidden="true"] {
     display: none; /*used to hide close menu of standalone modals in dynamic presentations*/
-}
-
-[data-type="com.idc.ui.core.modal.dropDown"] > [data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.core.modal.closeButton"] {
-    position: absolute;
-    bottom: 5px;
-    right: 5px;
 }
 
 /* NON WORKING LINK ALERT POPUP---------------------- */
