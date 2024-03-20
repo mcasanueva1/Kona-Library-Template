@@ -3,6 +3,13 @@ body {
 }
 
 /*modal*/
+[data-type="com.idc.ui.core.modal.popUp"] {
+    background-color: #fff;
+}
+[data-type="com.idc.ui.core.modal.dropDown"] {
+    background-color: #fff;
+}
+
 [data-type="com.idc.ui.core.modal.popUp"] > [data-type="com.idc.ui.core.modal.contentArea"], [data-type="com.idc.ui.core.modal.dropDown"] > [data-type="com.idc.ui.core.modal.contentArea"] {
     padding: 20px;
 }

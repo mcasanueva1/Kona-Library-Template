@@ -246,7 +246,6 @@ body[data-screen-orientation="portrait"] > [data-type="com.idc.ui.contentSize"] 
     width: 94%;
     height: 90%;
     border-radius: 5px;
-    background-color: #fff;
     display: none;
     z-index: 1;
 }
@@ -270,7 +269,6 @@ body[data-screen-orientation="portrait"] > [data-type="com.idc.ui.contentSize"] 
     height: 300px;
     top: -300px;
     border-radius: 5px;
-    background-color: #fff;
     z-index: 1;
 }
 [data-type="com.idc.ui.core.modal.popUp"] > [data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.core.modal.closeButton"][data-should-be-hidden="true"] {
