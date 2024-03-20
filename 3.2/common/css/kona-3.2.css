@@ -986,6 +986,10 @@ body[data-screen-orientation="portrait"] > [data-type="com.idc.ui.contentSize"] 
     height: 600px;
     top: -600px;
     z-index: 4;
+    background-color: #fff;
+    left: 0%;
+    width: 100%;
+    border-radius: 5px;
 }
 #com_idc_ui_inspector_dropDown[data-type="com.idc.ui.core.modal.dropDown"][data-sub-type="com.idc.ui.inspector"] [data-type="com.idc.ui.core.tab"]{
     width: 100%;
