@@ -149,12 +149,7 @@ com.idc.templates = {
                   "data-sub-type": "com.idc.ui.core.modal.closeButton",
                 },
               ],
-              "childNodes": [
-                {
-                  "type": "#text",
-                  "text": "Close",
-                },
-              ],
+              "childNodes": [],
             },
             {
               "type": "DIV",
@@ -199,12 +194,7 @@ com.idc.templates = {
                   "data-sub-type": "com.idc.ui.core.modal.closeButton",
                 },
               ],
-              "childNodes": [
-                {
-                  "type": "#text",
-                  "text": "Close",
-                },
-              ],
+              "childNodes": [],
             },
           ],
         },
@@ -334,12 +324,7 @@ com.idc.templates = {
                 "id": "com_idc_ui_dynamic_menu_modal_open",
               },
             ],
-            "childNodes": [
-              {
-                "type": "#text",
-                "text": "DYNAMIC MENU",
-              },
-            ],
+            "childNodes": [],
           },
           {
             "type": "DIV",
@@ -436,34 +421,12 @@ com.idc.templates = {
               {
                 "type": "H2",
                 "attributes": [],
-                "childNodes": [
-                  {
-                    "type": "#text",
-                    "text": "This slide is not available",
-                  },
-                ],
+                "childNodes": [],
               },
               {
                 "type": "DIV",
                 "attributes": [],
-                "childNodes": [
-                  {
-                    "type": "#text",
-                    "text": "The slide is not available for this presentation.",
-                  },
-                  {
-                    "type": "BR",
-                    "attributes": [],
-                  },
-                  {
-                    "type": "BR",
-                    "attributes": [],
-                  },
-                  {
-                    "type": "BR",
-                    "attributes": [],
-                  },
-                ],
+                "childNodes": [],
               },
               {
                 "type": "DIV",
@@ -475,12 +438,7 @@ com.idc.templates = {
                     "data-sub-type": "com.idc.ui.core.modal.closeButton",
                   },
                 ],
-                "childNodes": [
-                  {
-                    "type": "#text",
-                    "text": "Close",
-                  },
-                ],
+                "childNodes": [],
               },
             ],
           },
