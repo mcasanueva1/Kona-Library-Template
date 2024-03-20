@@ -152,17 +152,7 @@ com.idc.templates = {
               "data-options": "",
             },
           ],
-          "childNodes": [
-            {
-              "type": "DIV",
-              "attributes": [
-                {
-                  "data-type": "com.idc.ui.core.modal.contentArea",
-                },
-              ],
-              "childNodes": [],
-            },
-          ],
+          "childNodes": [],
         },
       ],
       "dropDown": [
@@ -176,19 +166,20 @@ com.idc.templates = {
               "data-options": "backModalStyle=transparent",
             },
           ],
-          "childNodes": [
-            {
-              "type": "DIV",
-              "attributes": [
-                {
-                  "data-type": "com.idc.ui.core.modal.contentArea",
-                },
-              ],
-              "childNodes": [],
-            },
-          ],
+          "childNodes": [],
         },
       ],
+      "contentArea": [
+        {
+          "type": "DIV",
+          "attributes": [
+            {
+              "data-type": "com.idc.ui.core.modal.contentArea",
+            },
+          ],
+          "childNodes": [],
+        },
+      ]
     },
     "tab": [
       {
