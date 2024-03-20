@@ -2839,9 +2839,6 @@ com.idc.ui = {
         }
       },
       hide: function () {
-        //clear z-index
-        this.style.zIndex = com.idc.ui.core.modal.activeModalsStack.length;
-
         //clear data-view-state
         switch (this.type) {
           case "dropDown":
@@ -2852,6 +2849,8 @@ com.idc.ui = {
               onComplete: function () {
                 //hide back modal
                 el.components.backModal.element.style.display = "none";
+                //clear z-index
+                this.style.zIndex = com.idc.ui.core.modal.activeModalsStack.length;
               },
             });
             this.removeAttribute("data-view-state");
@@ -2859,6 +2858,8 @@ com.idc.ui = {
           default:
             this.removeAttribute("data-view-state");
             this.components.backModal.element.style.display = "none";
+            //clear z-index
+            this.style.zIndex = com.idc.ui.core.modal.activeModalsStack.length;
             break;
         }
       },
