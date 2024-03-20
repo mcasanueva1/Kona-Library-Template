@@ -910,4 +910,188 @@ com.idc.templates = {
       },
     ],
   },
+  "emailCart": {
+    "emailButton": [
+      {
+        "type": "DIV",
+        "attributes": [
+          {
+            "data-type": "com.idc.ui.core.button",
+          },
+          {
+            "data-sub-type": "com.idc.ui.core.emailButton",
+          },
+        ],
+        "childNodes": [],
+      }
+    ],
+    "emailCartOpenButton": [
+      {
+        "type": "DIV",
+        "attributes": [
+          {
+            "data-type": "com.idc.ui.core.button",
+          },
+          {
+            "data-sub-type": "com.idc.ui.core.modal.openButton",
+          },
+        ],
+        "childNodes": [
+          {
+            "type": "DIV",
+            "attributes": [
+              {
+                "data-type": "com.idc.ui.emailCart.badge",
+              },
+            ],
+            "childNodes": [],
+          }
+        ],
+      }
+    ],
+    "modal": [
+      [
+        {
+            "type": "DIV",
+            "attributes": [
+                {
+                    "data-type": "com.idc.ui.core.modal.popUp"
+                },
+            ],
+            "childNodes": [
+                {
+                    "type": "DIV",
+                    "attributes": [
+                        {
+                            "data-type": "com.idc.ui.core.modal.contentArea"
+                        }
+                    ],
+                    "childNodes": [
+                        {
+                            "type": "DIV",
+                            "attributes": [
+                                {
+                                    "data-type": "com.idc.ui.emailCart.items"
+                                }
+                            ],
+                            "childNodes": []
+                        },
+                        {
+                            "type": "DIV",
+                            "attributes": [
+                                {
+                                    "data-type": "com.idc.ui.emailCart.buttons"
+                                }
+                            ],
+                            "childNodes": []
+                        }
+                    ]
+                }
+            ]
+        }
+      ]
+    ],
+    "buttons": {
+      "cancel": [
+        {
+          "type": "DIV",
+          "attributes": [
+              {
+                  "data-type": "com.idc.ui.core.button"
+              },
+              {
+                  "data-sub-type": "com.idc.ui.emailCart.cancelButton"
+              },
+          ],
+          "childNodes": []
+        },
+      ],
+      "send": [
+        {
+          "type": "DIV",
+          "attributes": [
+              {
+                  "data-type": "com.idc.ui.core.button"
+              },
+              {
+                  "data-sub-type": "com.idc.ui.emailCart.sendButton"
+              },
+          ],
+          "childNodes": []
+        },
+      ],
+      "done": [
+        {
+          "type": "DIV",
+          "attributes": [
+              {
+                  "data-type": "com.idc.ui.core.button"
+              },
+              {
+                  "data-sub-type": "com.idc.ui.emailCart.doneButton"
+              },
+          ],
+          "childNodes": []
+        },
+      ]
+    },
+    "itemTemplate": [
+      {
+        "type": "DIV",
+        "attributes": [
+            {
+                "data-type": "com.idc.ui.emailCart.item"
+            },
+            {
+                "data-item-id": ""
+            },
+            {
+                "data-status": ""
+            }
+        ],
+        "childNodes": [
+            {
+                "type": "DIV",
+                "attributes": [
+                    {
+                        "data-type": "com.idc.ui.emailCart.thumb"
+                    },
+                    {
+                        "data-item-id": ""
+                    }
+                ],
+                "childNodes": [
+                    {
+                        "type": "IMG",
+                        "attributes": []
+                    }
+                ]
+            },
+            {
+                "type": "DIV",
+                "attributes": [
+                    {
+                        "data-type": "com.idc.ui.emailCart.title"
+                    },
+                    {
+                        "data-item-id": ""
+                    }
+                ],
+                "childNodes": []
+            },
+            {
+                "type": "DIV",
+                "attributes": [
+                    {
+                        "data-type": "com.idc.ui.emailCart.checkbox"
+                    },
+                    {
+                        "data-item-id": ""
+                    }
+                ]
+            }
+        ]
+      }
+    ]
+  }
 };
