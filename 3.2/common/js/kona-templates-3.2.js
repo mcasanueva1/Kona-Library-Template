@@ -179,6 +179,36 @@ com.idc.templates = {
           ],
           "childNodes": [],
         },
+      ],
+      "standaloneContentArea": [
+        {
+          "type": "DIV",
+          "attributes": [
+            {
+              "data-type": "com.idc.ui.core.modal.contentArea",
+            },
+          ],
+          "childNodes": [
+            {
+              "type": "DIV",
+              "attributes": [
+                {
+                  "class": "landscapeView",
+                },
+              ],
+              "childNodes": [],
+            },
+            {
+              "type": "DIV",
+              "attributes": [
+                {
+                  "class": "portraitView",
+                },
+              ],
+              "childNodes": [],
+            },
+          ],
+        },
       ]
     },
     "tab": [
