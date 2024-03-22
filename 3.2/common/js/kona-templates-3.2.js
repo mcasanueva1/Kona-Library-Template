@@ -155,6 +155,20 @@ com.idc.templates = {
           "childNodes": [],
         },
       ],
+      "modalObject": [
+        {
+          "type": "DIV",
+          "attributes": [
+            {
+              "data-type": "com.idc.ui.core.modal.modalObject",
+            },
+            {
+              "data-options": "",
+            },
+          ],
+          "childNodes": [],
+        },
+      ],
       "dropDown": [
         {
           "type": "DIV",
