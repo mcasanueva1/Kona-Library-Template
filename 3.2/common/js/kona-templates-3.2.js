@@ -322,6 +322,30 @@ com.idc.templates = {
         ],
       },
     ],
+    "scroll": {
+      "container": [
+        {
+        "type": "DIV",
+        "attributes": [
+          {
+            "data-type": "com.idc.ui.core.scroll.container",
+          },
+        ],
+        "childNodes": [],
+        }
+      ],
+      "content": [
+        {
+          "type": "DIV",
+          "attributes": [
+            {
+              "data-type": "com.idc.ui.core.scroll.content",
+            },
+          ],
+          "childNodes": [],
+          }
+      ],
+    }
   },
   "dynamicPresentation": {
     "menuBundle": [
