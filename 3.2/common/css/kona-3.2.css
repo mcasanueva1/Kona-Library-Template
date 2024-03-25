@@ -584,6 +584,22 @@ body[data-screen-orientation="portrait"] > [data-type="com.idc.ui.contentSize"] 
     background: url(../img/utilitiesMenu/modal_close.png) no-repeat 0 0 / 48px!IMPORTANT;
 }
 
+/* SCROLL ------------------------------------------- */
+[data-type="com.idc.ui.core.scroll.container"][data-scroll-type="horizontal"] {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+}
+[data-type="com.idc.ui.core.scroll.container"][data-scroll-type="vertical"] {
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+[data-type="com.idc.ui.core.scroll.container"][data-scroll-type="both"] {
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
 /* ICONS -------------------------------------------- */
 /*https://css.gg/database*/
 .gg-database {
