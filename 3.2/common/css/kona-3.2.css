@@ -585,17 +585,17 @@ body[data-screen-orientation="portrait"] > [data-type="com.idc.ui.contentSize"] 
 }
 
 /* SCROLL ------------------------------------------- */
-[data-type="com.idc.ui.core.scroll.container"][data-scroll-type="horizontal"] {
+[data-type="com.idc.ui.core.scroll.container"][data-scroll-direction="horizontal"] {
     overflow-x: auto;
     overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
 }
-[data-type="com.idc.ui.core.scroll.container"][data-scroll-type="vertical"] {
+[data-type="com.idc.ui.core.scroll.container"][data-scroll-direction="vertical"] {
     overflow-x: hidden;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
 }
-[data-type="com.idc.ui.core.scroll.container"][data-scroll-type="both"] {
+[data-type="com.idc.ui.core.scroll.container"][data-scroll-direction="both"] {
     overflow: auto;
     -webkit-overflow-scrolling: touch;
 }
