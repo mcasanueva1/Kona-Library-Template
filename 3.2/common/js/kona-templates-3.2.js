@@ -3,48 +3,53 @@ if (com.idc == undefined) com.idc = {};
 
 com.idc.templates = {
   "core": {
-    "accordion": [
-      {
-        "type": "DIV",
-        "attributes": [
-          {
-            "data-type": "com.idc.ui.core.accordion",
-          },
-          {
-            "data-options": "",
-          },
-        ],
-        "childNodes": [
-          {
-            "type": "DIV",
-            "attributes": [
-              {
-                "data-type": "com.idc.ui.core.button",
-              },
-              {
-                "data-sub-type": "com.idc.ui.core.accordion.button",
-              },
-              {
-                "data-instance": "instance-id",
-              },
-            ],
-            "childNodes": [],
-          },
-          {
-            "type": "DIV",
-            "attributes": [
-              {
-                "data-type": "com.idc.ui.core.accordion.content",
-              },
-              {
-                "data-instance": "instance-id",
-              },
-            ],
-            "childNodes": [],
-          },
-        ],
-      },
-    ],
+    "accordion": {
+      "container": [
+        {
+          "type": "DIV",
+          "attributes": [
+            {
+              "data-type": "com.idc.ui.core.accordion",
+            },
+            {
+              "data-options": "",
+            },
+          ],
+          "childNodes": [],
+        },
+      ],
+      "button": [
+        {
+          "type": "DIV",
+          "attributes": [
+            {
+              "data-type": "com.idc.ui.core.button",
+            },
+            {
+              "data-sub-type": "com.idc.ui.core.accordion.button",
+            },
+            {
+              "data-instance": "instance-id",
+            },
+          ],
+          "childNodes": [],
+        }
+      ],
+      "content": [
+        {
+          "type": "DIV",
+          "attributes": [
+            {
+              "data-type": "com.idc.ui.core.accordion.content",
+            },
+            {
+              "data-instance": "instance-id",
+            },
+          ],
+          "childNodes": [],
+        },
+      ]
+    },
     "link": [
       {
         "type": "DIV",
