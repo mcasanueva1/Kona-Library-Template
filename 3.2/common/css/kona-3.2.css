@@ -59,11 +59,18 @@ body[data-screen-orientation="portrait"] > [data-type="com.idc.ui.contentSize"] 
     justify-content: top;
     align-items: center;
 }
+[data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.core.accordion.button"] {
+    margin-bottom: 5px;
+}
 [data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.core.accordion.button"][data-view-state="off"] {
 
 }
 [data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.core.accordion.button"][data-view-state="on"] {
 
+}
+[data-type="com.idc.ui.core.accordion.content"] {
+    position: relative;
+    width: 100%;
 }
 [data-type="com.idc.ui.core.accordion.content"][data-view-state="off"] {
     display: none;
