@@ -2,6 +2,18 @@ body {
     font-family: 'verdana';
 }
 
+/*accordion*/
+[data-type="com.idc.ui.core.accordion"] {
+    width: 80%;
+    height: 500px;
+}
+[data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.core.accordion.button"] {
+    width: 90%;
+}
+[data-type="com.idc.ui.core.accordion.content"] {
+    width: 90%;
+}
+
 /*modal*/
 [data-type="com.idc.ui.core.modal.popUp"] {
     background-color: #fff;

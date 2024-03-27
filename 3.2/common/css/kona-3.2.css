@@ -54,24 +54,21 @@ body[data-screen-orientation="portrait"] > [data-type="com.idc.ui.contentSize"] 
 
 /* ACCORDION ---------------------------------------- */
 [data-type="com.idc.ui.core.accordion"] {
-    width: 80%;
-    height: 500px;
     display: flex;
     flex-direction: column;
     justify-content: top;
     align-items: center;
 }
-[data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.core.accordion.button"] {
-    width: 90%;
-}
-[data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.core.accordion.button"][data-view-state="active"] {
+[data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.core.accordion.button"][data-view-state="off"] {
 
 }
-[data-type="com.idc.ui.core.accordion.content"] {
-    width: 90%;
+[data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.core.accordion.button"][data-view-state="on"] {
+
+}
+[data-type="com.idc.ui.core.accordion.content"][data-view-state="off"] {
     display: none;
 }
-[data-type="com.idc.ui.core.accordion.content"][data-view-state="active"] {
+[data-type="com.idc.ui.core.accordion.content"][data-view-state="on"] {
     display: block;
 }
 

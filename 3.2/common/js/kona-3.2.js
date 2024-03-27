@@ -2265,8 +2265,8 @@ com.idc.ui = {
 
         const instanceIndex = instances.findIndex((instance) => {
           return instance.name === pInstance;
-        });
-        if (instances[instanceIndex].viewState === "active") {
+        });  
+        if (instances[instanceIndex].viewState === "on") {
           //execute before close
           instances[instanceIndex].executeBeforeClose();
 
@@ -2292,9 +2292,9 @@ com.idc.ui = {
             //instance
             if (pActive) {
               //open
-              instance.button.element.setAttribute("data-view-state", "active");
-              instance.content.element.setAttribute("data-view-state", "active");
-              instance.viewState = "active";
+              instance.button.element.setAttribute("data-view-state", "on");
+              instance.content.element.setAttribute("data-view-state", "on");
+              instance.viewState = "on";
 
               //set active instance (only if OneByOne)
               if (this.params.oneByOne) {
@@ -2302,9 +2302,9 @@ com.idc.ui = {
               }
             } else {
               //close
-              instance.button.element.removeAttribute("data-view-state");
-              instance.content.element.removeAttribute("data-view-state");
-              instance.viewState = null;
+              instance.button.element.setAttribute("data-view-state", "off");
+              instance.content.element.setAttribute("data-view-state", "off");
+              instance.viewState = "off";
 
               //clear active instance (only if OneByOne)
               if (this.params.oneByOne) {
@@ -2317,9 +2317,9 @@ com.idc.ui = {
           } else {
             //close all the rest if only one instance can be open at a time
             if (this.params.oneByOne && pActive) {
-              instance.button.element.removeAttribute("data-view-state");
-              instance.content.element.removeAttribute("data-view-state");
-              instance.viewState = null;
+              instance.button.element.setAttribute("data-view-state", "off");
+              instance.content.element.setAttribute("data-view-state", "off");
+              instance.viewState = "off";
 
               if (this.params.oneByOne) {
                 this.viewState.activeInstance = null;
@@ -2336,7 +2336,7 @@ com.idc.ui = {
           //only if the element has an ID defined in the HTML
           let activeInstances = [];
           this.components.instances.forEach((instance) => {
-            if (instance.viewState === "active") {
+            if (instance.viewState === "om") {
               activeInstances.push(instance.name);
             }
           });
@@ -2352,7 +2352,7 @@ com.idc.ui = {
       },
       getActiveInstance: function () {
         const activeInstanceIndex = this.components.instances.findIndex((instance) => {
-          return instance.viewState === "active";
+          return instance.viewState === "om";
         });
         if (activeInstanceIndex >= 0) {
           return this.components.instances[activeInstanceIndex];
@@ -2360,9 +2360,9 @@ com.idc.ui = {
       },
       closeAll: function () {
         this.components.instances.forEach((instance) => {
-          instance.button.element.removeAttribute("data-view-state");
-          instance.content.element.removeAttribute("data-view-state");
-          instance.viewState = null;
+          instance.button.element.setAttribute("data-view-state", "off");
+          instance.content.element.setAttribute("data-view-state", "off");
+          instance.viewState = "off";
 
           //reset child objects (revert to default state)
           com.idc.ui.common.resetChildElements(instance.content.element);
@@ -2371,9 +2371,9 @@ com.idc.ui = {
       openAll: function () {
         if (!this.params.oneByOne) {
           this.components.instances.forEach((instance) => {
-            instance.button.element.setAttribute("data-view-state", "active");
-            instance.content.element.setAttribute("data-view-state", "active");
-            instance.viewState = "active";
+            instance.button.element.setAttribute("data-view-state", "om");
+            instance.content.element.setAttribute("data-view-state", "om");
+            instance.viewState = "om";
           });
         }
       },
@@ -3177,6 +3177,7 @@ com.idc.ui = {
         const instanceIndex = instances.findIndex((instance) => {
           return instance.name === pInstance;
         });
+        
         if (instances[instanceIndex].viewState === "active") {
           if (this.components.cover.hasCover) {
             //execute before close
