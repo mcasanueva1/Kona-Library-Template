@@ -761,55 +761,54 @@ com.idc.clm = {
       }
     });
   },
+  setStandardSlidesSequence: function () {
+    let util = com.idc.util;
+    let vars = this.vars;
+    util.log("com.idc.clm.setStandardSlidesSequence()");
+    //flag as a standard presentation
+    vars.navigation.dynamicPresentation.active = false;
+    //standard presentation: all slides except standalone modals, PDF slides and slides flagged not to be considered in main sequence
+    vars.navigation.actualSlidesSequence = [];
+    vars.slides.forEach((slide) => {
+      if (!slide.standaloneModal.isStandalone && !slide.pdf.isPDF && !slide.doNotConsiderInMainSequence) {
+        vars.navigation.actualSlidesSequence.push(slide.id);
+      }
+    });
+    //all available slides
+    vars.slides.forEach((slide) => {
+      vars.navigation.allAvaliableSlides.push(slide.id);
+    });
+  },
+  setDynamicSlidesSequence: function (activeMode) {
+    let util = com.idc.util;
+    let vars = this.vars;
+    util.log("com.idc.clm.setDynamicSlidesSequence()");
+    //is a dynamic presentation
+    vars.navigation.dynamicPresentation.active = true;
+    //dynamic presentation type
+    vars.navigation.dynamicPresentation.source = activeMode.name;
+    //treat modals as main slides
+    vars.navigation.dynamicPresentation.treatStandaloneModalsAsMainSlides =
+      vars.options.dynamicPresentation.source[activeMode.name].standaloneModal.treatStandaloneModalsAsMainSlides;
+    //assign the sequence of the first active mode
+    vars.navigation.actualSlidesSequence = [];
+    activeMode.slidesSequence.forEach((slideId) => {
+      let slide = this.findSlide(slideId);
+      let isStandalone = slide.standaloneModal.isStandalone;
+      let treatStandaloneModalsAsMainSlides = vars.navigation.dynamicPresentation.treatStandaloneModalsAsMainSlides;
+      let isPDF = slide.pdf.isPDF;
+      let doNotConsiderInMainSequence = slide.doNotConsiderInMainSequence;
+
+      if ((!isStandalone || (isStandalone && treatStandaloneModalsAsMainSlides)) && !isPDF) {
+        vars.navigation.actualSlidesSequence.push(slide.id);
+      }
+    });
+    //assign all available slides
+    vars.navigation.allAvaliableSlides = activeMode.slidesSequence;
+  },
   identifyActualSlidesSequence: function () {
     let util = com.idc.util;
     let __this = this;
-
-    const setStandardSlidesSequence = function () {
-      let util = com.idc.util;
-      let vars = __this.vars;
-      util.log("com.idc.clm.setStandardSlidesSequence()");
-      //flag as a standard presentation
-      vars.navigation.dynamicPresentation.active = false;
-      //standard presentation: all slides except standalone modals, PDF slides and slides flagged not to be considered in main sequence
-      vars.navigation.actualSlidesSequence = [];
-      vars.slides.forEach((slide) => {
-        if (!slide.standaloneModal.isStandalone && !slide.pdf.isPDF && !slide.doNotConsiderInMainSequence) {
-          vars.navigation.actualSlidesSequence.push(slide.id);
-        }
-      });
-      //all available slides
-      vars.slides.forEach((slide) => {
-        vars.navigation.allAvaliableSlides.push(slide.id);
-      });
-    };
-    const setDynamicSlidesSequence = function (activeMode) {
-      let util = com.idc.util;
-      let vars = __this.vars;
-      util.log("com.idc.clm.setDynamicSlidesSequence()");
-      //is a dynamic presentation
-      vars.navigation.dynamicPresentation.active = true;
-      //dynamic presentation type
-      vars.navigation.dynamicPresentation.source = activeMode.name;
-      //treat modals as main slides
-      vars.navigation.dynamicPresentation.treatStandaloneModalsAsMainSlides =
-        vars.options.dynamicPresentation.source[activeMode.name].standaloneModal.treatStandaloneModalsAsMainSlides;
-      //assign the sequence of the first active mode
-      vars.navigation.actualSlidesSequence = [];
-      activeMode.slidesSequence.forEach((slideId) => {
-        let slide = __this.findSlide(slideId);
-        let isStandalone = slide.standaloneModal.isStandalone;
-        let treatStandaloneModalsAsMainSlides = vars.navigation.dynamicPresentation.treatStandaloneModalsAsMainSlides;
-        let isPDF = slide.pdf.isPDF;
-        let doNotConsiderInMainSequence = slide.doNotConsiderInMainSequence;
-
-        if ((!isStandalone || (isStandalone && treatStandaloneModalsAsMainSlides)) && !isPDF) {
-          vars.navigation.actualSlidesSequence.push(slide.id);
-        }
-      });
-      //assign all available slides
-      vars.navigation.allAvaliableSlides = activeMode.slidesSequence;
-    };
 
     return new Promise((resolve) => {
       (async () => {
@@ -865,10 +864,10 @@ com.idc.clm = {
 
         if (activeMode) {
           //it is a dynamic presentation
-          setDynamicSlidesSequence(activeMode);
+          com.idc.clm.setDynamicSlidesSequence(activeMode);
         } else {
           //it is a standard presentation
-          setStandardSlidesSequence();
+          com.idc.clm.setStandardSlidesSequence();
         }
 
         resolve();
@@ -1267,6 +1266,12 @@ com.idc.clm = {
     }
   },
   navigationOverwrite: function (type, slideId) {
+
+    //do not proceed if it is a dynamic presentation
+    if (this.vars.navigation.dynamicPresentation.active) {
+      return;
+    }
+
     switch (type) {
       case "next":
         this.vars.navigation.overWrite.nextSlide = slideId;
@@ -2820,10 +2825,12 @@ com.idc.ui = {
         } else {
           //redirect to opener slide or slideId in closeAction
           if (this.params.closeAction == null || this.params.closeAction == "opener") {
-            if (com.idc.clm.vars.navigation.lastSlide.id != null) {
+            if (com.idc.clm.vars.navigation.lastSlide && com.idc.clm.vars.navigation.lastSlide.id != null) {
               com.idc.clm.gotoSlide(com.idc.clm.vars.navigation.lastSlide.id);
             } else {
-              com.idc.clm.gotoSlide(com.idc.clm.vars.navigation.actualSlidesSequence[0]); //first slide in the sequence by default
+              if (com.idc.clm.vars.navigation.actualSlidesSequence[0] != com.idc.clm.vars.navigation.currentSlide.id) {
+                com.idc.clm.gotoSlide(com.idc.clm.vars.navigation.actualSlidesSequence[0]); //first slide in the sequence by default
+              }
             }
           } else {
             if (com.idc.clm.findSlide(this.params.closeAction) != null) {
