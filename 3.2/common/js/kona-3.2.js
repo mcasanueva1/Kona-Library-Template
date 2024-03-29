@@ -203,7 +203,7 @@ com.idc.clm = {
     standaloneModalGroups: [
       {
         id: null,
-        slides: []
+        slides: [],
       },
     ],
     navigation: {
@@ -1256,31 +1256,45 @@ com.idc.clm = {
   },
   handleSwipeNavigation: function (pSwipe) {
     let vars = com.idc.clm.vars;
+    let persistentData = com.idc.clm.persistentData;
     let isDynamicPresentation = vars.navigation.dynamicPresentation.active;
     let isStandalone = vars.navigation.currentSlide.isStandalone;
+    let isStandaloneGroupActive = persistentData.session.selectedStandaloneGroup;
     let isAModalBeingDisplayed = com.idc.util.getElementAttribute(document.querySelector("body"), "data-modal-state") == "active";
     let treatStandaloneModalsAsMainSlides = vars.navigation.dynamicPresentation.treatStandaloneModalsAsMainSlides;
 
-    if (!isDynamicPresentation && isAModalBeingDisplayed) {
-      return; //do nothing if modal is open in a normal presentation
-    }
+    if (!isStandalone) {
+      //standard slide
+      if (!isDynamicPresentation && isAModalBeingDisplayed) {
+        return; //do nothing if modal is open in a normal presentation
+      }
 
-    if (isDynamicPresentation && isStandalone && !treatStandaloneModalsAsMainSlides) {
-      return; //do nothing if standalone modal in dynamic presentation is not treated as a main slide
-    }
+      if (isDynamicPresentation && !treatStandaloneModalsAsMainSlides) {
+        return; //do nothing if standalone modal in dynamic presentation is not treated as a main slide
+      }
 
-    //go next or prev slide, or open inspector
-    switch (pSwipe.direction) {
-      case "left":
-        if (!vars.navigation.currentSlide.isLast || vars.navigation.overWrite.nextSlide) com.idc.clm.goNextSlide();
-        break;
-      case "right":
-        if (!vars.navigation.currentSlide.isFirst || vars.navigation.overWrite.prevSlide) com.idc.clm.goPrevSlide();
-        break;
-      case "up":
-        break;
-      case "down":
-        break;
+      //go next or prev slide
+      switch (pSwipe.direction) {
+        case "left":
+          if (!vars.navigation.currentSlide.isLast || vars.navigation.overWrite.nextSlide) com.idc.clm.goNextSlide();
+          break;
+        case "right":
+          if (!vars.navigation.currentSlide.isFirst || vars.navigation.overWrite.prevSlide) com.idc.clm.goPrevSlide();
+          break;
+      }
+    } else {
+      //standalone modal
+      if (isStandaloneGroupActive) {
+        //go next or prev slide
+        switch (pSwipe.direction) {
+          case "left":
+            if (vars.navigation.overWrite.nextSlide) com.idc.clm.goNextSlide();
+            break;
+          case "right":
+            if (vars.navigation.overWrite.prevSlide) com.idc.clm.goPrevSlide();
+            break;
+        }
+      }
     }
   },
   navigationOverwrite: function (type, slideId) {
@@ -1731,24 +1745,18 @@ com.idc.clm = {
   validateStandaloneGroup: function (group) {
     let groupIsValid = true;
 
+    //no groups defined >> return false
+    if (!this.vars.standaloneModalGroups) return false;
+
+    //is dynamic presentation >> return false
+    if (this.vars.navigation.dynamicPresentation.active) return false;
+
     //find group
-    let groupObj = this.vars.standaloneGroups.find((item) => {
-      return item.name == group;
+    let groupObj = this.vars.standaloneModalGroups.find((item) => {
+      return item.id == group;
     });
     if (!groupObj) {
       com.idc.util.log(`com.idc.clm.validateStandaloneGroup: group ${group} not found`);
-      groupIsValid = false;
-    } else {
-      //validate current slide
-      if (!groupObj.slides.includes(this.vars.navigation.currentSlide.id)) {
-        com.idc.util.log(`com.idc.clm.validateStandaloneGroup: slide ${this.vars.navigation.currentSlide.id} not in group ${group}`);
-        groupIsValid = false;
-      }
-    }
-
-    //check if current slide is standalone
-    if (!this.vars.navigation.currentSlide.isStandalone) {
-      com.idc.util.log(`com.idc.clm.validateStandaloneGroup: slide ${this.vars.navigation.currentSlide.id} is not a standalone slide`);
       groupIsValid = false;
     }
 
@@ -1758,7 +1766,6 @@ com.idc.clm = {
     if (!this.validateStandaloneGroup(group)) {
       return;
     }
-
     this.persistentData.session.selectedStandaloneGroup = group;
     this.updatePersistentData();
   },
@@ -2783,6 +2790,30 @@ com.idc.ui = {
                 }
               });
             }, 300);
+
+            //prev and next arrows (standalone modal groups)
+            if (el.isStandalone) {
+              const prevArrow = el.querySelector('[data-type="com.idc.ui.core.navigation.arrow"][data-sub-type="com.idc.ui.core.modal.prevArrow"]');
+              if (prevArrow) {
+                el.components.prevArrow = {
+                  element: prevArrow,
+                };
+              }
+
+              const nextArrow = el.querySelector('[data-type="com.idc.ui.core.navigation.arrow"][data-sub-type="com.idc.ui.core.modal.nextArrow"]');
+              if (nextArrow) {
+                el.components.nextArrow = {
+                  element: nextArrow,
+                };
+              }
+            }
+
+            //standalone modal groups
+            if (el.isStandalone) {
+              if (this.standaloneModalGroups.modalBelongsToActiveGroup()) {
+                this.standaloneModalGroups.setModalArrowsSwipeAndPages(el);
+              }
+            }
           }
         });
       },
@@ -2969,6 +3000,76 @@ com.idc.ui = {
           document.querySelector("body").removeAttribute("data-modal-state");
           document.querySelector("body").removeAttribute("data-active-modal-id");
         }
+      },
+      standaloneModalGroups: {
+        modalBelongsToActiveGroup: function () {
+          let persistentData = com.idc.clm.persistentData;
+          let vars = com.idc.clm.vars;
+          let slideId = vars.navigation.currentSlide.id;
+
+          let standaloneModalGroups = vars.standaloneModalGroups;
+          if (!standaloneModalGroups) return false;
+
+          let belongsToActiveGroup = false;
+
+          let activeGroupId = persistentData.session.selectedStandaloneGroup;
+          if (!activeGroupId) return false;
+
+          let activeGroup = vars.standaloneModalGroups.find((group) => group.id == activeGroupId);
+          if (!activeGroup) return false;
+
+          if (activeGroup.slides.indexOf(slideId) >= 0) {
+            belongsToActiveGroup = true;
+          }
+
+          return belongsToActiveGroup;
+        },
+        modalPositionInActiveGroup: function () {
+          let persistentData = com.idc.clm.persistentData;
+          let vars = com.idc.clm.vars;
+          let activeGroupId = persistentData.session.selectedStandaloneGroup;
+          let activeGroup = vars.standaloneModalGroups.find((group) => group.id == activeGroupId);
+          let slideId = vars.navigation.currentSlide.id;
+
+          return { order: activeGroup.slides.indexOf(slideId), total: activeGroup.slides.length };
+        },
+        setModalArrowsSwipeAndPages: function (el) {
+          let position = this.modalPositionInActiveGroup();
+
+          if (position.order > 0) {
+            //prev slide
+            let prevSlide = com.idc.clm.vars.standaloneModalGroups.find((group) => group.id == com.idc.clm.persistentData.session.selectedStandaloneGroup)
+              .slides[position.order - 1];
+
+            //arrow visibility and link
+            if (el.components.prevArrow) {
+              el.components.prevArrow.element.setAttribute("data-view-state", "active");
+              el.components.prevArrow.element.addEventListener("click", (evt) => {
+                com.idc.clm.gotoSlide(prevSlide);
+              });
+            }
+
+            //navigation owerwrite
+            com.idc.clm.navigationOverwrite("prev", prevSlide);
+          }
+
+          if (position.order < position.total - 1) {
+            //next slide
+            let nextSlide = com.idc.clm.vars.standaloneModalGroups.find((group) => group.id == com.idc.clm.persistentData.session.selectedStandaloneGroup)
+              .slides[position.order + 1];
+
+            //arrow visibility and link
+            if (el.components.nextArrow) {
+              el.components.nextArrow.element.setAttribute("data-view-state", "active");
+              el.components.nextArrow.element.addEventListener("click", (evt) => {
+                com.idc.clm.gotoSlide(nextSlide);
+              });
+            }
+
+            //navigation owerwrite
+            com.idc.clm.navigationOverwrite("next", nextSlide);
+          }
+        },
       },
     },
     menu: {
