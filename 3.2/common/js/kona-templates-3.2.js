@@ -29,7 +29,7 @@ com.idc.templates = {
               "data-sub-type": "com.idc.ui.core.accordion.button",
             },
             {
-              "data-instance": "instance-id",
+              "data-instance": "",
             },
           ],
           "childNodes": [],
@@ -43,7 +43,7 @@ com.idc.templates = {
               "data-type": "com.idc.ui.core.accordion.content",
             },
             {
-              "data-instance": "instance-id",
+              "data-instance": "",
             },
           ],
           "childNodes": [],
@@ -228,6 +228,47 @@ com.idc.templates = {
             },
           ],
         },
+      ],
+      "standaloneArrows": {
+        "prev": [
+          {
+            "type": "DIV",
+            "attributes": [
+              {
+                "data-type": "com.idc.ui.core.navigation.arrow",
+              },
+              {
+                "data-sub-type": "com.idc.ui.core.modal.prevArrow",
+              },
+            ],
+            "childNodes": []
+          }
+        ],
+        "next": [
+          {
+            "type": "DIV",
+            "attributes": [
+              {
+                "data-type": "com.idc.ui.core.navigation.arrow",
+              },
+              {
+                "data-sub-type": "com.idc.ui.core.modal.nextArrow",
+              },
+            ],
+            "childNodes": []
+          }
+        ],
+      },
+      "standalonePaginator": [
+        {
+          "type": "DIV",
+          "attributes": [
+            {
+              "data-type": "com.idc.ui.core.modal.paginator",
+            },
+          ],
+          "childNodes": []
+        }
       ]
     },
     "tab": [
