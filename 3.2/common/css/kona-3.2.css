@@ -102,18 +102,6 @@ body[data-screen-orientation="portrait"] > [data-type="com.idc.ui.contentSize"] 
     cursor: default;
 }
 
-/* MODAL -------------------------------------------- */
-[data-type="com.idc.ui.core.modal.dropDown"],
-[data-type="com.idc.ui.core.modal.popUp"],
-[data-type="com.idc.ui.core.modal.modalObject"] {
-    display: none;
-}
-[data-type="com.idc.ui.core.modal.dropDown"][data-view-state="active"],
-[data-type="com.idc.ui.core.modal.popUp"][data-view-state="active"],
-[data-type="com.idc.ui.core.modal.modalObject"][data-view-state="active"] {
-    display: block;
-}
-
 /* EMAIL CART --------------------------------------- */
 #emailCartModal [data-type="com.idc.ui.emailCart.buttons"] {
     position: absolute;
@@ -274,9 +262,14 @@ body[data-screen-orientation="portrait"] > [data-type="com.idc.ui.contentSize"] 
     display: block;
 }
 [data-type="com.idc.ui.core.modal.dropDown"] {
+    opacity: 0;
     position: absolute;
     z-index: 1;
 }
+[data-type="com.idc.ui.core.modal.dropDown"][data-view-state="active"] {
+    opacity: 1;
+}
+
 [data-type="com.idc.ui.core.modal.popUp"] > [data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.core.modal.closeButton"][data-should-be-hidden="true"] {
     display: none; /*used to hide close menu of standalone modals in dynamic presentations*/
 }

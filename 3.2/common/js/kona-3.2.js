@@ -2917,7 +2917,7 @@ com.idc.ui = {
                 //clear z-index
                 el.style.zIndex = com.idc.ui.core.modal.activeModalsStack.length;
                 //data-view-state inactive
-                this.removeAttribute("data-view-state");
+                el.removeAttribute("data-view-state");
               },
             });
             break;
