@@ -102,6 +102,18 @@ body[data-screen-orientation="portrait"] > [data-type="com.idc.ui.contentSize"] 
     cursor: default;
 }
 
+/* MODAL -------------------------------------------- */
+[data-type="com.idc.ui.core.modal.dropDown"],
+[data-type="com.idc.ui.core.modal.popUp"],
+[data-type="com.idc.ui.core.modal.modalObject"] {
+    display: none;
+}
+[data-type="com.idc.ui.core.modal.dropDown"][data-view-state="active"],
+[data-type="com.idc.ui.core.modal.popUp"][data-view-state="active"],
+[data-type="com.idc.ui.core.modal.modalObject"][data-view-state="active"] {
+    display: block;
+}
+
 /* EMAIL CART --------------------------------------- */
 #emailCartModal [data-type="com.idc.ui.emailCart.buttons"] {
     position: absolute;
@@ -292,7 +304,7 @@ body[data-screen-orientation="portrait"] > [data-type="com.idc.ui.contentSize"] 
     right: 3px;
 }
 
-/* References --------------------------------------- */
+/* REFERENCES --------------------------------------- */
 #referencesModal [data-type="com.idc.ui.references.scrollContainer"] {
     position: absolute;
     left: 0;

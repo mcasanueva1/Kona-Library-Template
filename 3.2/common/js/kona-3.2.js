@@ -200,6 +200,12 @@ com.idc.clm = {
         doNotConsiderInMainSequence: null,
       },
     ],
+    standaloneModalGroups: [
+      {
+        id: null,
+        slides: []
+      },
+    ],
     navigation: {
       actualSlidesSequence: [], //to account for custom presentations, content targeting, popups
       allAvaliableSlides: [], //all slides in the presentation or dynamic presentation, including standalone modals
@@ -301,6 +307,7 @@ com.idc.clm = {
       navigationHistory: [],
       selectedProfile: null,
       selectedEmailCartItems: [],
+      selectedStandaloneGroup: null,
     },
     commonHTML: {},
     backFromStandalone: [{ slideId: null, elements: [{ id: null, properties: [{ name: null, type: null, value: null }] }] }],
@@ -625,6 +632,18 @@ com.idc.clm = {
       return newSlide;
     });
 
+    //standalone modal groups
+    if (com_idc_params.standaloneModalGroups) {
+      const standaloneModalGroupTemplate = vars.standaloneModalGroups.splice(0)[0];
+      vars.standaloneModalGroups = com_idc_params.standaloneModalGroups.map((group) => {
+        const newGroup = JSON.parse(JSON.stringify(standaloneModalGroupTemplate));
+        newGroup.id = util.readSetting(group, "id", "string", null);
+        newGroup.slides = util.readSetting(group, "slides", "object", []);
+
+        return newGroup;
+      });
+    }
+
     //slide id from slide/index.html
     vars.options.htmlSlideId = util.getElementAttribute(document.querySelector("body"), "data-slide-id");
 
@@ -797,7 +816,6 @@ com.idc.clm = {
       let isStandalone = slide.standaloneModal.isStandalone;
       let treatStandaloneModalsAsMainSlides = vars.navigation.dynamicPresentation.treatStandaloneModalsAsMainSlides;
       let isPDF = slide.pdf.isPDF;
-      let doNotConsiderInMainSequence = slide.doNotConsiderInMainSequence;
 
       if ((!isStandalone || (isStandalone && treatStandaloneModalsAsMainSlides)) && !isPDF) {
         vars.navigation.actualSlidesSequence.push(slide.id);
@@ -1266,7 +1284,6 @@ com.idc.clm = {
     }
   },
   navigationOverwrite: function (type, slideId) {
-
     //do not proceed if it is a dynamic presentation
     if (this.vars.navigation.dynamicPresentation.active) {
       return;
@@ -1708,6 +1725,46 @@ com.idc.clm = {
     com.idc.ui.dynamicPresentation.unSetMenu(this.vars.navigation.actualSlidesSequence);
     com.idc.ui.dynamicPresentation.unSetAlertPopup();
     com.idc.ui.core.link.unFlagNonWorkingLinks();
+  },
+
+  /*standalone groups -------------------------------------*/
+  validateStandaloneGroup: function (group) {
+    let groupIsValid = true;
+
+    //find group
+    let groupObj = this.vars.standaloneGroups.find((item) => {
+      return item.name == group;
+    });
+    if (!groupObj) {
+      com.idc.util.log(`com.idc.clm.validateStandaloneGroup: group ${group} not found`);
+      groupIsValid = false;
+    } else {
+      //validate current slide
+      if (!groupObj.slides.includes(this.vars.navigation.currentSlide.id)) {
+        com.idc.util.log(`com.idc.clm.validateStandaloneGroup: slide ${this.vars.navigation.currentSlide.id} not in group ${group}`);
+        groupIsValid = false;
+      }
+    }
+
+    //check if current slide is standalone
+    if (!this.vars.navigation.currentSlide.isStandalone) {
+      com.idc.util.log(`com.idc.clm.validateStandaloneGroup: slide ${this.vars.navigation.currentSlide.id} is not a standalone slide`);
+      groupIsValid = false;
+    }
+
+    return groupIsValid;
+  },
+  activateStandaloneGroup: function (group) {
+    if (!this.validateStandaloneGroup(group)) {
+      return;
+    }
+
+    this.persistentData.session.selectedStandaloneGroup = group;
+    this.updatePersistentData();
+  },
+  deActivateStandaloneGroup: function (group) {
+    this.persistentData.session.selectedStandaloneGroup = null;
+    this.updatePersistentData();
   },
 
   /*common html -------------------------------------------*/
@@ -2270,7 +2327,7 @@ com.idc.ui = {
 
         const instanceIndex = instances.findIndex((instance) => {
           return instance.name === pInstance;
-        });  
+        });
         if (instances[instanceIndex].viewState === "on") {
           //execute before close
           instances[instanceIndex].executeBeforeClose();
@@ -2498,6 +2555,11 @@ com.idc.ui = {
               : com.idc.util.getElementAttribute(el, "data-target-id-fnc")
               ? com.idc.util.executeParameterFunction(com.idc.util.getElementAttribute(el, "data-target-id-fnc"))
               : "";
+
+            let standaloneGroup = com.idc.util.getElementAttribute(el, "data-standalone-group");
+            if (standaloneGroup) {
+              com.idc.clm.activateStandaloneGroup(standaloneGroup);
+            }
 
             if (targetId != "") {
               com.idc.clm.gotoSlide(targetId);
@@ -2854,9 +2916,10 @@ com.idc.ui = {
                 el.components.backModal.element.style.display = "none";
                 //clear z-index
                 el.style.zIndex = com.idc.ui.core.modal.activeModalsStack.length;
+                //data-view-state inactive
+                this.removeAttribute("data-view-state");
               },
             });
-            this.removeAttribute("data-view-state");
             break;
           default:
             this.removeAttribute("data-view-state");
@@ -2920,7 +2983,7 @@ com.idc.ui = {
             }
           });
         });
-      }
+      },
     },
     navigationArrows: {
       prevArrow: null,
@@ -3184,7 +3247,7 @@ com.idc.ui = {
         const instanceIndex = instances.findIndex((instance) => {
           return instance.name === pInstance;
         });
-        
+
         if (instances[instanceIndex].viewState === "active") {
           if (this.components.cover.hasCover) {
             //execute before close
@@ -4622,10 +4685,12 @@ com.idc.ui = {
       let vars = JSON.parse(JSON.stringify(com.idc.clm.vars));
       let params = {};
 
+      //select params
       params.project = vars.project;
       params.options = vars.options;
       params.commonHTML = vars.commonHTML;
       params.slides = vars.slides;
+      params.standaloneModalGroups = vars.standaloneModalGroups;
       params.emailCart = vars.emailCart;
       params.references = vars.references;
 
@@ -4634,11 +4699,12 @@ com.idc.ui = {
     refreshVars: function () {
       const textArea = this.dropDown.element.querySelector('[data-type="com.idc.ui.core.tab.content"][data-instance="vars"] textarea');
 
-      let vars = JSON.parse(JSON.stringify(com.idc.clm.vars));
+      let vars = JSON.parse(JSON.stringify(com.idc.clm.vars)); //all but the below vars
       delete vars.project;
       delete vars.options;
       delete vars.commonHTML;
       delete vars.slides;
+      delete vars.standaloneModalGroups;
       delete vars.emailCart;
 
       textArea.value = `${JSON.stringify(vars, null, 4)}\n`;
