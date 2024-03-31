@@ -2845,12 +2845,13 @@ com.idc.ui = {
 
             //standalone modal groups
             if (el.isStandalone) {
-              if (this.standaloneModalGroups.modalBelongsToActiveGroup()) {
-                this.standaloneModalGroups.setModalArrowsSwipeAndPages(el);
-                this.standaloneModalGroups.setPaginatorAndIndexVisibility(el, true);
-                this.standaloneModalGroups.updatePaginator(el);
+              if (this.standaloneModalGroups.standalonelBelongsToActiveGroup()) {
+                this.standaloneModalGroups.setArrowsAndSwipe(el);
+                this.standaloneModalGroups.setGroupElementsVisibility(el, true);
+                this.standaloneModalGroups.setPaginator(el);
+                this.standaloneModalGroups.populateGroupSlides();
               } else {
-                this.standaloneModalGroups.setPaginatorAndIndexVisibility(el, false);
+                this.standaloneModalGroups.setGroupElementsVisibility(el, false);
               }
             }
           }
@@ -3041,7 +3042,7 @@ com.idc.ui = {
         }
       },
       standaloneModalGroups: {
-        modalBelongsToActiveGroup: function () {
+        standalonelBelongsToActiveGroup: function () {
           let persistentData = com.idc.clm.persistentData;
           let vars = com.idc.clm.vars;
           let slideId = vars.navigation.currentSlide.id;
@@ -3063,7 +3064,7 @@ com.idc.ui = {
 
           return belongsToActiveGroup;
         },
-        modalPositionInActiveGroup: function () {
+        positionInActiveGroup: function () {
           let persistentData = com.idc.clm.persistentData;
           let vars = com.idc.clm.vars;
           let activeGroupId = persistentData.session.selectedStandaloneGroup;
@@ -3072,8 +3073,8 @@ com.idc.ui = {
 
           return { order: activeGroup.slides.indexOf(slideId), total: activeGroup.slides.length };
         },
-        setModalArrowsSwipeAndPages: function (el) {
-          let position = this.modalPositionInActiveGroup();
+        setArrowsAndSwipe: function (el) {
+          let position = this.positionInActiveGroup();
 
           if (position.order > 0) {
             //prev slide
@@ -3109,9 +3110,9 @@ com.idc.ui = {
             com.idc.clm.navigationOverwrite("next", nextSlide);
           }
         },
-        setPaginatorAndIndexVisibility: function (el, pVisible) {
+        setGroupElementsVisibility: function (pElement, pVisible) {
           let indexOpenButtonId = com.idc.clm.vars.standaloneModalGroups.indexModal.openButton;
-          let indexOpenButton = el.querySelector('#' + indexOpenButtonId);
+          let indexOpenButton = pElement.querySelector('#' + indexOpenButtonId);
           if (indexOpenButton) {
             if (pVisible) {
               indexOpenButton.style.display = "block";
@@ -3120,7 +3121,7 @@ com.idc.ui = {
             }
           }
 
-          let paginator = el.querySelector('[data-type="com.idc.ui.core.modal.paginator"]');
+          let paginator = pElement.querySelector('[data-type="com.idc.ui.core.modal.paginator"]');
           if (paginator) {
             if (pVisible) {
               paginator.style.display = "block";
@@ -3129,12 +3130,29 @@ com.idc.ui = {
             }
           }
         },
-        updatePaginator: function (el) {
-          let position = this.modalPositionInActiveGroup();
-          let paginator = el.querySelector('[data-type="com.idc.ui.core.modal.paginator"]');
+        setPaginator: function (pElement) {
+          let position = this.positionInActiveGroup();
+          let paginator = pElement.querySelector('[data-type="com.idc.ui.core.modal.paginator"]');
           if (paginator) {
             paginator.innerHTML = `${position.order + 1} / ${position.total}`;
           }
+        },
+        populateGroupSlides: function () {
+          let persistentData = com.idc.clm.persistentData;
+          let vars = com.idc.clm.vars;
+
+          let indexModalId = com.idc.clm.vars.standaloneModalGroups.indexModal.id;
+          let indexModal = document.querySelector(`#${indexModalId}`);
+          if (!indexModal) return;
+
+          let groupSlidesEl = indexModal.querySelector('[data-type="com.idc.ui.core.modal.groupSlides"]');
+          if (!groupSlidesEl) return;
+
+          let activeGroupId = persistentData.session.selectedStandaloneGroup;
+          let activeGroup = vars.standaloneModalGroups.groups.find((group) => group.id == activeGroupId);
+
+          console.log(activeGroup.slides);
+          
         }
       },
     },

@@ -199,88 +199,124 @@ com.idc.templates = {
           "childNodes": [],
         },
       ],
-      "standaloneContentArea": [
-        {
-          "type": "DIV",
-          "attributes": [
-            {
-              "data-type": "com.idc.ui.core.modal.contentArea",
-            },
-          ],
-          "childNodes": [
-            {
-              "type": "DIV",
-              "attributes": [
-                {
-                  "class": "landscapeView",
-                },
-              ],
-              "childNodes": [],
-            },
-            {
-              "type": "DIV",
-              "attributes": [
-                {
-                  "class": "portraitView",
-                },
-              ],
-              "childNodes": [],
-            },
-          ],
-        },
-      ],
-      "standaloneArrows": {
-        "prev": [
+      "standalone": {
+        "contentArea": [
           {
             "type": "DIV",
             "attributes": [
               {
-                "data-type": "com.idc.ui.core.navigation.arrow",
+                "data-type": "com.idc.ui.core.modal.contentArea",
+              },
+            ],
+            "childNodes": [
+              {
+                "type": "DIV",
+                "attributes": [
+                  {
+                    "class": "landscapeView",
+                  },
+                ],
+                "childNodes": [],
               },
               {
-                "data-sub-type": "com.idc.ui.core.modal.prevArrow",
+                "type": "DIV",
+                "attributes": [
+                  {
+                    "class": "portraitView",
+                  },
+                ],
+                "childNodes": [],
+              },
+            ],
+          },
+        ],
+        "arrows": {
+          "prev": [
+            {
+              "type": "DIV",
+              "attributes": [
+                {
+                  "data-type": "com.idc.ui.core.navigation.arrow",
+                },
+                {
+                  "data-sub-type": "com.idc.ui.core.modal.prevArrow",
+                },
+              ],
+              "childNodes": []
+            }
+          ],
+          "next": [
+            {
+              "type": "DIV",
+              "attributes": [
+                {
+                  "data-type": "com.idc.ui.core.navigation.arrow",
+                },
+                {
+                  "data-sub-type": "com.idc.ui.core.modal.nextArrow",
+                },
+              ],
+              "childNodes": []
+            }
+          ],
+        },
+        "paginator": [
+          {
+            "type": "DIV",
+            "attributes": [
+              {
+                "data-type": "com.idc.ui.core.modal.paginator",
               },
             ],
             "childNodes": []
           }
         ],
-        "next": [
+        "groupSlides": [
           {
             "type": "DIV",
             "attributes": [
               {
-                "data-type": "com.idc.ui.core.navigation.arrow",
-              },
-              {
-                "data-sub-type": "com.idc.ui.core.modal.nextArrow",
+                "data-type": "com.idc.ui.core.modal.groupSlides",
               },
             ],
-            "childNodes": []
-          }
-        ],
-      },
-      "standalonePaginator": [
-        {
-          "type": "DIV",
-          "attributes": [
-            {
-              "data-type": "com.idc.ui.core.modal.paginator",
-            },
-          ],
-          "childNodes": []
-        }
-      ],
-      "standaloneGroupSlides": [
-        {
-          "type": "DIV",
-          "attributes": [
-            {
-              "data-type": "com.idc.ui.core.modal.groupSlides",
-            },
-          ],
-          "childNodes": [],
-        },
-      ]
+            "childNodes": [
+              {
+                "type": "DIV",
+                "attributes": [
+                    {
+                        "data-type": "com.idc.ui.core.modal.groupSlides.item"
+                    },
+                ],
+                "childNodes": [
+                    {
+                        "type": "DIV",
+                        "attributes": [
+                            {
+                                "data-type": "com.idc.ui.core.modal.groupSlides.item.thumb"
+                            },
+                        ],
+                        "childNodes": [
+                            {
+                                "type": "IMG",
+                                "attributes": []
+                            }
+                        ]
+                    },
+                    {
+                        "type": "DIV",
+                        "attributes": [
+                            {
+                                "data-type": "com.idc.ui.core.modal.groupSlides.item.label"
+                            }
+                        ],
+                        "childNodes": []
+                    }
+                ]
+              }
+            ],
+          },
+        ]
+      }
     },
     "tab": [
       {
