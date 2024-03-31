@@ -269,6 +269,17 @@ com.idc.templates = {
           ],
           "childNodes": []
         }
+      ],
+      "standaloneGroupSlides": [
+        {
+          "type": "DIV",
+          "attributes": [
+            {
+              "data-type": "com.idc.ui.core.modal.groupSlides",
+            },
+          ],
+          "childNodes": [],
+        },
       ]
     },
     "tab": [
