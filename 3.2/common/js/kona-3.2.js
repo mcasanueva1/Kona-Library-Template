@@ -3140,6 +3140,7 @@ com.idc.ui = {
         populateGroupSlides: function () {
           let persistentData = com.idc.clm.persistentData;
           let vars = com.idc.clm.vars;
+          let util = com.idc.util;
 
           let indexModalId = com.idc.clm.vars.standaloneModalGroups.indexModal.id;
           let indexModal = document.querySelector(`#${indexModalId}`);
@@ -3151,7 +3152,37 @@ com.idc.ui = {
           let activeGroupId = persistentData.session.selectedStandaloneGroup;
           let activeGroup = vars.standaloneModalGroups.groups.find((group) => group.id == activeGroupId);
 
-          console.log(activeGroup.slides);
+          let template = groupSlidesEl.querySelector('[data-type="com.idc.ui.core.modal.groupSlides.item"]');
+
+          activeGroup.slides.forEach((slideId) => {
+
+            let slide = com.idc.clm.findSlide(slideId);
+
+            let itemElement = template.cloneNode(true);
+
+            itemElement.setAttribute("data-slide-id", slide.id);
+    
+            let thumb = itemElement.querySelector('[data-type="com.idc.ui.core.modal.groupSlides.item.thumb"]');
+            if (thumb) {
+              let img = thumb.querySelector("img");
+              if (img) {
+                img.setAttribute("src", util.getSharedResourcesPath() + "img/thumbnails/" + slide.id + ".png");
+              }
+            }
+    
+            let label = itemElement.querySelector('[data-type="com.idc.ui.core.modal.groupSlides.item.label"]');
+            if (label) {
+              label.innerHTML = slide.description;
+            }
+    
+            itemElement.addEventListener("click", (evt) => {
+              com.idc.clm.gotoSlide(slide.id);
+            });
+
+            groupSlidesEl.appendChild(itemElement);
+          });
+
+          template.remove();
           
         }
       },

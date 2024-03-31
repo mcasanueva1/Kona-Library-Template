@@ -280,6 +280,20 @@ body[data-screen-orientation="portrait"] > [data-type="com.idc.ui.contentSize"] 
     padding-top: 2px;
 }
 
+[data-type="com.idc.ui.core.modal.groupSlides"] {
+    display: flex;
+    flex-wrap: wrap;
+}
+[data-type="com.idc.ui.core.modal.groupSlides"] [data-type="com.idc.ui.core.modal.groupSlides.item"] {
+    margin-top: 20px;
+    margin-left: 12px;
+    margin-right: 18px;
+}
+
+[data-type="com.idc.ui.core.modal.groupSlides"] [data-type="com.idc.ui.core.modal.groupSlides.item"] [data-type="com.idc.ui.core.modal.groupSlides.item.thumb"] img {
+    width: 218px;
+}
+
 /* NON WORKING LINK ALERT POPUP---------------------- */
 #com_idc_ui_nonworkinglink_popup {
     height: 20%;
