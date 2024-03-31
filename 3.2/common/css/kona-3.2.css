@@ -274,6 +274,12 @@ body[data-screen-orientation="portrait"] > [data-type="com.idc.ui.contentSize"] 
     display: none; /*used to hide close menu of standalone modals in dynamic presentations*/
 }
 
+[data-type="com.idc.ui.core.modal.paginator"] {
+    text-align: center;
+    color:#ffffff;
+    padding-top: 2px;
+}
+
 /* NON WORKING LINK ALERT POPUP---------------------- */
 #com_idc_ui_nonworkinglink_popup {
     height: 20%;

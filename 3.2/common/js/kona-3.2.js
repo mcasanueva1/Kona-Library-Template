@@ -200,12 +200,19 @@ com.idc.clm = {
         doNotConsiderInMainSequence: null,
       },
     ],
-    standaloneModalGroups: [
-      {
+    standaloneModalGroups: {
+      active: null,
+      indexModal: {
         id: null,
-        slides: [],
+        openButton: null,
       },
-    ],
+      groups: [
+        {
+          id: null,
+          slides: [],
+        },
+      ],
+    },
     navigation: {
       actualSlidesSequence: [], //to account for custom presentations, content targeting, popups
       allAvaliableSlides: [], //all slides in the presentation or dynamic presentation, including standalone modals
@@ -634,14 +641,21 @@ com.idc.clm = {
 
     //standalone modal groups
     if (com_idc_params.standaloneModalGroups) {
-      const standaloneModalGroupTemplate = vars.standaloneModalGroups.splice(0)[0];
-      vars.standaloneModalGroups = com_idc_params.standaloneModalGroups.map((group) => {
+      const standaloneModalGroupTemplate = vars.standaloneModalGroups.groups.splice(0)[0];
+      vars.standaloneModalGroups.groups = com_idc_params.standaloneModalGroups.groups.map((group) => {
         const newGroup = JSON.parse(JSON.stringify(standaloneModalGroupTemplate));
         newGroup.id = util.readSetting(group, "id", "string", null);
         newGroup.slides = util.readSetting(group, "slides", "object", []);
 
         return newGroup;
       });
+
+      //active
+      vars.standaloneModalGroups.active = vars.standaloneModalGroups.groups.length > 0;
+
+      //modal
+      vars.standaloneModalGroups.indexModal.id = util.readSetting(com_idc_params.standaloneModalGroups, "indexModal.id", "string", null);
+      vars.standaloneModalGroups.indexModal.openButton = util.readSetting(com_idc_params.standaloneModalGroups, "indexModal.openButton", "string", null);
     }
 
     //slide id from slide/index.html
@@ -826,38 +840,37 @@ com.idc.clm = {
   },
   identifyActualSlidesSequence: function () {
     let util = com.idc.util;
-    let __this = this;
 
     return new Promise((resolve) => {
       (async () => {
         util.log("com.idc.clm.identifyActualSlidesSequence()");
 
         //eval settings to see a dynamic presentation mode is enabled
-        let activeDynamicModes = [];
+        let activeDynamicPresentationModes = [];
         let dynamicPresVars = this.vars.options.dynamicPresentation;
         if (dynamicPresVars.source.contentTargeting.active) {
-          activeDynamicModes.push({
+          activeDynamicPresentationModes.push({
             name: "contentTargetting",
             precedence: dynamicPresVars.precedence.indexOf("contentTargetting"),
             slidesSequence: await this.contentTargeting(),
           });
         }
         if (dynamicPresVars.source.myPresentations.active) {
-          activeDynamicModes.push({
+          activeDynamicPresentationModes.push({
             name: "myPresentations",
             precedence: dynamicPresVars.precedence.indexOf("myPresentations"),
             slidesSequence: await this.myPresentations(),
           });
         }
         if (dynamicPresVars.source.externalFunction.active) {
-          activeDynamicModes.push({
+          activeDynamicPresentationModes.push({
             name: "externalFunction",
             precedence: dynamicPresVars.precedence.indexOf("externalFunction"),
             slidesSequence: await this.externalFunction(),
           });
         }
         if (dynamicPresVars.source.hardcodedProfiles.active) {
-          activeDynamicModes.push({
+          activeDynamicPresentationModes.push({
             name: "hardcodedProfiles",
             precedence: dynamicPresVars.precedence.indexOf("hardcodedProfiles"),
             slidesSequence: await this.hardcodedProfiles(),
@@ -865,27 +878,37 @@ com.idc.clm = {
         }
 
         //sort active dynamic modes by precedence
-        activeDynamicModes.sort((a, b) => {
+        activeDynamicPresentationModes.sort((a, b) => {
           return a.precedence - b.precedence;
         });
 
         //remove items with empty slidesSequence
-        activeDynamicModes = activeDynamicModes.filter((item) => {
+        activeDynamicPresentationModes = activeDynamicPresentationModes.filter((item) => {
           return Array.isArray(item.slidesSequence) && Array.isArray(item.slidesSequence) && item.slidesSequence.length > 0;
         });
 
         //identify active source
-        let activeMode = null;
-        if (activeDynamicModes.length > 0) {
-          activeMode = activeDynamicModes[0];
+        let activeDynamicPresentationMode = null;
+        if (activeDynamicPresentationModes.length > 0) {
+          activeDynamicPresentationMode = activeDynamicPresentationModes[0];
         }
 
-        if (activeMode) {
+        if (activeDynamicPresentationMode) {
           //it is a dynamic presentation
-          com.idc.clm.setDynamicSlidesSequence(activeMode);
+          com.idc.clm.setDynamicSlidesSequence(activeDynamicPresentationMode);
         } else {
           //it is a standard presentation
           com.idc.clm.setStandardSlidesSequence();
+        }
+
+        //standalone modal group
+        if (this.persistentData.session.selectedStandaloneGroup) {
+          let groupId = this.persistentData.session.selectedStandaloneGroup;
+          if (groupId && this.validateStandaloneGroup(groupId, this.vars.options.htmlSlideId)) {
+            this.activateStandaloneGroup(groupId);
+          } else {
+            this.deActivateStandaloneGroup();
+          }
         }
 
         resolve();
@@ -1152,6 +1175,9 @@ com.idc.clm = {
     //is dynamic presentation
     document.querySelector("body").setAttribute("data-is-dynamic-presentation", this.vars.navigation.dynamicPresentation.active);
     document.querySelector("body").setAttribute("data-dynamic-presentation-source", this.vars.navigation.dynamicPresentation.source);
+
+    //is standalone modal group active
+    document.querySelector("body").setAttribute("data-active-standalone-group", this.persistentData.session.selectedStandaloneGroup);
   },
 
   /*persistent data ---------------------------------------*/
@@ -1742,17 +1768,17 @@ com.idc.clm = {
   },
 
   /*standalone groups -------------------------------------*/
-  validateStandaloneGroup: function (group) {
+  validateStandaloneGroup: function (group, slideId) {
     let groupIsValid = true;
 
     //no groups defined >> return false
-    if (!this.vars.standaloneModalGroups) return false;
+    if (!this.vars.standaloneModalGroups.active) return false;
 
     //is dynamic presentation >> return false
     if (this.vars.navigation.dynamicPresentation.active) return false;
 
     //find group
-    let groupObj = this.vars.standaloneModalGroups.find((item) => {
+    let groupObj = this.vars.standaloneModalGroups.groups.find((item) => {
       return item.id == group;
     });
     if (!groupObj) {
@@ -1760,18 +1786,25 @@ com.idc.clm = {
       groupIsValid = false;
     }
 
+    //find slide
+    if (slideId) {
+      if (!groupObj.slides.includes(slideId)) {
+        com.idc.util.log(`com.idc.clm.validateStandaloneGroup: slide ${slideId} not found in group ${group}`);
+        groupIsValid = false;
+      }
+    }
+
     return groupIsValid;
   },
   activateStandaloneGroup: function (group) {
-    if (!this.validateStandaloneGroup(group)) {
-      return;
-    }
     this.persistentData.session.selectedStandaloneGroup = group;
     this.updatePersistentData();
+    this.setBodyVars();
   },
-  deActivateStandaloneGroup: function (group) {
+  deActivateStandaloneGroup: function () {
     this.persistentData.session.selectedStandaloneGroup = null;
     this.updatePersistentData();
+    this.setBodyVars();
   },
 
   /*common html -------------------------------------------*/
@@ -2565,7 +2598,9 @@ com.idc.ui = {
 
             let standaloneGroup = com.idc.util.getElementAttribute(el, "data-standalone-group");
             if (standaloneGroup) {
-              com.idc.clm.activateStandaloneGroup(standaloneGroup);
+              if (com.idc.clm.validateStandaloneGroup(standaloneGroup, targetId)) {
+                com.idc.clm.activateStandaloneGroup(standaloneGroup);
+              }
             }
 
             if (targetId != "") {
@@ -2812,6 +2847,10 @@ com.idc.ui = {
             if (el.isStandalone) {
               if (this.standaloneModalGroups.modalBelongsToActiveGroup()) {
                 this.standaloneModalGroups.setModalArrowsSwipeAndPages(el);
+                this.standaloneModalGroups.setPaginatorAndIndexVisibility(el, true);
+                this.standaloneModalGroups.updatePaginator(el);
+              } else {
+                this.standaloneModalGroups.setPaginatorAndIndexVisibility(el, false);
               }
             }
           }
@@ -3008,14 +3047,14 @@ com.idc.ui = {
           let slideId = vars.navigation.currentSlide.id;
 
           let standaloneModalGroups = vars.standaloneModalGroups;
-          if (!standaloneModalGroups) return false;
+          if (!standaloneModalGroups.active) return false;
 
           let belongsToActiveGroup = false;
 
           let activeGroupId = persistentData.session.selectedStandaloneGroup;
           if (!activeGroupId) return false;
 
-          let activeGroup = vars.standaloneModalGroups.find((group) => group.id == activeGroupId);
+          let activeGroup = vars.standaloneModalGroups.groups.find((group) => group.id == activeGroupId);
           if (!activeGroup) return false;
 
           if (activeGroup.slides.indexOf(slideId) >= 0) {
@@ -3028,7 +3067,7 @@ com.idc.ui = {
           let persistentData = com.idc.clm.persistentData;
           let vars = com.idc.clm.vars;
           let activeGroupId = persistentData.session.selectedStandaloneGroup;
-          let activeGroup = vars.standaloneModalGroups.find((group) => group.id == activeGroupId);
+          let activeGroup = vars.standaloneModalGroups.groups.find((group) => group.id == activeGroupId);
           let slideId = vars.navigation.currentSlide.id;
 
           return { order: activeGroup.slides.indexOf(slideId), total: activeGroup.slides.length };
@@ -3038,7 +3077,7 @@ com.idc.ui = {
 
           if (position.order > 0) {
             //prev slide
-            let prevSlide = com.idc.clm.vars.standaloneModalGroups.find((group) => group.id == com.idc.clm.persistentData.session.selectedStandaloneGroup)
+            let prevSlide = com.idc.clm.vars.standaloneModalGroups.groups.find((group) => group.id == com.idc.clm.persistentData.session.selectedStandaloneGroup)
               .slides[position.order - 1];
 
             //arrow visibility and link
@@ -3055,7 +3094,7 @@ com.idc.ui = {
 
           if (position.order < position.total - 1) {
             //next slide
-            let nextSlide = com.idc.clm.vars.standaloneModalGroups.find((group) => group.id == com.idc.clm.persistentData.session.selectedStandaloneGroup)
+            let nextSlide = com.idc.clm.vars.standaloneModalGroups.groups.find((group) => group.id == com.idc.clm.persistentData.session.selectedStandaloneGroup)
               .slides[position.order + 1];
 
             //arrow visibility and link
@@ -3070,6 +3109,33 @@ com.idc.ui = {
             com.idc.clm.navigationOverwrite("next", nextSlide);
           }
         },
+        setPaginatorAndIndexVisibility: function (el, pVisible) {
+          let indexOpenButtonId = com.idc.clm.vars.standaloneModalGroups.indexModal.openButton;
+          let indexOpenButton = el.querySelector('#' + indexOpenButtonId);
+          if (indexOpenButton) {
+            if (pVisible) {
+              indexOpenButton.style.display = "block";
+            } else {
+              indexOpenButton.style.display = "none";
+            }
+          }
+
+          let paginator = el.querySelector('[data-type="com.idc.ui.core.modal.paginator"]');
+          if (paginator) {
+            if (pVisible) {
+              paginator.style.display = "block";
+            } else {
+              paginator.style.display = "none";
+            }
+          }
+        },
+        updatePaginator: function (el) {
+          let position = this.modalPositionInActiveGroup();
+          let paginator = el.querySelector('[data-type="com.idc.ui.core.modal.paginator"]');
+          if (paginator) {
+            paginator.innerHTML = `${position.order + 1} / ${position.total}`;
+          }
+        }
       },
     },
     menu: {
