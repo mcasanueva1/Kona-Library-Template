@@ -220,8 +220,9 @@ com.idc.clm = {
           rightGroup: [],
         },
         regularModals: {
+          buttonViewState: null,
           bringToFront: {
-            dualButtoForActiveModal: {
+            dualButtonForActiveModal: {
               active: null,
             },
             referencesButton: {
@@ -662,11 +663,47 @@ com.idc.clm = {
     if (com_idc_params.utilitiesMenu) {
       vars.utilitiesMenu.active = util.readSetting(com_idc_params, "utilitiesMenu.active", "boolean", false);
 
+      //main slide
+      vars.utilitiesMenu.sets.mainSlide.buttonViewState = util.readSetting(com_idc_params, "utilitiesMenu.sets.mainSlide.buttonViewState", "string", null);
       vars.utilitiesMenu.sets.mainSlide.centerGroup = util.readSetting(com_idc_params, "utilitiesMenu.sets.mainSlide.centerGroup", "object", []);
       vars.utilitiesMenu.sets.mainSlide.rightGroup = util.readSetting(com_idc_params, "utilitiesMenu.sets.mainSlide.rightGroup", "object", []);
 
+      //standalone modal
+      vars.utilitiesMenu.sets.standaloneModal.buttonViewState = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.standaloneModal.buttonViewState",
+        "string",
+        null
+      );
+      vars.utilitiesMenu.sets.standaloneModal.appendCloseButtonToRightGroup = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.standaloneModal.appendCloseButtonToRightGroup",
+        "boolean",
+        false
+      );
       vars.utilitiesMenu.sets.standaloneModal.centerGroup = util.readSetting(com_idc_params, "utilitiesMenu.sets.standaloneModal.centerGroup", "object", []);
       vars.utilitiesMenu.sets.standaloneModal.rightGroup = util.readSetting(com_idc_params, "utilitiesMenu.sets.standaloneModal.rightGroup", "object", []);
+
+      //regular modals
+      vars.utilitiesMenu.sets.regularModals.buttonViewState = util.readSetting(com_idc_params, "utilitiesMenu.sets.regularModals.buttonViewState", "string", null);
+      vars.utilitiesMenu.sets.regularModals.bringToFront.dualButtonForActiveModal.active = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.regularModals.bringToFront.dualButtonForActiveModal.active",
+        "boolean",
+        false
+      );
+      vars.utilitiesMenu.sets.regularModals.bringToFront.referencesButton.active = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.regularModals.bringToFront.referencesButton.active",
+        "boolean",
+        false
+      );
+      vars.utilitiesMenu.sets.regularModals.bringToFront.referencesButton.excludeModals = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.regularModals.bringToFront.referencesButton.excludeModals",
+        "object",
+        []
+      );
     }
 
     //standalone modal groups
@@ -3864,8 +3901,8 @@ com.idc.ui = {
 
         if (!vars.utilitiesMenu.active) return;
 
-        //set group contents
-        let currentSet = com.idc.clm.vars.utilitiesMenu.sets[vars.navigation.currentSlide.isStandalone ? "standaloneModal" : "mainSlide"];
+        let slideType = vars.navigation.currentSlide.isStandalone ? "standaloneModal" : "mainSlide";
+        let currentSet = vars.utilitiesMenu.sets[slideType];
 
         //for each group
         ["centerGroup", "rightGroup"].forEach((groupName) => {
@@ -3887,8 +3924,8 @@ com.idc.ui = {
           });
         });
 
-        //if standalone modal, add close button to right container
-        if (vars.navigation.currentSlide.isStandalone) {
+        //if standalone modal and need to append close button to right container, add close button to right container
+        if (vars.navigation.currentSlide.isStandalone && vars.utilitiesMenu.sets.standaloneModal.appendCloseButtonToRightGroup) {
           let standaloneModalId = com.idc.clm.findSlide(vars.navigation.currentSlide.id).standaloneModal.modalId;
           let closeButton = document.querySelector(`#${standaloneModalId}`).components.closeButton.element;
           if (closeButton) {
@@ -3905,18 +3942,25 @@ com.idc.ui = {
         let isActiveModalStandalone = aModalIsActive ? document.querySelector(`#${activeModalId}`).isStandalone : false;
 
         //style name
-        let styleName;
-        if (activeModalsStack.length > 0) {
-          styleName = "light"; //a modal is active
+        let viewStateName;
+        if (!aModalIsActive) {
+          //main slide
+          viewStateName = vars.utilitiesMenu.sets.mainSlide.buttonViewState;
         } else {
-          styleName = "dark"; //main slide
+          if (isActiveModalStandalone) {
+            //standalone modal
+            viewStateName = vars.utilitiesMenu.sets.standaloneModal.buttonViewState;
+          } else {
+            //regular modal
+            viewStateName = vars.utilitiesMenu.sets.regularModals.buttonViewState;
+          }
         }
 
         //set style and z-index
         ["centerGroup", "rightGroup"].forEach((groupName) => {
           this.components.containers[groupName].childNodes.forEach((el) => {
             //style
-            el.setAttribute("data-style", styleName);
+            el.setAttribute("data-view-state", viewStateName);
 
             //z-index
             if (!aModalIsActive) {
@@ -3927,12 +3971,24 @@ com.idc.ui = {
                 //standalone, bring all buttons to front
                 el.style.zIndex = activeModalsStack.length * 10 + 1;
               } else {
-                //normal modal, just bring dual button and references to front
-                let isDualButtonOfCurrentModal =
-                  el.getAttribute("data-sub-type") == "com.idc.ui.core.modal.dualButton" && el.getAttribute("data-target-id") == activeModalId;
-                let isReferencesOpenButton = el.getAttribute("id") == vars.references.components.openButton.id;
-                if (isDualButtonOfCurrentModal || isReferencesOpenButton) {
-                  el.style.zIndex = activeModalsStack.length * 10 + 1;
+                //normal modal, bring to front dual button if necessary
+                if (vars.utilitiesMenu.sets.regularModals.bringToFront.dualButtonForActiveModal.active) {
+                  let isDualButtonOfCurrentModal =
+                    el.getAttribute("data-sub-type") == "com.idc.ui.core.modal.dualButton" && el.getAttribute("data-target-id") == activeModalId;
+                  if (isDualButtonOfCurrentModal) {
+                    el.style.zIndex = activeModalsStack.length * 10 + 1;
+                  }
+                }
+
+                //normal modal, bring to front references button if necessary
+                if (vars.utilitiesMenu.sets.regularModals.bringToFront.referencesButton.active) {
+                  //bring forward unless the modal is excluded from params
+                  if (!vars.utilitiesMenu.sets.regularModals.bringToFront.referencesButton.excludeModals.includes(activeModalId)) {
+                    let isReferencesOpenButton = el.getAttribute("id") == vars.references.components.openButton.id;
+                    if (isReferencesOpenButton) {
+                      el.style.zIndex = activeModalsStack.length * 10 + 1;
+                    }
+                  }
                 }
               }
             }
