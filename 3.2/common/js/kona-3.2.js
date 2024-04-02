@@ -2270,6 +2270,17 @@ com.idc.util = {
       com.idc.util.log(`readSetting ${pKeyChain} error: ${err}`);
     }
 
+    //true / false as text
+    if (pType === "boolean" && typeof value === "string") {
+      if (value.toLowerCase() == "true") {
+        value = true;
+      } else {
+        if (value.toLowerCase() == "false") {
+          value = false;
+        }
+      }
+    }
+
     return value === null ? pDefault : typeof value === pType ? value : pDefault;
   },
 
