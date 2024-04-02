@@ -3869,6 +3869,7 @@ com.idc.ui = {
 
         //for each group
         ["centerGroup", "rightGroup"].forEach((groupName) => {
+          if (!this.components.containers[groupName]) return;
           this.components.containers[groupName].innerHTML = "";
           currentSet[groupName].forEach((elementId) => {
             //find element
