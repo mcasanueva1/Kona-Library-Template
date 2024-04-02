@@ -456,7 +456,7 @@ body[data-screen-orientation="portrait"] > [data-type="com.idc.ui.contentSize"] 
 [data-type="com.idc.ui.utilitiesMenu"] [data-type="com.idc.ui.utilitiesMenu.container"][data-sub-type="com.idc.ui.utilitiesMenu.container.right"] {
     justify-content: right;
     width: auto;  
-    right: 0px;
+    right: 10px;
 }
 [data-type="com.idc.ui.utilitiesMenu.separator"] {
     margin-left: 8px;
