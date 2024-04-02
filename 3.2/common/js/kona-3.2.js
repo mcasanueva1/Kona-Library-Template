@@ -209,12 +209,26 @@ com.idc.clm = {
       active: null,
       sets: {
         mainSlide: {
+          buttonViewState: null,
           centerGroup: [],
           rightGroup: [],
         },
         standaloneModal: {
+          buttonViewState: null,
+          appendCloseButtonToRightGroup: null,
           centerGroup: [],
           rightGroup: [],
+        },
+        regularModals: {
+          bringToFront: {
+            dualButtoForActiveModal: {
+              active: null,
+            },
+            referencesButton: {
+              active: null,
+              excludeModals: [],
+            },
+          },
         },
       },
     },
@@ -389,8 +403,12 @@ com.idc.clm = {
 
     util.log("com.idc.clm.readSettings()");
 
+    //project name and settings
     vars.project.name = util.readSetting(com_idc_params, "project.name", "string", "ProjectName");
     vars.project.version = util.readSetting(com_idc_params, "project.version", "string", "1.0");
+
+    //slide id from slide/index.html
+    vars.options.htmlSlideId = util.getElementAttribute(document.querySelector("body"), "data-slide-id");
 
     //options
     vars.options.debugMode.active = util.readSetting(com_idc_params, "options.debugMode.active", "boolean", true);
@@ -653,6 +671,8 @@ com.idc.clm = {
 
     //standalone modal groups
     if (com_idc_params.standaloneModalGroups) {
+      vars.standaloneModalGroups.active = util.readSetting(com_idc_params, "standaloneModalGroups.active", "boolean", false);
+
       const standaloneModalGroupTemplate = vars.standaloneModalGroups.groups.splice(0)[0];
       vars.standaloneModalGroups.groups = com_idc_params.standaloneModalGroups.groups.map((group) => {
         const newGroup = JSON.parse(JSON.stringify(standaloneModalGroupTemplate));
@@ -662,16 +682,10 @@ com.idc.clm = {
         return newGroup;
       });
 
-      //active
-      vars.standaloneModalGroups.active = vars.standaloneModalGroups.groups.length > 0;
-
-      //modal
+      //index modal
       vars.standaloneModalGroups.indexModal.id = util.readSetting(com_idc_params.standaloneModalGroups, "indexModal.id", "string", null);
       vars.standaloneModalGroups.indexModal.openButton = util.readSetting(com_idc_params.standaloneModalGroups, "indexModal.openButton", "string", null);
     }
-
-    //slide id from slide/index.html
-    vars.options.htmlSlideId = util.getElementAttribute(document.querySelector("body"), "data-slide-id");
 
     //email cart
     if (com_idc_params.emailCart) {
@@ -3939,7 +3953,8 @@ com.idc.ui = {
                 el.style.zIndex = activeModalsStack.length * 10 + 1;
               } else {
                 //normal modal, just bring dual button and references to front
-                let isDualButtonOfCurrentModal = el.getAttribute("data-sub-type") == "com.idc.ui.core.modal.dualButton" && el.getAttribute("data-target-id") == activeModalId;
+                let isDualButtonOfCurrentModal =
+                  el.getAttribute("data-sub-type") == "com.idc.ui.core.modal.dualButton" && el.getAttribute("data-target-id") == activeModalId;
                 let isReferencesOpenButton = el.getAttribute("id") == vars.references.components.openButton.id;
                 if (isDualButtonOfCurrentModal || isReferencesOpenButton) {
                   el.style.zIndex = activeModalsStack.length * 10 + 1;
