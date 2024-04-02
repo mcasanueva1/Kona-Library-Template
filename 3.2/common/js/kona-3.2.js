@@ -160,14 +160,6 @@ com.idc.clm = {
           },
         },
       },
-      utilitiesMenu: {
-        sets: {
-          default: {
-            centerGroup: [],
-            rightGroup: [],
-          },
-        },
-      },
     },
     commonHTML: {
       active: null,
@@ -212,6 +204,18 @@ com.idc.clm = {
           slides: [],
         },
       ],
+    },
+    utilitiesMenu: {
+      sets: {
+        mainSlide: {
+          centerGroup: [],
+          rightGroup: [],
+        },
+        standaloneModal: {
+          centerGroup: [],
+          rightGroup: [],
+        },
+      },
     },
     navigation: {
       actualSlidesSequence: [], //to account for custom presentations, content targeting, popups
@@ -396,10 +400,6 @@ com.idc.clm = {
     if (vars.options.browserMode.simulate.active) {
       vars.options.browserMode.simulate.mode = util.readSetting(com_idc_params, "options.browserMode.simulate.mode", "string", "media");
       vars.options.browserMode.simulate.objects = util.readSetting(com_idc_params, "options.browserMode.simulate.objects", "object", {});
-    }
-    if (com_idc_params.options.utilitiesMenu) {
-      vars.options.utilitiesMenu.sets.default.centerGroup = util.readSetting(com_idc_params, "options.utilitiesMenu.sets.default.centerGroup", "object", []);
-      vars.options.utilitiesMenu.sets.default.rightGroup = util.readSetting(com_idc_params, "options.utilitiesMenu.sets.default.rightGroup", "object", []);
     }
 
     //common html
@@ -638,6 +638,15 @@ com.idc.clm = {
 
       return newSlide;
     });
+
+    //utilities menu
+    if (com_idc_params.utilitiesMenu) {
+      vars.utilitiesMenu.sets.mainSlide.centerGroup = util.readSetting(com_idc_params, "utilitiesMenu.sets.mainSlide.centerGroup", "object", []);
+      vars.utilitiesMenu.sets.mainSlide.rightGroup = util.readSetting(com_idc_params, "utilitiesMenu.sets.mainSlide.rightGroup", "object", []);
+
+      vars.utilitiesMenu.sets.standaloneModal.centerGroup = util.readSetting(com_idc_params, "utilitiesMenu.sets.standaloneModal.centerGroup", "object", []);
+      vars.utilitiesMenu.sets.standaloneModal.rightGroup = util.readSetting(com_idc_params, "utilitiesMenu.sets.standaloneModal.rightGroup", "object", []);
+    }
 
     //standalone modal groups
     if (com_idc_params.standaloneModalGroups) {
@@ -1913,7 +1922,7 @@ com.idc.clm = {
     com.idc.ui.core.link.awake();
 
     //utilities menu
-    com.idc.ui.core.utilitiesMenu.init();
+    com.idc.ui.core.utilitiesMenu.awake();
 
     //standard or standalone functionality
     if (!this.vars.navigation.currentSlide.isStandalone) {
@@ -1962,7 +1971,7 @@ com.idc.clm = {
 
     //references if necessary
     if (this.vars.references.active) {
-      com.idc.ui.references.init();
+      com.idc.ui.core.references.init();
     }
   },
 
@@ -2664,6 +2673,20 @@ com.idc.ui = {
         });
       },
     },
+    menu: {
+      selector: '[data-type="com.idc.ui.core.menu"]',
+      setActiveInstance: function () {
+        document.querySelectorAll(this.selector).forEach((el) => {
+          el.querySelectorAll(`[data-sub-type="com.idc.ui.core.menu.button"]`).forEach((button) => {
+            if (button.getAttribute("data-target-id") == com.idc.clm.vars.navigation.currentSlide.id) {
+              button.setAttribute("data-view-state", "on");
+            } else {
+              button.setAttribute("data-view-state", "off");
+            }
+          });
+        });
+      },
+    },
     modal: {
       selector: '[data-type="com.idc.ui.core.modal.popUp"],[data-type="com.idc.ui.core.modal.dropDown"],[data-type="com.idc.ui.core.modal.modalObject"]',
       collection: [],
@@ -2826,7 +2849,7 @@ com.idc.ui = {
               });
             }, 300);
 
-            //prev and next arrows (standalone modal groups)
+            //standalone modal groups (arrows, swipe, paginator, index modal)
             if (el.isStandalone) {
               const prevArrow = el.querySelector('[data-type="com.idc.ui.core.navigation.arrow"][data-sub-type="com.idc.ui.core.modal.prevArrow"]');
               if (prevArrow) {
@@ -2841,10 +2864,7 @@ com.idc.ui = {
                   element: nextArrow,
                 };
               }
-            }
 
-            //standalone modal groups
-            if (el.isStandalone) {
               if (this.standaloneModalGroups.standalonelBelongsToActiveGroup()) {
                 this.standaloneModalGroups.setArrowsAndSwipe(el);
                 this.standaloneModalGroups.setGroupElementsVisibility(el, true);
@@ -2888,8 +2908,9 @@ com.idc.ui = {
         this.style.zIndex = com.idc.ui.core.modal.activeModalsStack.length * 10;
         this.components.backModal.element.style.zIndex = com.idc.ui.core.modal.activeModalsStack.length * 10;
 
-        //set utilities menu
-        com.idc.ui.core.utilitiesMenu.handleModalAction("open", this.id);
+        //refresh utilities menu
+        com.idc.ui.core.utilitiesMenu.updateGroupsContents();
+        com.idc.ui.core.utilitiesMenu.updateStyleAndZIndex();
 
         //show
         this.show();
@@ -2928,8 +2949,9 @@ com.idc.ui = {
           //remove from active modals stack
           com.idc.ui.core.modal.activeModalsStack.splice(com.idc.ui.core.modal.activeModalsStack.indexOf(this.id), 1);
 
-          //set utilities menu
-          com.idc.ui.core.utilitiesMenu.handleModalAction("close", this.id);
+          //refresh utilities menu
+          com.idc.ui.core.utilitiesMenu.updateGroupsContents();
+          com.idc.ui.core.utilitiesMenu.updateStyleAndZIndex();
 
           //hide modal and backmodal
           this.hide();
@@ -3078,8 +3100,9 @@ com.idc.ui = {
 
           if (position.order > 0) {
             //prev slide
-            let prevSlide = com.idc.clm.vars.standaloneModalGroups.groups.find((group) => group.id == com.idc.clm.persistentData.session.selectedStandaloneGroup)
-              .slides[position.order - 1];
+            let prevSlide = com.idc.clm.vars.standaloneModalGroups.groups.find(
+              (group) => group.id == com.idc.clm.persistentData.session.selectedStandaloneGroup
+            ).slides[position.order - 1];
 
             //arrow visibility and link
             if (el.components.prevArrow) {
@@ -3095,8 +3118,9 @@ com.idc.ui = {
 
           if (position.order < position.total - 1) {
             //next slide
-            let nextSlide = com.idc.clm.vars.standaloneModalGroups.groups.find((group) => group.id == com.idc.clm.persistentData.session.selectedStandaloneGroup)
-              .slides[position.order + 1];
+            let nextSlide = com.idc.clm.vars.standaloneModalGroups.groups.find(
+              (group) => group.id == com.idc.clm.persistentData.session.selectedStandaloneGroup
+            ).slides[position.order + 1];
 
             //arrow visibility and link
             if (el.components.nextArrow) {
@@ -3112,7 +3136,7 @@ com.idc.ui = {
         },
         setGroupElementsVisibility: function (pElement, pVisible) {
           let indexOpenButtonId = com.idc.clm.vars.standaloneModalGroups.indexModal.openButton;
-          let indexOpenButton = pElement.querySelector('#' + indexOpenButtonId);
+          let indexOpenButton = pElement.querySelector("#" + indexOpenButtonId);
           if (indexOpenButton) {
             if (pVisible) {
               indexOpenButton.style.display = "block";
@@ -3155,13 +3179,12 @@ com.idc.ui = {
           let template = groupSlidesEl.querySelector('[data-type="com.idc.ui.core.modal.groupSlides.item"]');
 
           activeGroup.slides.forEach((slideId) => {
-
             let slide = com.idc.clm.findSlide(slideId);
 
             let itemElement = template.cloneNode(true);
 
             itemElement.setAttribute("data-slide-id", slide.id);
-    
+
             let thumb = itemElement.querySelector('[data-type="com.idc.ui.core.modal.groupSlides.item.thumb"]');
             if (thumb) {
               let img = thumb.querySelector("img");
@@ -3169,12 +3192,12 @@ com.idc.ui = {
                 img.setAttribute("src", util.getSharedResourcesPath() + "img/thumbnails/" + slide.id + ".png");
               }
             }
-    
+
             let label = itemElement.querySelector('[data-type="com.idc.ui.core.modal.groupSlides.item.label"]');
             if (label) {
               label.innerHTML = slide.description;
             }
-    
+
             itemElement.addEventListener("click", (evt) => {
               com.idc.clm.gotoSlide(slide.id);
             });
@@ -3183,22 +3206,7 @@ com.idc.ui = {
           });
 
           template.remove();
-          
-        }
-      },
-    },
-    menu: {
-      selector: '[data-type="com.idc.ui.core.menu"]',
-      setActiveInstance: function () {
-        document.querySelectorAll(this.selector).forEach((el) => {
-          el.querySelectorAll(`[data-sub-type="com.idc.ui.core.menu.button"]`).forEach((button) => {
-            if (button.getAttribute("data-target-id") == com.idc.clm.vars.navigation.currentSlide.id) {
-              button.setAttribute("data-view-state", "on");
-            } else {
-              button.setAttribute("data-view-state", "off");
-            }
-          });
-        });
+        },
       },
     },
     navigationArrows: {
@@ -3262,6 +3270,169 @@ com.idc.ui = {
               this.nextArrow.setAttribute("data-view-state", "active");
             }
           }
+        }
+      },
+    },
+    references: {
+      activeRefs: {
+        all: null,
+        slide: null,
+      },
+      switch: {
+        active: null,
+        selected: null,
+      },
+      scroll: null,
+      init: function () {
+        let vars = com.idc.clm.vars;
+
+        //all references
+        let containsAllRefs;
+        if (vars.references.content.landscape) {
+          containsAllRefs = true;
+          this.activeRefs.all = vars.references.content;
+        }
+
+        //slide references
+        let containsSlideRefs;
+        let currentSlide = vars.slides.find((slide) => {
+          return slide.id == vars.navigation.currentSlide.id;
+        });
+        if (currentSlide.references) {
+          if (currentSlide.references.default.landscape) {
+            this.setActiveSlideRefs(currentSlide.references.default);
+            containsSlideRefs = true;
+          }
+        }
+
+        //switch
+        if (containsSlideRefs && containsAllRefs) {
+          this.switch.active = true;
+          this.switch.selected = "slide";
+        } else {
+          this.switch.active = false;
+          if (containsSlideRefs) this.switch.selected = "slide";
+          if (containsAllRefs) this.switch.selected = "all";
+        }
+
+        //disable open button
+        if (!containsSlideRefs && !containsAllRefs) {
+          this.disableOpenButton();
+        }
+
+        this.setEvents();
+      },
+      disableOpenButton: function () {
+        let vars = com.idc.clm.vars;
+        let openButton = document.querySelector(`#${vars.references.components.openButton.id}`);
+        if (openButton) {
+          openButton.setAttribute("data-view-state", "disabled");
+        }
+      },
+      setActiveSlideRefs: function (pRefs) {
+        this.activeRefs.slide = pRefs;
+      },
+      setEvents: function () {
+        let vars = com.idc.clm.vars;
+
+        //before and after open
+        let modal = document.querySelector(`#${vars.references.components.modal.id}`);
+        if (modal) {
+          modal.overwriteParameterFunction("beforeOpen", this.beforeOpen);
+          modal.overwriteParameterFunction("afterOpen", this.afterOpen);
+        }
+
+        //orientation change
+        document.addEventListener("konaOrientationChange", () => {
+          this.removeContent();
+          this.setContent(this.switch.selected, this.activeRefs);
+          this.scrollRefresh();
+        });
+
+        //switch
+        if (this.switch.active) {
+          let switchElement = document.querySelector(`#${vars.references.components.modal.id} [data-type="com.idc.ui.references.switch"]`);
+          if (switchElement) {
+            switchElement.addEventListener("click", (event) => {
+              if (this.switch.selected == "all") {
+                this.switch.selected = "slide";
+              } else {
+                this.switch.selected = "all";
+              }
+
+              this.removeContent();
+              this.setContent(this.switch.selected, this.activeRefs);
+              this.scrollRefresh();
+            });
+          }
+        }
+      },
+      beforeOpen: function () {
+        com.idc.ui.core.references.removeContent();
+        com.idc.ui.core.references.setContent(com.idc.ui.core.references.switch.selected, com.idc.ui.core.references.activeRefs);
+      },
+      afterOpen: function () {
+        com.idc.ui.core.references.scrollRefresh();
+      },
+      removeContent: function () {
+        let vars = com.idc.clm.vars;
+
+        document.querySelector(`#${vars.references.components.modal.id} [data-type="com.idc.ui.references.landscapeView"]`).innerHTML = "";
+        document.querySelector(`#${vars.references.components.modal.id} [data-type="com.idc.ui.references.landscapeView"]`).removeAttribute("data-view-state");
+        document.querySelector(`#${vars.references.components.modal.id} [data-type="com.idc.ui.references.portraitView"]`).innerHTML = "";
+        document.querySelector(`#${vars.references.components.modal.id} [data-type="com.idc.ui.references.portraitView"]`).removeAttribute("data-view-state");
+      },
+      setContent: function (type, source) {
+        let vars = com.idc.clm.vars;
+        let util = com.idc.util;
+        let screenOrientation = vars.screen.orientation;
+
+        //img source
+        let refsFile = screenOrientation == "landscape" ? source[type].landscape : source[type].portrait ? source[type].portrait : source[type].landscape;
+
+        //container
+        let selector = `#${vars.references.components.modal.id} [data-type="com.idc.ui.references"] [data-type="com.idc.ui.references.${screenOrientation}View"]`;
+        let refsContainer = document.querySelector(selector);
+        refsContainer.innerHTML = "";
+
+        //container attributes
+        refsContainer.setAttribute("data-ref-src", refsFile);
+
+        //content image
+        let refsIMG = document.createElement("img");
+        let folderPath = type == "all" ? util.getSharedResourcesPath() : "";
+        refsIMG.setAttribute("src", folderPath + "img/references/" + refsFile);
+        refsContainer.appendChild(refsIMG);
+
+        //set visible
+        refsContainer.setAttribute("data-view-state", "active");
+
+        //switch
+        if (this.switch.active) {
+          let switchElement = document.querySelector(`#${vars.references.components.modal.id} [data-type="com.idc.ui.references.switch"]`);
+          if (switchElement) {
+            switchElement.setAttribute("data-view-state", "active");
+            switchElement.setAttribute("data-selected", type);
+          }
+        }
+
+        //scroll
+        if (this.scroll) {
+          this.scroll.destroy();
+          this.scroll = null;
+        }
+        let scrollContainerSelector = `#${vars.references.components.modal.id} [data-type="com.idc.ui.references.scrollContainer"]`;
+        this.scroll = new IScroll(scrollContainerSelector, {
+          scrollbars: true,
+          fadeScrollbars: false,
+          interactiveScrollbars: true,
+        });
+      },
+      scrollRefresh: function () {
+        if (this.scroll) {
+          setTimeout(() => {
+            this.scroll.refresh();
+          }, 200);
         }
       },
     },
@@ -3648,34 +3819,91 @@ com.idc.ui = {
           placeholder: null,
         },
         containers: {
-          center: null,
-          right: null,
+          centerGroup: null,
+          rightGroup: null,
         },
       },
-      init: function () {
+      awake: function () {
+        let vars = com.idc.clm.vars;
+
         this.components.el = document.querySelector('[data-type="com.idc.ui.utilitiesMenu"]');
         if (!this.components.el) return;
 
         //containers
-        this.components.containers.all = this.components.el.querySelector('[data-type="com.idc.ui.utilitiesMenu.items"]');
-        this.components.containers.center = this.components.el.querySelector(
+        this.components.containers.centerGroup = this.components.el.querySelector(
           '[data-type="com.idc.ui.utilitiesMenu.container"][data-sub-type="com.idc.ui.utilitiesMenu.container.center"]'
         );
-        this.components.containers.right = this.components.el.querySelector(
+        this.components.containers.rightGroup = this.components.el.querySelector(
           '[data-type="com.idc.ui.utilitiesMenu.container"][data-sub-type="com.idc.ui.utilitiesMenu.container.right"]'
         );
 
-        //items
-        this.components.items.separator = this.components.containers.all.querySelector('[data-type="com.idc.ui.utilitiesMenu.separator"]');
-        this.components.items.placeholder = this.components.containers.all.querySelector('[data-type="com.idc.ui.utilitiesMenu.placeholder"]');
+        //items, separator and placeholder
+        this.components.el.querySelector('[data-type="com.idc.ui.utilitiesMenu.items"]').childNodes.forEach((item) => {
+          switch (item.getAttribute("data-type")) {
+            case "com.idc.ui.utilitiesMenu.separator":
+              this.components.items.separator = item;
+              break;
+            case "com.idc.ui.utilitiesMenu.placeholder":
+              this.components.items.placeholder = item;
+              break;
+            default:
+              this.components.items.buttons.push(item);
+          }
+        });
 
-        //set menu
-        this.setMenu("default");
+        //if not standalone, update contents, style and z-index
+        //if a standalone modal, method will be called from the modal itself
+        if (!vars.navigation.currentSlide.isStandalone) {
+          //update contents
+          this.updateGroupsContents();
+
+          //set style and z-index
+          this.updateStyleAndZIndex();
+        }
       },
-      setMenu: function (setName) {
-        let activeModalsStack = com.idc.ui.core.modal.activeModalsStack;
+      updateGroupsContents: function () {
+        let vars = com.idc.clm.vars;
 
-        //set style name
+        //set group contents
+        let currentSet = com.idc.clm.vars.utilitiesMenu.sets[vars.navigation.currentSlide.isStandalone ? "standaloneModal" : "mainSlide"];
+
+        //for each group
+        ["centerGroup", "rightGroup"].forEach((groupName) => {
+          this.components.containers[groupName].innerHTML = "";
+          currentSet[groupName].forEach((elementId) => {
+            //find element
+            let element = this.components.items.buttons.find((el) => el.id == elementId);
+            if (!element) return;
+
+            //add element to container
+            this.components.containers[groupName].appendChild(element);
+
+            //if not last item, add separator
+            let isLastItem = currentSet[groupName].indexOf(elementId) == currentSet[groupName].length - 1;
+            if (!isLastItem) {
+              this.components.containers[groupName].appendChild(this.components.items.separator.cloneNode(true));
+            }
+          });
+        });
+
+        //if standalone modal, add close button to right container
+        if (vars.navigation.currentSlide.isStandalone) {
+          let standaloneModalId = com.idc.clm.findSlide(vars.navigation.currentSlide.id).standaloneModal.modalId;
+          let closeButton = document.querySelector(`#${standaloneModalId}`).components.closeButton.element;
+          if (closeButton) {
+            this.components.containers.rightGroup.appendChild(this.components.items.separator.cloneNode(true));
+            this.components.containers.rightGroup.appendChild(closeButton);
+          }
+        }
+      },
+      updateStyleAndZIndex: function () {
+        let vars = com.idc.clm.vars;
+        let activeModalsStack = com.idc.ui.core.modal.activeModalsStack;
+        let aModalIsActive = activeModalsStack.length > 0;
+        let activeModalId = aModalIsActive ? activeModalsStack[activeModalsStack.length - 1] : null;
+        let isActiveModalStandalone = aModalIsActive ? document.querySelector(`#${activeModalId}`).isStandalone : false;
+
+        //style name
         let styleName;
         if (activeModalsStack.length > 0) {
           styleName = "light"; //a modal is active
@@ -3683,107 +3911,31 @@ com.idc.ui = {
           styleName = "dark"; //main slide
         }
 
-        //reset containers (remove separator/placeholder and move elements back to all)
-        this.resetContainerAndItems("center");
-        this.resetContainerAndItems("right");
+        //set style and z-index
+        ["centerGroup", "rightGroup"].forEach((groupName) => {
+          this.components.containers[groupName].childNodes.forEach((el) => {
+            //style
+            el.setAttribute("data-style", styleName);
 
-        //assign elements to containers
-        this.assignElementsToContainer(setName, "center", styleName);
-        this.assignElementsToContainer(setName, "right", styleName);
-
-        //for standalone modals: add modal close button to right container
-        let addCloseButton = activeModalsStack.length >= 1 && document.querySelector(`#${activeModalsStack[0]}`).isStandalone;
-        if (addCloseButton) {
-          this.addCloseButtonToRightContainer(activeModalsStack[0], styleName);
-        }
-
-        //set items z-index
-        this.setZIndex("center");
-        this.setZIndex("right");
-      },
-      setZIndex: function (zIndex) {
-        let activeModalsStack = com.idc.ui.core.modal.activeModalsStack;
-
-        //main slide: all buttons z-index 0
-        if (activeModalsStack.length == 0) {
-          this.components.containers[zIndex].childNodes.forEach((el) => {
-            el.style.zIndex = 0;
-          });
-          return;
-        }
-
-        //standalone modal: all buttons z-index 1
-        if (activeModalsStack.length == 1 && document.querySelector(`#${activeModalsStack[0]}`).isStandalone) {
-          this.components.containers[zIndex].childNodes.forEach((el) => {
-            el.style.zIndex = activeModalsStack.length * 10 + 1; //all buttons visible, z-index 10 + 1
-          });
-          return;
-        }
-
-        //common modal: just dual button z-index activeModalsStack.length * 10 + 1
-        if (activeModalsStack.length > 1 || !document.querySelector(`#${activeModalsStack[0]}`).isStandalone) {
-          let activeModal = document.querySelector("#" + activeModalsStack[activeModalsStack.length - 1]);
-
-          //if dual button, set z-index of modal + 1
-          if (activeModal.components.dualButton) {
-            activeModal.components.dualButton.element.style.zIndex = activeModalsStack.length * 10 + 1;
-          }
-
-          return;
-        }
-      },
-      resetContainerAndItems: function (containerName) {
-        //reset and move items (links, buttons)
-        let nodesList = this.components.containers[containerName].childNodes;
-        for (let i = 0; i < nodesList.length; i++) {
-          if (!nodesList[i].getAttribute) continue;
-          let dataType = nodesList[i].getAttribute("data-type");
-          switch (dataType) {
-            case "com.idc.ui.core.button":
-            case "com.idc.ui.core.link":
-              nodesList[i].removeAttribute("data-style"); //clear data style attribute
-              this.components.containers.all.appendChild(nodesList[i]); //move to "all" container
-              break;
-          }
-        }
-
-        //remove remaining separator and placeholder
-        this.components.containers[containerName].innerHTML = "";
-      },
-      assignElementsToContainer: function (setName, groupName, styleName) {
-        let vars = com.idc.clm.vars;
-        let groupArr = vars.options.utilitiesMenu.sets[setName][`${groupName}Group`];
-
-        for (let i = 0; i < groupArr.length; i++) {
-          let separatorDiv = this.components.items.separator.cloneNode(true);
-          separatorDiv.setAttribute("data-style", styleName);
-
-          let elementDiv = document.querySelector("#" + groupArr[i]);
-          if (elementDiv) {
-            elementDiv.setAttribute("data-style", styleName);
-            this.components.containers[groupName].appendChild(elementDiv);
-            if (i < groupArr.length - 1) {
-              this.components.containers[groupName].appendChild(separatorDiv);
+            //z-index
+            if (!aModalIsActive) {
+              //main slide, all buttons z-index 0
+              el.style.zIndex = 0;
+            } else {
+              if (isActiveModalStandalone) {
+                //standalone, bring all buttons to front
+                el.style.zIndex = activeModalsStack.length * 10 + 1;
+              } else {
+                //normal modal, just bring dual button and references to front
+                let isDualButtonOfCurrentModal = el.getAttribute("data-sub-type") == "com.idc.ui.core.modal.dualButton" && el.getAttribute("data-target-id") == activeModalId;
+                let isReferencesOpenButton = el.getAttribute("id") == vars.references.components.openButton.id;
+                if (isDualButtonOfCurrentModal || isReferencesOpenButton) {
+                  el.style.zIndex = activeModalsStack.length * 10 + 1;
+                }
+              }
             }
-          }
-        }
-      },
-      addCloseButtonToRightContainer: function (modalId, styleName) {
-        let activeModal = document.querySelector("#" + modalId);
-        let groupName = "right";
-        let closeButton = activeModal.components.closeButton.element;
-
-        //separator
-        let separatorDiv = this.components.items.separator.cloneNode(true);
-        separatorDiv.setAttribute("data-style", styleName);
-        this.components.containers[groupName].appendChild(separatorDiv);
-
-        //closebutton
-        this.components.containers[groupName].appendChild(closeButton);
-      },
-      handleModalAction: function (actionType, modalId) {
-        if (!this.components.el) return;
-        this.setMenu("default");
+          });
+        });
       },
     },
   },
@@ -4557,169 +4709,6 @@ com.idc.ui = {
             badge.style.display = "none";
           }
         }
-      }
-    },
-  },
-  references: {
-    activeRefs: {
-      all: null,
-      slide: null,
-    },
-    switch: {
-      active: null,
-      selected: null,
-    },
-    scroll: null,
-    init: function () {
-      let vars = com.idc.clm.vars;
-
-      //all references
-      let containsAllRefs;
-      if (vars.references.content.landscape) {
-        containsAllRefs = true;
-        this.activeRefs.all = vars.references.content;
-      }
-
-      //slide references
-      let containsSlideRefs;
-      let currentSlide = vars.slides.find((slide) => {
-        return slide.id == vars.navigation.currentSlide.id;
-      });
-      if (currentSlide.references) {
-        if (currentSlide.references.default.landscape) {
-          this.setActiveSlideRefs(currentSlide.references.default);
-          containsSlideRefs = true;
-        }
-      }
-
-      //switch
-      if (containsSlideRefs && containsAllRefs) {
-        this.switch.active = true;
-        this.switch.selected = "slide";
-      } else {
-        this.switch.active = false;
-        if (containsSlideRefs) this.switch.selected = "slide";
-        if (containsAllRefs) this.switch.selected = "all";
-      }
-
-      //disable open button
-      if (!containsSlideRefs && !containsAllRefs) {
-        this.disableOpenButton();
-      }
-
-      this.setEvents();
-    },
-    disableOpenButton: function () {
-      let vars = com.idc.clm.vars;
-      let openButton = document.querySelector(`#${vars.references.components.openButton.id}`);
-      if (openButton) {
-        openButton.setAttribute("data-view-state", "disabled");
-      }
-    },
-    setActiveSlideRefs: function (pRefs) {
-      this.activeRefs.slide = pRefs;
-    },
-    setEvents: function () {
-      let vars = com.idc.clm.vars;
-
-      //before and after open
-      let modal = document.querySelector(`#${vars.references.components.modal.id}`);
-      if (modal) {
-        modal.overwriteParameterFunction("beforeOpen", this.beforeOpen);
-        modal.overwriteParameterFunction("afterOpen", this.afterOpen);
-      }
-
-      //orientation change
-      document.addEventListener("konaOrientationChange", () => {
-        this.removeContent();
-        this.setContent(this.switch.selected, this.activeRefs);
-        this.scrollRefresh();
-      });
-
-      //switch
-      if (this.switch.active) {
-        let switchElement = document.querySelector(`#${vars.references.components.modal.id} [data-type="com.idc.ui.references.switch"]`);
-        if (switchElement) {
-          switchElement.addEventListener("click", (event) => {
-            if (this.switch.selected == "all") {
-              this.switch.selected = "slide";
-            } else {
-              this.switch.selected = "all";
-            }
-
-            this.removeContent();
-            this.setContent(this.switch.selected, this.activeRefs);
-            this.scrollRefresh();
-          });
-        }
-      }
-    },
-    beforeOpen: function () {
-      com.idc.ui.references.removeContent();
-      com.idc.ui.references.setContent(com.idc.ui.references.switch.selected, com.idc.ui.references.activeRefs);
-    },
-    afterOpen: function () {
-      com.idc.ui.references.scrollRefresh();
-    },
-    removeContent: function () {
-      let vars = com.idc.clm.vars;
-
-      document.querySelector(`#${vars.references.components.modal.id} [data-type="com.idc.ui.references.landscapeView"]`).innerHTML = "";
-      document.querySelector(`#${vars.references.components.modal.id} [data-type="com.idc.ui.references.landscapeView"]`).removeAttribute("data-view-state");
-      document.querySelector(`#${vars.references.components.modal.id} [data-type="com.idc.ui.references.portraitView"]`).innerHTML = "";
-      document.querySelector(`#${vars.references.components.modal.id} [data-type="com.idc.ui.references.portraitView"]`).removeAttribute("data-view-state");
-    },
-    setContent: function (type, source) {
-      let vars = com.idc.clm.vars;
-      let util = com.idc.util;
-      let screenOrientation = vars.screen.orientation;
-
-      //img source
-      let refsFile = screenOrientation == "landscape" ? source[type].landscape : source[type].portrait ? source[type].portrait : source[type].landscape;
-
-      //container
-      let selector = `#${vars.references.components.modal.id} [data-type="com.idc.ui.references"] [data-type="com.idc.ui.references.${screenOrientation}View"]`;
-      let refsContainer = document.querySelector(selector);
-      refsContainer.innerHTML = "";
-
-      //container attributes
-      refsContainer.setAttribute("data-ref-src", refsFile);
-
-      //content image
-      let refsIMG = document.createElement("img");
-      let folderPath = type == "all" ? util.getSharedResourcesPath() : "";
-      refsIMG.setAttribute("src", folderPath + "img/references/" + refsFile);
-      refsContainer.appendChild(refsIMG);
-
-      //set visible
-      refsContainer.setAttribute("data-view-state", "active");
-
-      //switch
-      if (this.switch.active) {
-        let switchElement = document.querySelector(`#${vars.references.components.modal.id} [data-type="com.idc.ui.references.switch"]`);
-        if (switchElement) {
-          switchElement.setAttribute("data-view-state", "active");
-          switchElement.setAttribute("data-selected", type);
-        }
-      }
-
-      //scroll
-      if (this.scroll) {
-        this.scroll.destroy();
-        this.scroll = null;
-      }
-      let scrollContainerSelector = `#${vars.references.components.modal.id} [data-type="com.idc.ui.references.scrollContainer"]`;
-      this.scroll = new IScroll(scrollContainerSelector, {
-        scrollbars: true,
-        fadeScrollbars: false,
-        interactiveScrollbars: true,
-      });
-    },
-    scrollRefresh: function () {
-      if (this.scroll) {
-        setTimeout(() => {
-          this.scroll.refresh();
-        }, 200);
       }
     },
   },

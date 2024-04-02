@@ -466,7 +466,7 @@ body[data-screen-orientation="portrait"] > [data-type="com.idc.ui.contentSize"] 
 }
 [data-type="com.idc.ui.utilitiesMenu"] [data-type="com.idc.ui.utilitiesMenu.container"][data-sub-type="com.idc.ui.utilitiesMenu.container.right"] {
     justify-content: right;
-    width: 30%;  
+    width: auto;  
     right: 0px;
 }
 
