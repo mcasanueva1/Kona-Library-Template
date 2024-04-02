@@ -3303,7 +3303,6 @@ com.idc.ui = {
         active: null,
         selected: null,
       },
-      scroll: null,
       init: function () {
         let vars = com.idc.clm.vars;
 
@@ -3367,7 +3366,6 @@ com.idc.ui = {
         document.addEventListener("konaOrientationChange", () => {
           this.removeContent();
           this.setContent(this.switch.selected, this.activeRefs);
-          this.scrollRefresh();
         });
 
         //switch
@@ -3383,7 +3381,6 @@ com.idc.ui = {
 
               this.removeContent();
               this.setContent(this.switch.selected, this.activeRefs);
-              this.scrollRefresh();
             });
           }
         }
@@ -3391,9 +3388,6 @@ com.idc.ui = {
       beforeOpen: function () {
         com.idc.ui.core.references.removeContent();
         com.idc.ui.core.references.setContent(com.idc.ui.core.references.switch.selected, com.idc.ui.core.references.activeRefs);
-      },
-      afterOpen: function () {
-        com.idc.ui.core.references.scrollRefresh();
       },
       removeContent: function () {
         let vars = com.idc.clm.vars;
@@ -3435,25 +3429,6 @@ com.idc.ui = {
             switchElement.setAttribute("data-view-state", "active");
             switchElement.setAttribute("data-selected", type);
           }
-        }
-
-        //scroll
-        if (this.scroll) {
-          this.scroll.destroy();
-          this.scroll = null;
-        }
-        let scrollContainerSelector = `#${vars.references.components.modal.id} [data-type="com.idc.ui.references.scrollContainer"]`;
-        this.scroll = new IScroll(scrollContainerSelector, {
-          scrollbars: true,
-          fadeScrollbars: false,
-          interactiveScrollbars: true,
-        });
-      },
-      scrollRefresh: function () {
-        if (this.scroll) {
-          setTimeout(() => {
-            this.scroll.refresh();
-          }, 200);
         }
       },
     },
