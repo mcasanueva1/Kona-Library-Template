@@ -127,23 +127,23 @@ let com_idc_params = {
     "active": false,
     "sets": {
       "mainSlide": {
-        "buttonViewState": null,
+        "buttonViewState": "off",
         "centerGroup": [],
         "rightGroup": [],
       },
       "standaloneModal": {
-        "buttonViewState": null,
-        "appendCloseButtonToRightGroup": null,
+        "buttonViewState": "on",
+        "appendCloseButtonToRightGroup": true,
         "centerGroup": [],
         "rightGroup": [],
       },
       "regularModals": {
         "bringToFront": {
           "dualButtonForActiveModal": {
-            "active": null
+            "active": true
           },
           "referencesButton": {
-            "active": null,
+            "active": true,
             "excludeModals": []
           }
         }
