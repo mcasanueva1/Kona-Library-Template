@@ -458,6 +458,10 @@ body[data-screen-orientation="portrait"] > [data-type="com.idc.ui.contentSize"] 
     width: auto;  
     right: 0px;
 }
+[data-type="com.idc.ui.utilitiesMenu.separator"] {
+    margin-left: 8px;
+    margin-right: 8px;
+}
 
 /* email badge */
 [data-type="com.idc.ui.utilitiesMenu"] #emailCartOpenButton [data-type="com.idc.ui.emailCart.badge"] {
