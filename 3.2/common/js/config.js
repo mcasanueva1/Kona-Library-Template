@@ -107,7 +107,6 @@ let com_idc_params = {
       },
       "precedence": ["myPresentations", "customField", "hardcodedProfiles", "externalFunction"],
     },
-    "swippingPopUpGroups": {}
   },
   "commonHTML": {
     "active": true,
@@ -116,6 +115,41 @@ let com_idc_params = {
   },
   "slides": [
   ],
+  "standaloneModalGroups": {
+    "active": false,
+    "indexModal": {
+      "id": null,
+      "openButton": null,
+    },
+    "groups": [],
+  },
+  "utilitiesMenu": {
+    "active": false,
+    "sets": {
+      "mainSlide": {
+        "buttonViewState": null,
+        "centerGroup": [],
+        "rightGroup": [],
+      },
+      "standaloneModal": {
+        "buttonViewState": null,
+        "appendCloseButtonToRightGroup": null,
+        "centerGroup": [],
+        "rightGroup": [],
+      },
+      "regularModals": {
+        "bringToFront": {
+          "dualButtoForActiveModal": {
+            "active": null
+          },
+          "referencesButton": {
+            "active": null,
+            "excludeModals": []
+          }
+        }
+      }
+    },
+  },
   "emailCart": {
     "active": false,
     "components": {
