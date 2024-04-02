@@ -438,6 +438,58 @@ com.idc.templates = {
           },
         ],
       },
+    ],
+    "utilitiesMenu": [
+      {
+        "type": "DIV",
+        "attributes": [
+          {
+            "data-type": "com.idc.ui.utilitiesMenu"
+          }
+        ],
+        "childNodes": [
+          {
+            "type": "DIV",
+            "attributes": [
+              {
+                "data-type": "com.idc.ui.utilitiesMenu.container"
+              },
+              {
+                "data-sub-type": "com.idc.ui.utilitiesMenu.container.center"
+              }
+            ]
+          },
+          {
+            "type": "DIV",
+            "attributes": [
+              {
+                "data-type": "com.idc.ui.utilitiesMenu.container"
+              },
+              {
+                "data-sub-type": "com.idc.ui.utilitiesMenu.container.right"
+              }
+            ]
+          },
+          {
+            "type": "DIV",
+            "attributes": [
+              {
+                "data-type": "com.idc.ui.utilitiesMenu.items"
+              }
+            ],
+            "childNodes": [
+              {
+                "type": "DIV",
+                "attributes": [
+                  {
+                    "data-type": "com.idc.ui.utilitiesMenu.placeholder"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
     ]
   },
   "dynamicPresentation": {
