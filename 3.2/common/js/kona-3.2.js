@@ -206,6 +206,7 @@ com.idc.clm = {
       ],
     },
     utilitiesMenu: {
+      active: null,
       sets: {
         mainSlide: {
           centerGroup: [],
@@ -641,6 +642,8 @@ com.idc.clm = {
 
     //utilities menu
     if (com_idc_params.utilitiesMenu) {
+      vars.utilitiesMenu.active = util.readSetting(com_idc_params, "utilitiesMenu.active", "boolean", false);
+
       vars.utilitiesMenu.sets.mainSlide.centerGroup = util.readSetting(com_idc_params, "utilitiesMenu.sets.mainSlide.centerGroup", "object", []);
       vars.utilitiesMenu.sets.mainSlide.rightGroup = util.readSetting(com_idc_params, "utilitiesMenu.sets.mainSlide.rightGroup", "object", []);
 
@@ -2909,8 +2912,10 @@ com.idc.ui = {
         this.components.backModal.element.style.zIndex = com.idc.ui.core.modal.activeModalsStack.length * 10;
 
         //refresh utilities menu
-        com.idc.ui.core.utilitiesMenu.updateGroupsContents();
-        com.idc.ui.core.utilitiesMenu.updateStyleAndZIndex();
+        if (com.idc.clm.vars.utilitiesMenu.active) {
+          com.idc.ui.core.utilitiesMenu.updateGroupsContents();
+          com.idc.ui.core.utilitiesMenu.updateStyleAndZIndex();
+        }
 
         //show
         this.show();
@@ -2950,8 +2955,10 @@ com.idc.ui = {
           com.idc.ui.core.modal.activeModalsStack.splice(com.idc.ui.core.modal.activeModalsStack.indexOf(this.id), 1);
 
           //refresh utilities menu
-          com.idc.ui.core.utilitiesMenu.updateGroupsContents();
-          com.idc.ui.core.utilitiesMenu.updateStyleAndZIndex();
+          if (com.idc.clm.vars.utilitiesMenu.active) {
+            com.idc.ui.core.utilitiesMenu.updateGroupsContents();
+            com.idc.ui.core.utilitiesMenu.updateStyleAndZIndex();
+          }
 
           //hide modal and backmodal
           this.hide();
@@ -3826,6 +3833,8 @@ com.idc.ui = {
       awake: function () {
         let vars = com.idc.clm.vars;
 
+        if (!vars.utilitiesMenu.active) return;
+
         this.components.el = document.querySelector('[data-type="com.idc.ui.utilitiesMenu"]');
         if (!this.components.el) return;
 
@@ -3863,6 +3872,8 @@ com.idc.ui = {
       },
       updateGroupsContents: function () {
         let vars = com.idc.clm.vars;
+
+        if (!vars.utilitiesMenu.active) return;
 
         //set group contents
         let currentSet = com.idc.clm.vars.utilitiesMenu.sets[vars.navigation.currentSlide.isStandalone ? "standaloneModal" : "mainSlide"];
