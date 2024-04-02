@@ -139,7 +139,7 @@ let com_idc_params = {
       },
       "regularModals": {
         "bringToFront": {
-          "dualButtoForActiveModal": {
+          "dualButtonForActiveModal": {
             "active": null
           },
           "referencesButton": {
