@@ -3938,10 +3938,13 @@ com.idc.ui = {
         //if standalone modal and need to append close button to right container, add close button to right container
         if (vars.navigation.currentSlide.isStandalone && vars.utilitiesMenu.sets.standaloneModal.appendCloseButtonToRightGroup) {
           let standaloneModalId = com.idc.clm.findSlide(vars.navigation.currentSlide.id).standaloneModal.modalId;
-          let closeButton = document.querySelector(`#${standaloneModalId}`).components.closeButton.element;
+          let closeButton = document.querySelector(`#${standaloneModalId}`).components.closeButton;
           if (closeButton) {
-            this.components.containers.rightGroup.appendChild(this.components.items.separator.cloneNode(true));
-            this.components.containers.rightGroup.appendChild(closeButton);
+            let closeButtonEl = closeButton.element;
+            if (closeButtonEl) {
+              this.components.containers.rightGroup.appendChild(this.components.items.separator.cloneNode(true));
+              this.components.containers.rightGroup.appendChild(closeButtonEl);
+            }
           }
         }
       },
