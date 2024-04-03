@@ -3911,6 +3911,7 @@ com.idc.ui = {
         let vars = com.idc.clm.vars;
 
         if (!vars.utilitiesMenu.active) return;
+        if (!this.components.el) return;
 
         let slideType = vars.navigation.currentSlide.isStandalone ? "standaloneModal" : "mainSlide";
         let currentSet = vars.utilitiesMenu.sets[slideType];
@@ -3954,6 +3955,10 @@ com.idc.ui = {
       },
       updateStyleAndZIndex: function () {
         let vars = com.idc.clm.vars;
+
+        if (!vars.utilitiesMenu.active) return;
+        if (!this.components.el) return;
+
         let activeModalsStack = com.idc.ui.core.modal.activeModalsStack;
         let aModalIsActive = activeModalsStack.length > 0;
         let activeModalId = aModalIsActive ? activeModalsStack[activeModalsStack.length - 1] : null;
