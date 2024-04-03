@@ -3976,6 +3976,7 @@ com.idc.ui = {
 
         //set style and z-index
         ["centerGroup", "rightGroup"].forEach((groupName) => {
+          if (!this.components.containers[groupName]) return;
           this.components.containers[groupName].childNodes.forEach((el) => {
             //style
             el.setAttribute("data-view-state", viewStateName);
