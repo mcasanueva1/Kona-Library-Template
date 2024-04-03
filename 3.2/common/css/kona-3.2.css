@@ -482,17 +482,6 @@ body[data-screen-orientation="portrait"] > [data-type="com.idc.ui.contentSize"] 
     display: none!IMPORTANT;
 }
 
-/* dual button */
-[data-type="com.idc.ui.utilitiesMenu"] [data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.core.modal.dualButton"][data-acting-as="closeButton"] {
-    border-radius: 8% 8% 0% 0%;
-    background: white url(../img/utilitiesMenu/modal_close.png) no-repeat 0 0 / 48px!IMPORTANT;
-}
-
-/* modal close button */
-[data-type="com.idc.ui.utilitiesMenu"] [data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.core.modal.closeButton"] {
-    background: url(../img/utilitiesMenu/modal_close.png) no-repeat 0 0 / 48px!IMPORTANT;
-}
-
 /* SCROLL ------------------------------------------- */
 [data-type="com.idc.ui.core.scroll.container"][data-scroll-direction="horizontal"] {
     overflow-x: auto;
