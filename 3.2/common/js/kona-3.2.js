@@ -3942,7 +3942,11 @@ com.idc.ui = {
           if (closeButton) {
             let closeButtonEl = closeButton.element;
             if (closeButtonEl) {
+              //change position to static (disables top and left properties)
+              closeButtonEl.style.position = "static";
+              //add separator
               this.components.containers.rightGroup.appendChild(this.components.items.separator.cloneNode(true));
+              //add close button
               this.components.containers.rightGroup.appendChild(closeButtonEl);
             }
           }
