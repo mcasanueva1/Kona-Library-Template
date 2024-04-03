@@ -2916,17 +2916,24 @@ com.idc.ui = {
 
             //standalone modal groups (arrows, swipe, paginator, index modal)
             if (el.isStandalone) {
-              const prevArrow = el.querySelector('[data-type="com.idc.ui.core.navigation.arrow"][data-sub-type="com.idc.ui.core.modal.prevArrow"]');
+              const prevArrow = document.querySelector('[data-type="com.idc.ui.core.navigation.arrow"][data-sub-type="com.idc.ui.core.modal.prevArrow"]');
               if (prevArrow) {
                 el.components.prevArrow = {
                   element: prevArrow,
                 };
               }
 
-              const nextArrow = el.querySelector('[data-type="com.idc.ui.core.navigation.arrow"][data-sub-type="com.idc.ui.core.modal.nextArrow"]');
+              const nextArrow = document.querySelector('[data-type="com.idc.ui.core.navigation.arrow"][data-sub-type="com.idc.ui.core.modal.nextArrow"]');
               if (nextArrow) {
                 el.components.nextArrow = {
                   element: nextArrow,
+                };
+              }
+
+              const paginator = document.querySelector('[data-type="com.idc.ui.core.modal.paginator"]');
+              if (paginator) {
+                el.components.paginator = {
+                  element: paginator,
                 };
               }
 
@@ -3214,20 +3221,18 @@ com.idc.ui = {
             }
           }
 
-          let paginator = pElement.querySelector('[data-type="com.idc.ui.core.modal.paginator"]');
-          if (paginator) {
+          if (pElement.components.paginator) {
             if (pVisible) {
-              paginator.style.display = "block";
+              pElement.components.paginator.element.style.display = "block";
             } else {
-              paginator.style.display = "none";
+              pElement.components.paginator.element.style.display = "none";
             }
           }
         },
         setPaginator: function (pElement) {
           let position = this.positionInActiveGroup();
-          let paginator = pElement.querySelector('[data-type="com.idc.ui.core.modal.paginator"]');
-          if (paginator) {
-            paginator.innerHTML = `${position.order + 1} / ${position.total}`;
+          if (pElement.components.paginator) {
+            pElement.components.paginator.element.innerHTML = `${position.order + 1} / ${position.total}`;
           }
         },
         populateGroupSlides: function () {
