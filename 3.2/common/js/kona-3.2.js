@@ -202,6 +202,12 @@ com.idc.clm = {
         {
           id: null,
           slides: [],
+          mandatorySequence: false,
+          visibility: {
+            indexButton: true,
+            paginator: true,
+            arrows: true,
+          },
         },
       ],
     },
@@ -685,7 +691,12 @@ com.idc.clm = {
       vars.utilitiesMenu.sets.standaloneModal.rightGroup = util.readSetting(com_idc_params, "utilitiesMenu.sets.standaloneModal.rightGroup", "object", []);
 
       //regular modals
-      vars.utilitiesMenu.sets.regularModals.buttonViewState = util.readSetting(com_idc_params, "utilitiesMenu.sets.regularModals.buttonViewState", "string", null);
+      vars.utilitiesMenu.sets.regularModals.buttonViewState = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.regularModals.buttonViewState",
+        "string",
+        null
+      );
       vars.utilitiesMenu.sets.regularModals.bringToFront.dualButtonForActiveModal.active = util.readSetting(
         com_idc_params,
         "utilitiesMenu.sets.regularModals.bringToFront.dualButtonForActiveModal.active",
@@ -715,6 +726,11 @@ com.idc.clm = {
         const newGroup = JSON.parse(JSON.stringify(standaloneModalGroupTemplate));
         newGroup.id = util.readSetting(group, "id", "string", null);
         newGroup.slides = util.readSetting(group, "slides", "object", []);
+
+        newGroup.mandatorySequence = util.readSetting(group, "mandatorySequence", "boolean", false);
+        newGroup.visibility.indexButton = util.readSetting(group, "visibility.indexButton", "boolean", true);
+        newGroup.visibility.paginator = util.readSetting(group, "visibility.paginator", "boolean", true);
+        newGroup.visibility.arrows = util.readSetting(group, "visibility.arrows", "boolean", true);
 
         return newGroup;
       });
@@ -2939,12 +2955,11 @@ com.idc.ui = {
 
               if (this.standaloneModalGroups.standalonelBelongsToActiveGroup()) {
                 this.standaloneModalGroups.setArrowsAndSwipe(el);
-                this.standaloneModalGroups.setGroupElementsVisibility(el, true);
                 this.standaloneModalGroups.setPaginator(el);
                 this.standaloneModalGroups.populateGroupSlides();
-              } else {
-                this.standaloneModalGroups.setGroupElementsVisibility(el, false);
+                this.standaloneModalGroups.preventCloseIfMandatoryGroup(el);
               }
+              this.standaloneModalGroups.setGroupElementsVisibility(el);
             }
           }
         });
@@ -3171,19 +3186,21 @@ com.idc.ui = {
 
           return { order: activeGroup.slides.indexOf(slideId), total: activeGroup.slides.length };
         },
-        setArrowsAndSwipe: function (el) {
+        setArrowsAndSwipe: function (pElement) {
+          let group = com.idc.clm.vars.standaloneModalGroups.groups.find((group) => group.id == com.idc.clm.persistentData.session.selectedStandaloneGroup);
+          if (!group) return;
+
           let position = this.positionInActiveGroup();
 
           if (position.order > 0) {
             //prev slide
-            let prevSlide = com.idc.clm.vars.standaloneModalGroups.groups.find(
-              (group) => group.id == com.idc.clm.persistentData.session.selectedStandaloneGroup
-            ).slides[position.order - 1];
+            let prevSlide = group.slides[position.order - 1];
 
             //arrow visibility and link
-            if (el.components.prevArrow) {
-              el.components.prevArrow.element.setAttribute("data-view-state", "active");
-              el.components.prevArrow.element.addEventListener("click", (evt) => {
+            let prevArrow = pElement.components.prevArrow;
+            if (prevArrow && prevArrow.element && group.visibility.arrows) {
+              prevArrow.element.setAttribute("data-view-state", "active");
+              prevArrow.element.addEventListener("click", (evt) => {
                 com.idc.clm.gotoSlide(prevSlide);
               });
             }
@@ -3199,9 +3216,10 @@ com.idc.ui = {
             ).slides[position.order + 1];
 
             //arrow visibility and link
-            if (el.components.nextArrow) {
-              el.components.nextArrow.element.setAttribute("data-view-state", "active");
-              el.components.nextArrow.element.addEventListener("click", (evt) => {
+            let nextArrow = pElement.components.nextArrow;
+            if (nextArrow && nextArrow.element && group.visibility.arrows) {
+              nextArrow.element.setAttribute("data-view-state", "active");
+              nextArrow.element.addEventListener("click", (evt) => {
                 com.idc.clm.gotoSlide(nextSlide);
               });
             }
@@ -3210,19 +3228,35 @@ com.idc.ui = {
             com.idc.clm.navigationOverwrite("next", nextSlide);
           }
         },
-        setGroupElementsVisibility: function (pElement, pVisible) {
+        setGroupElementsVisibility: function (pElement) {
+          let group = com.idc.clm.vars.standaloneModalGroups.groups.find((group) => group.id == com.idc.clm.persistentData.session.selectedStandaloneGroup);
+
+          let indexVisibility;
+          let paginatorVisibility;
+          if (!group) {
+            indexVisibility = false;
+            paginatorVisibility = false;
+          } else {
+            indexVisibility = group.visibility.indexButton;
+            paginatorVisibility = group.visibility.paginator;
+          }
+
+          let standaloneModalBelongsToActiveGroup = this.standalonelBelongsToActiveGroup();
+
+          //index button visibility
           let indexOpenButtonId = com.idc.clm.vars.standaloneModalGroups.indexModal.openButton;
           let indexOpenButton = pElement.querySelector("#" + indexOpenButtonId);
           if (indexOpenButton) {
-            if (pVisible) {
+            if (standaloneModalBelongsToActiveGroup && indexVisibility) {
               indexOpenButton.style.display = "block";
             } else {
               indexOpenButton.style.display = "none";
             }
           }
 
+          //paginator visibility
           if (pElement.components.paginator) {
-            if (pVisible) {
+            if (standaloneModalBelongsToActiveGroup && paginatorVisibility) {
               pElement.components.paginator.element.style.display = "block";
             } else {
               pElement.components.paginator.element.style.display = "none";
@@ -3280,6 +3314,41 @@ com.idc.ui = {
           });
 
           template.remove();
+        },
+        preventCloseIfMandatoryGroup: function (pElement) {
+          let vars = com.idc.clm.vars;
+
+          //eval group and param
+          let group = com.idc.clm.vars.standaloneModalGroups.groups.find((group) => group.id == com.idc.clm.persistentData.session.selectedStandaloneGroup);
+          if (!group || !group.mandatorySequence) return;
+
+          //eval order and total >> need to prevent close?
+          let modalOrder = this.positionInActiveGroup().order;
+          let totalModals = this.positionInActiveGroup().total;
+
+          let needToPreventClose;
+          if (modalOrder < totalModals - 1) {
+            needToPreventClose = true;
+          } else {
+            needToPreventClose = false;
+          }
+
+          if (!needToPreventClose) return;
+
+          //hide close button
+          let closeButton = pElement.components.closeButton;
+          if (closeButton) {
+            //hide button
+            closeButton.element.style.display = "none";
+            //utilities menu
+            if (vars.utilitiesMenu.active) {
+              vars.utilitiesMenu.sets.standaloneModal.appendCloseButtonToRightGroup = false;
+              com.idc.ui.core.utilitiesMenu.hideItemInGroup("rightGroup", closeButton.element.id);
+            }
+          }
+
+          //prevent close on back modal tap
+          pElement.params.preventCloseOnBackModalTap = true;
         },
       },
     },
@@ -3936,7 +4005,9 @@ com.idc.ui = {
             //if not last item, add separator
             let isLastItem = currentSet[groupName].indexOf(elementId) == currentSet[groupName].length - 1;
             if (!isLastItem) {
-              this.components.containers[groupName].appendChild(this.components.items.separator.cloneNode(true));
+              let newSeparator = this.components.items.separator.cloneNode(true);
+              newSeparator.setAttribute("data-after-item", elementId);
+              this.components.containers[groupName].appendChild(newSeparator);
             }
           });
         });
@@ -3951,9 +4022,13 @@ com.idc.ui = {
               //change position to static (disables top and left properties)
               closeButtonEl.style.position = "static";
               //add separator
-              this.components.containers.rightGroup.appendChild(this.components.items.separator.cloneNode(true));
+              let newSeparator = this.components.items.separator.cloneNode(true);
+              newSeparator.setAttribute("data-before-item", closeButtonEl.getAttribute("id"));
+              this.components.containers.rightGroup.appendChild(newSeparator);
               //add close button
               this.components.containers.rightGroup.appendChild(closeButtonEl);
+              //flag button as inside utilities menu
+              closeButtonEl.setAttribute("data-inside-utilities-menu", "true");
             }
           }
         }
@@ -4023,6 +4098,23 @@ com.idc.ui = {
             }
           });
         });
+      },
+      hideItemInGroup: function (pGroupId, pItemId) {
+        let group = this.components.containers[pGroupId];
+        if (!group) return;
+
+        let item = group.querySelector(`#${pItemId}`);
+        if (item) {
+          item.style.display = "none";
+        }
+        let separatorAfter = group.querySelector(`[data-after-item="${pItemId}"]`);
+        if (separatorAfter) {
+          separatorAfter.style.display = "none";
+        }
+        let separatorBefore = group.querySelector(`[data-before-item="${pItemId}"]`);
+        if (separatorBefore) {
+          separatorBefore.style.display = "none";
+        }
       },
     },
   },
