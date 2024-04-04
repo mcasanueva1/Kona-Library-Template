@@ -3960,6 +3960,7 @@ com.idc.ui = {
 
         //items, separator and placeholder
         this.components.el.querySelector('[data-type="com.idc.ui.utilitiesMenu.items"]').childNodes.forEach((item) => {
+          if (!item.getAttribute) return;
           switch (item.getAttribute("data-type")) {
             case "com.idc.ui.utilitiesMenu.separator":
               this.components.items.separator = item;
