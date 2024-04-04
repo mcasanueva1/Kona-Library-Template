@@ -2680,6 +2680,9 @@ com.idc.ui = {
           }
 
           el.addEventListener("click", (evt) => {
+            //do not proceed if non-working-link or disabled
+            if (el.getAttribute("data-non-working-link") || el.getAttribute("data-view-state") == "disabled") return;
+
             let targetId = com.idc.util.getElementAttribute(el, "data-target-id")
               ? com.idc.util.getElementAttribute(el, "data-target-id")
               : com.idc.util.getElementAttribute(el, "data-target-id-fnc")
