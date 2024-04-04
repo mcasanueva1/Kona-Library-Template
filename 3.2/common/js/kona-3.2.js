@@ -3230,7 +3230,6 @@ com.idc.ui = {
         },
         setGroupElementsVisibility: function (pElement) {
           let group = com.idc.clm.vars.standaloneModalGroups.groups.find((group) => group.id == com.idc.clm.persistentData.session.selectedStandaloneGroup);
-
           let indexVisibility;
           let paginatorVisibility;
           if (!group) {
@@ -3242,10 +3241,9 @@ com.idc.ui = {
           }
 
           let standaloneModalBelongsToActiveGroup = this.standalonelBelongsToActiveGroup();
-
           //index button visibility
           let indexOpenButtonId = com.idc.clm.vars.standaloneModalGroups.indexModal.openButton;
-          let indexOpenButton = pElement.querySelector("#" + indexOpenButtonId);
+          let indexOpenButton = document.querySelector("#" + indexOpenButtonId);
           if (indexOpenButton) {
             if (standaloneModalBelongsToActiveGroup && indexVisibility) {
               indexOpenButton.style.display = "block";
