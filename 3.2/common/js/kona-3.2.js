@@ -3270,7 +3270,7 @@ com.idc.ui = {
             pElement.components.paginator.element.innerHTML = `${position.order + 1} / ${position.total}`;
           }
         },
-        populateGroupSlides: function (pIndexModalId, pActiveGroupId) {
+        populateGroupSlides: function (pIndexModalId, pActiveGroupId, pEnableLinkFunctionality) {
           let persistentData = com.idc.clm.persistentData;
           let vars = com.idc.clm.vars;
           let util = com.idc.util;
@@ -3295,6 +3295,13 @@ com.idc.ui = {
             activeGroupId = pActiveGroupId;
           } else {
             activeGroupId = persistentData.session.selectedStandaloneGroup;
+          }
+
+          let enableLinkFunctionality
+          if (typeof pEnableLinkFunctionality === "boolean") {
+            enableLinkFunctionality = pEnableLinkFunctionality;
+          } else {
+            enableLinkFunctionality = true;
           }
           
           let activeGroup = vars.standaloneModalGroups.groups.find((group) => group.id == activeGroupId);
@@ -3321,9 +3328,11 @@ com.idc.ui = {
               label.innerHTML = slide.description;
             }
 
-            itemElement.addEventListener("click", (evt) => {
-              com.idc.clm.gotoSlide(slide.id);
-            });
+            if (enableLinkFunctionality) {
+              itemElement.addEventListener("click", (evt) => {
+                com.idc.clm.gotoSlide(slide.id);
+              });
+            }
 
             groupSlidesEl.appendChild(itemElement);
           });
