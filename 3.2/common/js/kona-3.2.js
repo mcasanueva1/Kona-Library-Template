@@ -3270,19 +3270,33 @@ com.idc.ui = {
             pElement.components.paginator.element.innerHTML = `${position.order + 1} / ${position.total}`;
           }
         },
-        populateGroupSlides: function () {
+        populateGroupSlides: function (pIndexModalId, pActiveGroupId) {
           let persistentData = com.idc.clm.persistentData;
           let vars = com.idc.clm.vars;
           let util = com.idc.util;
 
-          let indexModalId = com.idc.clm.vars.standaloneModalGroups.indexModal.id;
+          let indexModalId 
+          //pIndexModalId is an optional param so the function can be called from outside the module
+          if (pIndexModalId) {
+            indexModalId = pIndexModalId;
+          } else {
+            indexModalId = com.idc.clm.vars.standaloneModalGroups.indexModal.id;
+          }
+          
           let indexModal = document.querySelector(`#${indexModalId}`);
           if (!indexModal) return;
 
           let groupSlidesEl = indexModal.querySelector('[data-type="com.idc.ui.core.modal.groupSlides"]');
           if (!groupSlidesEl) return;
 
-          let activeGroupId = persistentData.session.selectedStandaloneGroup;
+          let activeGroupId 
+          //pActiveGroupId is an optional param so the function can be called from outside the module
+          if (pActiveGroupId) {
+            activeGroupId = pActiveGroupId;
+          } else {
+            activeGroupId = persistentData.session.selectedStandaloneGroup;
+          }
+          
           let activeGroup = vars.standaloneModalGroups.groups.find((group) => group.id == activeGroupId);
 
           let template = groupSlidesEl.querySelector('[data-type="com.idc.ui.core.modal.groupSlides.item"]');
