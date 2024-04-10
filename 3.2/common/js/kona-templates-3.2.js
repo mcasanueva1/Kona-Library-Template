@@ -342,103 +342,94 @@ com.idc.templates = {
           }
       ],
     },    
-    "tab": [
-      {
+    "tab": {
+      "container": [
+        {
+          "type": "DIV",
+          "attributes": [
+            {
+              "data-type": "com.idc.ui.core.tab",
+            },
+            {
+              "data-options": "",
+            },
+          ],
+          "childNodes": [
+            {
+              "type": "DIV",
+              "attributes": [
+                {
+                  "data-type": "com.idc.ui.core.tab.container",
+                },
+              ],
+              "childNodes": [
+                {
+                  "type": "DIV",
+                  "attributes": [
+                    {
+                      "data-type": "com.idc.ui.core.tab.buttons",
+                    },
+                  ],
+                  "childNodes": [],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+      "cover": [
+        {
+          "type": "DIV",
+          "attributes": [
+            {
+              "data-type": "com.idc.ui.core.tab.cover",
+            },
+          ],
+          "childNodes": [
+            {
+              "type": "DIV",
+              "attributes": [
+                {
+                  "data-type": "com.idc.ui.core.tab.buttons",
+                },
+              ],
+              "childNodes": [],
+            },
+          ],
+        },
+      ],
+      "button": [
+        {
         "type": "DIV",
         "attributes": [
           {
-            "data-type": "com.idc.ui.core.tab",
+            "data-type": "com.idc.ui.core.button",
           },
           {
-            "data-options": "",
+            "data-sub-type": "com.idc.ui.core.tab.button",
+          },
+          {
+            "data-instance": "",
           },
         ],
-        "childNodes": [
+        "childNodes": [],
+        }
+      ],
+      "content": [
+        {
+        "type": "DIV",
+        "attributes": [
           {
-            "type": "DIV",
-            "attributes": [
-              {
-                "data-type": "com.idc.ui.core.tab.cover",
-              },
-            ],
-            "childNodes": [
-              {
-                "type": "DIV",
-                "attributes": [
-                  {
-                    "data-type": "com.idc.ui.core.tab.buttons",
-                  },
-                ],
-                "childNodes": [
-                  {
-                    "type": "DIV",
-                    "attributes": [
-                      {
-                        "data-type": "com.idc.ui.core.button",
-                      },
-                      {
-                        "data-sub-type": "com.idc.ui.core.tab.button",
-                      },
-                      {
-                        "data-instance": "instance-id",
-                      },
-                    ],
-                    "childNodes": [],
-                  },
-                ],
-              },
-            ],
+            "data-type": "com.idc.ui.core.tab.content",
           },
           {
-            "type": "DIV",
-            "attributes": [
-              {
-                "data-type": "com.idc.ui.core.tab.container",
-              },
-            ],
-            "childNodes": [
-              {
-                "type": "DIV",
-                "attributes": [
-                  {
-                    "data-type": "com.idc.ui.core.tab.buttons",
-                  },
-                ],
-                "childNodes": [
-                  {
-                    "type": "DIV",
-                    "attributes": [
-                      {
-                        "data-type": "com.idc.ui.core.button",
-                      },
-                      {
-                        "data-sub-type": "com.idc.ui.core.tab.button",
-                      },
-                      {
-                        "data-instance": "instance-id",
-                      },
-                    ],
-                    "childNodes": [],
-                  },
-                ],
-              },
-              {
-                "type": "DIV",
-                "attributes": [
-                  {
-                    "data-type": "com.idc.ui.core.tab.content",
-                  },
-                  {
-                    "data-instance": "instance-id",
-                  },
-                ],
-                "childNodes": [],
-              },
-            ],
+            "data-instance": "instance-id",
           },
         ],
-      },
-    ],
+        "childNodes": [],
+        },
+      ]
+    },
     "utilitiesMenu": {
       "container": [
         {
