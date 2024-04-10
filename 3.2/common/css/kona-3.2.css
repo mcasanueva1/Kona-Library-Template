@@ -401,30 +401,14 @@ body[data-screen-orientation="portrait"] > [data-type="com.idc.ui.contentSize"] 
 [data-type="com.idc.ui.core.tab.cover"][data-view-state="active"] {
     display: block;
 }
-[data-type="com.idc.ui.core.tab.cover"] [data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.core.tab.button"] {
-    height: 100px;
-    padding-top: 90px;
-    margin-right: 5px;
-}
 [data-type="com.idc.ui.core.tab.container"] {
     display: none;
 }
 [data-type="com.idc.ui.core.tab.container"][data-view-state="active"] {
     display: block;
 }
-[data-type="com.idc.ui.core.tab.container"] [data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.core.tab.button"] {
-    margin-right: 5px;
-    opacity: 0.5;
-}
-[data-type="com.idc.ui.core.tab.container"] [data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.core.tab.button"][data-view-state="active"] {
-    opacity: 1;
-}
 [data-type="com.idc.ui.core.tab.container"] [data-type="com.idc.ui.core.tab.content"] {
-    width: 90%;
     display: none;
-    height: 300px;
-    border:  1px solid #818286;
-    padding: 10px;
 }
 [data-type="com.idc.ui.core.tab.container"] [data-type="com.idc.ui.core.tab.content"][data-view-state="active"] {
     display: block;
@@ -1032,6 +1016,27 @@ body[data-screen-orientation="portrait"] > [data-type="com.idc.ui.contentSize"] 
 }
 #com_idc_ui_inspector_dropDown [data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.inspector.execute.button"][data-view-state="active"] {
     opacity: 1;
+}
+
+#com_idc_ui_inspector_dropDown [data-type="com.idc.ui.core.tab.cover"] [data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.core.tab.button"] {
+    height: 100px;
+    padding-top: 90px;
+    margin-right: 5px;
+}
+#com_idc_ui_inspector_dropDown [data-type="com.idc.ui.core.tab.container"] [data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.core.tab.button"] {
+    margin-right: 5px;
+}
+#com_idc_ui_inspector_dropDown [data-type="com.idc.ui.core.tab.container"] [data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.core.tab.button"][data-view-state="off"] {
+    opacity: 0.5;
+}
+#com_idc_ui_inspector_dropDown [data-type="com.idc.ui.core.tab.container"] [data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.core.tab.button"][data-view-state="on"] {
+    opacity: 1;
+}
+#com_idc_ui_inspector_dropDown [data-type="com.idc.ui.core.tab.container"] [data-type="com.idc.ui.core.tab.content"] {
+    width: 90%;
+    height: 300px;
+    border:  1px solid #818286;
+    padding: 10px;
 }
 
 

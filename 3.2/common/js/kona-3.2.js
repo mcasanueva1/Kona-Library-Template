@@ -3821,14 +3821,14 @@ com.idc.ui = {
         //set open, close all the rest
         this.components.instances.forEach((instance) => {
           if (instance.name === pInstance) {
+            instance.button.element.setAttribute("data-view-state", "on");
             instance.content.element.setAttribute("data-view-state", "active");
-            instance.button.element.setAttribute("data-view-state", "active");
             instance.viewState = "active";
             this.viewState.activeInstance = pInstance;
           } else {
             //all the rest
+            instance.button.element.setAttribute("data-view-state", "off");
             instance.content.element.removeAttribute("data-view-state");
-            instance.button.element.removeAttribute("data-view-state", "active");
             instance.viewState = null;
 
             //reset child objects (revert to default state)
