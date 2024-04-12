@@ -881,71 +881,81 @@ com.idc.templates = {
                         "type": "DIV",
                         "attributes": [
                           {
-                            "data-type": "com.idc.ui.core.tab.content",
-                          },
-                          {
-                            "data-instance": "log",
+                            "data-type": "com.idc.ui.core.tab.contents",
                           },
                         ],
                         "childNodes": [
                           {
-                            "type": "TEXTAREA",
-                            "attributes": [],
-                            "childNodes": [],
-                          },
-                        ],
-                      },
-                      {
-                        "type": "DIV",
-                        "attributes": [
-                          {
-                            "data-type": "com.idc.ui.core.tab.content",
-                          },
-                          {
-                            "data-instance": "params",
-                          },
-                        ],
-                        "childNodes": [
-                          {
-                            "type": "TEXTAREA",
-                            "attributes": [],
-                            "childNodes": [],
-                          },
-                        ],
-                      },
-                      {
-                        "type": "DIV",
-                        "attributes": [
-                          {
-                            "data-type": "com.idc.ui.core.tab.content",
+                            "type": "DIV",
+                            "attributes": [
+                              {
+                                "data-type": "com.idc.ui.core.tab.content",
+                              },
+                              {
+                                "data-instance": "log",
+                              },
+                            ],
+                            "childNodes": [
+                              {
+                                "type": "TEXTAREA",
+                                "attributes": [],
+                                "childNodes": [],
+                              },
+                            ],
                           },
                           {
-                            "data-instance": "vars",
+                            "type": "DIV",
+                            "attributes": [
+                              {
+                                "data-type": "com.idc.ui.core.tab.content",
+                              },
+                              {
+                                "data-instance": "params",
+                              },
+                            ],
+                            "childNodes": [
+                              {
+                                "type": "TEXTAREA",
+                                "attributes": [],
+                                "childNodes": [],
+                              },
+                            ],
                           },
-                        ],
-                        "childNodes": [
                           {
-                            "type": "TEXTAREA",
-                            "attributes": [],
-                            "childNodes": [],
+                            "type": "DIV",
+                            "attributes": [
+                              {
+                                "data-type": "com.idc.ui.core.tab.content",
+                              },
+                              {
+                                "data-instance": "vars",
+                              },
+                            ],
+                            "childNodes": [
+                              {
+                                "type": "TEXTAREA",
+                                "attributes": [],
+                                "childNodes": [],
+                              },
+                            ],
                           },
-                        ],
-                      },
-                      {
-                        "type": "DIV",
-                        "attributes": [
                           {
-                            "data-type": "com.idc.ui.core.tab.content",
-                          },
-                          {
-                            "data-instance": "persistentData",
-                          },
-                        ],
-                        "childNodes": [
-                          {
-                            "type": "TEXTAREA",
-                            "attributes": [],
-                            "childNodes": [],
+                            "type": "DIV",
+                            "attributes": [
+                              {
+                                "data-type": "com.idc.ui.core.tab.content",
+                              },
+                              {
+                                "data-instance": "persistentData",
+                              },
+                            ],
+                            "childNodes": [
+                              {
+                                "type": "TEXTAREA",
+                                "attributes": [],
+                                "childNodes": [],
+                              },
+                            ],
                           },
                         ],
                       },

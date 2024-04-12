@@ -3883,12 +3883,24 @@ com.idc.ui = {
         //instances and buttons
         if (pToValidate.other.indexOf("instances") >= 0) {
           const container = pElement.querySelector(':scope > [data-type="com.idc.ui.core.tab.container"]');
-          const buttonCount = container
-            .querySelector(':scope > [data-type="com.idc.ui.core.tab.buttons"]')
-            .querySelectorAll('[data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.core.tab.button"]').length;
-          const contentCount = container.querySelectorAll(':scope > [data-type="com.idc.ui.core.tab.content"]').length;
+          
+          const buttons = container.querySelector(':scope > [data-type="com.idc.ui.core.tab.buttons"]')
+          let buttonCount;
+          if (buttons) {
+            buttonCount = buttons.querySelectorAll('[data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.core.tab.button"]').length;
+          } else {
+            errorList = `${errorList} unable to find buttons container; `;
+          }
+          
+          const contents = container.querySelector(':scope > [data-type="com.idc.ui.core.tab.contents"]');
+          let contentCount;
+          if (contents) {
+            contentCount = contents.querySelectorAll('[data-type="com.idc.ui.core.tab.content"]').length;
+          } else {
+            errorList = `${errorList} unable to find contents container; `;
+          }
 
-          if (buttonCount !== contentCount) {
+          if (!buttonCount || !contentCount || buttonCount !== contentCount) {
             errorList = `${errorList} number of buttons and content instances do not match; `;
           }
         }
