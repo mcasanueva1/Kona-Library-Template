@@ -3642,52 +3642,55 @@ com.idc.ui = {
             };
 
             //components: instances
-            el.components.container.element
-              .querySelector(':scope > [data-type="com.idc.ui.core.tab.buttons"]')
-              .querySelectorAll('[data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.core.tab.button"]')
-              .forEach((button) => {
-                const instance = {
-                  name: button.getAttribute("data-instance"),
-                  button: {
-                    element: button,
-                  },
-                  content: {
-                    element: el.components.container.element.querySelector(
-                      `[data-type="com.idc.ui.core.tab.content"][data-instance="${button.getAttribute("data-instance")}"]`
-                    ),
-                  },
-                  params: com.idc.ui.common.readElementOptions(button, {
-                    beforeOpen: null,
-                    afterOpen: null,
-                    beforeClose: null,
-                    afterClose: null,
-                    initialState: null, //'open' will set the instance open by default
-                  }),
-                  viewState: null,
-                };
-                el.components.instances.push(instance);
-              });
+            if (el.components.container.element) {
+              let buttons = el.components.container.element.querySelector(':scope > [data-type="com.idc.ui.core.tab.buttons"]');
+              if (buttons) {
+                buttons.querySelectorAll('[data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.core.tab.button"]').forEach((button) => {
+                  const instance = {
+                    name: button.getAttribute("data-instance"),
+                    button: {
+                      element: button,
+                    },
+                    content: {
+                      element: el.components.container.element.querySelector(
+                        `[data-type="com.idc.ui.core.tab.content"][data-instance="${button.getAttribute("data-instance")}"]`
+                      ),
+                    },
+                    params: com.idc.ui.common.readElementOptions(button, {
+                      beforeOpen: null,
+                      afterOpen: null,
+                      beforeClose: null,
+                      afterClose: null,
+                      initialState: null, //'open' will set the instance open by default
+                    }),
+                    viewState: null,
+                  };
+                  el.components.instances.push(instance);
+                });
+              }
+            }
 
             //components: cover
             el.components.cover = {
               hasCover: null,
               buttons: [],
             };
-            if (document.querySelector(`[data-type="com.idc.ui.core.tab.cover"][data-target-id="${el.id}"]`) !== null) {
+            let coverElement = document.querySelector(`[data-type="com.idc.ui.core.tab.cover"][data-target-id="${el.id}"]`)
+            if (coverElement) {
               el.components.cover.hasCover = true;
-              el.components.cover.element = document.querySelector(`[data-type="com.idc.ui.core.tab.cover"][data-target-id="${el.id}"]`);
+              el.components.cover.element = coverElement;
               el.components.cover.viewState = "active";
 
-              el.components.cover.element
-                .querySelector(':scope > [data-type="com.idc.ui.core.tab.buttons"]')
-                .querySelectorAll('[data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.core.tab.button"]')
-                .forEach((button) => {
+              let buttons = el.components.cover.element.querySelector(':scope > [data-type="com.idc.ui.core.tab.buttons"]');
+              if (buttons) {
+                buttons.querySelectorAll('[data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.core.tab.button"]').forEach((button) => {
                   button = {
                     instance: button.getAttribute("data-instance"),
                     element: button,
                   };
                   el.components.cover.buttons.push(button);
                 });
+              }
             }
 
             //params
