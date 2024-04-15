@@ -3275,21 +3275,21 @@ com.idc.ui = {
           let vars = com.idc.clm.vars;
           let util = com.idc.util;
 
-          let indexModalId 
+          let indexModalId;
           //pIndexModalId is an optional param so the function can be called from outside the module
           if (pIndexModalId) {
             indexModalId = pIndexModalId;
           } else {
             indexModalId = com.idc.clm.vars.standaloneModalGroups.indexModal.id;
           }
-          
+
           let indexModal = document.querySelector(`#${indexModalId}`);
           if (!indexModal) return;
 
           let groupSlidesEl = indexModal.querySelector('[data-type="com.idc.ui.core.modal.groupSlides"]');
           if (!groupSlidesEl) return;
 
-          let activeGroupId 
+          let activeGroupId;
           //pActiveGroupId is an optional param so the function can be called from outside the module
           if (pActiveGroupId) {
             activeGroupId = pActiveGroupId;
@@ -3297,13 +3297,13 @@ com.idc.ui = {
             activeGroupId = persistentData.session.selectedStandaloneGroup;
           }
 
-          let enableLinkFunctionality
+          let enableLinkFunctionality;
           if (typeof pEnableLinkFunctionality === "boolean") {
             enableLinkFunctionality = pEnableLinkFunctionality;
           } else {
             enableLinkFunctionality = true;
           }
-          
+
           let activeGroup = vars.standaloneModalGroups.groups.find((group) => group.id == activeGroupId);
 
           let template = groupSlidesEl.querySelector('[data-type="com.idc.ui.core.modal.groupSlides.item"]');
@@ -3693,6 +3693,8 @@ com.idc.ui = {
             //params
             el.params = com.idc.ui.common.readElementOptions(el, {
               backModalStyle: null, //used to assign a class to back modal
+              btnTransitionCoverToTab: null, //used to assign a transition class from cover button to tab button
+              btnTransitionTabToCover: null, //used to assign a transition class from tab button to cover button
             });
 
             //assign functions and events: main element
@@ -3761,14 +3763,44 @@ com.idc.ui = {
         });
       },
       hideCover: function () {
-        this.components.cover.element.removeAttribute("data-view-state");
-        this.components.cover.viewState = null;
-        this.components.container.element.setAttribute("data-view-state", "active");
+        const hideCover = () => {
+          this.components.cover.element.removeAttribute("data-view-state");
+          this.components.cover.viewState = null;
+          this.components.container.element.setAttribute("data-view-state", "active");
+        };
+        if (this.params.btnTransitionCoverToTab) {
+          //need to handle transition before hiding
+          this.components.cover.buttons.forEach((button) => {
+            button.element.classList.add(this.params.btnTransitionCoverToTab);
+            button.element.addEventListener("transitionend", () => {
+              button.element.classList.remove(this.params.btnTransitionCoverToTab);
+              hideCover();
+            });
+          });
+        } else {
+          //hide right away
+          hideCover();
+        }
       },
       showCover: function () {
-        this.components.cover.element.setAttribute("data-view-state", "active");
-        this.components.cover.viewState = "active";
-        this.components.container.element.removeAttribute("data-view-state");
+        const showCover = () => {
+          this.components.cover.element.setAttribute("data-view-state", "active");
+          this.components.cover.viewState = "active";
+          this.components.container.element.removeAttribute("data-view-state");
+        };
+        if (this.params.btnTransitionTabToCover) {
+          //need to handle transition before hiding
+          this.components.instances.forEach((instance) => {
+            instance.button.element.classList.add(this.params.btnTransitionTabToCover);
+            instance.button.element.addEventListener("transitionend", () => {
+              instance.button.element.classList.remove(this.params.btnTransitionTabToCover);
+              showCover();
+            });
+          });
+        } else {
+          //hide right away
+          showCover();
+        }
       },
       itemClick: function (pInstance) {
         let instances = this.components.instances;
@@ -3883,15 +3915,15 @@ com.idc.ui = {
         //instances and buttons
         if (pToValidate.other.indexOf("instances") >= 0) {
           const container = pElement.querySelector(':scope > [data-type="com.idc.ui.core.tab.container"]');
-          
-          const buttons = container.querySelector(':scope > [data-type="com.idc.ui.core.tab.buttons"]')
+
+          const buttons = container.querySelector(':scope > [data-type="com.idc.ui.core.tab.buttons"]');
           let buttonCount;
           if (buttons) {
             buttonCount = buttons.querySelectorAll('[data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.core.tab.button"]').length;
           } else {
             errorList = `${errorList} unable to find buttons container; `;
           }
-          
+
           const contents = container.querySelector(':scope > [data-type="com.idc.ui.core.tab.contents"]');
           let contentCount;
           if (contents) {
