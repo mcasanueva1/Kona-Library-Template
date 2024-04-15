@@ -363,15 +363,6 @@ com.idc.templates = {
                 },
               ],
               "childNodes": [
-                {
-                  "type": "DIV",
-                  "attributes": [
-                    {
-                      "data-type": "com.idc.ui.core.tab.buttons",
-                    },
-                  ],
-                  "childNodes": [],
-                },
               ],
             },
           ],
@@ -385,17 +376,29 @@ com.idc.templates = {
               "data-type": "com.idc.ui.core.tab.cover",
             },
           ],
-          "childNodes": [
+          "childNodes": [],
+        },
+      ],
+      "coverButtons": [
+        {
+          "type": "DIV",
+          "attributes": [
             {
-              "type": "DIV",
-              "attributes": [
-                {
-                  "data-type": "com.idc.ui.core.tab.buttons",
-                },
-              ],
-              "childNodes": [],
+              "data-type": "com.idc.ui.core.tab.buttons",
             },
           ],
+          "childNodes": [],
+        },
+      ],
+      "buttons": [
+        {
+          "type": "DIV",
+          "attributes": [
+            {
+              "data-type": "com.idc.ui.core.tab.buttons",
+            },
+          ],
+          "childNodes": [],
         },
       ],
       "button": [
@@ -414,6 +417,18 @@ com.idc.templates = {
         ],
         "childNodes": [],
         }
+      ],
+      "contents": [
+        {
+          "type": "DIV",
+          "attributes": [
+            {
+              "data-type": "com.idc.ui.core.tab.contents",
+            },
+          ],
+          "childNodes": [
+          ],
+        },
       ],
       "content": [
         {
