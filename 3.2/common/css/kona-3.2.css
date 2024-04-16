@@ -399,7 +399,7 @@ body[data-screen-orientation="portrait"] > [data-type="com.idc.ui.contentSize"] 
     display: none;
 }
 [data-type="com.idc.ui.core.tab.cover"][data-view-state="active"] {
-    z-index: 1;
+    z-index: 2;
     display: block;
 }
 [data-type="com.idc.ui.core.tab.container"] {
