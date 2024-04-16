@@ -2435,19 +2435,22 @@ com.idc.ui = {
               instance.executeAfterClose = com.idc.ui.common.executeFunction.afterClose;
             });
 
+            //reset to defaults
+            el.resetToDefaults();
+
             //restore saved state if returned from standalone pop-up
             if (com.idc.clm.isBackFromStandAloneSlide()) {
-              if (com.idc.ui.common.backFromStandalone.getPersistentProperty(com.idc.clm.vars.navigation.currentSlide.id, el.id, "activeInstances") !== null) {
+              let activeInstances = com.idc.ui.common.backFromStandalone.getPersistentProperty(
+                com.idc.clm.vars.navigation.currentSlide.id,
+                el.id,
+                "activeInstances"
+              );
+              if (activeInstances !== null) {
                 //display all active instances
-                com.idc.ui.common.backFromStandalone
-                  .getPersistentProperty(com.idc.clm.vars.navigation.currentSlide.id, el.id, "activeInstances")
-                  .value.forEach((instanceName) => {
-                    el.setInstance(instanceName, true);
-                  });
+                activeInstances.value.forEach((instanceName) => {
+                  el.setInstance(instanceName, true);
+                });
               }
-            } else {
-              //not back from standalone slide: reset to defaults
-              el.resetToDefaults();
             }
           }
         });
@@ -3675,7 +3678,7 @@ com.idc.ui = {
               hasCover: null,
               buttons: [],
             };
-            let coverElement = document.querySelector(`[data-type="com.idc.ui.core.tab.cover"][data-target-id="${el.id}"]`)
+            let coverElement = document.querySelector(`[data-type="com.idc.ui.core.tab.cover"][data-target-id="${el.id}"]`);
             if (coverElement) {
               el.components.cover.hasCover = true;
               el.components.cover.element = coverElement;
@@ -3872,7 +3875,7 @@ com.idc.ui = {
 
         //data attributes
         this.setAttribute("data-any-active-instance", this.viewState.activeInstance ? "true" : "false");
-        this.setAttribute("data-active-instance", this.viewState.activeInstance ? this.viewState.activeInstance : "none")
+        this.setAttribute("data-active-instance", this.viewState.activeInstance ? this.viewState.activeInstance : "none");
 
         //show back modal
         if (this.viewState.activeInstance && this.isTabModal) {
@@ -3972,6 +3975,20 @@ com.idc.ui = {
         }
       },
       resetToDefaults: function () {
+        //remove transition classes
+        if (this.components.cover.hasCover) {
+          if (this.params.btnTransitionCoverToTab) {
+            this.components.cover.buttons.forEach((button) => {
+              button.element.classList.remove(this.params.btnTransitionCoverToTab);
+            });
+          }
+          if (this.params.btnTransitionTabToCover) {
+            this.components.instances.forEach((instance) => {
+              instance.button.element.classList.remove(this.params.btnTransitionTabToCover);
+            });
+          }
+        }
+
         //show cover if present, or (open default instance (set by parameter) or first)
         if (this.components.cover.hasCover) {
           //show cover
