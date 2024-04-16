@@ -3755,8 +3755,7 @@ com.idc.ui = {
 
               //set instance
               el.setInstance(
-                com.idc.ui.common.backFromStandalone.getPersistentProperty(com.idc.clm.vars.navigation.currentSlide.id, el.id, "activeInstance").value,
-                true
+                com.idc.ui.common.backFromStandalone.getPersistentProperty(com.idc.clm.vars.navigation.currentSlide.id, el.id, "activeInstance").value
               );
             } else {
               //not back from standalone slide: reset to defaults
@@ -3870,6 +3869,10 @@ com.idc.ui = {
             com.idc.ui.common.resetChildElements(instance.content.element);
           }
         });
+
+        //data attributes
+        this.setAttribute("data-any-active-instance", this.viewState.activeInstance ? "true" : "false");
+        this.setAttribute("data-active-instance", this.viewState.activeInstance ? this.viewState.activeInstance : "none")
 
         //show back modal
         if (this.viewState.activeInstance && this.isTabModal) {
