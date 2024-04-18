@@ -334,6 +334,148 @@ com.idc.clm = {
         iOSResolution: null,
       },
     },
+    interactionSummary: {
+      active: null,
+      fields: {
+        Call2_vod__c: [],
+        Call2_Key_Message_vod__c: [],
+        Sent_Email_vod__c: [],
+        Email_Activity_vod__c: [],
+      },
+      nonEmailCartItems: {
+        templates: [
+          {
+            id: null,
+            title: null,
+            thumb: null,
+            vaultId: null,
+            crmId: null,
+            fragments: [
+              {
+                id: null,
+                title: null,
+                thumb: null,
+                vaultId: null,
+                crmId: null,
+              },
+            ],
+          },
+        ],
+      },
+      input: {
+        Call2_vod__c: [],
+        Call2_Key_Message_vod__c: [],
+        Sent_Email_vod__c: [],
+        Email_Activity_vod__c: [],
+      },
+      output: {
+        timeline: [
+          {
+            date: null,
+            type: null, //email or call
+            email: {
+              id: null,
+              title: null,
+              opens: null, //count
+              clicks: null, //count
+              fragments: [
+                {
+                  id: null,
+                  title: null,
+                  clicks: null, //count
+                },
+              ],
+            },
+            call: {
+              channel: null, //face-to-face or remote
+              slides: [
+                {
+                  id: null,
+                  title: null,
+                  reaction: null, //positive, neutral, negative
+                  duration: null, //seconds
+                },
+              ],
+            },
+          },
+        ],
+        slides: [
+          {
+            id: null,
+            title: null,
+            status: null, //discussed / not discussed
+            mostRecentCall: {
+              date: null, //date
+              reaction: null, //positive, neutral, negative
+              duration: null, //seconds
+            },
+            overall: {
+              reaction: {
+                positive: null,
+                neutral: null,
+                negative: null,
+              },
+              timesDisplayed: null,
+              duration: {
+                total: null, //seconds
+                average: null, //seconds
+              },
+              allCallDates: [],
+            },
+          },
+        ],
+        emails: [
+          {
+            id: null,
+            crmId: null,
+            title: null,
+            status: null, //sent / not sent
+            mostRecentSent: {
+              sentEmailID: null, //id
+              date: null, //date
+              opens: null, //clicks
+              clicks: null, //count
+            },
+            mostRecentOpen: {
+              sentEmailID: null, //id
+              date: null, //date
+              clicks: null, //count
+            },
+            overall: {
+              sent: null,
+              sentDates: [],
+              opens: null,
+              openDates: [],
+              clicks: null,
+            },
+            fragments: [
+              {
+                id: null,
+                crmId: null,
+                title: null,
+                status: null, //sent / not sent
+                mostRecentSent: {
+                  sentEmailID: null, //id
+                  date: null, //date
+                  clicks: null, //boolean
+                },
+                mostRecentClick: {
+                  sentEmailID: null, //id
+                  date: null, //date
+                  emailActivityID: null, //id
+                },
+                overall: {
+                  sent: null,
+                  sentDates: [],
+                  clicks: null,
+                  clickDates: [],
+                },
+              },
+            ],
+          },
+        ],
+      },
+    },
   },
   persistentDataTemplate: {
     session: {
@@ -401,6 +543,7 @@ com.idc.clm = {
 
     //post init tasks
     await this.getDataForContextObjects();
+    this.interactionSummaryModel();
   },
 
   /*configuration -----------------------------------------*/
@@ -805,6 +948,55 @@ com.idc.clm = {
       vars.references.content.landscape = util.readSetting(com_idc_params, "references.content.landscape", "string", null);
       vars.references.content.portrait = util.readSetting(com_idc_params, "references.content.portrait", "string", null);
     }
+
+    //interaction summary
+    if (com_idc_params.interactionSummary) {
+      vars.interactionSummary.active = util.readSetting(com_idc_params, "interactionSummary.active", "boolean", false);
+
+      vars.interactionSummary.fields.Call2_vod__c = util.readSetting(com_idc_params, "interactionSummary.fields.Call2_vod__c", "object", []);
+      vars.interactionSummary.fields.Call2_Key_Message_vod__c = util.readSetting(
+        com_idc_params,
+        "interactionSummary.fields.Call2_Key_Message_vod__c",
+        "object",
+        []
+      );
+      vars.interactionSummary.fields.Sent_Email_vod__c = util.readSetting(com_idc_params, "interactionSummary.fields.Sent_Email_vod__c", "object", []);
+      vars.interactionSummary.fields.Email_Activity_vod__c = util.readSetting(com_idc_params, "interactionSummary.fields.Email_Activity_vod__c", "object", []);
+
+      //this module relies on Email Cart configuration ()
+      if (com_idc_params.emailCart) {
+        //selected vault instance (development or release)
+        let selectedVault = com_idc_params.emailCart.vaultInstance.development.selected
+          ? "development"
+          : com_idc_params.emailCart.vaultInstance.release.selected
+          ? "release"
+          : "development";
+
+        //templates
+        const template = vars.interactionSummary.nonEmailCartItems.templates.splice(0)[0];
+        vars.interactionSummary.nonEmailCartItems.templates = com_idc_params.interactionSummary.nonEmailCartItems.templates.map((item) => {
+          const newTemplate = JSON.parse(JSON.stringify(template));
+          newTemplate.id = util.readSetting(item, "id", "string", null);
+          newTemplate.title = util.readSetting(item, "title", "string", null);
+          newTemplate.thumb = util.readSetting(item, "thumb", "string", null);
+          newTemplate.vaultId = util.readSetting(item, `vaultId.${selectedVault}`, "string", null);
+
+          //fragments
+          const fragment = newTemplate.fragments.splice(0)[0];
+          newTemplate.fragments = item.fragments.map((item) => {
+            const newFragment = JSON.parse(JSON.stringify(fragment));
+            newFragment.id = util.readSetting(item, "id", "string", null);
+            newFragment.title = util.readSetting(item, "title", "string", null);
+            newFragment.thumb = util.readSetting(item, "thumb", "string", null);
+            newFragment.vaultId = util.readSetting(item, `vaultId.${selectedVault}`, "string", null);
+
+            return newFragment;
+          });
+
+          return newTemplate;
+        });
+      }
+    }
   },
   setSessionIdentifier: function () {
     let util = com.idc.util;
@@ -1137,7 +1329,7 @@ com.idc.clm = {
 
         util.log("com.idc.clm.getDataForContextObjects()");
 
-        //Key_Message_vod__c
+        //Key_Message_vod__c (ID, file name, disable actions and ios resolution)
         {
           await new Promise((resolve) => {
             com.veeva.clm.getDataForCurrentObject("KeyMessage", "ID", (data) => {
@@ -1176,7 +1368,7 @@ com.idc.clm = {
           });
         }
 
-        //email cart
+        //Approved_Document_vod__c for email cart and non email cart (templates and fragments)
         if (this.vars.emailCart.active) {
           let itemsArray = [];
           this.vars.emailCart.templates
@@ -1202,13 +1394,53 @@ com.idc.clm = {
               itemsArray.push(item);
             });
 
+          if (this.vars.interactionSummary.active) {
+            this.vars.interactionSummary.nonEmailCartItems.templates.forEach((template) => {
+              itemsArray.push({
+                id: template.id,
+                vaultId: template.vaultId,
+                group: "nonEmailCartTemplates",
+              });
+
+              template.fragments.forEach((fragment) => {
+                itemsArray.push({
+                  id: fragment.id,
+                  vaultId: fragment.vaultId,
+                  group: "nonEmailCartFragments",
+                  template: template.id,
+                });
+              });
+            });
+          }
+
           for (let item of itemsArray) {
             await new Promise((resolve) => {
               com.veeva.clm.getApprovedDocument(this.vars.emailCart.vaultURL, item.vaultId, (data) => {
                 if (data.success && data.Approved_Document_vod__c) {
-                  this.vars.emailCart[item.group].find((element) => {
-                    return element.id == item.id;
-                  }).crmId = data.Approved_Document_vod__c.ID;
+                  if (item.group == "templates" || item.group == "fragments") {
+                    //email cart templates or fragments
+                    this.vars.emailCart[item.group].find((element) => {
+                      return element.id == item.id;
+                    }).crmId = data.Approved_Document_vod__c.ID;
+                  } else {
+                    //interaction summary templates or fragments
+                    switch (item.group) {
+                      case "nonEmailCartTemplates":
+                        this.vars.interactionSummary.nonEmailCartItems.templates.find((element) => {
+                          return element.id == item.id;
+                        }).crmId = data.Approved_Document_vod__c.ID;
+                        break;
+                      case "nonEmailCartFragments":
+                        this.vars.interactionSummary.nonEmailCartItems.templates
+                          .find((element) => {
+                            return element.id == item.template;
+                          })
+                          .fragments.find((element) => {
+                            return element.id == item.id;
+                          }).crmId = data.Approved_Document_vod__c.ID;
+                        break;
+                    }
+                  }
                 } else {
                   util.log(`com.idc.clm.getDataForContextObjects: could not retrieve CRM ID for ${item.id}`);
                 }
@@ -1216,6 +1448,180 @@ com.idc.clm = {
               });
             });
           }
+        }
+
+        //Call2_Key_Message_vod__c for current slides
+        if (this.vars.interactionSummary.active && this.vars.session.isAnActualCall) {
+          let keyMessageIDsAndZipNames = await new Promise((resolve) => {
+            let whereClause = this.vars.slides
+              .map((slide) => {
+                return `Media_File_Name_vod__c = "${slide.player.zipName}" OR`;
+              })
+              .join(" ")
+              .slice(0, -3);
+
+            com.veeva.clm.queryRecord("Key_Message_vod__c", ["ID", "Media_File_Name_vod__c"], whereClause, [], null, (data) => {
+              if (data.success) {
+                resolve(data.Key_Message_vod__c);
+              } else {
+                util.log(`com.idc.clm.getDataForContextObjects: failed to retrieve Key_Message_vod__c IDs ${data.message}`);
+              }
+            });
+          });
+
+          let accountID = await new Promise((resolve) => {
+            com.veeva.clm.getDataForCurrentObject("Account", "ID", (data) => {
+              if (data.success) {
+                resolve(data.Account.ID);
+              } else {
+                util.log(`com.idc.clm.getDataForContextObjects: failed to retrieve Account ID ${data.message}`);
+              }
+            });
+          });
+
+          let callKeyMessageRecords;
+          if (keyMessageIDsAndZipNames && accountID) {
+            callKeyMessageRecords = await new Promise((resolve) => {
+              let zipNamesWhereClause = keyMessageIDsAndZipNames
+                .map((keyMessage) => {
+                  return `Key_Message_vod__c = "${keyMessage.ID}" OR`;
+                })
+                .join(" ")
+                .slice(0, -3);
+
+              let whereClause = `Account_vod__c = "${accountID}" AND (${zipNamesWhereClause})`;
+
+              com.veeva.clm.queryRecord(
+                "Call2_Key_Message_vod__c",
+                this.vars.interactionSummary.fields.Call2_Key_Message_vod__c,
+                whereClause,
+                [],
+                null,
+                (data) => {
+                  if (data.success) {
+                    resolve(data.Call2_Key_Message_vod__c);
+                  } else {
+                    util.log(`com.idc.clm.getDataForContextObjects: failed to retrieve Call2_Key_Message_vod__c records ${data.message}`);
+                  }
+                }
+              );
+            });
+          }
+
+          //add media file name to callKeyMessageRecords
+          if (callKeyMessageRecords) {
+            callKeyMessageRecords.forEach((callKeyMessage) => {
+              callKeyMessage.Key_Message_vod__c = {
+                Media_File_Name_vod__c: keyMessageIDsAndZipNames.find((keyMessage) => {
+                  return keyMessage.ID == callKeyMessage.Key_Message_vod__c;
+                }).Media_File_Name_vod__c,
+              };
+            });
+          }
+
+          this.vars.interactionSummary.input.Call2_Key_Message_vod__c = callKeyMessageRecords;
+        }
+
+        //Call2_vod__c for Call key messages records
+        if (this.vars.interactionSummary.active && this.vars.session.isAnActualCall) {
+          let accountID = await new Promise((resolve) => {
+            com.veeva.clm.getDataForCurrentObject("Account", "ID", (data) => {
+              if (data.success) {
+                resolve(data.Account.ID);
+              } else {
+                util.log(`com.idc.clm.getDataForContextObjects: failed to retrieve Account ID ${data.message}`);
+              }
+            });
+          });
+
+          let callRecords;
+          if (this.vars.interactionSummary.input.Call2_Key_Message_vod__c && accountID) {
+            callRecords = await new Promise((resolve) => {
+              let whereClause = this.vars.interactionSummary.input.Call2_Key_Message_vod__c.map((callKeyMessage) => {
+                return `ID = "${callKeyMessage.Call2_vod__c}" OR`;
+              })
+                .join(" ")
+                .slice(0, -3);
+
+              whereClause = `Account_vod__c = "${accountID}" AND (${whereClause})`;
+
+              com.veeva.clm.queryRecord("Call2_vod__c", this.vars.interactionSummary.fields.Call2_vod__c, whereClause, [], null, (data) => {
+                if (data.success) {
+                  resolve(data.Call2_vod__c);
+                } else {
+                  util.log(`com.idc.clm.getDataForContextObjects: failed to retrieve Call2_vod__c records ${data.message}`);
+                }
+              });
+            });
+          }
+
+          this.vars.interactionSummary.input.Call2_vod__c = callRecords;
+        }
+
+        //Sent_Email_vod__c for account and templates
+        if (this.vars.interactionSummary.active && this.vars.session.isAnActualCall && this.vars.emailCart.active) {
+          let accountID = await new Promise((resolve) => {
+            com.veeva.clm.getDataForCurrentObject("Account", "ID", (data) => {
+              if (data.success) {
+                resolve(data.Account.ID);
+              } else {
+                util.log(`com.idc.clm.getDataForContextObjects: failed to retrieve Account ID ${data.message}`);
+              }
+            });
+          });
+
+          let sentEmailRecords;
+          if (this.vars.emailCart.templates && accountID) {
+            sentEmailRecords = await new Promise((resolve) => {
+              let allTemplates = this.vars.emailCart.templates.concat(this.vars.interactionSummary.nonEmailCartItems.templates);
+
+              let whereClause = allTemplates
+                .filter((template) => {
+                  return template.crmId;
+                })
+                .map((template) => {
+                  return `Approved_Email_Template_vod__c = "${template.crmId}" OR`;
+                })
+                .join(" ")
+                .slice(0, -3);
+
+              whereClause = `Account_vod__c = "${accountID}" AND (${whereClause})`;
+
+              com.veeva.clm.queryRecord("Sent_Email_vod__c", this.vars.interactionSummary.fields.Sent_Email_vod__c, whereClause, [], null, (data) => {
+                if (data.success) {
+                  resolve(data.Sent_Email_vod__c);
+                } else {
+                  util.log(`com.idc.clm.getDataForContextObjects: failed to retrieve Sent_Email_vod__c records ${data.message}`);
+                }
+              });
+            });
+          }
+
+          this.vars.interactionSummary.input.Sent_Email_vod__c = sentEmailRecords;
+        }
+
+        //Email_Activity_vod__c for sent emails
+        if (this.vars.interactionSummary.active && this.vars.session.isAnActualCall && this.vars.emailCart.active) {
+          let emailActivityRecords;
+          if (this.vars.interactionSummary.input.Sent_Email_vod__c) {
+            emailActivityRecords = await new Promise((resolve) => {
+              let whereClause = this.vars.interactionSummary.input.Sent_Email_vod__c.map((sentEmail) => {
+                return `Sent_Email_vod__c = "${sentEmail.ID}" OR`;
+              })
+                .join(" ")
+                .slice(0, -3);
+
+              com.veeva.clm.queryRecord("Email_Activity_vod__c", this.vars.interactionSummary.fields.Email_Activity_vod__c, whereClause, [], null, (data) => {
+                if (data.success) {
+                  resolve(data.Email_Activity_vod__c);
+                } else {
+                  util.log(`com.idc.clm.getDataForContextObjects: failed to retrieve Email_Activity_vod__c records ${data.message}`);
+                }
+              });
+            });
+          }
+
+          this.vars.interactionSummary.input.Email_Activity_vod__c = emailActivityRecords;
         }
 
         resolve();
@@ -1884,6 +2290,396 @@ com.idc.clm = {
     this.persistentData.session.selectedStandaloneGroup = null;
     this.updatePersistentData();
     this.setBodyVars();
+  },
+
+  /*interaction summary -----------------------------------*/
+  interactionSummaryModel: function () {
+    //timeline -------------------------------------------
+    {
+      const timeLineTemplate = this.vars.interactionSummary.output.timeline.splice(0)[0];
+
+      //call records to add CLM views to timeline
+      this.vars.interactionSummary.input.Call2_vod__c.forEach((call) => {
+        if (!call.Status_vod__c == "Submitted_vod") return; //only submitted calls
+
+        let record = JSON.parse(JSON.stringify(timeLineTemplate));
+
+        //delete email branch
+        delete record.email;
+
+        //set type and channel
+        record.type = "call";
+        record.call.channel = call.Call_Channel_vod__c;
+
+        //set date
+        let recordDate = call.Call_Date_vod__c;
+        if (recordDate.indexOf("T") > 0) {
+          recordDate = recordDate.split("T")[0];
+        }
+        record.date = recordDate;
+
+        //slides (call key message records for current call)
+        let slideTemplate = record.call.slides.splice(0)[0];
+        this.vars.interactionSummary.input.Call2_Key_Message_vod__c.filter((callKeyMessage) => callKeyMessage.Call2_vod__c == call.ID) //call key message records for current call
+          .sort((a, b) => a.Display_Order_vod__c - b.Display_Order_vod__c) //sort by display order
+          .forEach((callKeyMessage) => {
+            let slideRecord = JSON.parse(JSON.stringify(slideTemplate));
+
+            //search slide in config.js
+            let slide = this.vars.slides.find((slide) => slide.player.zipName == callKeyMessage.Key_Message_vod__c.Media_File_Name_vod__c);
+            if (!slide) return;
+
+            //populate slide record
+            slideRecord.id = slide.id;
+            slideRecord.title = slide.description;
+            slideRecord.displayOrder = callKeyMessage.Display_Order_vod__c;
+            slideRecord.duration = Math.round(callKeyMessage.Duration_vod__c);
+            slideRecord.reaction = callKeyMessage.Reaction_vod__c;
+
+            //add to array
+            record.call.slides.push(slideRecord);
+          });
+
+        //add to timeline
+        this.vars.interactionSummary.output.timeline.push(record);
+      });
+
+      //email records
+      this.vars.interactionSummary.input.Sent_Email_vod__c.forEach((sentEmail) => {
+        if (!sentEmail.Email_Sent_Date_vod__c) return; //only sent emails (no saved)
+
+        let record = JSON.parse(JSON.stringify(timeLineTemplate));
+
+        //delete call branch
+        delete record.call;
+
+        //set type
+        record.type = "email";
+
+        //set date
+        let recordDate = sentEmail.Email_Sent_Date_vod__c;
+        {
+          if (recordDate.indexOf("T") > 0) {
+            recordDate = recordDate.split("T")[0];
+          }
+          record.date = recordDate;
+        }
+
+        //search tempalte in email template or non-email cart items
+        let template, templateType;
+        {
+          //try to find in email cart templates
+          template = this.vars.emailCart.templates.find((template) => template.crmId == sentEmail.Approved_Email_Template_vod__c);
+          if (template) {
+            templateType = "emailCart";
+          }
+          //try to find in non email cart templates
+          if (!template) {
+            template = this.vars.interactionSummary.nonEmailCartItems.templates.find((template) => template.crmId == sentEmail.Approved_Email_Template_vod__c);
+            templateType = "nonEmailCartItems";
+          }
+          if (!template) return;
+        }
+
+        //populate template record
+        record.email.id = template.id;
+        record.email.title = template.title;
+        record.email.opens = sentEmail.Open_Count_vod__c;
+        record.email.clicks = 0;
+
+        //fragments
+        let fragmentTemplate = record.email.fragments.splice(0)[0];
+        this.vars.interactionSummary.input.Email_Activity_vod__c.filter((emailActivity) => emailActivity.Sent_Email_vod__c == sentEmail.ID).forEach(
+          (emailActivity) => {
+            if (!emailActivity.Approved_Document_vod__c) return; //only events for approved documents (email fragments)
+            if (!emailActivity.Event_type_vod__c == "Clicked_vod") return; //only click events
+
+            let fragmentRecord = JSON.parse(JSON.stringify(fragmentTemplate));
+
+            //search fragment
+            let fragment;
+            if (templateType == "emailCart") {
+              fragment = this.vars.emailCart.fragments.find((fragment) => fragment.crmId == emailActivity.Approved_Document_vod__c);
+            } else {
+              fragment = template.fragments.find((fragment) => fragment.crmId == emailActivity.Approved_Document_vod__c);
+            }
+            if (!fragment) return;
+
+            //populate fragment record
+            fragmentRecord.id = fragment.id;
+            fragmentRecord.title = fragment.title;
+            fragmentRecord.clicks = 1;
+
+            //check if exists in array
+            let indexOfFragment = record.email.fragments.findIndex((item) => item.id == fragmentRecord.id);
+            if (indexOfFragment < 0) {
+              //add to array
+              record.email.fragments.push(fragmentRecord);
+            } else {
+              //increment clicks
+              record.email.fragments[indexOfFragment].clicks++;
+            }
+
+            //increment email clicks
+            record.email.clicks++;
+          }
+        );
+
+        //add to timeline
+        this.vars.interactionSummary.output.timeline.push(record);
+      });
+
+      //sort timeline by date
+      this.vars.interactionSummary.output.timeline.sort((a, b) => {
+        return new Date(b.date) - new Date(a.date);
+      });
+    }
+
+    //slides ---------------------------------------------
+    {
+      const slideTemplate = this.vars.interactionSummary.output.slides.splice(0)[0];
+
+      this.vars.slides.forEach((slide) => {
+        let record = JSON.parse(JSON.stringify(slideTemplate));
+
+        //populate id and title
+        record.id = slide.id;
+        record.title = slide.description;
+
+        //search call key message records for this slide
+        let callKeyMessageRecords = this.vars.interactionSummary.input.Call2_Key_Message_vod__c.filter(
+          (callKeyMessage) =>
+            this.vars.interactionSummary.input.Call2_vod__c.find((call) => call.ID == callKeyMessage.Call2_vod__c && call.Status_vod__c == "Submitted_vod") //only call key message records for submitted calls
+        )
+          .filter((callKeyMessage) => callKeyMessage.Key_Message_vod__c.Media_File_Name_vod__c == slide.player.zipName) //only call key message records for this slide
+          .sort((a, b) => new Date(b.Call_Date_vod__c) - new Date(a.Call_Date_vod__c)); //sort by call date
+
+        //discussed/not discussed and mostRecentCall info
+        if (callKeyMessageRecords.length > 0) {
+          record.status = "discussed";
+          record.mostRecentCall.date = callKeyMessageRecords[0].Call_Date_vod__c;
+          record.mostRecentCall.duration = Math.round(callKeyMessageRecords[0].Duration_vod__c);
+          record.mostRecentCall.reaction = callKeyMessageRecords[0].Reaction_vod__c;
+        } else {
+          record.status = "notDiscussed";
+        }
+
+        //overal duration and reaction
+        record.overall.timesDisplayed = callKeyMessageRecords.length;
+        record.overall.duration.total = callKeyMessageRecords.reduce((acc, callKeyMessage) => {
+          return acc + callKeyMessage.Duration_vod__c;
+        }, 0);
+        record.overall.duration.average = record.overall.timesDisplayed > 0 ? record.overall.duration.total / record.overall.timesDisplayed : 0;
+        record.overall.reaction.positive = callKeyMessageRecords.reduce((acc, callKeyMessage) => {
+          return callKeyMessage.Reaction_vod__c == "Positive" ? acc + 1 : acc;
+        }, 0);
+        record.overall.reaction.neutral = callKeyMessageRecords.reduce((acc, callKeyMessage) => {
+          return callKeyMessage.Reaction_vod__c == "Neutral" ? acc + 1 : acc;
+        }, 0);
+        record.overall.reaction.negative = callKeyMessageRecords.reduce((acc, callKeyMessage) => {
+          return callKeyMessage.Reaction_vod__c == "Negative" ? acc + 1 : acc;
+        }, 0);
+
+        //round numbers
+        record.overall.duration.total = Math.round(record.overall.duration.total);
+        record.overall.duration.average = Math.round(record.overall.duration.average);
+
+        //all call dates
+        record.overall.callDates = callKeyMessageRecords.map((callKeyMessage) => callKeyMessage.Call_Date_vod__c);
+
+        //add to array
+        this.vars.interactionSummary.output.slides.push(record);
+      });
+    }
+
+    //emails ---------------------------------------------
+    {
+      const emailTemplate = this.vars.interactionSummary.output.emails.splice(0)[0];
+
+      //email cart items
+      this.vars.emailCart.templates.forEach((template) => {
+        let record = JSON.parse(JSON.stringify(emailTemplate));
+
+        //populate id and title
+        record.id = template.id;
+        record.title = template.title;
+        record.crmId = template.crmId;
+        record.isEmailCart = true;
+
+        //fragments (only for first email template in email cart)
+        let indexOfTemplate = this.vars.emailCart.templates.findIndex((item) => item.id == template.id);
+        if (indexOfTemplate == 0) {
+          let fragmentTemplate = record.fragments.splice(0)[0];
+          this.vars.emailCart.fragments.forEach((fragment) => {
+            let fragmentRecord = JSON.parse(JSON.stringify(fragmentTemplate));
+
+            //populate id and title
+            fragmentRecord.id = fragment.id;
+            fragmentRecord.title = fragment.title;
+            fragmentRecord.crmId = fragment.crmId;
+
+            //add to array
+            record.fragments.push(fragmentRecord);
+          });
+        }
+
+        //add to array
+        this.vars.interactionSummary.output.emails.push(record);
+      });
+
+      //non-email cart items
+      this.vars.interactionSummary.nonEmailCartItems.templates.forEach((template) => {
+        let record = JSON.parse(JSON.stringify(emailTemplate));
+
+        //populate id and title
+        record.id = template.id;
+        record.title = template.title;
+        record.crmId = template.crmId;
+
+        //fragments
+        let fragmentTemplate = record.fragments.splice(0)[0];
+        template.fragments.forEach((fragment) => {
+          let fragmentRecord = JSON.parse(JSON.stringify(fragmentTemplate));
+
+          //populate id and title
+          fragmentRecord.id = fragment.id;
+          fragmentRecord.title = fragment.title;
+          fragmentRecord.crmId = fragment.crmId;
+
+          //add to array
+          record.fragments.push(fragmentRecord);
+        });
+
+        //add to array
+        this.vars.interactionSummary.output.emails.push(record);
+      });
+
+      //activity
+      this.vars.interactionSummary.output.emails.forEach((email) => {
+        //sent emails for this template
+        let sentEmails = this.vars.interactionSummary.input.Sent_Email_vod__c.sort(
+          (a, b) => new Date(b.Email_Sent_Date_vod__c) - new Date(a.Email_Sent_Date_vod__c)
+        ).filter((sentEmail) => sentEmail.Approved_Email_Template_vod__c == email.crmId && sentEmail.Email_Sent_Date_vod__c);
+
+        //status: sent/not sent
+        if (sentEmails.length > 0) {
+          email.status = "sent";
+        } else {
+          email.status = "notSent";
+        }
+
+        //most recent email
+        let mostRecentEmail;
+        if (sentEmails.length > 0) {
+          mostRecentEmail = sentEmails[0];
+        }
+        if (mostRecentEmail) {
+          email.mostRecentSent.sentEmailID = mostRecentEmail.ID;
+          email.mostRecentSent.date = mostRecentEmail.Email_Sent_Date_vod__c;
+          email.mostRecentSent.opens = mostRecentEmail.Open_Count_vod__c;
+          email.mostRecentSent.clicks = mostRecentEmail.Click_Count_vod__c;
+        }
+
+        //most recent open email
+        let mostRecentOpen;
+        if (sentEmails.length > 0) {
+          mostRecentOpen = sentEmails.find((sentEmail) => sentEmail.Opened_vod__c);
+        }
+        if (mostRecentOpen) {
+          email.mostRecentOpen.sentEmailID = mostRecentOpen.ID;
+          email.mostRecentOpen.date = mostRecentOpen.Email_Sent_Date_vod__c;
+          email.mostRecentOpen.clicks = mostRecentOpen.Click_Count_vod__c;
+        }
+
+        //overall
+        email.overall.sent = sentEmails.length;
+        email.overall.sentDates = sentEmails.map((sentEmail) => sentEmail.Email_Sent_Date_vod__c);
+        email.overall.opens = sentEmails.reduce((acc, sentEmail) => {
+          return acc + sentEmail.Open_Count_vod__c;
+        }, 0);
+        email.overall.openDates = sentEmails.filter((sentEmail) => sentEmail.Opened_vod__c).map((sentEmail) => sentEmail.Email_Sent_Date_vod__c);
+        email.overall.clicks = sentEmails.reduce((acc, sentEmail) => { return acc + sentEmail.Click_Count_vod__c }, 0);
+
+        email.fragments.forEach((fragment) => {
+          //sent emails for this fragment
+          let sentEmailsForThisFragment = sentEmails.filter((sentEmail) => sentEmail.Email_Fragments_vod__c.indexOf(fragment.crmId) > -1);
+
+          if (sentEmailsForThisFragment.length > 0) {
+            fragment.status = "sent";
+          } else {
+            fragment.status = "notSent";
+          }
+
+          //most recent email
+          let mostRecentEmailForFragment;
+          if (sentEmailsForThisFragment.length > 0) {
+            mostRecentEmailForFragment = sentEmailsForThisFragment[0];
+          }
+          if (mostRecentEmailForFragment) {
+            fragment.mostRecentSent.sentEmailID = mostRecentEmailForFragment.ID;
+            fragment.mostRecentSent.date = mostRecentEmailForFragment.Email_Sent_Date_vod__c;
+            fragment.mostRecentSent.clicks = 0;
+          }
+
+          //clicks count for most recent email
+          let clicksCountForMostRecentEmail = this.vars.interactionSummary.input.Email_Activity_vod__c.filter(
+            (emailActivity) => emailActivity.Sent_Email_vod__c == mostRecentEmailForFragment.ID && emailActivity.Approved_Document_vod__c == fragment.crmId && emailActivity.Event_type_vod__c == "Clicked_vod"
+          ).length;
+          fragment.mostRecentSent.clicks = clicksCountForMostRecentEmail;
+
+          //most recent email with clicks for fragment
+          let mostRecentEmailWithClicksForFragment;
+          if (sentEmailsForThisFragment.length > 0) {
+            mostRecentEmailWithClicksForFragment = sentEmailsForThisFragment
+              .sort((a, b) => new Date(b.Email_Sent_Date_vod__c) - new Date(a.Email_Sent_Date_vod__c))
+              .find((sentEmail) => {
+                return this.vars.interactionSummary.input.Email_Activity_vod__c
+                .sort((a, b) => new Date(b.Activity_DateTime_vod__c) - new Date(a.Activity_DateTime_vod__c))
+                .find(
+                  (emailActivity) =>
+                    emailActivity.Sent_Email_vod__c == sentEmail.ID &&
+                    emailActivity.Approved_Document_vod__c == fragment.crmId &&
+                    emailActivity.Event_type_vod__c == "Clicked_vod"
+                );
+              });
+          }
+
+          //most recent activity for fragment
+          let mostRecentEmailActivityForFragment;
+          if (mostRecentEmailWithClicksForFragment) {
+            mostRecentEmailActivityForFragment = this.vars.interactionSummary.input.Email_Activity_vod__c.sort(
+              (a, b) => new Date(b.Activity_DateTime_vod__c) - new Date(a.Activity_DateTime_vod__c)
+            ).find(
+              (emailActivity) =>
+                emailActivity.Sent_Email_vod__c == mostRecentEmailWithClicksForFragment.ID &&
+                emailActivity.Approved_Document_vod__c == fragment.crmId &&
+                emailActivity.Event_type_vod__c == "Clicked_vod"
+            );
+          }
+
+          //most recent click
+          if (mostRecentEmailWithClicksForFragment && mostRecentEmailActivityForFragment) {
+            fragment.mostRecentClick.sentEmailID = mostRecentEmailWithClicksForFragment.ID;
+            fragment.mostRecentClick.date = mostRecentEmailActivityForFragment.Activity_DateTime_vod__c;
+            fragment.mostRecentClick.emailActivityID = mostRecentEmailActivityForFragment.ID;
+          }
+
+          //overall
+          fragment.overall.sent = sentEmailsForThisFragment.length;
+          fragment.overall.sentDates = sentEmailsForThisFragment.map((sentEmail) => sentEmail.Email_Sent_Date_vod__c);
+          fragment.overall.clicks = this.vars.interactionSummary.input.Email_Activity_vod__c.filter(
+            (emailActivity) => sentEmailsForThisFragment.find((sentEmail) => sentEmail.ID == emailActivity.Sent_Email_vod__c) && emailActivity.Approved_Document_vod__c == fragment.crmId && emailActivity.Event_type_vod__c == "Clicked_vod"
+          ).length;
+          fragment.overall.clickDates = this.vars.interactionSummary.input.Email_Activity_vod__c.filter(
+            (emailActivity) => sentEmailsForThisFragment.find((sentEmail) => sentEmail.ID == emailActivity.Sent_Email_vod__c) && emailActivity.Approved_Document_vod__c == fragment.crmId && emailActivity.Event_type_vod__c == "Clicked_vod"
+          ).map((emailActivity) => emailActivity.Activity_DateTime_vod__c);
+
+          //remove duplicates
+          fragment.overall.sentDates = [...new Set(fragment.overall.sentDates)];
+          fragment.overall.clickDates = [...new Set(fragment.overall.clickDates)];
+        });
+      });
+    }
   },
 
   /*common html -------------------------------------------*/
@@ -5175,13 +5971,14 @@ com.idc.ui = {
     refreshVars: function () {
       const textArea = this.dropDown.element.querySelector('[data-type="com.idc.ui.core.tab.content"][data-instance="vars"] textarea');
 
-      let vars = JSON.parse(JSON.stringify(com.idc.clm.vars)); //all but the below vars
+      let vars = JSON.parse(JSON.stringify(com.idc.clm.vars)); //all but the ones selected for params
       delete vars.project;
       delete vars.options;
       delete vars.commonHTML;
       delete vars.slides;
       delete vars.standaloneModalGroups;
       delete vars.emailCart;
+      delete vars.references;
 
       textArea.value = `${JSON.stringify(vars, null, 4)}\n`;
     },
@@ -5314,6 +6111,7 @@ com.idc.ui = {
       }
     },
   },
+  interactionSummary: {},
 };
 
 let log = com.idc.util.log;
