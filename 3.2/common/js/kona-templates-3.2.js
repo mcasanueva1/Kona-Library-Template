@@ -330,6 +330,17 @@ com.idc.templates = {
         "childNodes": [],
         }
       ],
+      "contents": [
+        {
+        "type": "DIV",
+        "attributes": [
+          {
+            "data-type": "com.idc.ui.core.multi.contents",
+          },
+        ],
+        "childNodes": [],
+        }
+      ],
       "content": [
         {
           "type": "DIV",
