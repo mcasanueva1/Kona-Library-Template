@@ -352,23 +352,23 @@ com.idc.templates = {
           "childNodes": [],
           }
       ],
-      "prevArrow": [
+      "prevButton": [
         {
           "type": "DIV",
           "attributes": [
             {
-              "data-type": "com.idc.ui.core.multi.prevArrow",
+              "data-type": "com.idc.ui.core.multi.prevButton",
             },
           ],
           "childNodes": [],
           }
       ],
-      "nextArrow": [
+      "nextButton": [
         {
           "type": "DIV",
           "attributes": [
             {
-              "data-type": "com.idc.ui.core.multi.nextArrow",
+              "data-type": "com.idc.ui.core.multi.nextButton",
             },
           ],
           "childNodes": [],
