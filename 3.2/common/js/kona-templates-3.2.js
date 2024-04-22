@@ -318,6 +318,52 @@ com.idc.templates = {
         ]
       }
     },
+    "multi": {
+      "container": [
+        {
+        "type": "DIV",
+        "attributes": [
+          {
+            "data-type": "com.idc.ui.core.multi.container",
+          },
+        ],
+        "childNodes": [],
+        }
+      ],
+      "content": [
+        {
+          "type": "DIV",
+          "attributes": [
+            {
+              "data-type": "com.idc.ui.core.multi.content",
+            },
+          ],
+          "childNodes": [],
+          }
+      ],
+      "prevArrow": [
+        {
+          "type": "DIV",
+          "attributes": [
+            {
+              "data-type": "com.idc.ui.core.multi.prevArrow",
+            },
+          ],
+          "childNodes": [],
+          }
+      ],
+      "nextArrow": [
+        {
+          "type": "DIV",
+          "attributes": [
+            {
+              "data-type": "com.idc.ui.core.multi.nextArrow",
+            },
+          ],
+          "childNodes": [],
+          }
+      ],
+    },
     "scroll": {
       "container": [
         {
