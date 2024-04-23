@@ -357,7 +357,8 @@ com.idc.templates = {
           "type": "DIV",
           "attributes": [
             {
-              "data-type": "com.idc.ui.core.multi.prevButton",
+              "data-type": "com.idc.ui.core.button",
+              "data-sub-type": "com.idc.ui.core.multi.prevButton",
             },
           ],
           "childNodes": [],
@@ -368,7 +369,8 @@ com.idc.templates = {
           "type": "DIV",
           "attributes": [
             {
-              "data-type": "com.idc.ui.core.multi.nextButton",
+              "data-type": "com.idc.ui.core.button",
+              "data-sub-type": "com.idc.ui.core.multi.nextButton",
             },
           ],
           "childNodes": [],

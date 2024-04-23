@@ -2598,7 +2598,9 @@ com.idc.clm = {
           return acc + sentEmail.Open_Count_vod__c;
         }, 0);
         email.overall.openDates = sentEmails.filter((sentEmail) => sentEmail.Opened_vod__c).map((sentEmail) => sentEmail.Email_Sent_Date_vod__c);
-        email.overall.clicks = sentEmails.reduce((acc, sentEmail) => { return acc + sentEmail.Click_Count_vod__c }, 0);
+        email.overall.clicks = sentEmails.reduce((acc, sentEmail) => {
+          return acc + sentEmail.Click_Count_vod__c;
+        }, 0);
 
         email.fragments.forEach((fragment) => {
           //sent emails for this fragment
@@ -2623,7 +2625,10 @@ com.idc.clm = {
 
           //clicks count for most recent email
           let clicksCountForMostRecentEmail = this.vars.interactionSummary.input.Email_Activity_vod__c.filter(
-            (emailActivity) => emailActivity.Sent_Email_vod__c == mostRecentEmailForFragment.ID && emailActivity.Approved_Document_vod__c == fragment.crmId && emailActivity.Event_type_vod__c == "Clicked_vod"
+            (emailActivity) =>
+              emailActivity.Sent_Email_vod__c == mostRecentEmailForFragment.ID &&
+              emailActivity.Approved_Document_vod__c == fragment.crmId &&
+              emailActivity.Event_type_vod__c == "Clicked_vod"
           ).length;
           fragment.mostRecentSent.clicks = clicksCountForMostRecentEmail;
 
@@ -2633,9 +2638,9 @@ com.idc.clm = {
             mostRecentEmailWithClicksForFragment = sentEmailsForThisFragment
               .sort((a, b) => new Date(b.Email_Sent_Date_vod__c) - new Date(a.Email_Sent_Date_vod__c))
               .find((sentEmail) => {
-                return this.vars.interactionSummary.input.Email_Activity_vod__c
-                .sort((a, b) => new Date(b.Activity_DateTime_vod__c) - new Date(a.Activity_DateTime_vod__c))
-                .find(
+                return this.vars.interactionSummary.input.Email_Activity_vod__c.sort(
+                  (a, b) => new Date(b.Activity_DateTime_vod__c) - new Date(a.Activity_DateTime_vod__c)
+                ).find(
                   (emailActivity) =>
                     emailActivity.Sent_Email_vod__c == sentEmail.ID &&
                     emailActivity.Approved_Document_vod__c == fragment.crmId &&
@@ -2668,10 +2673,16 @@ com.idc.clm = {
           fragment.overall.sent = sentEmailsForThisFragment.length;
           fragment.overall.sentDates = sentEmailsForThisFragment.map((sentEmail) => sentEmail.Email_Sent_Date_vod__c);
           fragment.overall.clicks = this.vars.interactionSummary.input.Email_Activity_vod__c.filter(
-            (emailActivity) => sentEmailsForThisFragment.find((sentEmail) => sentEmail.ID == emailActivity.Sent_Email_vod__c) && emailActivity.Approved_Document_vod__c == fragment.crmId && emailActivity.Event_type_vod__c == "Clicked_vod"
+            (emailActivity) =>
+              sentEmailsForThisFragment.find((sentEmail) => sentEmail.ID == emailActivity.Sent_Email_vod__c) &&
+              emailActivity.Approved_Document_vod__c == fragment.crmId &&
+              emailActivity.Event_type_vod__c == "Clicked_vod"
           ).length;
           fragment.overall.clickDates = this.vars.interactionSummary.input.Email_Activity_vod__c.filter(
-            (emailActivity) => sentEmailsForThisFragment.find((sentEmail) => sentEmail.ID == emailActivity.Sent_Email_vod__c) && emailActivity.Approved_Document_vod__c == fragment.crmId && emailActivity.Event_type_vod__c == "Clicked_vod"
+            (emailActivity) =>
+              sentEmailsForThisFragment.find((sentEmail) => sentEmail.ID == emailActivity.Sent_Email_vod__c) &&
+              emailActivity.Approved_Document_vod__c == fragment.crmId &&
+              emailActivity.Event_type_vod__c == "Clicked_vod"
           ).map((emailActivity) => emailActivity.Activity_DateTime_vod__c);
 
           //remove duplicates
@@ -2782,9 +2793,10 @@ com.idc.clm = {
     //awake elements
     com.idc.ui.core.accordion.awake();
     com.idc.ui.core.modal.awake();
+    com.idc.ui.core.menu.awake();
+    com.idc.ui.core.multi.awake();
     com.idc.ui.core.tab.awake();
     com.idc.ui.core.navigationArrows.awake();
-    com.idc.ui.core.menu.setActiveInstance();
     com.idc.ui.core.link.awake();
 
     //utilities menu
@@ -3558,6 +3570,53 @@ com.idc.ui = {
     },
     menu: {
       selector: '[data-type="com.idc.ui.core.menu"]',
+      collection: [],
+      awake: function () {
+        document.querySelectorAll(this.selector).forEach((el) => {
+          //set attributes or buttons to validate
+          const toValidate = {
+            attributes: [],
+            other: [],
+          };
+
+          if (this.isHTMLValid(el, toValidate)) {
+            //retrieve or set link id
+            let el_id;
+            if (el.id === "") {
+              el_id = com.idc.ui.common.generateUniqueId("com_idc_ui_core_menu", this.collection);
+              el.id = el_id;
+              el.setAttribute("id", el_id);
+              el.codeGeneratedId = true;
+            } else {
+              el_id = el.id;
+            }
+
+            //collection (do not proceed if already exists)
+            if (this.collection.indexOf(el_id) >= 0) {
+              if (document.querySelector(`#${el_id}`)) {
+                if (el.activated) {
+                  //do not proceed if element has already been activated
+                  return;
+                } else {
+                  //the element exists in the collection and dom, but has not been activated (e.g. html code has been replaced)
+                }
+              } else {
+                //element has been removed from DOM, remove from collection
+                this.collection.splice(this.collection.indexOf(el_id), 1);
+              }
+            } else {
+              //add to accordions collection
+              this.collection.push(el_id);
+            }
+
+            //flag elements as activated
+            el.activated = true;
+
+            //set active instance
+            this.setActiveInstance();
+          }
+        });
+      },
       setActiveInstance: function () {
         document.querySelectorAll(this.selector).forEach((el) => {
           el.querySelectorAll(`[data-sub-type="com.idc.ui.core.menu.button"]`).forEach((button) => {
@@ -3568,6 +3627,20 @@ com.idc.ui = {
             }
           });
         });
+      },
+      isHTMLValid: function (pElement, pToValidate) {
+        let errorList = "";
+
+        //attributes
+        pToValidate.attributes.forEach((attribute) => {
+          if (com.idc.util.getElementAttribute(pElement, attribute) === "") {
+            errorList = `${errorList} missing ${attribute} attribute; `;
+          }
+        });
+
+        if (errorList !== "") com.idc.util.log(`${com.idc.util.getElementAttribute(pElement, "data-type")} ${pElement.id}: ${errorList}`);
+
+        return errorList === "";
       },
     },
     modal: {
@@ -4173,6 +4246,229 @@ com.idc.ui = {
           //prevent close on back modal tap
           pElement.params.preventCloseOnBackModalTap = true;
         },
+      },
+    },
+    multi: {
+      selector: '[data-type="com.idc.ui.core.multi.container"]',
+      collection: [],
+      awake: function () {
+        document.querySelectorAll(this.selector).forEach((el) => {
+          //set attributes or buttons to validate
+          const toValidate = {
+            attributes: [],
+            other: [],
+          };
+
+          if (this.isHTMLValid(el, toValidate)) {
+            //retrieve or set link id
+            let el_id;
+            if (el.id === "") {
+              el_id = com.idc.ui.common.generateUniqueId("com_idc_ui_core_multi", this.collection);
+              el.id = el_id;
+              el.setAttribute("id", el_id);
+              el.codeGeneratedId = true;
+            } else {
+              el_id = el.id;
+            }
+
+            //collection (do not proceed if already exists)
+            if (this.collection.indexOf(el_id) >= 0) {
+              if (document.querySelector(`#${el_id}`)) {
+                if (el.activated) {
+                  //do not proceed if element has already been activated
+                  return;
+                } else {
+                  //the element exists in the collection and dom, but has not been activated (e.g. html code has been replaced)
+                }
+              } else {
+                //element has been removed from DOM, remove from collection
+                this.collection.splice(this.collection.indexOf(el_id), 1);
+              }
+            } else {
+              //add to accordions collection
+              this.collection.push(el_id);
+            }
+
+            //flag elements as activated
+            el.activated = true;
+
+            //view state
+            el.viewState = {
+              activeInstance: null,
+            };
+
+            //params
+            el.params = com.idc.ui.common.readElementOptions(el, {
+            });
+
+            //assign functions and events: main element
+            el.setInstance = this.setInstance;
+            el.nextInstance = this.nextInstance;
+            el.prevInstance = this.prevInstance;
+            el.setButtonsState = this.setButtonsState;
+            el.resetToDefaults = this.resetToDefaults;
+
+            //components collection
+            el.components = {
+              contents: null,
+              instances: [],
+              buttons: {
+                next: null,
+                prev: null
+              }
+            };
+
+            //components: contents
+            el.components.contents = {
+              element: el.querySelector(':scope > [data-type="com.idc.ui.core.multi.contents"]'),
+            };
+
+            //components: instances
+            if (el.components.contents.element) {
+              let instances = el.components.contents.element.querySelectorAll(':scope > [data-type="com.idc.ui.core.multi.content"]');
+              if (instances) {
+                instances.forEach((instanceEl) => {
+                  const instance = {
+                    name: instanceEl.getAttribute("data-instance"),
+                    element: instanceEl,
+                    params: com.idc.ui.common.readElementOptions(instanceEl, {
+                      beforeOpen: null,
+                      afterOpen: null,
+                      beforeClose: null,
+                      afterClose: null,
+                      initialState: null, //'open' will set the instance open by default
+                    }),
+                    viewState: null,
+                  };
+                  el.components.instances.push(instance);
+                });
+              }
+            }
+
+            //components: buttons
+            el.components.buttons.next = el.querySelector('[data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.core.multi.nextButton"]');
+            if (el.components.buttons.next) {
+              el.components.buttons.next.addEventListener("click", (evt) => {
+                el.nextInstance();
+              });
+            }
+            el.components.buttons.prev = el.querySelector('[data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.core.multi.prevButton"]');
+            if (el.components.buttons.prev) {
+              el.components.buttons.prev.addEventListener("click", (evt) => {
+                el.prevInstance();
+              });
+            }
+
+            //restore saved state if returned from standalone pop-up
+            if (
+              com.idc.clm.isBackFromStandAloneSlide() &&
+              com.idc.ui.common.backFromStandalone.getPersistentProperty(com.idc.clm.vars.navigation.currentSlide.id, el.id, "activeInstance") !== null &&
+              com.idc.ui.common.backFromStandalone.getPersistentProperty(com.idc.clm.vars.navigation.currentSlide.id, el.id, "activeInstance").value !== null
+            ) {
+              //set instance
+              el.setInstance(
+                com.idc.ui.common.backFromStandalone.getPersistentProperty(com.idc.clm.vars.navigation.currentSlide.id, el.id, "activeInstance").value
+              );
+            } else {
+              //not back from standalone slide: reset to defaults
+              el.resetToDefaults();
+            }
+          }
+        });
+      },
+      setInstance: function (pInstance) {
+        //set open, close all the rest
+        this.components.instances.forEach((instance) => {
+          if (instance.name === pInstance) {
+            instance.element.setAttribute("data-view-state", "active");
+            instance.viewState = "active";
+            this.viewState.activeInstance = pInstance;
+          } else {
+            //all the rest
+            instance.element.removeAttribute("data-view-state");
+            instance.viewState = null;
+
+            //reset child objects (revert to default state)
+            com.idc.ui.common.resetChildElements(instance.element);
+          }
+        });
+
+        //set buttons state
+        this.setButtonsState();
+      },
+      nextInstance: function () {
+        let currentInstanceIndex = this.components.instances.findIndex((instance) => {
+          return instance.name === this.viewState.activeInstance;
+        });
+        if (currentInstanceIndex < this.components.instances.length - 1) {
+          this.setInstance(this.components.instances[currentInstanceIndex + 1].name);
+        }
+      },
+      prevInstance: function () {
+        let currentInstanceIndex = this.components.instances.findIndex((instance) => {
+          return instance.name === this.viewState.activeInstance;
+        });
+        if (currentInstanceIndex > 0) {
+          this.setInstance(this.components.instances[currentInstanceIndex - 1].name);
+        }
+      },
+      setButtonsState: function () {
+        let isLastInstance = this.components.instances.findIndex((instance) => {
+          return instance.name === this.viewState.activeInstance;
+        }) == this.components.instances.length - 1;
+
+        let isFirstInstance = this.components.instances.findIndex((instance) => {
+          return instance.name === this.viewState.activeInstance;
+        }) == 0;
+
+        if (this.components.buttons.next) {
+          if (isLastInstance) {
+            this.components.buttons.next.setAttribute("data-view-state", "disabled");
+          } else {
+            this.components.buttons.next.setAttribute("data-view-state", "off");
+          }
+        }
+
+        if (this.components.buttons.prev) {
+          if (isFirstInstance) {
+            this.components.buttons.prev.setAttribute("data-view-state", "disabled");
+          } else {
+            this.components.buttons.prev.setAttribute("data-view-state", "off");
+          }
+        }
+      },
+      isHTMLValid: function (pElement, pToValidate) {
+        let errorList = "";
+
+        //attributes
+        pToValidate.attributes.forEach((attribute) => {
+          if (com.idc.util.getElementAttribute(pElement, attribute) === "") {
+            errorList = `${errorList} missing ${attribute} attribute; `;
+          }
+        });
+
+        if (errorList !== "") com.idc.util.log(`${com.idc.util.getElementAttribute(pElement, "data-type")} ${pElement.id}: ${errorList}`);
+
+        return errorList === "";
+      },
+      resetToDefaults: function () {
+        if (
+          this.components.instances.findIndex((instance) => {
+            return instance.params.initialState === "open";
+          }) >= 0
+        ) {
+          //there's a default instance set by param
+          this.components.instances.forEach((instance) => {
+            if (instance.params.initialState === "open") {
+              this.setInstance(instance.name, true);
+            }
+          });
+        } else {
+          //no default instance set by param, use first
+          if (this.components.instances.length > 0) {
+            this.setInstance(this.components.instances[0].name);
+          }
+        }
       },
     },
     navigationArrows: {
@@ -5041,8 +5337,8 @@ com.idc.ui = {
       },
     },
     resetChildElements: function (pContainer) {
-      //accordions, tabs
-      pContainer.querySelectorAll("[data-type='com.idc.ui.core.accordion'],[data-type='com.idc.ui.core.tab']").forEach((el) => {
+      //accordions, tabs, multi
+      pContainer.querySelectorAll("[data-type='com.idc.ui.core.accordion'],[data-type='com.idc.ui.core.tab'],[data-type='com.idc.ui.core.multi.container']").forEach((el) => {
         //wait for resetToDefaults function to be available and execute
         new Promise((resolve) => {
           if (el.resetToDefaults) {

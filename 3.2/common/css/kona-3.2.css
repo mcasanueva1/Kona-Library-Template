@@ -294,6 +294,18 @@ body[data-screen-orientation="portrait"] > [data-type="com.idc.ui.contentSize"] 
     width: 218px;
 }
 
+/* MULTI -------------------------------------------- */
+[data-type="com.idc.ui.core.multi.content"] {
+    display: none;
+}
+[data-type="com.idc.ui.core.multi.content"][data-view-state="active"] {
+    display: block;
+}
+[data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.core.multi.prevButton"],
+[data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.core.multi.nextButton"] {
+    z-index: 1;
+}
+
 /* NON WORKING LINK ALERT POPUP---------------------- */
 #com_idc_ui_nonworkinglink_popup {
     height: 20%;
