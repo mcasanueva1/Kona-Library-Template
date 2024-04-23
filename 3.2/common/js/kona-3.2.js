@@ -3872,8 +3872,10 @@ com.idc.ui = {
 
         //refresh utilities menu
         if (com.idc.clm.vars.utilitiesMenu.active) {
-          com.idc.ui.core.utilitiesMenu.updateGroupsContents();
-          com.idc.ui.core.utilitiesMenu.updateStyleAndZIndex();
+          if (this.type == "popUp" || this.type == "dropDown") {
+            com.idc.ui.core.utilitiesMenu.updateGroupsContents();
+            com.idc.ui.core.utilitiesMenu.updateStyleAndZIndex();
+          }
         }
 
         //show
@@ -3915,8 +3917,10 @@ com.idc.ui = {
 
           //refresh utilities menu
           if (com.idc.clm.vars.utilitiesMenu.active) {
-            com.idc.ui.core.utilitiesMenu.updateGroupsContents();
-            com.idc.ui.core.utilitiesMenu.updateStyleAndZIndex();
+            if (this.type == "popUp" || this.type == "dropDown") {
+              com.idc.ui.core.utilitiesMenu.updateGroupsContents();
+              com.idc.ui.core.utilitiesMenu.updateStyleAndZIndex();
+            }
           }
 
           //hide modal and backmodal
@@ -4392,6 +4396,10 @@ com.idc.ui = {
             com.idc.ui.common.resetChildElements(instance.element);
           }
         });
+
+        //data attributes
+        this.setAttribute("data-any-active-instance", this.viewState.activeInstance ? "true" : "false");
+        this.setAttribute("data-active-instance", this.viewState.activeInstance ? this.viewState.activeInstance : "none");
 
         //set buttons state
         this.setButtonsState();
