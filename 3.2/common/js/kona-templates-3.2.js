@@ -358,6 +358,8 @@ com.idc.templates = {
           "attributes": [
             {
               "data-type": "com.idc.ui.core.button",
+            },
+            {
               "data-sub-type": "com.idc.ui.core.multi.prevButton",
             },
           ],
@@ -370,6 +372,8 @@ com.idc.templates = {
           "attributes": [
             {
               "data-type": "com.idc.ui.core.button",
+            },
+            {
               "data-sub-type": "com.idc.ui.core.multi.nextButton",
             },
           ],
