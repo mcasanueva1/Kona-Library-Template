@@ -3746,7 +3746,7 @@ com.idc.ui = {
             }
 
             //close button
-            const closeButton = el.querySelector('[data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.core.modal.closeButton"]');
+            const closeButton = document.querySelector(`[data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.core.modal.closeButton"][data-target-id="${el.id}"]`);
             if (closeButton !== null) {
               el.components.closeButton = {
                 element: closeButton,
@@ -5216,19 +5216,25 @@ com.idc.ui = {
         if (vars.navigation.currentSlide.isStandalone && vars.utilitiesMenu.sets.standaloneModal.appendCloseButtonToRightGroup) {
           let standaloneModalId = com.idc.clm.findSlide(vars.navigation.currentSlide.id).standaloneModal.modalId;
           let closeButton = document.querySelector(`#${standaloneModalId}`).components.closeButton;
+          
           if (closeButton) {
             let closeButtonEl = closeButton.element;
             if (closeButtonEl) {
-              //change position to static (disables top and left properties)
-              closeButtonEl.style.position = "static";
-              //add separator
-              let newSeparator = this.components.items.separator.cloneNode(true);
-              newSeparator.setAttribute("data-before-item", closeButtonEl.getAttribute("id"));
-              this.components.containers.rightGroup.appendChild(newSeparator);
-              //add close button
-              this.components.containers.rightGroup.appendChild(closeButtonEl);
-              //flag button as inside utilities menu
-              closeButtonEl.setAttribute("data-inside-utilities-menu", "true");
+              //close button already in right group?
+              let closeButtonAlreadyInRightGroup = this.components.containers.rightGroup.querySelector(`#${closeButtonEl.getAttribute("id")}`) != null;
+
+              if (!closeButtonAlreadyInRightGroup) {
+                //change position to static (disables top and left properties)
+                closeButtonEl.style.position = "static";
+                //add separator
+                let newSeparator = this.components.items.separator.cloneNode(true);
+                newSeparator.setAttribute("data-before-item", closeButtonEl.getAttribute("id"));
+                this.components.containers.rightGroup.appendChild(newSeparator);
+                //add close button
+                this.components.containers.rightGroup.appendChild(closeButtonEl);
+                //flag button as inside utilities menu
+                closeButtonEl.setAttribute("data-inside-utilities-menu", "true");
+              }
             }
           }
         }
