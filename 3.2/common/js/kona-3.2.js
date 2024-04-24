@@ -262,8 +262,16 @@ com.idc.clm = {
         isLast: null,
       },
       lastSlide: {
-        id: null,
-        index: null,
+        actual: {
+          //actual most recent slide in the sequence (could be standalone or PDF)
+          id: null,
+          index: null,
+        },
+        main: {
+          //most recent slide in the sequence which is not a standalone or a PDF
+          id: null,
+          index: null,
+        },
       },
       dynamicPresentation: {
         active: null,
@@ -1270,12 +1278,23 @@ com.idc.clm = {
       this.persistentData.session.navigationHistory.every((slideId) => {
         if (slideId != navVars.currentSlide.id) {
           if (!this.findSlide(slideId).standaloneModal.isStandalone && !this.findSlide(slideId).pdf.isPDF) {
-            navVars.lastSlide.id = slideId;
-            navVars.lastSlide.index = navVars.actualSlidesSequence.indexOf(slideId);
+            navVars.lastSlide.main.id = slideId;
+            navVars.lastSlide.main.index = navVars.actualSlidesSequence.indexOf(slideId);
             return false;
           } else {
             return true;
           }
+        } else {
+          return true;
+        }
+      });
+
+      //actual last slide
+      this.persistentData.session.navigationHistory.every((slideId) => {
+        if (slideId != navVars.currentSlide.id) {
+          navVars.lastSlide.actual.id = slideId;
+          navVars.lastSlide.actual.index = navVars.actualSlidesSequence.indexOf(slideId);
+          return false;
         } else {
           return true;
         }
@@ -3746,7 +3765,15 @@ com.idc.ui = {
             }
 
             //close button
-            const closeButton = document.querySelector(`[data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.core.modal.closeButton"][data-target-id="${el.id}"]`);
+            let closeButton;
+            //try to find within el
+            closeButton = el.querySelector(`[data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.core.modal.closeButton"]`);
+            if (!closeButton) {
+              //if not found, try to find within document (with target-id)
+              closeButton = document.querySelector(
+                `[data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.core.modal.closeButton"][data-target-id="${el.id}"]`
+              );
+            }
             if (closeButton !== null) {
               el.components.closeButton = {
                 element: closeButton,
@@ -3949,19 +3976,17 @@ com.idc.ui = {
           this.executeAfterClose();
         } else {
           //redirect to opener slide or slideId in closeAction
-          if (this.params.closeAction == null || this.params.closeAction == "opener") {
-            if (com.idc.clm.vars.navigation.lastSlide && com.idc.clm.vars.navigation.lastSlide.id != null) {
-              com.idc.clm.gotoSlide(com.idc.clm.vars.navigation.lastSlide.id);
-            } else {
-              if (com.idc.clm.vars.navigation.actualSlidesSequence[0] != com.idc.clm.vars.navigation.currentSlide.id) {
-                com.idc.clm.gotoSlide(com.idc.clm.vars.navigation.actualSlidesSequence[0]); //first slide in the sequence by default
-              }
+          let nav = com.idc.clm.vars.navigation;
+          if (this.params.closeAction == null || this.params.closeAction == "opener" || this.params.closeAction == "openerStrict") {
+            let lastSlideType = this.params.closeAction == null || this.params.closeAction == "opener" ? "main" : "actual";
+            if (nav.lastSlide.main && nav.lastSlide[lastSlideType].id != null) {
+              com.idc.clm.gotoSlide(nav.lastSlide[lastSlideType].id);
             }
           } else {
             if (com.idc.clm.findSlide(this.params.closeAction) != null) {
-              com.idc.clm.gotoSlide(this.params.closeAction);
+              com.idc.clm.gotoSlide(this.params.closeAction); //if close action is not null and not opener/openerStrict, it's a slide id
             } else {
-              com.idc.clm.gotoSlide(com.idc.clm.vars.navigation.actualSlidesSequence[0]); //first slide in the sequence by default
+              com.idc.clm.gotoSlide(nav.actualSlidesSequence[0]); //first slide in the sequence by default
             }
           }
         }
@@ -4302,8 +4327,7 @@ com.idc.ui = {
             };
 
             //params
-            el.params = com.idc.ui.common.readElementOptions(el, {
-            });
+            el.params = com.idc.ui.common.readElementOptions(el, {});
 
             //assign functions and events: main element
             el.setInstance = this.setInstance;
@@ -4318,8 +4342,8 @@ com.idc.ui = {
               instances: [],
               buttons: {
                 next: null,
-                prev: null
-              }
+                prev: null,
+              },
             };
 
             //components: contents
@@ -4421,13 +4445,16 @@ com.idc.ui = {
         }
       },
       setButtonsState: function () {
-        let isLastInstance = this.components.instances.findIndex((instance) => {
-          return instance.name === this.viewState.activeInstance;
-        }) == this.components.instances.length - 1;
+        let isLastInstance =
+          this.components.instances.findIndex((instance) => {
+            return instance.name === this.viewState.activeInstance;
+          }) ==
+          this.components.instances.length - 1;
 
-        let isFirstInstance = this.components.instances.findIndex((instance) => {
-          return instance.name === this.viewState.activeInstance;
-        }) == 0;
+        let isFirstInstance =
+          this.components.instances.findIndex((instance) => {
+            return instance.name === this.viewState.activeInstance;
+          }) == 0;
 
         if (this.components.buttons.next) {
           if (isLastInstance) {
@@ -4748,8 +4775,7 @@ com.idc.ui = {
             if (el.components.container.element) {
               let buttons = el.components.container.element.querySelector(':scope > [data-type="com.idc.ui.core.tab.buttons"]');
               if (buttons) {
-                buttons.querySelectorAll('[data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.core.tab.button"]')
-                .forEach((button) => {
+                buttons.querySelectorAll('[data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.core.tab.button"]').forEach((button) => {
                   const instance = {
                     name: button.getAttribute("data-instance"),
                     button: {
@@ -5216,7 +5242,7 @@ com.idc.ui = {
         if (vars.navigation.currentSlide.isStandalone && vars.utilitiesMenu.sets.standaloneModal.appendCloseButtonToRightGroup) {
           let standaloneModalId = com.idc.clm.findSlide(vars.navigation.currentSlide.id).standaloneModal.modalId;
           let closeButton = document.querySelector(`#${standaloneModalId}`).components.closeButton;
-          
+
           if (closeButton) {
             let closeButtonEl = closeButton.element;
             if (closeButtonEl) {
@@ -5360,26 +5386,28 @@ com.idc.ui = {
     },
     resetChildElements: function (pContainer) {
       //accordions, tabs, multi
-      pContainer.querySelectorAll("[data-type='com.idc.ui.core.accordion'],[data-type='com.idc.ui.core.tab'],[data-type='com.idc.ui.core.multi.container']").forEach((el) => {
-        //wait for resetToDefaults function to be available and execute
-        new Promise((resolve) => {
-          if (el.resetToDefaults) {
-            resolve();
-          } else {
-            const interval = setInterval(() => {
-              if (el.resetToDefaults) {
-                clearInterval(interval);
-                resolve();
-              }
-            }, 500);
-          }
-        }).then(() => {
-          el.resetToDefaults();
-        });
+      pContainer
+        .querySelectorAll("[data-type='com.idc.ui.core.accordion'],[data-type='com.idc.ui.core.tab'],[data-type='com.idc.ui.core.multi.container']")
+        .forEach((el) => {
+          //wait for resetToDefaults function to be available and execute
+          new Promise((resolve) => {
+            if (el.resetToDefaults) {
+              resolve();
+            } else {
+              const interval = setInterval(() => {
+                if (el.resetToDefaults) {
+                  clearInterval(interval);
+                  resolve();
+                }
+              }, 500);
+            }
+          }).then(() => {
+            el.resetToDefaults();
+          });
 
-        //reset back from standalone persistent properties
-        this.backFromStandalone.resetPersistentPropertiesStylesAndClasses(el.id);
-      });
+          //reset back from standalone persistent properties
+          this.backFromStandalone.resetPersistentPropertiesStylesAndClasses(el.id);
+        });
     },
     readElementOptions: function (pEl, pOptionsSchema) {
       const optionsTxt = com.idc.util.getElementAttribute(pEl, "data-options");
