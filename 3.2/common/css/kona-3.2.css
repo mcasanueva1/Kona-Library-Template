@@ -399,6 +399,9 @@ body[data-screen-orientation="portrait"] > [data-type="com.idc.ui.contentSize"] 
 [data-type="com.idc.ui.core.tab"] {
     width: 80%;
 }
+[data-type="com.idc.ui.core.tab"][data-view-state="hidden"] {
+    display: none;
+}
 [data-type="com.idc.ui.core.tab"][data-sub-type="com.idc.ui.core.tabModal"] {
     position: absolute;
     z-index: 1;

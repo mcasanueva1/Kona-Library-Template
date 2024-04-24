@@ -4794,6 +4794,8 @@ com.idc.ui = {
                   el.components.cover.buttons.push(button);
                 });
               }
+            } else {
+              el.setAttribute("data-view-state", "active"); //data-view-state of tab will be hidden if a cover is present
             }
 
             //params
@@ -4871,6 +4873,7 @@ com.idc.ui = {
         const hideCover = () => {
           this.components.cover.element.removeAttribute("data-view-state");
           this.components.cover.viewState = null;
+          this.setAttribute("data-view-state", "active");
           this.components.container.element.setAttribute("data-view-state", "active");
         };
         if (this.params.btnTransitionCoverToTab) {
@@ -4891,6 +4894,7 @@ com.idc.ui = {
         const showCover = () => {
           this.components.cover.element.setAttribute("data-view-state", "active");
           this.components.cover.viewState = "active";
+          this.setAttribute("data-view-state", "hidden");
           this.components.container.element.removeAttribute("data-view-state");
         };
         if (this.params.btnTransitionTabToCover) {
