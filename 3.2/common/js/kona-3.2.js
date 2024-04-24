@@ -4797,8 +4797,9 @@ com.idc.ui = {
                   el.components.cover.buttons.push(button);
                 });
               }
+              el.setAttribute("data-view-state", "hidden"); //data-view-state of tab will be hidden if a cover is present
             } else {
-              el.setAttribute("data-view-state", "active"); //data-view-state of tab will be hidden if a cover is present
+              el.setAttribute("data-view-state", "active"); //data-view-state of tab will be active if a cover is not present
             }
 
             //params
