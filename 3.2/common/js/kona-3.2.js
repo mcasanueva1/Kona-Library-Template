@@ -4748,7 +4748,8 @@ com.idc.ui = {
             if (el.components.container.element) {
               let buttons = el.components.container.element.querySelector(':scope > [data-type="com.idc.ui.core.tab.buttons"]');
               if (buttons) {
-                buttons.querySelectorAll('[data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.core.tab.button"]').forEach((button) => {
+                buttons.querySelectorAll('[data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.core.tab.button"]')
+                .forEach((button) => {
                   const instance = {
                     name: button.getAttribute("data-instance"),
                     button: {
@@ -4770,6 +4771,8 @@ com.idc.ui = {
                   };
                   el.components.instances.push(instance);
                 });
+                //sort by instance name ascending
+                el.components.instances.sort((a, b) => (a.name > b.name ? 1 : -1));
               }
             }
 
