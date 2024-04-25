@@ -272,6 +272,16 @@ let com_idc_params = {
       "standaloneModal": {
         "id": ""
       },
+      "references": {
+        "default": {
+          "landscape": null,
+          "portrait": null
+        },
+        "references2": {
+          "landscape": null,
+          "portrait": null
+        }
+      }
     },
   }
 }
