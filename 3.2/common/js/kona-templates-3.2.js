@@ -404,7 +404,128 @@ com.idc.templates = {
           "childNodes": [],
           }
       ],
-    },    
+    },  
+    "references": {
+      "openButton": [
+        {
+          "type": "DIV",
+          "attributes": [
+              {
+                  "data-type": "com.idc.ui.core.button"
+              },
+              {
+                  "data-sub-type": "com.idc.ui.core.modal.dualButton"
+              },
+              {
+                  "data-target-id": ""
+              },
+              {
+                  "id": ""
+              }
+          ]
+        }
+      ],
+      "modal": [
+        {
+          "type": "DIV",
+          "attributes": [
+              {
+                  "data-type": "com.idc.ui.core.modal.popUp"
+              },
+              {
+                  "data-options": ""
+              },
+              {
+                  "id": ""
+              }
+          ],
+          "childNodes": [
+              {
+                  "type": "DIV",
+                  "attributes": [
+                      {
+                          "data-type": "com.idc.ui.core.modal.contentArea"
+                      }
+                  ],
+                  "childNodes": [
+                      {
+                          "type": "DIV",
+                          "attributes": [
+                              {
+                                  "data-type": "com.idc.ui.references"
+                              }
+                          ],
+                          "childNodes": [
+                              {
+                                  "type": "DIV",
+                                  "attributes": [
+                                      {
+                                          "data-type": "com.idc.ui.core.scroll.container"
+                                      },
+                                      {
+                                          "data-scroll-direction": "vertical"
+                                      }
+                                  ],
+                                  "childNodes": [
+                                      {
+                                          "type": "DIV",
+                                          "attributes": [
+                                              {
+                                                  "data-type": "com.idc.ui.core.scroll.content"
+                                              }
+                                          ],
+                                          "childNodes": [
+                                              {
+                                                  "type": "DIV",
+                                                  "attributes": [
+                                                      {
+                                                          "data-type": "com.idc.ui.references.landscapeView"
+                                                      }
+                                                  ]
+                                              },
+                                              {
+                                                  "type": "DIV",
+                                                  "attributes": [
+                                                      {
+                                                          "data-type": "com.idc.ui.references.portraitView"
+                                                      }
+                                                  ]
+                                              }
+                                          ]
+                                      }
+                                  ]
+                              }
+                          ]
+                      },
+                      {
+                          "type": "DIV",
+                          "attributes": [
+                              {
+                                  "data-type": "com.idc.ui.references.title"
+                              }
+                          ],
+                          "childNodes": []
+                      },
+                      {
+                          "type": "DIV",
+                          "attributes": [
+                              {
+                                  "data-type": "com.idc.ui.references.switch"
+                              },
+                              {
+                                  "data-view-state": "active"
+                              },
+                              {
+                                  "data-selected": "slide"
+                              }
+                          ]
+                      }
+                  ]
+              }
+          ]
+        }
+      ]
+    }, 
     "tab": {
       "container": [
         {
@@ -1190,6 +1311,12 @@ com.idc.templates = {
                 {
                     "data-type": "com.idc.ui.core.modal.popUp"
                 },
+                {
+                  "data-options": ""
+                },
+                {
+                    "id": ""
+                }
             ],
             "childNodes": [
                 {
@@ -1279,7 +1406,7 @@ com.idc.templates = {
                 "data-item-id": ""
             },
             {
-                "data-status": ""
+                "data-status": "unChecked"
             }
         ],
         "childNodes": [
