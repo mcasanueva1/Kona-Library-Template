@@ -425,104 +425,78 @@ com.idc.templates = {
           ]
         }
       ],
-      "modal": [
+      "modalContent": [
         {
-          "type": "DIV",
-          "attributes": [
-              {
-                  "data-type": "com.idc.ui.core.modal.popUp"
-              },
-              {
-                  "data-options": ""
-              },
-              {
-                  "id": ""
-              }
-          ],
-          "childNodes": [
-              {
-                  "type": "DIV",
-                  "attributes": [
-                      {
-                          "data-type": "com.idc.ui.core.modal.contentArea"
-                      }
-                  ],
-                  "childNodes": [
-                      {
-                          "type": "DIV",
-                          "attributes": [
-                              {
-                                  "data-type": "com.idc.ui.references"
-                              }
-                          ],
-                          "childNodes": [
-                              {
-                                  "type": "DIV",
-                                  "attributes": [
-                                      {
-                                          "data-type": "com.idc.ui.core.scroll.container"
-                                      },
-                                      {
-                                          "data-scroll-direction": "vertical"
-                                      }
-                                  ],
-                                  "childNodes": [
-                                      {
-                                          "type": "DIV",
-                                          "attributes": [
-                                              {
-                                                  "data-type": "com.idc.ui.core.scroll.content"
-                                              }
-                                          ],
-                                          "childNodes": [
-                                              {
-                                                  "type": "DIV",
-                                                  "attributes": [
-                                                      {
-                                                          "data-type": "com.idc.ui.references.landscapeView"
-                                                      }
-                                                  ]
-                                              },
-                                              {
-                                                  "type": "DIV",
-                                                  "attributes": [
-                                                      {
-                                                          "data-type": "com.idc.ui.references.portraitView"
-                                                      }
-                                                  ]
-                                              }
-                                          ]
-                                      }
-                                  ]
-                              }
-                          ]
-                      },
-                      {
-                          "type": "DIV",
-                          "attributes": [
-                              {
-                                  "data-type": "com.idc.ui.references.title"
-                              }
-                          ],
-                          "childNodes": []
-                      },
-                      {
-                          "type": "DIV",
-                          "attributes": [
-                              {
-                                  "data-type": "com.idc.ui.references.switch"
-                              },
-                              {
-                                  "data-view-state": "active"
-                              },
-                              {
-                                  "data-selected": "slide"
-                              }
-                          ]
-                      }
-                  ]
-              }
-          ]
+            "type": "DIV",
+            "attributes": [
+                {
+                    "data-type": "com.idc.ui.references"
+                }
+            ],
+            "childNodes": [
+                {
+                    "type": "DIV",
+                    "attributes": [
+                        {
+                            "data-type": "com.idc.ui.core.scroll.container"
+                        },
+                        {
+                            "data-scroll-direction": "vertical"
+                        }
+                    ],
+                    "childNodes": [
+                        {
+                            "type": "DIV",
+                            "attributes": [
+                                {
+                                    "data-type": "com.idc.ui.core.scroll.content"
+                                }
+                            ],
+                            "childNodes": [
+                                {
+                                    "type": "DIV",
+                                    "attributes": [
+                                        {
+                                            "data-type": "com.idc.ui.references.landscapeView"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "DIV",
+                                    "attributes": [
+                                        {
+                                            "data-type": "com.idc.ui.references.portraitView"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "DIV",
+            "attributes": [
+                {
+                    "data-type": "com.idc.ui.references.title"
+                }
+            ],
+            "childNodes": []
+        },
+        {
+            "type": "DIV",
+            "attributes": [
+                {
+                    "data-type": "com.idc.ui.references.switch"
+                },
+                {
+                    "data-view-state": "active"
+                },
+                {
+                    "data-selected": "slide"
+                }
+            ]
         }
       ]
     }, 
@@ -1303,53 +1277,25 @@ com.idc.templates = {
         ],
       }
     ],
-    "modal": [
-      [
-        {
-            "type": "DIV",
-            "attributes": [
-                {
-                    "data-type": "com.idc.ui.core.modal.popUp"
-                },
-                {
-                  "data-options": ""
-                },
-                {
-                    "id": ""
-                }
-            ],
-            "childNodes": [
-                {
-                    "type": "DIV",
-                    "attributes": [
-                        {
-                            "data-type": "com.idc.ui.core.modal.contentArea"
-                        }
-                    ],
-                    "childNodes": [
-                        {
-                            "type": "DIV",
-                            "attributes": [
-                                {
-                                    "data-type": "com.idc.ui.emailCart.items"
-                                }
-                            ],
-                            "childNodes": []
-                        },
-                        {
-                            "type": "DIV",
-                            "attributes": [
-                                {
-                                    "data-type": "com.idc.ui.emailCart.buttons"
-                                }
-                            ],
-                            "childNodes": []
-                        }
-                    ]
-                }
-            ]
-        }
-      ]
+    "modalContent": [
+      {
+        "type": "DIV",
+        "attributes": [
+            {
+                "data-type": "com.idc.ui.emailCart.items"
+            }
+        ],
+        "childNodes": []
+      },
+      {
+          "type": "DIV",
+          "attributes": [
+              {
+                  "data-type": "com.idc.ui.emailCart.buttons"
+              }
+          ],
+          "childNodes": []
+      }
     ],
     "buttons": {
       "cancel": [
@@ -1452,6 +1398,27 @@ com.idc.templates = {
             }
         ]
       }
-    ]
+    ],
+    "simplifiedItemTemplate": [
+      {
+        "type": "DIV",
+        "attributes": [
+            {
+                "data-type": "com.idc.ui.emailCart.item"
+            },
+            {
+              "data-sub-type": "com.idc.ui.emailCart.simplifiedItem"
+            },
+            {
+                "data-item-id": ""
+            },
+            {
+                "data-status": "unChecked"
+            }
+        ],
+        "childNodes": [
+        ]
+      }
+    ],
   }
 };
