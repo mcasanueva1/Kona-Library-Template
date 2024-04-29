@@ -132,6 +132,23 @@ com.idc.templates = {
           "childNodes": [],
         }
       ],
+      "dualButton": [
+        {
+          "type": "DIV",
+          "attributes": [
+            {
+              "data-type": "com.idc.ui.core.button",
+            },
+            {
+              "data-sub-type": "com.idc.ui.core.modal.dualButton",
+            },
+            {
+              "data-target-id": "",
+            },
+          ],
+          "childNodes": [],
+        }
+      ],
       "closeButton": [
         {
           "type": "DIV",
