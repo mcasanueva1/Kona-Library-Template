@@ -265,47 +265,6 @@ let com_idc_params = {
     },
     "nonEmailCartItems": {
       "templates": [
-        {
-          "id": "otherTemplate1",
-          "title": "Endurant template",
-          "thumb": "template.png",
-          "vaultId": {
-            "development": "22194",
-            "release": ""
-          },
-          "fragments": [
-            {
-              "id": "otherFragment1",
-              "title": "Endurant fragment 1",
-              "thumb": null,
-              "linksTo": "Endurant1.pdf",
-              "vaultId": {
-                "development": "22285",
-                "release": ""
-              }
-            },
-            {
-              "id": "otherFragment2",
-              "title": "Endurant fragment 2",
-              "thumb": null,
-              "linksTo": "Endurant2.pdf",
-              "vaultId": {
-                "development": "22286",
-                "release": ""
-              }
-            },
-            {
-              "id": "otherFragment3",
-              "title": "Endurant fragment 3",
-              "thumb": null,
-              "linksTo": "Endurant3.pdf",
-              "vaultId": {
-                "development": "22287",
-                "release": ""
-              }
-            },
-          ]
-        },
       ],
     },
     "labels": {
