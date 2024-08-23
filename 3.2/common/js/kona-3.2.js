@@ -106,11 +106,11 @@ com.idc.clm = {
               treatStandaloneModalsAsMainSlides: null,
             },
           },
-          hardcodedProfiles: {
-            // HARDCODED PROFILES: in config file
+          callflows: {
+            // CALLFLOWS: in config file
             active: true,
-            profiles: [],
-            default: null, //default profile
+            flows: [],
+            default: null, //default callflow
             menu: {
               standard: {
                 // standard menu will be hidden if a dynamic presentation is in place
@@ -149,7 +149,7 @@ com.idc.clm = {
                 mode: null,
                 functionName: null,
               },
-              forHardcodedProfiles: {
+              forCallflows: {
                 mode: null,
                 functionName: null,
               },
@@ -159,6 +159,10 @@ com.idc.clm = {
             active: null,
           },
         },
+      },
+      linkOverride: {
+        active: null,
+        global: null,
       },
     },
     commonHTML: {
@@ -184,6 +188,7 @@ com.idc.clm = {
           pdfName: null,
         },
         references: {
+          disabled: null,
           default: {
             landscape: null,
             portrait: null,
@@ -237,6 +242,108 @@ com.idc.clm = {
             },
           },
         },
+        dynamicPresentation: {
+          contentTargeting: {
+            mainSlide: {
+              buttonViewState: null,
+              centerGroup: [],
+              rightGroup: [],
+            },
+            standaloneModal: {
+              buttonViewState: null,
+              appendCloseButtonToRightGroup: null,
+              centerGroup: [],
+              rightGroup: [],
+            },
+            regularModals: {
+              buttonViewState: null,
+              bringToFront: {
+                dualButtonForActiveModal: {
+                  active: null,
+                },
+                referencesButton: {
+                  active: null,
+                  excludeModals: [],
+                },
+              },
+            },
+          },
+          myPresentations: {
+            mainSlide: {
+              buttonViewState: null,
+              centerGroup: [],
+              rightGroup: [],
+            },
+            standaloneModal: {
+              buttonViewState: null,
+              appendCloseButtonToRightGroup: null,
+              centerGroup: [],
+              rightGroup: [],
+            },
+            regularModals: {
+              buttonViewState: null,
+              bringToFront: {
+                dualButtonForActiveModal: {
+                  active: null,
+                },
+                referencesButton: {
+                  active: null,
+                  excludeModals: [],
+                },
+              },
+            },
+          },
+          externalFunction: {
+            mainSlide: {
+              buttonViewState: null,
+              centerGroup: [],
+              rightGroup: [],
+            },
+            standaloneModal: {
+              buttonViewState: null,
+              appendCloseButtonToRightGroup: null,
+              centerGroup: [],
+              rightGroup: [],
+            },
+            regularModals: {
+              buttonViewState: null,
+              bringToFront: {
+                dualButtonForActiveModal: {
+                  active: null,
+                },
+                referencesButton: {
+                  active: null,
+                  excludeModals: [],
+                },
+              },
+            },
+          },
+          callflows: {
+            mainSlide: {
+              buttonViewState: null,
+              centerGroup: [],
+              rightGroup: [],
+            },
+            standaloneModal: {
+              buttonViewState: null,
+              appendCloseButtonToRightGroup: null,
+              centerGroup: [],
+              rightGroup: [],
+            },
+            regularModals: {
+              buttonViewState: null,
+              bringToFront: {
+                dualButtonForActiveModal: {
+                  active: null,
+                },
+                referencesButton: {
+                  active: null,
+                  excludeModals: [],
+                },
+              },
+            },
+          },
+        },
       },
     },
     navigation: {
@@ -275,7 +382,9 @@ com.idc.clm = {
       },
       dynamicPresentation: {
         active: null,
-        source: null,
+        source: null, //contentTargeting, myPresentations, externalFunction, callflows
+        callflow: null, //for callflows, active callflow name
+        isMixed: null, //for myPresentations, if the presentation is mixed (slides from other CLMs)
         treatStandaloneModalsAsMainSlides: null,
       },
       overWrite: {
@@ -316,6 +425,7 @@ com.idc.clm = {
           vaultId: null,
           crmId: null,
           selected: null,
+          linksTo: null,
         },
       ],
     },
@@ -335,6 +445,11 @@ com.idc.clm = {
       },
     },
     metadata: {
+      account: {
+        id: null,
+        name: null,
+        salutation: null,
+      },
       keyMessage: {
         id: null,
         mediaFileName: null,
@@ -344,11 +459,67 @@ com.idc.clm = {
     },
     interactionSummary: {
       active: null,
+      minRows: {
+        previousInteractions: null,
+        emails: null,
+      },
+      groupViewsForSameSlide: null,
+      testModel: {
+        calls: {
+          min: null,
+          max: null,
+        },
+        emails: {
+          min: null,
+          max: null,
+        },
+      },
+      components: {
+        openButton: {
+          id: null,
+        },
+        modal: {
+          id: null,
+        },
+        tab: {
+          id: null,
+        },
+      },
       fields: {
         Call2_vod__c: [],
         Call2_Key_Message_vod__c: [],
         Sent_Email_vod__c: [],
         Email_Activity_vod__c: [],
+      },
+      labels: {},
+      visibility: {
+        tabs: {
+          previousInteractions: null,
+          slides: null,
+          emails: null,
+        },
+        fields: {
+          previousInteractions: {
+            pres_reaction: null,
+            pres_duration: null,
+            email_opened: null,
+            email_timesClicked: null,
+          },
+          slides: {
+            lastView: null,
+            reaction: null,
+            duration: null,
+            totalViews: null,
+          },
+          emails: {
+            lastTimeSent_date: null,
+            lastTimeSent_open: null,
+            lastTimeSent_click: null,
+            allTimesSent_sent: null,
+            allTimesSent_open: null,
+            allTimesSent_click: null,
+          },
+        },
       },
       nonEmailCartItems: {
         templates: [
@@ -365,6 +536,7 @@ com.idc.clm = {
                 thumb: null,
                 vaultId: null,
                 crmId: null,
+                linksTo: null,
               },
             ],
           },
@@ -377,9 +549,19 @@ com.idc.clm = {
         Email_Activity_vod__c: [],
       },
       output: {
+        ready: null,
+        account: {
+          id: null,
+          name: null,
+          salutation: null,
+        },
         timeline: [
           {
+            id: null, //crmId or sent email or call
             date: null,
+            time: null,
+            datetime: null,
+            time_AMPM: null,
             type: null, //email or call
             email: {
               id: null,
@@ -391,6 +573,7 @@ com.idc.clm = {
                   id: null,
                   title: null,
                   clicks: null, //count
+                  linksTo: null,
                 },
               ],
             },
@@ -437,6 +620,7 @@ com.idc.clm = {
             id: null,
             crmId: null,
             title: null,
+            thumbnail: null,
             status: null, //sent / not sent
             mostRecentSent: {
               sentEmailID: null, //id
@@ -454,7 +638,9 @@ com.idc.clm = {
               sentDates: [],
               opens: null,
               openDates: [],
+              openRate: null,
               clicks: null,
+              clickRate: null,
             },
             fragments: [
               {
@@ -477,6 +663,7 @@ com.idc.clm = {
                   sentDates: [],
                   clicks: null,
                   clickDates: [],
+                  clickRate: null,
                 },
               },
             ],
@@ -488,11 +675,20 @@ com.idc.clm = {
   persistentDataTemplate: {
     session: {
       navigationHistory: [],
-      selectedProfile: null,
+      selectedCallflow: null,
       selectedEmailCartItems: [],
       selectedStandaloneGroup: null,
     },
     commonHTML: {},
+    complexLinks: {
+      fromSlide: null,
+      toSlide: null,
+      element: {
+        type: null,
+        id: null,
+        instance: null,
+      },
+    },
     backFromStandalone: [{ slideId: null, elements: [{ id: null, properties: [{ name: null, type: null, value: null }] }] }],
   },
   init: async function () {
@@ -551,7 +747,11 @@ com.idc.clm = {
 
     //post init tasks
     await this.getDataForContextObjects();
-    this.interactionSummaryModel();
+
+    //interaction summary
+    if (this.vars.interactionSummary.active && this.vars.session.isAnActualCall) {
+      this.interactionSummaryModel();
+    }
   },
 
   /*configuration -----------------------------------------*/
@@ -577,6 +777,13 @@ com.idc.clm = {
     if (vars.options.browserMode.simulate.active) {
       vars.options.browserMode.simulate.mode = util.readSetting(com_idc_params, "options.browserMode.simulate.mode", "string", "media");
       vars.options.browserMode.simulate.objects = util.readSetting(com_idc_params, "options.browserMode.simulate.objects", "object", {});
+    }
+
+    if (com_idc_params.options.linkOverride) {
+      vars.options.linkOverride.active = util.readSetting(com_idc_params, "options.linkOverride.active", "boolean", true);
+      if (vars.options.linkOverride.active) {
+        vars.options.linkOverride.global = util.readSetting(com_idc_params, "options.linkOverride.global", "string", null);
+      }
     }
 
     //common html
@@ -726,52 +933,52 @@ com.idc.clm = {
         false
       );
 
-      //hardcoded profiles source
-      vars.options.dynamicPresentation.source.hardcodedProfiles.active = util.readSetting(
+      //callflows source
+      vars.options.dynamicPresentation.source.callflows.active = util.readSetting(
         com_idc_params,
-        "options.dynamicPresentation.source.hardcodedProfiles.active",
+        "options.dynamicPresentation.source.callflows.active",
         "boolean",
         false
       );
-      vars.options.dynamicPresentation.source.hardcodedProfiles.profiles = util.readSetting(
+      vars.options.dynamicPresentation.source.callflows.flows = util.readSetting(
         com_idc_params,
-        "options.dynamicPresentation.source.hardcodedProfiles.profiles",
+        "options.dynamicPresentation.source.callflows.flows",
         "object",
         []
       );
-      vars.options.dynamicPresentation.source.hardcodedProfiles.default = util.readSetting(
+      vars.options.dynamicPresentation.source.callflows.default = util.readSetting(
         com_idc_params,
-        "options.dynamicPresentation.source.hardcodedProfiles.default",
+        "options.dynamicPresentation.source.callflows.default",
         "string"
       );
-      //hardcoded profiles standard menu
-      vars.options.dynamicPresentation.source.hardcodedProfiles.menu.standard.id = util.readSetting(
+      //callflows standard menu
+      vars.options.dynamicPresentation.source.callflows.menu.standard.id = util.readSetting(
         com_idc_params,
-        "options.dynamicPresentation.source.hardcodedProfiles.menu.standard.id",
+        "options.dynamicPresentation.source.callflows.menu.standard.id",
         "string"
       );
-      //hardcoded profiles dynamic menu
-      vars.options.dynamicPresentation.source.hardcodedProfiles.menu.dynamic.mode = util.readSetting(
+      //callflows dynamic menu
+      vars.options.dynamicPresentation.source.callflows.menu.dynamic.mode = util.readSetting(
         com_idc_params,
-        "options.dynamicPresentation.source.hardcodedProfiles.menu.dynamic.mode",
+        "options.dynamicPresentation.source.callflows.menu.dynamic.mode",
         "string"
       );
-      vars.options.dynamicPresentation.source.hardcodedProfiles.menu.dynamic.functionName = util.readSetting(
+      vars.options.dynamicPresentation.source.callflows.menu.dynamic.functionName = util.readSetting(
         com_idc_params,
-        "options.dynamicPresentation.source.hardcodedProfiles.menu.dynamic.functionName",
+        "options.dynamicPresentation.source.callflows.menu.dynamic.functionName",
         "string"
       );
-      //hardcoded profiles alert popup
-      vars.options.dynamicPresentation.source.hardcodedProfiles.nonWorkingLinkPopUp.active = util.readSetting(
+      //callflows alert popup
+      vars.options.dynamicPresentation.source.callflows.nonWorkingLinkPopUp.active = util.readSetting(
         com_idc_params,
-        "options.dynamicPresentation.source.hardcodedProfiles.nonWorkingLinkPopUp.active",
+        "options.dynamicPresentation.source.callflows.nonWorkingLinkPopUp.active",
         "boolean",
         false
       );
-      //hardcoded profiles treat standalone as main slides
-      vars.options.dynamicPresentation.source.hardcodedProfiles.standaloneModal.treatStandaloneModalsAsMainSlides = util.readSetting(
+      //callflows treat standalone as main slides
+      vars.options.dynamicPresentation.source.callflows.standaloneModal.treatStandaloneModalsAsMainSlides = util.readSetting(
         com_idc_params,
-        "options.dynamicPresentation.source.hardcodedProfiles.standaloneModal.treatStandaloneModalsAsMainSlides",
+        "options.dynamicPresentation.source.callflows.standaloneModal.treatStandaloneModalsAsMainSlides",
         "boolean",
         false
       );
@@ -866,6 +1073,338 @@ com.idc.clm = {
         "object",
         []
       );
+
+      //dynamic presentation / contentTargeting / main slide
+      vars.utilitiesMenu.sets.dynamicPresentation.contentTargeting.mainSlide.buttonViewState = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.dynamicPresentation.contentTargeting.mainSlide.buttonViewState",
+        "string",
+        null,
+        false
+      );
+      vars.utilitiesMenu.sets.dynamicPresentation.contentTargeting.mainSlide.centerGroup = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.dynamicPresentation.contentTargeting.mainSlide.centerGroup",
+        "object",
+        [],
+        false
+      );
+      vars.utilitiesMenu.sets.dynamicPresentation.contentTargeting.mainSlide.rightGroup = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.dynamicPresentation.contentTargeting.mainSlide.rightGroup",
+        "object",
+        [],
+        false
+      );
+
+      //dynamic presentation / contentTargeting / standalone modal
+      vars.utilitiesMenu.sets.dynamicPresentation.contentTargeting.standaloneModal.buttonViewState = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.dynamicPresentation.contentTargeting.standaloneModal.buttonViewState",
+        "string",
+        null,
+        false
+      );
+      vars.utilitiesMenu.sets.dynamicPresentation.contentTargeting.standaloneModal.appendCloseButtonToRightGroup = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.dynamicPresentation.contentTargeting.standaloneModal.appendCloseButtonToRightGroup",
+        "boolean",
+        false,
+        false
+      );
+      vars.utilitiesMenu.sets.dynamicPresentation.contentTargeting.standaloneModal.centerGroup = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.dynamicPresentation.contentTargeting.standaloneModal.centerGroup",
+        "object",
+        [],
+        false
+      );
+      vars.utilitiesMenu.sets.dynamicPresentation.contentTargeting.standaloneModal.rightGroup = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.dynamicPresentation.contentTargeting.standaloneModal.rightGroup",
+        "object",
+        [],
+        false
+      );
+
+      //dynamic presentation / contentTargeting / regular modals
+      vars.utilitiesMenu.sets.dynamicPresentation.contentTargeting.regularModals.buttonViewState = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.dynamicPresentation.contentTargeting.regularModals.buttonViewState",
+        "string",
+        null,
+        false
+      );
+      vars.utilitiesMenu.sets.dynamicPresentation.contentTargeting.regularModals.bringToFront.dualButtonForActiveModal.active = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.dynamicPresentation.contentTargeting.regularModals.bringToFront.dualButtonForActiveModal.active",
+        "boolean",
+        false,
+        false
+      );
+      vars.utilitiesMenu.sets.dynamicPresentation.contentTargeting.regularModals.bringToFront.referencesButton.active = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.dynamicPresentation.contentTargeting.regularModals.bringToFront.referencesButton.active",
+        "boolean",
+        false,
+        false
+      );
+      vars.utilitiesMenu.sets.dynamicPresentation.contentTargeting.regularModals.bringToFront.referencesButton.excludeModals = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.dynamicPresentation.contentTargeting.regularModals.bringToFront.referencesButton.excludeModals",
+        "object",
+        [],
+        false
+      );
+
+      //dynamic presentation / myPresentations / main slide
+      vars.utilitiesMenu.sets.dynamicPresentation.myPresentations.mainSlide.buttonViewState = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.dynamicPresentation.myPresentations.mainSlide.buttonViewState",
+        "string",
+        null,
+        false
+      );
+      vars.utilitiesMenu.sets.dynamicPresentation.myPresentations.mainSlide.centerGroup = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.dynamicPresentation.myPresentations.mainSlide.centerGroup",
+        "object",
+        [],
+        false
+      );
+      vars.utilitiesMenu.sets.dynamicPresentation.myPresentations.mainSlide.rightGroup = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.dynamicPresentation.myPresentations.mainSlide.rightGroup",
+        "object",
+        [],
+        false
+      );
+
+      //dynamic presentation / myPresentations / standalone modal
+      vars.utilitiesMenu.sets.dynamicPresentation.myPresentations.standaloneModal.buttonViewState = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.dynamicPresentation.myPresentations.standaloneModal.buttonViewState",
+        "string",
+        null,
+        false
+      );
+      vars.utilitiesMenu.sets.dynamicPresentation.myPresentations.standaloneModal.appendCloseButtonToRightGroup = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.dynamicPresentation.myPresentations.standaloneModal.appendCloseButtonToRightGroup",
+        "boolean",
+        false,
+        false
+      );
+      vars.utilitiesMenu.sets.dynamicPresentation.myPresentations.standaloneModal.centerGroup = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.dynamicPresentation.myPresentations.standaloneModal.centerGroup",
+        "object",
+        [],
+        false
+      );
+      vars.utilitiesMenu.sets.dynamicPresentation.myPresentations.standaloneModal.rightGroup = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.dynamicPresentation.myPresentations.standaloneModal.rightGroup",
+        "object",
+        [],
+        false
+      );
+
+      //dynamic presentation / myPresentations / regular modals
+      vars.utilitiesMenu.sets.dynamicPresentation.myPresentations.regularModals.buttonViewState = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.dynamicPresentation.myPresentations.regularModals.buttonViewState",
+        "string",
+        null,
+        false
+      );
+      vars.utilitiesMenu.sets.dynamicPresentation.myPresentations.regularModals.bringToFront.dualButtonForActiveModal.active = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.dynamicPresentation.myPresentations.regularModals.bringToFront.dualButtonForActiveModal.active",
+        "boolean",
+        false,
+        false
+      );
+      vars.utilitiesMenu.sets.dynamicPresentation.myPresentations.regularModals.bringToFront.referencesButton.active = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.dynamicPresentation.myPresentations.regularModals.bringToFront.referencesButton.active",
+        "boolean",
+        false,
+        false
+      );
+      vars.utilitiesMenu.sets.dynamicPresentation.myPresentations.regularModals.bringToFront.referencesButton.excludeModals = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.dynamicPresentation.myPresentations.regularModals.bringToFront.referencesButton.excludeModals",
+        "object",
+        [],
+        false
+      );
+
+      //dynamic presentation / externalFunction / main slide
+      vars.utilitiesMenu.sets.dynamicPresentation.externalFunction.mainSlide.buttonViewState = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.dynamicPresentation.externalFunction.mainSlide.buttonViewState",
+        "string",
+        null,
+        false
+      );
+      vars.utilitiesMenu.sets.dynamicPresentation.externalFunction.mainSlide.centerGroup = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.dynamicPresentation.externalFunction.mainSlide.centerGroup",
+        "object",
+        [],
+        false
+      );
+      vars.utilitiesMenu.sets.dynamicPresentation.externalFunction.mainSlide.rightGroup = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.dynamicPresentation.externalFunction.mainSlide.rightGroup",
+        "object",
+        [],
+        false
+      );
+
+      //dynamic presentation / externalFunction / standalone modal
+      vars.utilitiesMenu.sets.dynamicPresentation.externalFunction.standaloneModal.buttonViewState = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.dynamicPresentation.externalFunction.standaloneModal.buttonViewState",
+        "string",
+        null,
+        false
+      );
+      vars.utilitiesMenu.sets.dynamicPresentation.externalFunction.standaloneModal.appendCloseButtonToRightGroup = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.dynamicPresentation.externalFunction.standaloneModal.appendCloseButtonToRightGroup",
+        "boolean",
+        false,
+        false
+      );
+      vars.utilitiesMenu.sets.dynamicPresentation.externalFunction.standaloneModal.centerGroup = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.dynamicPresentation.externalFunction.standaloneModal.centerGroup",
+        "object",
+        [],
+        false
+      );
+      vars.utilitiesMenu.sets.dynamicPresentation.externalFunction.standaloneModal.rightGroup = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.dynamicPresentation.externalFunction.standaloneModal.rightGroup",
+        "object",
+        [],
+        false
+      );
+
+      //dynamic presentation / externalFunction / regular modals
+      vars.utilitiesMenu.sets.dynamicPresentation.externalFunction.regularModals.buttonViewState = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.dynamicPresentation.externalFunction.regularModals.buttonViewState",
+        "string",
+        null,
+        false
+      );
+      vars.utilitiesMenu.sets.dynamicPresentation.externalFunction.regularModals.bringToFront.dualButtonForActiveModal.active = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.dynamicPresentation.externalFunction.regularModals.bringToFront.dualButtonForActiveModal.active",
+        "boolean",
+        false,
+        false
+      );
+      vars.utilitiesMenu.sets.dynamicPresentation.externalFunction.regularModals.bringToFront.referencesButton.active = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.dynamicPresentation.externalFunction.regularModals.bringToFront.referencesButton.active",
+        "boolean",
+        false,
+        false
+      );
+      vars.utilitiesMenu.sets.dynamicPresentation.externalFunction.regularModals.bringToFront.referencesButton.excludeModals = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.dynamicPresentation.externalFunction.regularModals.bringToFront.referencesButton.excludeModals",
+        "object",
+        [],
+        false
+      );
+
+      //dynamic presentation / callflows / main slide
+      vars.utilitiesMenu.sets.dynamicPresentation.callflows.mainSlide.buttonViewState = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.dynamicPresentation.callflows.mainSlide.buttonViewState",
+        "string",
+        null,
+        false
+      );
+      vars.utilitiesMenu.sets.dynamicPresentation.callflows.mainSlide.centerGroup = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.dynamicPresentation.callflows.mainSlide.centerGroup",
+        "object",
+        [],
+        false
+      );
+      vars.utilitiesMenu.sets.dynamicPresentation.callflows.mainSlide.rightGroup = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.dynamicPresentation.callflows.mainSlide.rightGroup",
+        "object",
+        [],
+        false
+      );
+
+      //dynamic presentation / callflows / standalone modal
+      vars.utilitiesMenu.sets.dynamicPresentation.callflows.standaloneModal.buttonViewState = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.dynamicPresentation.callflows.standaloneModal.buttonViewState",
+        "string",
+        null,
+        false
+      );
+      vars.utilitiesMenu.sets.dynamicPresentation.callflows.standaloneModal.appendCloseButtonToRightGroup = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.dynamicPresentation.callflows.standaloneModal.appendCloseButtonToRightGroup",
+        "boolean",
+        false,
+        false
+      );
+      vars.utilitiesMenu.sets.dynamicPresentation.callflows.standaloneModal.centerGroup = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.dynamicPresentation.callflows.standaloneModal.centerGroup",
+        "object",
+        [],
+        false
+      );
+      vars.utilitiesMenu.sets.dynamicPresentation.callflows.standaloneModal.rightGroup = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.dynamicPresentation.callflows.standaloneModal.rightGroup",
+        "object",
+        [],
+        false
+      );
+
+      //dynamic presentation / callflows / regular modals
+      vars.utilitiesMenu.sets.dynamicPresentation.callflows.regularModals.buttonViewState = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.dynamicPresentation.callflows.regularModals.buttonViewState",
+        "string",
+        null,
+        false
+      );
+      vars.utilitiesMenu.sets.dynamicPresentation.callflows.regularModals.bringToFront.dualButtonForActiveModal.active = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.dynamicPresentation.callflows.regularModals.bringToFront.dualButtonForActiveModal.active",
+        "boolean",
+        false,
+        false
+      );
+      vars.utilitiesMenu.sets.dynamicPresentation.callflows.regularModals.bringToFront.referencesButton.active = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.dynamicPresentation.callflows.regularModals.bringToFront.referencesButton.active",
+        "boolean",
+        false,
+        false
+      );
+      vars.utilitiesMenu.sets.dynamicPresentation.callflows.regularModals.bringToFront.referencesButton.excludeModals = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.dynamicPresentation.callflows.regularModals.bringToFront.referencesButton.excludeModals",
+        "object",
+        [],
+        false
+      );
     }
 
     //standalone modal groups
@@ -930,6 +1469,7 @@ com.idc.clm = {
         newFragment.id = util.readSetting(item, "id", "string", null);
         newFragment.title = util.readSetting(item, "title", "string", null);
         newFragment.thumb = util.readSetting(item, "thumb", "string", null);
+        newFragment.linksTo = util.readSetting(item, "linksTo", "string", null);
         newFragment.vaultId = util.readSetting(item, `vaultId.${selectedVault}`, "string", null);
 
         return newFragment;
@@ -960,6 +1500,29 @@ com.idc.clm = {
     //interaction summary
     if (com_idc_params.interactionSummary) {
       vars.interactionSummary.active = util.readSetting(com_idc_params, "interactionSummary.active", "boolean", false);
+
+      //min rows for previous interactions
+      vars.interactionSummary.minRows.previousInteractions = util.readSetting(com_idc_params, "interactionSummary.minRows.previousInteractions", "number", 1);
+
+      //min rows for emails
+      vars.interactionSummary.minRows.emails = util.readSetting(com_idc_params, "interactionSummary.minRows.emails", "number", 1);
+
+      //group views for same slide
+      vars.interactionSummary.groupViewsForSameSlide = util.readSetting(com_idc_params, "interactionSummary.groupViewsForSameSlide", "boolean", null);
+
+      //components
+      vars.interactionSummary.components.openButton.id = util.readSetting(com_idc_params, "interactionSummary.components.openButton.id", "string", null);
+      vars.interactionSummary.components.modal.id = util.readSetting(com_idc_params, "interactionSummary.components.modal.id", "string", null);
+      vars.interactionSummary.components.tab.id = util.readSetting(com_idc_params, "interactionSummary.components.tab.id", "string", null);
+
+      //labels
+      vars.interactionSummary.labels = util.readSetting(com_idc_params, "interactionSummary.labels", "object", null);
+
+      //test model
+      vars.interactionSummary.testModel.calls.min = util.readSetting(com_idc_params, "interactionSummary.testModel.calls.min", "number", 1);
+      vars.interactionSummary.testModel.calls.max = util.readSetting(com_idc_params, "interactionSummary.testModel.calls.max", "number", 5);
+      vars.interactionSummary.testModel.emails.min = util.readSetting(com_idc_params, "interactionSummary.testModel.emails.min", "number", 1);
+      vars.interactionSummary.testModel.emails.max = util.readSetting(com_idc_params, "interactionSummary.testModel.emails.max", "number", 5);
 
       vars.interactionSummary.fields.Call2_vod__c = util.readSetting(com_idc_params, "interactionSummary.fields.Call2_vod__c", "object", []);
       vars.interactionSummary.fields.Call2_Key_Message_vod__c = util.readSetting(
@@ -996,6 +1559,7 @@ com.idc.clm = {
             newFragment.id = util.readSetting(item, "id", "string", null);
             newFragment.title = util.readSetting(item, "title", "string", null);
             newFragment.thumb = util.readSetting(item, "thumb", "string", null);
+            newFragment.linksTo = util.readSetting(item, "linksTo", "string", null);
             newFragment.vaultId = util.readSetting(item, `vaultId.${selectedVault}`, "string", null);
 
             return newFragment;
@@ -1004,6 +1568,14 @@ com.idc.clm = {
           return newTemplate;
         });
       }
+
+      //visibility
+      vars.interactionSummary.visibility = util.readSetting(
+        com_idc_params,
+        "interactionSummary.visibility",
+        "object",
+        com.idc.clm.varsTemplate.interactionSummary.visibility
+      );
     }
   },
   setSessionIdentifier: function () {
@@ -1099,6 +1671,14 @@ com.idc.clm = {
     vars.navigation.dynamicPresentation.active = true;
     //dynamic presentation type
     vars.navigation.dynamicPresentation.source = activeMode.name;
+    //callflow?
+    if (activeMode.name == "callflows") {
+      vars.navigation.dynamicPresentation.callflow = activeMode.callflow;
+    }
+    //myPresentations: isMixed?
+    if (activeMode.name == "myPresentations") {
+      vars.navigation.dynamicPresentation.isMixed = activeMode.isMixed;
+    }
     //treat modals as main slides
     vars.navigation.dynamicPresentation.treatStandaloneModalsAsMainSlides =
       vars.options.dynamicPresentation.source[activeMode.name].standaloneModal.treatStandaloneModalsAsMainSlides;
@@ -1135,11 +1715,15 @@ com.idc.clm = {
           });
         }
         if (dynamicPresVars.source.myPresentations.active) {
-          activeDynamicPresentationModes.push({
-            name: "myPresentations",
-            precedence: dynamicPresVars.precedence.indexOf("myPresentations"),
-            slidesSequence: await this.myPresentations(),
-          });
+          let myPresentationsRes = await this.myPresentations();
+          if (myPresentationsRes) {
+            activeDynamicPresentationModes.push({
+              name: "myPresentations",
+              precedence: dynamicPresVars.precedence.indexOf("myPresentations"),
+              slidesSequence: myPresentationsRes.slidesSequence,
+              isMixed: myPresentationsRes.isMixedPresentation,
+            });
+          }
         }
         if (dynamicPresVars.source.externalFunction.active) {
           activeDynamicPresentationModes.push({
@@ -1148,12 +1732,16 @@ com.idc.clm = {
             slidesSequence: await this.externalFunction(),
           });
         }
-        if (dynamicPresVars.source.hardcodedProfiles.active) {
-          activeDynamicPresentationModes.push({
-            name: "hardcodedProfiles",
-            precedence: dynamicPresVars.precedence.indexOf("hardcodedProfiles"),
-            slidesSequence: await this.hardcodedProfiles(),
-          });
+        if (dynamicPresVars.source.callflows.active) {
+          let callflows = await this.callflows();
+          if (callflows) {
+            activeDynamicPresentationModes.push({
+              name: "callflows",
+              precedence: dynamicPresVars.precedence.indexOf("callflows"),
+              callflow: callflows.name,
+              slidesSequence: callflows.sequence,
+            });
+          }
         }
 
         //sort active dynamic modes by precedence
@@ -1172,6 +1760,7 @@ com.idc.clm = {
           activeDynamicPresentationMode = activeDynamicPresentationModes[0];
         }
 
+        //active or standard
         if (activeDynamicPresentationMode) {
           //it is a dynamic presentation
           com.idc.clm.setDynamicSlidesSequence(activeDynamicPresentationMode);
@@ -1225,6 +1814,7 @@ com.idc.clm = {
 
         //prev slide in actual slides sequence
         if (!navVars.currentSlide.isFirst) {
+          if (!navVars.prevSlide) navVars.prevSlide = JSON.parse(JSON.stringify(this.varsTemplate.navigation.prevSlide));
           navVars.prevSlide.index = navVars.currentSlide.index - 1;
           navVars.prevSlide.id = navVars.actualSlidesSequence[navVars.prevSlide.index];
           navVars.prevSlide.isFirst = navVars.prevSlide.index == 0;
@@ -1233,6 +1823,7 @@ com.idc.clm = {
 
         //next slide in actual slides sequence
         if (!navVars.currentSlide.isLast) {
+          if (!navVars.nextSlide) navVars.nextSlide = JSON.parse(JSON.stringify(this.varsTemplate.navigation.nextSlide));
           navVars.nextSlide.index = navVars.currentSlide.index + 1;
           navVars.nextSlide.id = navVars.actualSlidesSequence[navVars.nextSlide.index];
           navVars.nextSlide.isFirst = false;
@@ -1255,6 +1846,7 @@ com.idc.clm = {
 
         //prev slide context array
         if (!navVars.currentSlide.isFirst) {
+          if (!navVars.prevSlide) navVars.prevSlide = JSON.parse(JSON.stringify(this.varsTemplate.navigation.prevSlide));
           navVars.prevSlide.id = contextArr[contextIndex - 1];
           navVars.prevSlide.index = navVars.actualSlidesSequence.indexOf(navVars.prevSlide.id);
           navVars.prevSlide.isFirst = navVars.prevSlide.index == 0;
@@ -1263,6 +1855,7 @@ com.idc.clm = {
 
         //next slide context array
         if (!navVars.currentSlide.isLast) {
+          if (!navVars.nextSlide) navVars.nextSlide = JSON.parse(JSON.stringify(this.varsTemplate.navigation.nextSlide));
           navVars.nextSlide.id = contextArr[contextIndex + 1];
           navVars.nextSlide.index = navVars.actualSlidesSequence.indexOf(navVars.nextSlide.id);
           navVars.nextSlide.isFirst = false;
@@ -1278,6 +1871,7 @@ com.idc.clm = {
       this.persistentData.session.navigationHistory.every((slideId) => {
         if (slideId != navVars.currentSlide.id) {
           if (!this.findSlide(slideId).standaloneModal.isStandalone && !this.findSlide(slideId).pdf.isPDF) {
+            if (!navVars.lastSlide) navVars.lastSlide = JSON.parse(JSON.stringify(this.varsTemplate.navigation.lastSlide));
             navVars.lastSlide.main.id = slideId;
             navVars.lastSlide.main.index = navVars.actualSlidesSequence.indexOf(slideId);
             return false;
@@ -1292,6 +1886,7 @@ com.idc.clm = {
       //actual last slide
       this.persistentData.session.navigationHistory.every((slideId) => {
         if (slideId != navVars.currentSlide.id) {
+          if (!navVars.lastSlide) navVars.lastSlide = JSON.parse(JSON.stringify(this.varsTemplate.navigation.lastSlide));
           navVars.lastSlide.actual.id = slideId;
           navVars.lastSlide.actual.index = navVars.actualSlidesSequence.indexOf(slideId);
           return false;
@@ -1348,6 +1943,37 @@ com.idc.clm = {
 
         util.log("com.idc.clm.getDataForContextObjects()");
 
+        //Account (ID, name, salutation)
+        if (this.vars.session.isAnActualCall) {
+          //id
+          await new Promise((resolve) => {
+            com.veeva.clm.getDataForCurrentObject("Account", "ID", (data) => {
+              if (data.success) {
+                this.vars.metadata.account.id = data.Account.ID;
+                resolve();
+              }
+            });
+          });
+          //account name
+          await new Promise((resolve) => {
+            com.veeva.clm.getDataForCurrentObject("Account", "Name", (data) => {
+              if (data.success) {
+                this.vars.metadata.account.name = data.Account.Name;
+                resolve();
+              }
+            });
+          });
+          //salutation
+          await new Promise((resolve) => {
+            com.veeva.clm.getDataForCurrentObject("Account", "Salutation", (data) => {
+              if (data.success) {
+                this.vars.metadata.account.salutation = data.Account.Salutation;
+                resolve();
+              }
+            });
+          });
+        }
+
         //Key_Message_vod__c (ID, file name, disable actions and ios resolution)
         {
           await new Promise((resolve) => {
@@ -1387,7 +2013,7 @@ com.idc.clm = {
           });
         }
 
-        //Approved_Document_vod__c for email cart and non email cart (templates and fragments)
+        //Approved_Document_vod__c for email cart and non email cart (get crmID for templates and fragments)
         if (this.vars.emailCart.active) {
           let itemsArray = [];
           this.vars.emailCart.templates
@@ -1472,34 +2098,20 @@ com.idc.clm = {
         //Call2_Key_Message_vod__c for current slides
         if (this.vars.interactionSummary.active && this.vars.session.isAnActualCall) {
           let keyMessageIDsAndZipNames = await new Promise((resolve) => {
-            let whereClause = this.vars.slides
-              .map((slide) => {
-                return `Media_File_Name_vod__c = "${slide.player.zipName}" OR`;
-              })
-              .join(" ")
-              .slice(0, -3);
-
-            com.veeva.clm.queryRecord("Key_Message_vod__c", ["ID", "Media_File_Name_vod__c"], whereClause, [], null, (data) => {
+            com.veeva.clm.queryRecord("Key_Message_vod__c", ["ID", "Media_File_Name_vod__c"], null, [], null, (data) => {
               if (data.success) {
                 resolve(data.Key_Message_vod__c);
               } else {
-                util.log(`com.idc.clm.getDataForContextObjects: failed to retrieve Key_Message_vod__c IDs ${data.message}`);
+                util.log(`com.idc.clm.getDataForContextObjects: 111 failed to retrieve Key_Message_vod__c IDs ${data.message}`);
               }
             });
           });
-
-          let accountID = await new Promise((resolve) => {
-            com.veeva.clm.getDataForCurrentObject("Account", "ID", (data) => {
-              if (data.success) {
-                resolve(data.Account.ID);
-              } else {
-                util.log(`com.idc.clm.getDataForContextObjects: failed to retrieve Account ID ${data.message}`);
-              }
-            });
+          keyMessageIDsAndZipNames = keyMessageIDsAndZipNames.filter((keyMessage) => {
+            return this.vars.slides.find((slide) => slide.player.zipName == keyMessage.Media_File_Name_vod__c);
           });
 
           let callKeyMessageRecords;
-          if (keyMessageIDsAndZipNames && accountID) {
+          if (keyMessageIDsAndZipNames && this.vars.metadata.account.id) {
             callKeyMessageRecords = await new Promise((resolve) => {
               let zipNamesWhereClause = keyMessageIDsAndZipNames
                 .map((keyMessage) => {
@@ -1508,7 +2120,7 @@ com.idc.clm = {
                 .join(" ")
                 .slice(0, -3);
 
-              let whereClause = `Account_vod__c = "${accountID}" AND (${zipNamesWhereClause})`;
+              let whereClause = `Account_vod__c = "${this.vars.metadata.account.id}" AND (${zipNamesWhereClause})`;
 
               com.veeva.clm.queryRecord(
                 "Call2_Key_Message_vod__c",
@@ -1538,23 +2150,15 @@ com.idc.clm = {
             });
           }
 
-          this.vars.interactionSummary.input.Call2_Key_Message_vod__c = callKeyMessageRecords;
+          if (callKeyMessageRecords) {
+            this.vars.interactionSummary.input.Call2_Key_Message_vod__c = callKeyMessageRecords;
+          }
         }
 
         //Call2_vod__c for Call key messages records
         if (this.vars.interactionSummary.active && this.vars.session.isAnActualCall) {
-          let accountID = await new Promise((resolve) => {
-            com.veeva.clm.getDataForCurrentObject("Account", "ID", (data) => {
-              if (data.success) {
-                resolve(data.Account.ID);
-              } else {
-                util.log(`com.idc.clm.getDataForContextObjects: failed to retrieve Account ID ${data.message}`);
-              }
-            });
-          });
-
           let callRecords;
-          if (this.vars.interactionSummary.input.Call2_Key_Message_vod__c && accountID) {
+          if (this.vars.interactionSummary.input.Call2_Key_Message_vod__c.length > 0 && this.vars.metadata.account.id) {
             callRecords = await new Promise((resolve) => {
               let whereClause = this.vars.interactionSummary.input.Call2_Key_Message_vod__c.map((callKeyMessage) => {
                 return `ID = "${callKeyMessage.Call2_vod__c}" OR`;
@@ -1562,7 +2166,7 @@ com.idc.clm = {
                 .join(" ")
                 .slice(0, -3);
 
-              whereClause = `Account_vod__c = "${accountID}" AND (${whereClause})`;
+              whereClause = `Status_vod__c = "Submitted_vod" AND Account_vod__c = "${this.vars.metadata.account.id}" AND (${whereClause})`;
 
               com.veeva.clm.queryRecord("Call2_vod__c", this.vars.interactionSummary.fields.Call2_vod__c, whereClause, [], null, (data) => {
                 if (data.success) {
@@ -1573,24 +2177,15 @@ com.idc.clm = {
               });
             });
           }
-
-          this.vars.interactionSummary.input.Call2_vod__c = callRecords;
+          if (callRecords) {
+            this.vars.interactionSummary.input.Call2_vod__c = callRecords;
+          }
         }
 
         //Sent_Email_vod__c for account and templates
         if (this.vars.interactionSummary.active && this.vars.session.isAnActualCall && this.vars.emailCart.active) {
-          let accountID = await new Promise((resolve) => {
-            com.veeva.clm.getDataForCurrentObject("Account", "ID", (data) => {
-              if (data.success) {
-                resolve(data.Account.ID);
-              } else {
-                util.log(`com.idc.clm.getDataForContextObjects: failed to retrieve Account ID ${data.message}`);
-              }
-            });
-          });
-
           let sentEmailRecords;
-          if (this.vars.emailCart.templates && accountID) {
+          if (this.vars.emailCart.templates && this.vars.metadata.account.id) {
             sentEmailRecords = await new Promise((resolve) => {
               let allTemplates = this.vars.emailCart.templates.concat(this.vars.interactionSummary.nonEmailCartItems.templates);
 
@@ -1604,7 +2199,7 @@ com.idc.clm = {
                 .join(" ")
                 .slice(0, -3);
 
-              whereClause = `Account_vod__c = "${accountID}" AND (${whereClause})`;
+              whereClause = `(Status_vod__c = "Sent_vod" OR Status_vod__c = "Delivered_vod") AND Account_vod__c = "${this.vars.metadata.account.id}" AND (${whereClause})`;
 
               com.veeva.clm.queryRecord("Sent_Email_vod__c", this.vars.interactionSummary.fields.Sent_Email_vod__c, whereClause, [], null, (data) => {
                 if (data.success) {
@@ -1615,8 +2210,9 @@ com.idc.clm = {
               });
             });
           }
-
-          this.vars.interactionSummary.input.Sent_Email_vod__c = sentEmailRecords;
+          if (sentEmailRecords) {
+            this.vars.interactionSummary.input.Sent_Email_vod__c = sentEmailRecords;
+          }
         }
 
         //Email_Activity_vod__c for sent emails
@@ -1640,7 +2236,9 @@ com.idc.clm = {
             });
           }
 
-          this.vars.interactionSummary.input.Email_Activity_vod__c = emailActivityRecords;
+          if (emailActivityRecords) {
+            this.vars.interactionSummary.input.Email_Activity_vod__c = emailActivityRecords;
+          }
         }
 
         resolve();
@@ -1678,7 +2276,16 @@ com.idc.clm = {
 
     //is dynamic presentation
     document.querySelector("body").setAttribute("data-is-dynamic-presentation", this.vars.navigation.dynamicPresentation.active);
-    document.querySelector("body").setAttribute("data-dynamic-presentation-source", this.vars.navigation.dynamicPresentation.source);
+    if (this.vars.navigation.dynamicPresentation.active) {
+      document.querySelector("body").setAttribute("data-dynamic-presentation-source", this.vars.navigation.dynamicPresentation.source);
+    } else {
+      document.querySelector("body").setAttribute("data-dynamic-presentation-source", "");
+    }
+    if (this.vars.navigation.dynamicPresentation.active && this.vars.navigation.dynamicPresentation.source == "callflows") {
+      document.querySelector("body").setAttribute("data-dynamic-presentation-callflow", this.vars.navigation.dynamicPresentation.callflow);
+    } else {
+      document.querySelector("body").setAttribute("data-dynamic-presentation-callflow", "");
+    }
 
     //is standalone modal group active
     document.querySelector("body").setAttribute("data-active-standalone-group", this.persistentData.session.selectedStandaloneGroup);
@@ -1758,21 +2365,47 @@ com.idc.clm = {
     }
   },
   goNextSlide: function () {
+    //myPresentation - mixed presentation
+    if (
+      this.vars.navigation.dynamicPresentation.active &&
+      this.vars.navigation.dynamicPresentation.source == "myPresentations" &&
+      this.vars.navigation.dynamicPresentation.isMixed
+    ) {
+      com.veeva.clm.nextSlide();
+      return;
+    }
+
+    //overWrite
     if (this.vars.navigation.overWrite.nextSlide) {
       this.gotoSlide(this.vars.navigation.overWrite.nextSlide);
-    } else {
-      if (!this.vars.navigation.currentSlide.isLast) {
-        this.gotoSlide(this.vars.navigation.nextSlide.id);
-      }
+      return;
+    }
+
+    //standard
+    if (!this.vars.navigation.currentSlide.isLast) {
+      this.gotoSlide(this.vars.navigation.nextSlide.id);
+      return;
     }
   },
   goPrevSlide: function () {
+    //myPresentation - mixed presentation
+    if (
+      this.vars.navigation.dynamicPresentation.active &&
+      this.vars.navigation.dynamicPresentation.source == "myPresentations" &&
+      this.vars.navigation.dynamicPresentation.isMixed
+    ) {
+      com.veeva.clm.prevSlide();
+      return;
+    }
+
+    //overWrite
     if (this.vars.navigation.overWrite.prevSlide) {
       this.gotoSlide(this.vars.navigation.overWrite.prevSlide);
-    } else {
-      if (!this.vars.navigation.currentSlide.isFirst) {
-        this.gotoSlide(this.vars.navigation.prevSlide.id);
-      }
+    }
+
+    //standard
+    if (!this.vars.navigation.currentSlide.isFirst) {
+      this.gotoSlide(this.vars.navigation.prevSlide.id);
     }
   },
   isBackFromStandAloneSlide: function () {
@@ -1793,37 +2426,45 @@ com.idc.clm = {
     let isAModalBeingDisplayed = com.idc.util.getElementAttribute(document.querySelector("body"), "data-modal-state") == "active";
     let treatStandaloneModalsAsMainSlides = vars.navigation.dynamicPresentation.treatStandaloneModalsAsMainSlides;
 
+    //standard slide
     if (!isStandalone) {
-      //standard slide
       if (!isDynamicPresentation && isAModalBeingDisplayed) {
         return; //do nothing if modal is open in a normal presentation
       }
-
-      if (isDynamicPresentation && !treatStandaloneModalsAsMainSlides) {
-        return; //do nothing if standalone modal in dynamic presentation is not treated as a main slide
-      }
-
       //go next or prev slide
       switch (pSwipe.direction) {
         case "left":
-          if (!vars.navigation.currentSlide.isLast || vars.navigation.overWrite.nextSlide) com.idc.clm.goNextSlide();
+          com.idc.clm.goNextSlide();
           break;
         case "right":
-          if (!vars.navigation.currentSlide.isFirst || vars.navigation.overWrite.prevSlide) com.idc.clm.goPrevSlide();
+          com.idc.clm.goPrevSlide();
           break;
       }
-    } else {
-      //standalone modal
-      if (isStandaloneGroupActive) {
-        //go next or prev slide
-        switch (pSwipe.direction) {
-          case "left":
-            if (vars.navigation.overWrite.nextSlide) com.idc.clm.goNextSlide();
-            break;
-          case "right":
-            if (vars.navigation.overWrite.prevSlide) com.idc.clm.goPrevSlide();
-            break;
-        }
+    }
+
+    //standalone modal in dynamic presentation treated as main slide
+    if (isStandalone && isDynamicPresentation && treatStandaloneModalsAsMainSlides) {
+      //go next or prev slide
+      switch (pSwipe.direction) {
+        case "left":
+          com.idc.clm.goNextSlide();
+          break;
+        case "right":
+          com.idc.clm.goPrevSlide();
+          break;
+      }
+    }
+
+    //standalone modal part of standalone modal group active
+    if (isStandalone && isStandaloneGroupActive) {
+      //go next or prev slide
+      switch (pSwipe.direction) {
+        case "left":
+          if (vars.navigation.overWrite.nextSlide) com.idc.clm.goNextSlide();
+          break;
+        case "right":
+          if (vars.navigation.overWrite.prevSlide) com.idc.clm.goPrevSlide();
+          break;
       }
     }
   },
@@ -2074,6 +2715,9 @@ com.idc.clm = {
         if (!isSame) {
           let slidesSequence = [];
 
+          //mixed presentation flag
+          let isMixedPresentation = false;
+
           //identify slide ids
           keyMessageZipNames.forEach((item) => {
             let slide;
@@ -2088,12 +2732,18 @@ com.idc.clm = {
                 return slide.id == item;
               });
             }
-            if (slide) slidesSequence.push(slide.id);
+            if (slide) {
+              //found slide in config.js
+              slidesSequence.push(slide.id);
+            } else {
+              //key message not found in config.js >> mixed custom presentation
+              isMixedPresentation = true;
+            }
           });
 
-          resolve(slidesSequence); //the presentation is custom: return a sequence of slide ids based on the input
+          resolve({ slidesSequence: slidesSequence, isMixedPresentation: isMixedPresentation }); //the presentation is custom: return a sequence of slide ids based on the input + mixed presentation flag
         } else {
-          resolve(); //the presentation is standard, return nothing
+          resolve({ slidesSequence: null, isMixedPresentation: null }); //the presentation is standard, return nothing
         }
       })();
     });
@@ -2130,40 +2780,36 @@ com.idc.clm = {
       resolve(slidesSequence);
     });
   },
-  hardcodedProfiles: function () {
+  callflows: function () {
     return new Promise((resolve) => {
-      let defaultProfileParam = this.vars.options.dynamicPresentation.source.hardcodedProfiles.default;
-      let selectedProfile = null;
+      let defaultProfileParam = this.vars.options.dynamicPresentation.source.callflows.default;
+      let selectedCallflow = null;
 
-      //identify selected profile (could be stored as a session variable, or passed as a function or text parameter)
-      //check if persistent session data contains a profile selection
-      if (this.persistentData.session.selectedProfile) {
-        if (
-          this.vars.options.dynamicPresentation.source.hardcodedProfiles.profiles.find((profile) => profile.name == this.persistentData.session.selectedProfile)
-        ) {
-          selectedProfile = this.persistentData.session.selectedProfile;
+      //identify selected callflow (could be stored as a session variable, or passed as a function or text parameter)
+      //check if persistent session data contains a callflow selection
+      if (this.persistentData.session.selectedCallflow) {
+        if (this.vars.options.dynamicPresentation.source.callflows.flows.find((callflow) => callflow.name == this.persistentData.session.selectedCallflow)) {
+          selectedCallflow = this.persistentData.session.selectedCallflow;
         }
       } else {
-        //check if defaultProfileParam is a function and returns a valid profile name
+        //check if defaultProfileParam is a function and returns a valid callflow name
         if (typeof window[defaultProfileParam] == "function") {
           let functionOutput = window[defaultProfileParam]();
-          if (this.vars.options.dynamicPresentation.source.hardcodedProfiles.profiles.find((profile) => profile.name == functionOutput)) {
-            selectedProfile = functionOutput;
+          if (this.vars.options.dynamicPresentation.source.callflows.flows.find((callflow) => callflow.name == functionOutput)) {
+            selectedCallflow = functionOutput;
           }
         } else {
-          //check is defaultProfileParam is a valid profile name
-          if (this.vars.options.dynamicPresentation.source.hardcodedProfiles.profiles.find((profile) => profile.name == defaultProfileParam)) {
-            selectedProfile = defaultProfileParam;
+          //check is defaultProfileParam is a valid callflow name
+          if (this.vars.options.dynamicPresentation.source.callflows.flows.find((callflow) => callflow.name == defaultProfileParam)) {
+            selectedCallflow = defaultProfileParam;
           }
         }
       }
 
       let slidesSequence = [];
 
-      if (selectedProfile) {
-        let slidesSequenceInput = this.vars.options.dynamicPresentation.source.hardcodedProfiles.profiles.find(
-          (profile) => profile.name == selectedProfile
-        ).slides;
+      if (selectedCallflow) {
+        let slidesSequenceInput = this.vars.options.dynamicPresentation.source.callflows.flows.find((callflow) => callflow.name == selectedCallflow).slides;
 
         if (Array.isArray(slidesSequenceInput)) {
           //identify slide ids
@@ -2185,36 +2831,34 @@ com.idc.clm = {
         }
 
         if (slidesSequence.length == 0) {
-          com.idc.util.log(`com.idc.clm.hardcodedProfiles: unable to retrieve slides for profile ${selectedProfile}`);
+          com.idc.util.log(`com.idc.clm.callflows: unable to retrieve slides for callflow ${selectedCallflow}`);
         }
       }
 
-      resolve(slidesSequence);
+      resolve({ name: selectedCallflow, sequence: slidesSequence });
     });
   },
-  setHardcodedProfile: function (profileName) {
-    let selectedProfile = null;
+  setCallflow: function (callflowName) {
+    let selectedCallflow = null;
 
-    //validate if harcoded profiles are active
-    if (!this.vars.options.dynamicPresentation.source.hardcodedProfiles.active) {
-      com.idc.util.log(`com.idc.clm.setHardcodedProfile: hardcoded profiles source is inactive`);
+    //validate if harcoded callflows are active
+    if (!this.vars.options.dynamicPresentation.source.callflows.active) {
+      com.idc.util.log(`com.idc.clm.setCallflow: callflows source is inactive`);
       return;
     }
 
-    //validate profile name
-    if (this.vars.options.dynamicPresentation.source.hardcodedProfiles.profiles.find((profile) => profile.name == profileName)) {
-      selectedProfile = profileName;
+    //validate callflow name
+    if (this.vars.options.dynamicPresentation.source.callflows.flows.find((callflow) => callflow.name == callflowName)) {
+      selectedCallflow = callflowName;
     } else {
-      com.idc.util.log(`com.idc.clm.setHardcodedProfile: invalid profile name ${profileName}`);
+      com.idc.util.log(`com.idc.clm.setCallflow: invalid callflow name ${callflowName}`);
     }
 
     //retrieve slides sequence
     let slidesSequence = [];
 
-    if (selectedProfile) {
-      let slidesSequenceInput = this.vars.options.dynamicPresentation.source.hardcodedProfiles.profiles.find(
-        (profile) => profile.name == selectedProfile
-      ).slides;
+    if (selectedCallflow) {
+      let slidesSequenceInput = this.vars.options.dynamicPresentation.source.callflows.flows.find((callflow) => callflow.name == selectedCallflow).slides;
 
       if (Array.isArray(slidesSequenceInput)) {
         //identify slide ids
@@ -2236,39 +2880,64 @@ com.idc.clm = {
       }
 
       if (slidesSequence.length == 0) {
-        com.idc.util.log(`com.idc.clm.setHardcodedProfile: unable to retrieve slides for profile ${selectedProfile}`);
+        com.idc.util.log(`com.idc.clm.setCallflow: unable to retrieve slides for callflow ${selectedCallflow}`);
       }
     }
 
     if (slidesSequence.length > 0) {
-      //set persistent profile selection (for the session)
-      this.persistentData.session.selectedProfile = selectedProfile;
+      //set persistent callflow selection (for the session)
+      this.persistentData.session.selectedCallflow = selectedCallflow;
       this.updatePersistentData();
 
       //set slides sequence
       this.setDynamicSlidesSequence({
-        name: "hardcodedProfiles",
+        name: "callflows",
         slidesSequence: slidesSequence,
+        callflow: callflowName,
       });
+
+      //set current slide properties
+      this.setCurrentSlideProperties();
+
+      //standalone close button hidden flag
+      if (this.vars.navigation.currentSlide.isStandalone) {
+        let standaloneModalId = this.findSlide(this.vars.navigation.currentSlide.id).standaloneModal.modalId;
+        document.querySelector(`#${standaloneModalId}`).closeButtonHiddenFlag();
+      }
 
       //dynamic menu and navigation
       com.idc.ui.dynamicPresentation.setMenu(this.vars.navigation.actualSlidesSequence);
       com.idc.ui.dynamicPresentation.setAlertPopup();
       com.idc.ui.core.link.flagNonWorkingLinks();
+
+      //set body vars
+      this.setBodyVars();
     }
   },
-  unSetHardcodedProfile: function () {
-    //clear persistent profile selection (for the session)
-    this.persistentData.session.selectedProfile = null;
+  unSetCallflow: function () {
+    //clear persistent callflow selection (for the session)
+    this.persistentData.session.selectedCallflow = null;
     this.updatePersistentData();
 
     //set standard slides sequence
     this.setStandardSlidesSequence();
 
+    //set current slide properties
+    this.setCurrentSlideProperties();
+
+    //standalone close button hidden flag
+    if (this.vars.navigation.currentSlide.isStandalone) {
+      let standaloneModalId = this.findSlide(this.vars.navigation.currentSlide.id).standaloneModal.modalId;
+      document.querySelector(`#${standaloneModalId}`).closeButtonHiddenFlag();
+    }
+
     //standard menu and navigation
-    com.idc.ui.dynamicPresentation.unSetMenu(this.vars.navigation.actualSlidesSequence);
+    com.idc.ui.dynamicPresentation.unSetMenu();
     com.idc.ui.dynamicPresentation.unSetAlertPopup();
     com.idc.ui.core.link.unFlagNonWorkingLinks();
+
+    //set body vars
+    this.setBodyVars();
   },
 
   /*standalone groups -------------------------------------*/
@@ -2312,13 +2981,295 @@ com.idc.clm = {
   },
 
   /*interaction summary -----------------------------------*/
+  interactionSummaryTestData: function () {
+    const minCalls = this.vars.interactionSummary.testModel.calls.min;
+    const maxCalls = this.vars.interactionSummary.testModel.calls.max;
+    const minEmails = this.vars.interactionSummary.testModel.emails.min;
+    const maxEmails = this.vars.interactionSummary.testModel.emails.max;
+
+    //account (use simulate object from config if available)
+    if (this.vars.options.browserMode.simulate.objects.Account) {
+      this.vars.metadata.account.name = this.vars.options.browserMode.simulate.objects.Account.Name;
+      this.vars.metadata.account.id = this.vars.options.browserMode.simulate.objects.Account.ID;
+      this.vars.metadata.account.salutation = this.vars.options.browserMode.simulate.objects.Account.Salutation;
+    } else {
+      this.vars.metadata.account.name = "John Smith";
+      this.vars.metadata.account.id = "00000000000000001";
+      this.vars.metadata.account.salutation = "Dr.";
+    }
+
+    //Approved_Document_vod__c crmId (browserMode only)
+    if (this.vars.options.browserMode.active) {
+      let crmIdCount = 0;
+      if (this.vars.emailCart.active) {
+        this.vars.emailCart.templates.forEach((template) => {
+          template.crmId = "0000000000000000" + (crmIdCount + 10);
+          crmIdCount++;
+        });
+        this.vars.emailCart.fragments.forEach((fragment) => {
+          fragment.crmId = "0000000000000000" + (crmIdCount + 10);
+          crmIdCount++;
+        });
+      }
+      this.vars.interactionSummary.nonEmailCartItems.templates.forEach((template) => {
+        template.crmId = "0000000000000000" + (crmIdCount + 10);
+        crmIdCount++;
+        template.fragments.forEach((fragment) => {
+          fragment.crmId = "0000000000000000" + (crmIdCount + 10);
+          crmIdCount++;
+        });
+      });
+    }
+
+    //Call2_vod__c
+    let Call2_vod__c = [];
+    for (let i = 0; i < Math.floor(Math.random() * maxCalls) + minCalls; i++) {
+      let callDate = new Date();
+      callDate.setDate(callDate.getDate() - Math.floor(Math.random() * 30));
+
+      let callChannel = Math.random() < 0.5 ? "Video_vod" : "Face_to_face_vod";
+
+      let Call2_vod__c_Record = {
+        ID: "00000000000000000" + i,
+        Call_Channel_vod__c: callChannel,
+        Call_Datetime_vod__c: callDate.toISOString(),
+        Status_vod__c: "Submitted_vod",
+      };
+
+      Call2_vod__c.push(Call2_vod__c_Record);
+    }
+    Call2_vod__c.forEach((record) => {
+      Object.keys(record).forEach((field) => {
+        if (this.vars.interactionSummary.fields.Call2_vod__c.indexOf(field) < 0) {
+          delete record[field];
+        }
+      });
+    });
+    this.vars.interactionSummary.input.Call2_vod__c = Call2_vod__c;
+
+    //Call2_Key_Message_vod__c
+    let Call2_Key_Message_vod__c = [];
+    let Call2_Key_Message_vod__c_Counter = 0;
+    Call2_vod__c.forEach((call) => {
+      let displayOrderCounter = 0;
+      let secondsCounter = 0;
+
+      this.vars.slides.forEach((slide) => {
+        if (Math.random() < 0.3) return;
+
+        let reaction = ["Positive", "Neutral", "Negative", "", "", ""][Math.floor(Math.random() * 6)];
+
+        let startTime = new Date(call.Call_Datetime_vod__c);
+        secondsCounter += Math.floor(Math.random() * 30) + 1;
+        startTime.setSeconds(startTime.getSeconds() + secondsCounter);
+
+        let Call2_Key_Message_vod__c_Record = {
+          Display_Order_vod__c: displayOrderCounter + 1,
+          Reaction_vod__c: reaction,
+          Key_Message_vod__c: {
+            Media_File_Name_vod__c: slide.browser.folder + ".zip",
+            testModel: {
+              slideId: slide.id,
+            },
+          },
+          Duration_vod__c: Math.floor(Math.random() * 30) + 1,
+          Call2_vod__c: call.ID,
+          ID: "0000000000000000" + (Call2_Key_Message_vod__c_Counter + 10),
+          Start_Time_vod__c: startTime.toISOString(),
+        };
+
+        Call2_Key_Message_vod__c.push(Call2_Key_Message_vod__c_Record);
+
+        Call2_Key_Message_vod__c_Counter++;
+        displayOrderCounter++;
+      });
+    });
+    Call2_Key_Message_vod__c.forEach((record) => {
+      Object.keys(record).forEach((field) => {
+        if (this.vars.interactionSummary.fields.Call2_Key_Message_vod__c.indexOf(field) < 0) delete record[field];
+      });
+    });
+    this.vars.interactionSummary.input.Call2_Key_Message_vod__c = Call2_Key_Message_vod__c;
+
+    //Sent_Email_vod__c
+    let Sent_Email_vod__c = [];
+    let Sent_Email_vod__c_Counter = 0;
+
+    let aeArray = [];
+    {
+      this.vars.emailCart.templates
+        .map((item) => {
+          return {
+            id: item.id,
+            vaultId: item.vaultId,
+            crmId: item.crmId,
+            group: "templates",
+          };
+        })
+        .forEach((item) => {
+          aeArray.push(item);
+        });
+      this.vars.emailCart.fragments
+        .map((item) => {
+          return {
+            id: item.id,
+            vaultId: item.vaultId,
+            crmId: item.crmId,
+            group: "fragments",
+          };
+        })
+        .forEach((item) => {
+          aeArray.push(item);
+        });
+
+      this.vars.interactionSummary.nonEmailCartItems.templates.forEach((template) => {
+        aeArray.push({
+          id: template.id,
+          vaultId: template.vaultId,
+          crmId: template.crmId,
+          group: "nonEmailCartTemplates",
+        });
+
+        template.fragments.forEach((fragment) => {
+          aeArray.push({
+            id: fragment.id,
+            vaultId: fragment.vaultId,
+            crmId: fragment.crmId,
+            group: "nonEmailCartFragments",
+            template: template.id,
+          });
+        });
+      });
+    }
+
+    for (let i = 0; i < Math.floor(Math.random() * maxEmails) + minEmails; i++) {
+      let emailDate = new Date();
+      emailDate.setDate(emailDate.getDate() - Math.floor(Math.random() * 30));
+
+      let emailOpened = Math.random() < 0.7 ? 1 : 0;
+
+      let openEmailDate;
+      let openCount;
+      let clickCount;
+      if (emailOpened) {
+        openEmailDate = new Date(); //has to be after emailDate
+        openEmailDate.setDate(emailDate.getDate() + Math.floor(Math.random() * 3));
+
+        openCount = Math.floor(Math.random() * 6) + 1;
+
+        clickCount = Math.floor(Math.random() * 6);
+      }
+
+      let templatesArr = aeArray.filter((item) => item.group == "templates" || item.group == "nonEmailCartTemplates");
+      let templateIndex = Math.floor(Math.random() * templatesArr.length);
+      let template = templatesArr[templateIndex];
+      let fragments;
+      if (template.group == "templates") {
+        fragments = aeArray.filter((item) => item.group == "fragments");
+      } else {
+        fragments = aeArray.filter((item) => item.group == "nonEmailCartFragments" && item.template == template.id);
+      }
+
+      let Sent_Email_vod__c_Record = {
+        Opened_vod__c: emailOpened,
+        Email_Sent_Date_vod__c: emailDate.toISOString(),
+        Approved_Email_Template_vod__c: template.crmId,
+        ID: "0000000000000000" + (Sent_Email_vod__c_Counter + 10),
+        Click_Count_vod__c: clickCount ? clickCount : 0,
+        Last_Open_Date_vod__c: openEmailDate ? openEmailDate.toISOString() : "",
+        Last_Activity_Date_vod__c: openEmailDate ? openEmailDate.toISOString() : "",
+        Open_Count_vod__c: openCount ? openCount : 0,
+        Status_vod__c: "Delivered_vod",
+        Email_Fragments_vod__c: fragments.map((item) => item.crmId).join(","),
+      };
+
+      Sent_Email_vod__c.push(Sent_Email_vod__c_Record);
+
+      Sent_Email_vod__c_Counter++;
+    }
+    Sent_Email_vod__c.forEach((record) => {
+      Object.keys(record).forEach((field) => {
+        if (this.vars.interactionSummary.fields.Sent_Email_vod__c.indexOf(field) < 0) delete record[field];
+      });
+    });
+    this.vars.interactionSummary.input.Sent_Email_vod__c = Sent_Email_vod__c;
+
+    //Email_Activity_vod__c
+    let Email_Activity_vod__c = [];
+    let Email_Activity_vod__c_Counter = 0;
+
+    Sent_Email_vod__c.forEach((sentEmail) => {
+      if (!sentEmail.Opened_vod__c) return;
+
+      let activitiesArr = [];
+      for (let i = 0; i < sentEmail.Open_Count_vod__c; i++) {
+        activitiesArr.push("Opened_vod");
+      }
+      for (let i = 0; i < sentEmail.Click_Count_vod__c; i++) {
+        activitiesArr.push("Clicked_vod");
+      }
+
+      activitiesArr.forEach((activityType) => {
+        let vaultDocID;
+        let vaultDocName;
+        let vaultDocNumber;
+        let fragmentId;
+        if (activityType == "Clicked_vod") {
+          if (!sentEmail.Email_Fragments_vod__c) return;
+          let fragmentsArr = sentEmail.Email_Fragments_vod__c.split(",");
+          let fragmentIndex = Math.floor(Math.random() * fragmentsArr.length);
+          let fragment = aeArray.find((item) => item.crmId == fragmentsArr[fragmentIndex]);
+
+          if (!fragment) return;
+
+          vaultDocID = fragment.vaultId;
+          vaultDocName = fragment.id;
+          vaultDocNumber = fragment.crmId;
+          fragmentId = fragment.crmId;
+        }
+
+        let Email_Activity_vod__c_Record = {
+          Activity_DateTime_vod__c: sentEmail.Last_Activity_Date_vod__c,
+          Vault_Doc_ID_vod__c: vaultDocID ? vaultDocID : "",
+          Sent_Email_vod__c: sentEmail.ID,
+          Vault_Doc_Name_vod__c: vaultDocName ? vaultDocName : "",
+          Event_type_vod__c: activityType,
+          Vault_Document_Number_vod__c: vaultDocNumber ? vaultDocNumber : "",
+          ID: "0000000000000000" + (Email_Activity_vod__c_Counter + 10),
+          Approved_Document_vod__c: fragmentId ? fragmentId : "",
+        };
+
+        Email_Activity_vod__c.push(Email_Activity_vod__c_Record);
+
+        Email_Activity_vod__c_Counter++;
+      });
+    });
+    Email_Activity_vod__c.forEach((record) => {
+      Object.keys(record).forEach((field) => {
+        if (this.vars.interactionSummary.fields.Email_Activity_vod__c.indexOf(field) < 0) delete record[field];
+      });
+    });
+    this.vars.interactionSummary.input.Email_Activity_vod__c = Email_Activity_vod__c;
+  },
   interactionSummaryModel: function () {
+    let vars = this.vars;
+
+    //test data: browser mode and simulated call
+    if (vars.options.browserMode.active) {
+      this.interactionSummaryTestData();
+    }
+
+    //account --------------------------------------------
+    vars.interactionSummary.output.account.id = vars.metadata.account.id;
+    vars.interactionSummary.output.account.name = vars.metadata.account.name;
+    vars.interactionSummary.output.account.salutation = vars.metadata.account.salutation;
+
     //timeline -------------------------------------------
     {
-      const timeLineTemplate = this.vars.interactionSummary.output.timeline.splice(0)[0];
+      const timeLineTemplate = vars.interactionSummary.output.timeline.splice(0)[0];
 
       //call records to add CLM views to timeline
-      this.vars.interactionSummary.input.Call2_vod__c.forEach((call) => {
+      vars.interactionSummary.input.Call2_vod__c.forEach((call) => {
         if (!call.Status_vod__c == "Submitted_vod") return; //only submitted calls
 
         let record = JSON.parse(JSON.stringify(timeLineTemplate));
@@ -2327,25 +3278,45 @@ com.idc.clm = {
         delete record.email;
 
         //set type and channel
+        record.id = call.ID;
         record.type = "call";
         record.call.channel = call.Call_Channel_vod__c;
 
         //set date
-        let recordDate = call.Call_Date_vod__c;
-        if (recordDate.indexOf("T") > 0) {
-          recordDate = recordDate.split("T")[0];
+        let tmpDate = call.Call_Datetime_vod__c;
+        let recordDate, recordTime, recordAMPM;
+        if (tmpDate) {
+          if (tmpDate.indexOf("T") > 0) {
+            recordDate = tmpDate.split("T")[0];
+            let tmpHour = parseInt(tmpDate.split("T")[1].split(":")[0]);
+            if (tmpHour > 12) {
+              recordTime = tmpHour - 12 + ":" + tmpDate.split("T")[1].split(":").slice(1, 2).join(":");
+            } else {
+              recordTime = tmpHour + ":" + tmpDate.split("T")[1].split(":").slice(1, 2).join(":");
+            }
+            recordAMPM = tmpHour >= 12 ? "PM" : "AM";
+          }
         }
+        record.datetime = tmpDate;
         record.date = recordDate;
+        record.time = recordTime;
+        record.time_AMPM = recordAMPM;
 
         //slides (call key message records for current call)
         let slideTemplate = record.call.slides.splice(0)[0];
-        this.vars.interactionSummary.input.Call2_Key_Message_vod__c.filter((callKeyMessage) => callKeyMessage.Call2_vod__c == call.ID) //call key message records for current call
+        vars.interactionSummary.input.Call2_Key_Message_vod__c.filter((callKeyMessage) => callKeyMessage.Call2_vod__c == call.ID) //call key message records for current call
           .sort((a, b) => a.Display_Order_vod__c - b.Display_Order_vod__c) //sort by display order
           .forEach((callKeyMessage) => {
             let slideRecord = JSON.parse(JSON.stringify(slideTemplate));
 
             //search slide in config.js
-            let slide = this.vars.slides.find((slide) => slide.player.zipName == callKeyMessage.Key_Message_vod__c.Media_File_Name_vod__c);
+            let slide;
+            if (callKeyMessage.Key_Message_vod__c.testModel) {
+              slide = vars.slides.find((slide) => slide.id == callKeyMessage.Key_Message_vod__c.testModel.slideId); //testModel workaround as slides will still no have media file name
+            } else {
+              slide = vars.slides.find((slide) => slide.player.zipName == callKeyMessage.Key_Message_vod__c.Media_File_Name_vod__c);
+            }
+
             if (!slide) return;
 
             //populate slide record
@@ -2359,12 +3330,31 @@ com.idc.clm = {
             record.call.slides.push(slideRecord);
           });
 
+        //for consecutive views of same slide, keep one record, add up time, keep last reaction
+        if (vars.interactionSummary.groupViewsForSameSlide) {
+          let newSlidesArr = [];
+          let prevSlideId = null;
+          for (let i = 0; i < record.call.slides.length; i++) {
+            let slide = record.call.slides[i];
+            if (slide.id != prevSlideId) {
+              newSlidesArr.push(slide);
+            } else {
+              newSlidesArr[newSlidesArr.length - 1].duration += slide.duration;
+              if (slide.reaction) {
+                newSlidesArr[newSlidesArr.length - 1].reaction = slide.reaction;
+              }
+            }
+            prevSlideId = slide.id;
+          }
+          record.call.slides = newSlidesArr;
+        }
+
         //add to timeline
-        this.vars.interactionSummary.output.timeline.push(record);
+        vars.interactionSummary.output.timeline.push(record);
       });
 
       //email records
-      this.vars.interactionSummary.input.Sent_Email_vod__c.forEach((sentEmail) => {
+      vars.interactionSummary.input.Sent_Email_vod__c.forEach((sentEmail) => {
         if (!sentEmail.Email_Sent_Date_vod__c) return; //only sent emails (no saved)
 
         let record = JSON.parse(JSON.stringify(timeLineTemplate));
@@ -2373,28 +3363,38 @@ com.idc.clm = {
         delete record.call;
 
         //set type
+        record.id = sentEmail.ID;
         record.type = "email";
 
         //set date
-        let recordDate = sentEmail.Email_Sent_Date_vod__c;
-        {
-          if (recordDate.indexOf("T") > 0) {
-            recordDate = recordDate.split("T")[0];
+        let tmpDate = sentEmail.Email_Sent_Date_vod__c;
+        let recordDate, recordTime, recordAMPM;
+        if (tmpDate.indexOf("T") > 0) {
+          recordDate = tmpDate.split("T")[0];
+          let tmpHour = parseInt(tmpDate.split("T")[1].split(":")[0]);
+          if (tmpHour > 12) {
+            recordTime = tmpHour - 12 + ":" + tmpDate.split("T")[1].split(":").slice(1, 2).join(":");
+          } else {
+            recordTime = tmpHour + ":" + tmpDate.split("T")[1].split(":").slice(1, 2).join(":");
           }
-          record.date = recordDate;
+          recordAMPM = tmpHour >= 12 ? "PM" : "AM";
         }
+        record.datetime = tmpDate;
+        record.date = recordDate;
+        record.time = recordTime;
+        record.time_AMPM = recordAMPM;
 
         //search tempalte in email template or non-email cart items
         let template, templateType;
         {
           //try to find in email cart templates
-          template = this.vars.emailCart.templates.find((template) => template.crmId == sentEmail.Approved_Email_Template_vod__c);
+          template = vars.emailCart.templates.find((template) => template.crmId == sentEmail.Approved_Email_Template_vod__c);
           if (template) {
             templateType = "emailCart";
           }
           //try to find in non email cart templates
           if (!template) {
-            template = this.vars.interactionSummary.nonEmailCartItems.templates.find((template) => template.crmId == sentEmail.Approved_Email_Template_vod__c);
+            template = vars.interactionSummary.nonEmailCartItems.templates.find((template) => template.crmId == sentEmail.Approved_Email_Template_vod__c);
             templateType = "nonEmailCartItems";
           }
           if (!template) return;
@@ -2408,57 +3408,59 @@ com.idc.clm = {
 
         //fragments
         let fragmentTemplate = record.email.fragments.splice(0)[0];
-        this.vars.interactionSummary.input.Email_Activity_vod__c.filter((emailActivity) => emailActivity.Sent_Email_vod__c == sentEmail.ID).forEach(
-          (emailActivity) => {
+
+        if (!sentEmail.Email_Fragments_vod__c) return; //only events for approved documents (email fragments
+
+        let fragmentIDs = sentEmail.Email_Fragments_vod__c.split(",");
+        fragmentIDs.forEach((fragmentID) => {
+          //search fragment
+          let fragment;
+          if (templateType == "emailCart") {
+            fragment = vars.emailCart.fragments.find((fragment) => fragment.crmId == fragmentID);
+          } else {
+            fragment = template.fragments.find((fragment) => fragment.crmId == fragmentID);
+          }
+          if (!fragment) return;
+
+          //populate fragment record
+          let fragmentRecord = JSON.parse(JSON.stringify(fragmentTemplate));
+          fragmentRecord.id = fragment.id;
+          fragmentRecord.title = fragment.title;
+          fragmentRecord.linksTo = fragment.linksTo;
+          fragmentRecord.clicks = 0;
+
+          vars.interactionSummary.input.Email_Activity_vod__c.filter(
+            (emailActivity) => emailActivity.Sent_Email_vod__c == sentEmail.ID && emailActivity.Approved_Document_vod__c == fragment.crmId
+          ).forEach((emailActivity) => {
             if (!emailActivity.Approved_Document_vod__c) return; //only events for approved documents (email fragments)
-            if (!emailActivity.Event_type_vod__c == "Clicked_vod") return; //only click events
+            if (emailActivity.Event_type_vod__c != "Clicked_vod") return; //only click events
 
-            let fragmentRecord = JSON.parse(JSON.stringify(fragmentTemplate));
-
-            //search fragment
-            let fragment;
-            if (templateType == "emailCart") {
-              fragment = this.vars.emailCart.fragments.find((fragment) => fragment.crmId == emailActivity.Approved_Document_vod__c);
-            } else {
-              fragment = template.fragments.find((fragment) => fragment.crmId == emailActivity.Approved_Document_vod__c);
-            }
-            if (!fragment) return;
-
-            //populate fragment record
-            fragmentRecord.id = fragment.id;
-            fragmentRecord.title = fragment.title;
-            fragmentRecord.clicks = 1;
-
-            //check if exists in array
-            let indexOfFragment = record.email.fragments.findIndex((item) => item.id == fragmentRecord.id);
-            if (indexOfFragment < 0) {
-              //add to array
-              record.email.fragments.push(fragmentRecord);
-            } else {
-              //increment clicks
-              record.email.fragments[indexOfFragment].clicks++;
-            }
+            //increment fragment clicks
+            fragmentRecord.clicks++;
 
             //increment email clicks
             record.email.clicks++;
-          }
-        );
+          });
+
+          //add to array
+          record.email.fragments.push(fragmentRecord);
+        });
 
         //add to timeline
-        this.vars.interactionSummary.output.timeline.push(record);
+        vars.interactionSummary.output.timeline.push(record);
       });
 
       //sort timeline by date
-      this.vars.interactionSummary.output.timeline.sort((a, b) => {
-        return new Date(b.date) - new Date(a.date);
+      vars.interactionSummary.output.timeline.sort((a, b) => {
+        return new Date(b.datetime) - new Date(a.datetime);
       });
     }
 
     //slides ---------------------------------------------
     {
-      const slideTemplate = this.vars.interactionSummary.output.slides.splice(0)[0];
+      const slideTemplate = vars.interactionSummary.output.slides.splice(0)[0];
 
-      this.vars.slides.forEach((slide) => {
+      vars.slides.forEach((slide) => {
         let record = JSON.parse(JSON.stringify(slideTemplate));
 
         //populate id and title
@@ -2466,17 +3468,40 @@ com.idc.clm = {
         record.title = slide.description;
 
         //search call key message records for this slide
-        let callKeyMessageRecords = this.vars.interactionSummary.input.Call2_Key_Message_vod__c.filter(
-          (callKeyMessage) =>
-            this.vars.interactionSummary.input.Call2_vod__c.find((call) => call.ID == callKeyMessage.Call2_vod__c && call.Status_vod__c == "Submitted_vod") //only call key message records for submitted calls
-        )
-          .filter((callKeyMessage) => callKeyMessage.Key_Message_vod__c.Media_File_Name_vod__c == slide.player.zipName) //only call key message records for this slide
-          .sort((a, b) => new Date(b.Call_Date_vod__c) - new Date(a.Call_Date_vod__c)); //sort by call date
+        let callKeyMessageRecords = vars.interactionSummary.input.Call2_Key_Message_vod__c.filter(function (callKeyMessage) {
+          if (callKeyMessage.Key_Message_vod__c.testModel) {
+            return callKeyMessage.Key_Message_vod__c.testModel.slideId == slide.id;
+          } else {
+            return callKeyMessage.Key_Message_vod__c.Media_File_Name_vod__c == slide.player.zipName;
+          }
+        }) //only call key message records for this slide
+          .filter(
+            (callKeyMessage) =>
+              vars.interactionSummary.input.Call2_vod__c.find((call) => call.ID == callKeyMessage.Call2_vod__c && call.Status_vod__c == "Submitted_vod") //only call key message records for submitted calls
+          )
+          .sort((a, b) => new Date(b.Start_Time_vod__c) - new Date(a.Start_Time_vod__c)); //sort by start time
 
         //discussed/not discussed and mostRecentCall info
         if (callKeyMessageRecords.length > 0) {
           record.status = "discussed";
-          record.mostRecentCall.date = callKeyMessageRecords[0].Call_Date_vod__c;
+
+          let tmpDate = callKeyMessageRecords[0].Start_Time_vod__c;
+          let recordDate, recordTime, recordAMPM;
+          if (tmpDate) {
+            if (tmpDate.indexOf("T") > 0) {
+              recordDate = tmpDate.split("T")[0];
+              let tmpHour = parseInt(tmpDate.split("T")[1].split(":")[0]);
+              if (tmpHour > 12) {
+                recordTime = tmpHour - 12 + ":" + tmpDate.split("T")[1].split(":").slice(1, 2).join(":");
+              } else {
+                recordTime = tmpHour + ":" + tmpDate.split("T")[1].split(":").slice(1, 2).join(":");
+              }
+              recordAMPM = tmpHour >= 12 ? "PM" : "AM";
+            }
+          }
+          record.mostRecentCall.date = recordDate;
+          record.mostRecentCall.time = recordTime;
+          record.mostRecentCall.time_AMPM = recordAMPM;
           record.mostRecentCall.duration = Math.round(callKeyMessageRecords[0].Duration_vod__c);
           record.mostRecentCall.reaction = callKeyMessageRecords[0].Reaction_vod__c;
         } else {
@@ -2504,19 +3529,19 @@ com.idc.clm = {
         record.overall.duration.average = Math.round(record.overall.duration.average);
 
         //all call dates
-        record.overall.callDates = callKeyMessageRecords.map((callKeyMessage) => callKeyMessage.Call_Date_vod__c);
+        record.overall.callDates = callKeyMessageRecords.map((callKeyMessage) => callKeyMessage.Start_Time_vod__c);
 
         //add to array
-        this.vars.interactionSummary.output.slides.push(record);
+        vars.interactionSummary.output.slides.push(record);
       });
     }
 
     //emails ---------------------------------------------
     {
-      const emailTemplate = this.vars.interactionSummary.output.emails.splice(0)[0];
+      const emailTemplate = vars.interactionSummary.output.emails.splice(0)[0];
 
       //email cart items
-      this.vars.emailCart.templates.forEach((template) => {
+      vars.emailCart.templates.forEach((template) => {
         let record = JSON.parse(JSON.stringify(emailTemplate));
 
         //populate id and title
@@ -2524,12 +3549,13 @@ com.idc.clm = {
         record.title = template.title;
         record.crmId = template.crmId;
         record.isEmailCart = true;
+        record.thumbnail = template.thumb;
 
         //fragments (only for first email template in email cart)
-        let indexOfTemplate = this.vars.emailCart.templates.findIndex((item) => item.id == template.id);
+        let indexOfTemplate = vars.emailCart.templates.findIndex((item) => item.id == template.id);
         if (indexOfTemplate == 0) {
           let fragmentTemplate = record.fragments.splice(0)[0];
-          this.vars.emailCart.fragments.forEach((fragment) => {
+          vars.emailCart.fragments.forEach((fragment) => {
             let fragmentRecord = JSON.parse(JSON.stringify(fragmentTemplate));
 
             //populate id and title
@@ -2543,17 +3569,18 @@ com.idc.clm = {
         }
 
         //add to array
-        this.vars.interactionSummary.output.emails.push(record);
+        vars.interactionSummary.output.emails.push(record);
       });
 
       //non-email cart items
-      this.vars.interactionSummary.nonEmailCartItems.templates.forEach((template) => {
+      vars.interactionSummary.nonEmailCartItems.templates.forEach((template) => {
         let record = JSON.parse(JSON.stringify(emailTemplate));
 
         //populate id and title
         record.id = template.id;
         record.title = template.title;
         record.crmId = template.crmId;
+        record.thumbnail = template.thumb;
 
         //fragments
         let fragmentTemplate = record.fragments.splice(0)[0];
@@ -2570,13 +3597,13 @@ com.idc.clm = {
         });
 
         //add to array
-        this.vars.interactionSummary.output.emails.push(record);
+        vars.interactionSummary.output.emails.push(record);
       });
 
       //activity
-      this.vars.interactionSummary.output.emails.forEach((email) => {
+      vars.interactionSummary.output.emails.forEach((email) => {
         //sent emails for this template
-        let sentEmails = this.vars.interactionSummary.input.Sent_Email_vod__c.sort(
+        let sentEmails = vars.interactionSummary.input.Sent_Email_vod__c.sort(
           (a, b) => new Date(b.Email_Sent_Date_vod__c) - new Date(a.Email_Sent_Date_vod__c)
         ).filter((sentEmail) => sentEmail.Approved_Email_Template_vod__c == email.crmId && sentEmail.Email_Sent_Date_vod__c);
 
@@ -2594,7 +3621,23 @@ com.idc.clm = {
         }
         if (mostRecentEmail) {
           email.mostRecentSent.sentEmailID = mostRecentEmail.ID;
-          email.mostRecentSent.date = mostRecentEmail.Email_Sent_Date_vod__c;
+
+          let tmpDate = mostRecentEmail.Email_Sent_Date_vod__c;
+          let recordDate, recordTime, recordAMPM;
+          if (tmpDate.indexOf("T") > 0) {
+            recordDate = tmpDate.split("T")[0];
+            let tmpHour = parseInt(tmpDate.split("T")[1].split(":")[0]);
+            if (tmpHour > 12) {
+              recordTime = tmpHour - 12 + ":" + tmpDate.split("T")[1].split(":").slice(1, 2).join(":");
+            } else {
+              recordTime = tmpHour + ":" + tmpDate.split("T")[1].split(":").slice(1, 2).join(":");
+            }
+            recordAMPM = tmpHour >= 12 ? "PM" : "AM";
+          }
+          email.mostRecentSent.date = recordDate;
+          email.mostRecentSent.time = recordTime;
+          email.mostRecentSent.time_AMPM = recordAMPM;
+
           email.mostRecentSent.opens = mostRecentEmail.Open_Count_vod__c;
           email.mostRecentSent.clicks = mostRecentEmail.Click_Count_vod__c;
         }
@@ -2606,7 +3649,23 @@ com.idc.clm = {
         }
         if (mostRecentOpen) {
           email.mostRecentOpen.sentEmailID = mostRecentOpen.ID;
-          email.mostRecentOpen.date = mostRecentOpen.Email_Sent_Date_vod__c;
+
+          let tmpDate = mostRecentOpen.Email_Sent_Date_vod__c;
+          let recordDate, recordTime, recordAMPM;
+          if (tmpDate.indexOf("T") > 0) {
+            recordDate = tmpDate.split("T")[0];
+            let tmpHour = parseInt(tmpDate.split("T")[1].split(":")[0]);
+            if (tmpHour > 12) {
+              recordTime = tmpHour - 12 + ":" + tmpDate.split("T")[1].split(":").slice(1, 2).join(":");
+            } else {
+              recordTime = tmpHour + ":" + tmpDate.split("T")[1].split(":").slice(1, 2).join(":");
+            }
+            recordAMPM = tmpHour >= 12 ? "PM" : "AM";
+          }
+          email.mostRecentOpen.date = recordDate;
+          email.mostRecentOpen.time = recordTime;
+          email.mostRecentOpen.time_AMPM = recordAMPM;
+
           email.mostRecentOpen.clicks = mostRecentOpen.Click_Count_vod__c;
         }
 
@@ -2623,7 +3682,9 @@ com.idc.clm = {
 
         email.fragments.forEach((fragment) => {
           //sent emails for this fragment
-          let sentEmailsForThisFragment = sentEmails.filter((sentEmail) => sentEmail.Email_Fragments_vod__c.indexOf(fragment.crmId) > -1);
+          let sentEmailsForThisFragment = sentEmails.filter(
+            (sentEmail) => sentEmail.Email_Fragments_vod__c && sentEmail.Email_Fragments_vod__c.indexOf(fragment.crmId) > -1
+          );
 
           if (sentEmailsForThisFragment.length > 0) {
             fragment.status = "sent";
@@ -2638,18 +3699,36 @@ com.idc.clm = {
           }
           if (mostRecentEmailForFragment) {
             fragment.mostRecentSent.sentEmailID = mostRecentEmailForFragment.ID;
-            fragment.mostRecentSent.date = mostRecentEmailForFragment.Email_Sent_Date_vod__c;
+
+            let tmpDate = mostRecentEmailForFragment.Email_Sent_Date_vod__c;
+            let recordDate, recordTime, recordAMPM;
+            if (tmpDate.indexOf("T") > 0) {
+              recordDate = tmpDate.split("T")[0];
+              let tmpHour = parseInt(tmpDate.split("T")[1].split(":")[0]);
+              if (tmpHour > 12) {
+                recordTime = tmpHour - 12 + ":" + tmpDate.split("T")[1].split(":").slice(1, 2).join(":");
+              } else {
+                recordTime = tmpHour + ":" + tmpDate.split("T")[1].split(":").slice(1, 2).join(":");
+              }
+              recordAMPM = tmpHour >= 12 ? "PM" : "AM";
+            }
+            fragment.mostRecentSent.date = recordDate;
+            fragment.mostRecentSent.time = recordTime;
+            fragment.mostRecentSent.time_AMPM = recordAMPM;
+
             fragment.mostRecentSent.clicks = 0;
           }
 
           //clicks count for most recent email
-          let clicksCountForMostRecentEmail = this.vars.interactionSummary.input.Email_Activity_vod__c.filter(
-            (emailActivity) =>
-              emailActivity.Sent_Email_vod__c == mostRecentEmailForFragment.ID &&
-              emailActivity.Approved_Document_vod__c == fragment.crmId &&
-              emailActivity.Event_type_vod__c == "Clicked_vod"
-          ).length;
-          fragment.mostRecentSent.clicks = clicksCountForMostRecentEmail;
+          if (mostRecentEmailForFragment) {
+            let clicksCountForMostRecentEmail = vars.interactionSummary.input.Email_Activity_vod__c.filter(
+              (emailActivity) =>
+                emailActivity.Sent_Email_vod__c == mostRecentEmailForFragment.ID &&
+                emailActivity.Approved_Document_vod__c == fragment.crmId &&
+                emailActivity.Event_type_vod__c == "Clicked_vod"
+            ).length;
+            fragment.mostRecentSent.clicks = clicksCountForMostRecentEmail;
+          }
 
           //most recent email with clicks for fragment
           let mostRecentEmailWithClicksForFragment;
@@ -2657,7 +3736,7 @@ com.idc.clm = {
             mostRecentEmailWithClicksForFragment = sentEmailsForThisFragment
               .sort((a, b) => new Date(b.Email_Sent_Date_vod__c) - new Date(a.Email_Sent_Date_vod__c))
               .find((sentEmail) => {
-                return this.vars.interactionSummary.input.Email_Activity_vod__c.sort(
+                return vars.interactionSummary.input.Email_Activity_vod__c.sort(
                   (a, b) => new Date(b.Activity_DateTime_vod__c) - new Date(a.Activity_DateTime_vod__c)
                 ).find(
                   (emailActivity) =>
@@ -2671,7 +3750,7 @@ com.idc.clm = {
           //most recent activity for fragment
           let mostRecentEmailActivityForFragment;
           if (mostRecentEmailWithClicksForFragment) {
-            mostRecentEmailActivityForFragment = this.vars.interactionSummary.input.Email_Activity_vod__c.sort(
+            mostRecentEmailActivityForFragment = vars.interactionSummary.input.Email_Activity_vod__c.sort(
               (a, b) => new Date(b.Activity_DateTime_vod__c) - new Date(a.Activity_DateTime_vod__c)
             ).find(
               (emailActivity) =>
@@ -2684,20 +3763,38 @@ com.idc.clm = {
           //most recent click
           if (mostRecentEmailWithClicksForFragment && mostRecentEmailActivityForFragment) {
             fragment.mostRecentClick.sentEmailID = mostRecentEmailWithClicksForFragment.ID;
-            fragment.mostRecentClick.date = mostRecentEmailActivityForFragment.Activity_DateTime_vod__c;
+
+            let tmpDate = mostRecentEmailActivityForFragment.Activity_DateTime_vod__c;
+            let recordDate, recordTime, recordAMPM;
+            if (tmpDate) {
+              if (tmpDate.indexOf("T") > 0) {
+                recordDate = tmpDate.split("T")[0];
+                let tmpHour = parseInt(tmpDate.split("T")[1].split(":")[0]);
+                if (tmpHour > 12) {
+                  recordTime = tmpHour - 12 + ":" + tmpDate.split("T")[1].split(":").slice(1, 2).join(":");
+                } else {
+                  recordTime = tmpHour + ":" + tmpDate.split("T")[1].split(":").slice(1, 2).join(":");
+                }
+                recordAMPM = tmpHour >= 12 ? "PM" : "AM";
+              }
+            }
+            fragment.mostRecentClick.date = recordDate;
+            fragment.mostRecentClick.time = recordTime;
+            fragment.mostRecentClick.time_AMPM = recordAMPM;
+
             fragment.mostRecentClick.emailActivityID = mostRecentEmailActivityForFragment.ID;
           }
 
           //overall
           fragment.overall.sent = sentEmailsForThisFragment.length;
           fragment.overall.sentDates = sentEmailsForThisFragment.map((sentEmail) => sentEmail.Email_Sent_Date_vod__c);
-          fragment.overall.clicks = this.vars.interactionSummary.input.Email_Activity_vod__c.filter(
+          fragment.overall.clicks = vars.interactionSummary.input.Email_Activity_vod__c.filter(
             (emailActivity) =>
               sentEmailsForThisFragment.find((sentEmail) => sentEmail.ID == emailActivity.Sent_Email_vod__c) &&
               emailActivity.Approved_Document_vod__c == fragment.crmId &&
               emailActivity.Event_type_vod__c == "Clicked_vod"
           ).length;
-          fragment.overall.clickDates = this.vars.interactionSummary.input.Email_Activity_vod__c.filter(
+          fragment.overall.clickDates = vars.interactionSummary.input.Email_Activity_vod__c.filter(
             (emailActivity) =>
               sentEmailsForThisFragment.find((sentEmail) => sentEmail.ID == emailActivity.Sent_Email_vod__c) &&
               emailActivity.Approved_Document_vod__c == fragment.crmId &&
@@ -2709,7 +3806,19 @@ com.idc.clm = {
           fragment.overall.clickDates = [...new Set(fragment.overall.clickDates)];
         });
       });
+
+      //open rate, click rate
+      vars.interactionSummary.output.emails.forEach((email) => {
+        email.overall.openRate = email.overall.opens > 0 ? email.overall.opens / email.overall.sent : 0;
+        email.overall.clickRate = email.overall.clicks > 0 ? email.overall.clicks / email.overall.sent : 0;
+
+        email.fragments.forEach((fragment) => {
+          fragment.overall.clickRate = fragment.overall.clicks > 0 ? fragment.overall.clicks / email.overall.sent : 0;
+        });
+      });
     }
+
+    vars.interactionSummary.output.ready = true;
   },
 
   /*common html -------------------------------------------*/
@@ -2870,6 +3979,29 @@ com.idc.clm = {
     if (this.vars.references.active) {
       com.idc.ui.core.references.init();
     }
+
+    //interaction summary if necessary
+    if (this.vars.interactionSummary.active) {
+      //wait for output.ready
+      if (this.vars.session.isAnActualCall) {
+        let waitInterval = setInterval(() => {
+          if (this.vars.interactionSummary.output.ready) {
+            clearInterval(waitInterval);
+            com.idc.ui.interactionSummary.init();
+          }
+        }, 1000);
+      } else {
+        com.idc.ui.interactionSummary.disableOpenButton();
+      }
+    }
+
+    //complex links >> set element if necessary
+    if (this.persistentData.complexLinks.element.id && this.persistentData.complexLinks.toSlide == this.vars.navigation.currentSlide.id) {
+      com.idc.ui.common.setComplexLinkElement(); //set element
+      //clear data
+      this.persistentData.complexLinks = JSON.parse(JSON.stringify(this.persistentDataTemplate.complexLinks)); 
+      this.updatePersistentData();
+    }
   },
 
   /*email -------------------------------------------------*/
@@ -2897,10 +4029,16 @@ com.idc.clm = {
     this.updatePersistentData();
   },
   launchApprovedEmail: function (selectedOnly) {
+    let vars = com.idc.clm.vars;
     let util = com.idc.util;
 
     let templateID = null;
     let fragmentIDs = [];
+
+    if (!vars.session.isAnActualCall) {
+      util.log("com.idc.clm.launchApprovedEmail: not an actual call");
+      return;
+    }
 
     if (this.vars.emailCart.mode == "fragments") {
       if (this.vars.emailCart.templates.length > 0) {
@@ -3089,9 +4227,13 @@ com.idc.util = {
     });
   },
 
-  executeParameterFunction: (pFunction) => {
+  executeParameterFunction: (pFunction, pParam) => {
     if (pFunction !== "undefined" && pFunction !== "" && typeof window[pFunction] === "function") {
-      return window[pFunction]();
+      if (!pParam) {
+        return window[pFunction]();
+      } else {
+        return window[pFunction](pParam);
+      }
     } else {
       com.idc.util.log(`com.idc.util.executeParameterFunction ERROR: ${pFunction} is not a function`);
     }
@@ -3101,7 +4243,7 @@ com.idc.util = {
     return pEl.hasAttribute(pName) ? (pEl.getAttribute(pName) !== "" ? pEl.getAttribute(pName) : "") : "";
   },
 
-  readSetting: (pSettingsObj, pKeyChain, pType, pDefault) => {
+  readSetting: (pSettingsObj, pKeyChain, pType, pDefault, pLog) => {
     const pKeysArr = pKeyChain.split(".");
     let value = null;
     try {
@@ -3110,7 +4252,9 @@ com.idc.util = {
         value = value[pKeysArr[i]];
       }
     } catch (err) {
-      com.idc.util.log(`readSetting ${pKeyChain} error: ${err}`);
+      if (typeof pLog == "undefined" || pLog == true) {
+        com.idc.util.log(`readSetting ${pKeyChain} error: ${err}`);
+      }
     }
 
     //true / false as text
@@ -3155,6 +4299,17 @@ com.idc.util = {
     }
 
     return path;
+  },
+
+  setLabels: function (pEl, pDictionary) {
+    if (pEl && pDictionary) {
+      pEl.querySelectorAll("[data-label]").forEach((el) => {
+        let label = pDictionary[el.getAttribute("data-label")];
+        if (label && label !== "") {
+          el.innerHTML = label;
+        }
+      });
+    }
   },
 };
 
@@ -3371,6 +4526,12 @@ com.idc.ui = {
             activeInstances
           );
         }
+
+        //recently set flag (prevent from resetting before 1 sec after being set)
+        this.recentlySet = true;
+        setTimeout(() => {
+          this.recentlySet = false;
+        }, 1000);
       },
       getActiveInstance: function () {
         const activeInstanceIndex = this.components.instances.findIndex((instance) => {
@@ -3450,6 +4611,8 @@ com.idc.ui = {
         }
       },
       resetToDefaults: function () {
+        if (this.recentlySet) return;
+
         //any instance set to open by default?
         if (this.components.instances.findIndex((instance) => instance.params.initialState === "open") >= 0) {
           //open instances if set by param
@@ -3507,29 +4670,81 @@ com.idc.ui = {
 
             //flag elements as activated
             el.activated = true;
-          }
 
-          el.addEventListener("click", (evt) => {
-            //do not proceed if non-working-link or disabled
-            if (el.getAttribute("data-non-working-link") || el.getAttribute("data-view-state") == "disabled") return;
+            //params
+            el.params = com.idc.ui.common.readElementOptions(el, {
+              elId: null, //target slide element id (complex link)
+              elType: null, //target slide element type (complex link)
+              elInstance: null, //target slide element instance (complex link tab/accordion/multi)
+            });
 
-            let targetId = com.idc.util.getElementAttribute(el, "data-target-id")
-              ? com.idc.util.getElementAttribute(el, "data-target-id")
-              : com.idc.util.getElementAttribute(el, "data-target-id-fnc")
-              ? com.idc.util.executeParameterFunction(com.idc.util.getElementAttribute(el, "data-target-id-fnc"))
-              : "";
+            el.addEventListener("click", (evt) => {
+              let vars = com.idc.clm.vars;
+              let persistentData = com.idc.clm.persistentData;
+              //do not proceed if non-working-link or disabled
+              if (el.getAttribute("data-non-working-link") || el.getAttribute("data-view-state") == "disabled") return;
 
-            let standaloneGroup = com.idc.util.getElementAttribute(el, "data-standalone-group");
-            if (standaloneGroup) {
-              if (com.idc.clm.validateStandaloneGroup(standaloneGroup, targetId)) {
-                com.idc.clm.activateStandaloneGroup(standaloneGroup);
+              //target id
+              let targetId = com.idc.util.getElementAttribute(el, "data-target-id")
+                ? com.idc.util.getElementAttribute(el, "data-target-id")
+                : com.idc.util.getElementAttribute(el, "data-target-id-fnc")
+                ? com.idc.util.executeParameterFunction(com.idc.util.getElementAttribute(el, "data-target-id-fnc"))
+                : "";
+
+              //override function
+              let overrideFnc;
+              if (com.idc.clm.vars.options.linkOverride.active) {
+                let localOverrideFnc = com.idc.util.getElementAttribute(el, "data-link-override-fnc");
+                let globalOverrideFnc = com.idc.clm.vars.options.linkOverride.global;
+
+                if (localOverrideFnc) {
+                  overrideFnc = localOverrideFnc;
+                } else {
+                  if (globalOverrideFnc) {
+                    overrideFnc = globalOverrideFnc;
+                  }
+                }
               }
-            }
 
-            if (targetId != "") {
-              com.idc.clm.gotoSlide(targetId);
-            }
-          });
+              //standalone modal group (not in dynamic presentation mode or eval function)
+              let standaloneGroup = com.idc.util.getElementAttribute(el, "data-standalone-group");
+              let isDynamicPresentation = com.idc.clm.vars.navigation.dynamicPresentation.active;
+              if (standaloneGroup) {
+                if (!isDynamicPresentation && !overrideFnc) {
+                  if (com.idc.clm.validateStandaloneGroup(standaloneGroup, targetId)) {
+                    com.idc.clm.activateStandaloneGroup(standaloneGroup);
+                  }
+                } else {
+                  if (isDynamicPresentation) {
+                    com.idc.util.log("com.idc.ui.core.link: dynamic presentation / unable to activate standalone group");
+                  }
+                  if (overrideFnc) {
+                    com.idc.util.log("com.idc.ui.core.link: link eval function / unable to activate standalone group");
+                  }
+                }
+              }
+
+              //complex link >> update persistent data
+              if (el.params.elId) {
+                persistentData.complexLinks.fromSlide = vars.navigation.currentSlide.id;
+                persistentData.complexLinks.toSlide = targetId;
+                persistentData.complexLinks.element.type = el.params.elType;
+                persistentData.complexLinks.element.id = el.params.elId;
+                persistentData.complexLinks.element.instance = el.params.elInstance;
+                com.idc.clm.updatePersistentData();
+              }
+
+              //goto slide
+              if (targetId != "" && !overrideFnc) {
+                com.idc.clm.gotoSlide(targetId);
+              }
+
+              //override function
+              if (overrideFnc) {
+                com.idc.util.executeParameterFunction(overrideFnc, { targetId: targetId });
+              }
+            });
+          }
         });
       },
       isHTMLValid: function (pElement, pToValidate) {
@@ -3577,6 +4792,8 @@ com.idc.ui = {
                 }
               }
             });
+          } else {
+            el.removeAttribute("data-non-working-link");
           }
         });
       },
@@ -3750,6 +4967,8 @@ com.idc.ui = {
 
             el.overwriteParameterFunction = this.overwriteParameterFunction;
 
+            el.closeButtonHiddenFlag = this.closeButtonHiddenFlag;
+
             //open button
             const openButton = document.querySelector(
               `[data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.core.modal.openButton"][data-target-id="${el.id}"]`
@@ -3804,11 +5023,7 @@ com.idc.ui = {
             }
 
             //if it's a standalone modal and the presentation is dynamic, set flag so it can be hidden
-            let isDynamicPresentation = com.idc.clm.vars.navigation.dynamicPresentation.active;
-            let treatStandaloneModalsAsMainSlides = com.idc.clm.vars.navigation.dynamicPresentation.treatStandaloneModalsAsMainSlides;
-            if (el.isStandalone && isDynamicPresentation && treatStandaloneModalsAsMainSlides) {
-              closeButton.setAttribute("data-should-be-hidden", "true");
-            }
+            if (closeButton) el.closeButtonHiddenFlag();
 
             //back modal (create, set style, close event)
             el.components.backModal = {
@@ -3914,6 +5129,13 @@ com.idc.ui = {
         //set arrows visibility
         com.idc.ui.core.navigationArrows.setArrowsVisibility();
 
+        //refresh references
+        if (com.idc.clm.vars.references.active) {
+          if (this.type == "popUp" || this.type == "dropDown") {
+            com.idc.ui.core.references.refresh();
+          }
+        }
+
         //execute after open
         this.executeAfterOpen();
       },
@@ -3972,17 +5194,26 @@ com.idc.ui = {
           //reset child objects (revert to default state)
           com.idc.ui.common.resetChildElements(this);
 
+          //refresh references
+          if (com.idc.clm.vars.references.active) {
+            if (this.type == "popUp" || this.type == "dropDown") {
+              com.idc.ui.core.references.refresh();
+            }
+          }
+
           //execute after close
           this.executeAfterClose();
         } else {
           //redirect to opener slide or slideId in closeAction
           let nav = com.idc.clm.vars.navigation;
           if (this.params.closeAction == null || this.params.closeAction == "opener" || this.params.closeAction == "openerStrict") {
-            let lastSlideType = this.params.closeAction == null || this.params.closeAction == "opener" ? "main" : "actual";
-            if (nav.lastSlide.main && nav.lastSlide[lastSlideType].id != null) {
+            //no close slide defined (closeAction = slideId), or close action = opener (last main slide) or opener strict (actual last slide even if it is a standalone modal)
+            let lastSlideType = this.params.closeAction == null || this.params.closeAction == "opener" ? "main" : "actual"; //last slide type: last main slide or actual last slide (can be another standalone)
+            if (nav.lastSlide && nav.lastSlide.main && nav.lastSlide[lastSlideType].id != null) {
               com.idc.clm.gotoSlide(nav.lastSlide[lastSlideType].id);
             }
           } else {
+            //a slie has been defined in closeAction, redirect to that slide
             if (com.idc.clm.findSlide(this.params.closeAction) != null) {
               com.idc.clm.gotoSlide(this.params.closeAction); //if close action is not null and not opener/openerStrict, it's a slide id
             } else {
@@ -4276,6 +5507,19 @@ com.idc.ui = {
           pElement.params.preventCloseOnBackModalTap = true;
         },
       },
+      closeButtonHiddenFlag: function () {
+        if (!this.components.closeButton) return;
+
+        let closeButton = this.components.closeButton.element;
+
+        let isDynamicPresentation = com.idc.clm.vars.navigation.dynamicPresentation.active;
+        let treatStandaloneModalsAsMainSlides = com.idc.clm.vars.navigation.dynamicPresentation.treatStandaloneModalsAsMainSlides;
+        if (this.isStandalone && isDynamicPresentation && treatStandaloneModalsAsMainSlides) {
+          closeButton.setAttribute("data-should-be-hidden", "true");
+        } else {
+          closeButton.removeAttribute("data-should-be-hidden");
+        }
+      },
     },
     multi: {
       selector: '[data-type="com.idc.ui.core.multi.container"]',
@@ -4427,6 +5671,17 @@ com.idc.ui = {
 
         //set buttons state
         this.setButtonsState();
+
+        //refresh references
+        if (com.idc.clm.vars.references.active) {
+          com.idc.ui.core.references.refresh();
+        }
+
+        //recently set flag (prevent from resetting before 1 sec after being set)
+        this.recentlySet = true;
+        setTimeout(() => {
+          this.recentlySet = false;
+        }, 1000);
       },
       nextInstance: function () {
         let currentInstanceIndex = this.components.instances.findIndex((instance) => {
@@ -4487,6 +5742,8 @@ com.idc.ui = {
         return errorList === "";
       },
       resetToDefaults: function () {
+        if (this.recentlySet) return;
+
         if (
           this.components.instances.findIndex((instance) => {
             return instance.params.initialState === "open";
@@ -4559,74 +5816,163 @@ com.idc.ui = {
           if (this.prevArrow) {
             if (!com.idc.clm.vars.navigation.currentSlide.isFirst) {
               this.prevArrow.setAttribute("data-view-state", "active");
+              //adjust z-index if necessary
+              if (isCurrentSlideStandalone) {
+                this.prevArrow.style.zIndex = com.idc.ui.core.modal.activeModalsStack.length * 10 + 1;
+              }
             }
           }
 
           if (this.nextArrow) {
             if (!com.idc.clm.vars.navigation.currentSlide.isLast) {
               this.nextArrow.setAttribute("data-view-state", "active");
+              //adjust z-index if necessary
+              if (isCurrentSlideStandalone) {
+                this.nextArrow.style.zIndex = com.idc.ui.core.modal.activeModalsStack.length * 10 + 1;
+              }
             }
           }
         }
       },
     },
     references: {
+      slideRefsArr: [],
       activeRefs: {
-        all: null,
-        slide: null,
+        all: null, //all references
+        slide: null, //active ref for slide
       },
       switch: {
-        active: null,
-        selected: null,
+        active: null, //flag to show switch (if all and slide refs are present)
+        selected: null, //selected option: all or slide
       },
+      disableFlag: null, //config setting to disable refs for the slide
+      onlySlideRefsFlag: null, //config setting to show only slide refs (not all refs)
       init: function () {
         let vars = com.idc.clm.vars;
 
         //all references
-        let containsAllRefs;
         if (vars.references.content.landscape) {
-          containsAllRefs = true;
           this.activeRefs.all = vars.references.content;
         }
 
-        //slide references
-        let containsSlideRefs;
+        //slide specific references / disable for this slide flag
         let currentSlide = vars.slides.find((slide) => {
           return slide.id == vars.navigation.currentSlide.id;
         });
         if (currentSlide.references) {
-          if (currentSlide.references.default.landscape) {
-            this.setActiveSlideRefs(currentSlide.references.default);
-            containsSlideRefs = true;
+          if (currentSlide.references.onlySlideReferences) {
+            this.onlySlideRefsFlag = true;
+          }
+          if (currentSlide.references.disabled) {
+            //flag: disable references for this slide
+            this.disableFlag = true;
+          } else {
+            //for each key in currentSlide.references, check if it has landscape or portrait and add it to the references arr
+            for (let key in currentSlide.references) {
+              if (currentSlide.references[key] && currentSlide.references[key].landscape) {
+                let refRecord = currentSlide.references[key];
+                refRecord.name = key;
+                this.slideRefsArr.push(currentSlide.references[key]);
+              }
+            }
           }
         }
 
-        //switch
-        if (containsSlideRefs && containsAllRefs) {
+        //if only slide refs, clear all refs
+        if (this.onlySlideRefsFlag) {
+          this.activeRefs.all = null;
+        }
+
+        //refresh
+        this.refresh();
+
+        //set events
+        this.setEvents();
+      },
+      refresh: function () {
+        let vars = com.idc.clm.vars;
+
+        //set active slide refs
+        if (this.slideRefsArr.length > 0) {
+          //find default ref
+          let defaultRef = this.slideRefsArr.find((ref) => {
+            return ref.name == "default";
+          });
+
+          //find alternative ref
+          let alternativeRef = this.slideRefsArr.find((ref) => {
+            let alternativeIsValid = false;
+
+            if (ref.uiRelated) {
+              //related to an active modal
+              if (ref.uiRelated.modal) {
+                if (com.idc.ui.core.modal.activeModalsStack.indexOf(ref.uiRelated.modal.id) >= 0) {
+                  alternativeIsValid = true;
+                }
+              }
+              //related to an active tab instance
+              if (ref.uiRelated.tab) {
+                let tab = document.querySelector(`#${ref.uiRelated.tab.id}`);
+                if (tab) {
+                  let instance = tab.querySelector(`[data-instance="${ref.uiRelated.tab.instance}"]`);
+                  if (instance) {
+                    if (instance.getAttribute("data-view-state") == "active") {
+                      alternativeIsValid = true;
+                    }
+                  }
+                }
+              }
+
+              //related to an active multi instance
+              if (ref.uiRelated.multi) {
+                let multi = document.querySelector(`#${ref.uiRelated.multi.id}`);
+                if (multi) {
+                  let instance = tab.querySelector(`[data-instance="${ref.uiRelated.multi.instance}"]`);
+                  if (instance) {
+                    if (instance.getAttribute("data-view-state") == "active") {
+                      alternativeIsValid = true;
+                    }
+                  }
+                }
+              }
+            }
+
+            return alternativeIsValid;
+          });
+
+          this.activeRefs.slide = alternativeRef ? alternativeRef : defaultRef ? defaultRef : null;
+        }
+
+        //depending on global/slide refs, set switch and open button state
+        let openButtonState = this.disableFlag || (!this.activeRefs.slide && !this.activeRefs.all) ? "disabled" : "enabled";
+
+        let openButton = document.querySelector(`#${vars.references.components.openButton.id}`);
+        if (openButton) {
+          switch (openButtonState) {
+            case "enabled":
+              if (openButton.getAttribute("data-view-state") == "disabled") {
+                openButton.setAttribute("data-view-state", openButton.parentNode.getAttribute("children-view-state"));
+              }
+              break;
+            case "disabled":
+              openButton.setAttribute("data-view-state", "disabled");
+              break;
+          }
+        }
+
+        //set switch
+        if (this.activeRefs.slide && this.activeRefs.all) {
           this.switch.active = true;
           this.switch.selected = "slide";
         } else {
           this.switch.active = false;
-          if (containsSlideRefs) this.switch.selected = "slide";
-          if (containsAllRefs) this.switch.selected = "all";
+          if (this.activeRefs.slide) this.switch.selected = "slide";
+          if (this.activeRefs.all) this.switch.selected = "all";
         }
 
-        //disable open button
-        if (!containsSlideRefs && !containsAllRefs) {
-          this.disableOpenButton();
-        }
-
-        this.setEvents();
-      },
-      disableOpenButton: function () {
-        let vars = com.idc.clm.vars;
-        let openButton = document.querySelector(`#${vars.references.components.openButton.id}`);
-        if (openButton) {
-          openButton.setAttribute("data-view-state", "disabled");
-        }
-      },
-      setActiveSlideRefs: function (pRefs) {
-        this.activeRefs.slide = pRefs;
+        //set content
+        this.removeContent();
+        this.setContent(com.idc.ui.core.references.switch.selected, com.idc.ui.core.references.activeRefs);
       },
       setEvents: function () {
         let vars = com.idc.clm.vars;
@@ -4645,28 +5991,27 @@ com.idc.ui = {
         });
 
         //switch
-        if (this.switch.active) {
-          let switchElement = document.querySelector(`#${vars.references.components.modal.id} [data-type="com.idc.ui.references.switch"]`);
-          if (switchElement) {
-            switchElement.addEventListener("click", (event) => {
-              if (this.switch.selected == "all") {
-                this.switch.selected = "slide";
-              } else {
-                this.switch.selected = "all";
-              }
+        let switchElement = document.querySelector(`#${vars.references.components.modal.id} [data-type="com.idc.ui.references.switch"]`);
+        if (switchElement) {
+          switchElement.addEventListener("click", (event) => {
+            if (this.switch.selected == "all") {
+              this.switch.selected = "slide";
+            } else {
+              this.switch.selected = "all";
+            }
 
-              this.removeContent();
-              this.setContent(this.switch.selected, this.activeRefs);
-            });
-          }
+            this.removeContent();
+            this.setContent(this.switch.selected, this.activeRefs);
+          });
         }
       },
       beforeOpen: function () {
-        com.idc.ui.core.references.removeContent();
-        com.idc.ui.core.references.setContent(com.idc.ui.core.references.switch.selected, com.idc.ui.core.references.activeRefs);
+        com.idc.ui.core.references.refresh();
       },
       removeContent: function () {
         let vars = com.idc.clm.vars;
+
+        if (!document.querySelector(`#${vars.references.components.modal.id}`)) return;
 
         document.querySelector(`#${vars.references.components.modal.id} [data-type="com.idc.ui.references.landscapeView"]`).innerHTML = "";
         document.querySelector(`#${vars.references.components.modal.id} [data-type="com.idc.ui.references.landscapeView"]`).removeAttribute("data-view-state");
@@ -4678,6 +6023,8 @@ com.idc.ui = {
         let util = com.idc.util;
         let screenOrientation = vars.screen.orientation;
 
+        if (!source.all && !source.slide) return;
+
         //img source
         let refsFile = screenOrientation == "landscape" ? source[type].landscape : source[type].portrait ? source[type].portrait : source[type].landscape;
 
@@ -4688,6 +6035,8 @@ com.idc.ui = {
 
         //container attributes
         refsContainer.setAttribute("data-ref-src", refsFile);
+        refsContainer.setAttribute("data-ref-type", type);
+        refsContainer.closest(`[data-type="com.idc.ui.core.scroll.container"]`).setAttribute("data-ref-type", type);
 
         //content image
         let refsIMG = document.createElement("img");
@@ -4778,6 +6127,7 @@ com.idc.ui = {
                 buttons.querySelectorAll('[data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.core.tab.button"]').forEach((button) => {
                   const instance = {
                     name: button.getAttribute("data-instance"),
+                    order: button.getAttribute("data-order"),
                     button: {
                       element: button,
                     },
@@ -4797,8 +6147,10 @@ com.idc.ui = {
                   };
                   el.components.instances.push(instance);
                 });
-                //sort by instance name ascending
-                el.components.instances.sort((a, b) => (a.name > b.name ? 1 : -1));
+                //sort if necessary
+                if (el.components.instances.every((instance) => instance.order !== null)) {
+                  el.components.instances.sort((a, b) => (a.order > b.order ? 1 : -1));
+                }
               }
             }
 
@@ -4843,6 +6195,7 @@ com.idc.ui = {
             el.showCover = this.showCover;
             el.overwriteParameterFunction = this.overwriteParameterFunction;
             el.resetToDefaults = this.resetToDefaults;
+            el.setInstanceVisibility = this.setInstanceVisibility;
 
             //assign functions and events: instances
             el.components.instances.forEach((instance) => {
@@ -4998,7 +6351,9 @@ com.idc.ui = {
             this.viewState.activeInstance = pInstance;
           } else {
             //all the rest
-            instance.button.element.setAttribute("data-view-state", "off");
+            if (instance.button.element.getAttribute("data-view-state") != "hidden") {
+              instance.button.element.setAttribute("data-view-state", "off");
+            }
             instance.content.element.removeAttribute("data-view-state");
             instance.viewState = null;
 
@@ -5014,6 +6369,13 @@ com.idc.ui = {
         //show back modal
         if (this.viewState.activeInstance && this.isTabModal) {
           this.components.backModal.element.style.display = "block";
+        } else {
+          this.components.backModal.element.style.display = "none";
+        }
+
+        //refresh references
+        if (com.idc.clm.vars.references.active) {
+          com.idc.ui.core.references.refresh();
         }
 
         //save state (active instance)
@@ -5035,6 +6397,65 @@ com.idc.ui = {
             "viewState",
             activeInstanceName
           );
+        }
+
+        //recently set flag (prevent from resetting before 1 sec after being set)
+        this.recentlySet = true;
+        setTimeout(() => {
+          this.recentlySet = false;
+        }, 1000);
+      },
+      setInstanceVisibility: function (pInstance, pViewState) {
+        let instance = this.components.instances.find((instance) => {
+          return instance.name === pInstance;
+        });
+
+        if (!instance) return;
+
+        //set visibility: tab buttons
+        switch (pViewState) {
+          case "hidden":
+            instance.button.element.setAttribute("data-view-state", "hidden");
+            break;
+          case "visible":
+            instance.button.element.setAttribute("data-view-state", "off");
+            break;
+        }
+
+        //set visibility: cover buttons
+        if (this.components.cover.hasCover) {
+          let coverButton = this.components.cover.buttons.find((button) => {
+            return button.instance === pInstance;
+          });
+
+          if (coverButton) {
+            switch (pViewState) {
+              case "hidden":
+                coverButton.element.setAttribute("data-view-state", "hidden");
+                break;
+              case "visible":
+                coverButton.element.setAttribute("data-view-state", "");
+                break;
+            }
+          }
+        }
+
+        //if all buttons off, set first instance
+        if (
+          this.components.instances.every(
+            (instance) =>
+              instance.button.element.getAttribute("data-view-state") === "off" || instance.button.element.getAttribute("data-view-state") === "hidden"
+          )
+        ) {
+          //search for first off button and set it on
+          let firstOffButton = this.components.instances.find((instance) => {
+            return instance.button.element.getAttribute("data-view-state") === "off";
+          });
+
+          //set instance
+          if (firstOffButton) {
+            this.setInstance(firstOffButton.name);
+          }
         }
       },
       getActiveInstance: function () {
@@ -5109,6 +6530,8 @@ com.idc.ui = {
         }
       },
       resetToDefaults: function () {
+        if (this.recentlySet) return;
+
         //remove transition classes
         if (this.components.cover.hasCover) {
           if (this.params.btnTransitionCoverToTab) {
@@ -5213,8 +6636,25 @@ com.idc.ui = {
         if (!vars.utilitiesMenu.active) return;
         if (!this.components.el) return;
 
+        let isDynamicPresentation = vars.navigation.dynamicPresentation.active;
         let slideType = vars.navigation.currentSlide.isStandalone ? "standaloneModal" : "mainSlide";
-        let currentSet = vars.utilitiesMenu.sets[slideType];
+        let currentSet;
+        if (!isDynamicPresentation) {
+          //default set for normal presentation
+          currentSet = vars.utilitiesMenu.sets[slideType];
+        } else {
+          //special set for dynamic presentation
+          let dynamicPresentationSource = vars.navigation.dynamicPresentation.source;
+          if (
+            vars.utilitiesMenu.sets.dynamicPresentation[dynamicPresentationSource][slideType].centerGroup.length > 0 ||
+            vars.utilitiesMenu.sets.dynamicPresentation[dynamicPresentationSource][slideType].rightGroup.length > 0
+          ) {
+            currentSet = vars.utilitiesMenu.sets.dynamicPresentation[dynamicPresentationSource][slideType];
+          }
+          if (!currentSet) {
+            currentSet = vars.utilitiesMenu.sets[slideType]; //fallback to default set
+          }
+        }
 
         //for each group
         ["centerGroup", "rightGroup"].forEach((groupName) => {
@@ -5275,30 +6715,55 @@ com.idc.ui = {
         let aModalIsActive = activeModalsStack.length > 0;
         let activeModalId = aModalIsActive ? activeModalsStack[activeModalsStack.length - 1] : null;
         let isActiveModalStandalone = aModalIsActive ? document.querySelector(`#${activeModalId}`).isStandalone : false;
+        let slideType = vars.navigation.currentSlide.isStandalone ? "standaloneModal" : "mainSlide";
+        let isDynamicPresentation = vars.navigation.dynamicPresentation.active;
+        let sets;
+
+        if (!isDynamicPresentation) {
+          //default set for normal presentation
+          sets = vars.utilitiesMenu.sets;
+        } else {
+          let dynamicPresentationSource = vars.navigation.dynamicPresentation.source;
+          switch (dynamicPresentationSource) {
+            case "callflows":
+              if (
+                vars.utilitiesMenu.sets.dynamicPresentation.callflows[slideType].centerGroup.length > 0 ||
+                vars.utilitiesMenu.sets.dynamicPresentation.callflows[slideType].rightGroup.length > 0
+              ) {
+                sets = vars.utilitiesMenu.sets.dynamicPresentation.callflows;
+              }
+              break;
+          }
+          if (!sets) {
+            sets = vars.utilitiesMenu.sets; //fallback to default set
+          }
+        }
 
         //style name
         let viewStateName;
         if (!aModalIsActive) {
           //main slide
-          viewStateName = vars.utilitiesMenu.sets.mainSlide.buttonViewState;
+          viewStateName = sets.mainSlide.buttonViewState;
         } else {
           if (isActiveModalStandalone) {
             //standalone modal
-            viewStateName = vars.utilitiesMenu.sets.standaloneModal.buttonViewState;
+            viewStateName = sets.standaloneModal.buttonViewState;
           } else {
             //regular modal
-            viewStateName = vars.utilitiesMenu.sets.regularModals.buttonViewState;
+            viewStateName = sets.regularModals.buttonViewState;
           }
         }
 
         //set style and z-index
         ["centerGroup", "rightGroup"].forEach((groupName) => {
           if (!this.components.containers[groupName]) return;
+          this.components.containers[groupName].setAttribute("children-view-state", viewStateName);
           this.components.containers[groupName].childNodes.forEach((el) => {
-            //style
-            el.setAttribute("data-view-state", viewStateName);
-
-            //z-index
+            //set style (unless it's disabled; in that case it'll remain desabled)
+            if (el.getAttribute("data-view-state") != "disabled") {
+              el.setAttribute("data-view-state", viewStateName);
+            }
+            //set z-index
             if (!aModalIsActive) {
               //main slide, all buttons z-index 0
               el.style.zIndex = 0;
@@ -5308,7 +6773,7 @@ com.idc.ui = {
                 el.style.zIndex = activeModalsStack.length * 10 + 1;
               } else {
                 //normal modal, bring to front dual button if necessary
-                if (vars.utilitiesMenu.sets.regularModals.bringToFront.dualButtonForActiveModal.active) {
+                if (sets.regularModals.bringToFront.dualButtonForActiveModal.active) {
                   let isDualButtonOfCurrentModal =
                     el.getAttribute("data-sub-type") == "com.idc.ui.core.modal.dualButton" && el.getAttribute("data-target-id") == activeModalId;
                   if (isDualButtonOfCurrentModal) {
@@ -5317,9 +6782,9 @@ com.idc.ui = {
                 }
 
                 //normal modal, bring to front references button if necessary
-                if (vars.utilitiesMenu.sets.regularModals.bringToFront.referencesButton.active) {
+                if (sets.regularModals.bringToFront.referencesButton.active) {
                   //bring forward unless the modal is excluded from params
-                  if (!vars.utilitiesMenu.sets.regularModals.bringToFront.referencesButton.excludeModals.includes(activeModalId)) {
+                  if (!sets.regularModals.bringToFront.referencesButton.excludeModals.includes(activeModalId)) {
                     let isReferencesOpenButton = el.getAttribute("id") == vars.references.components.openButton.id;
                     if (isReferencesOpenButton) {
                       el.style.zIndex = activeModalsStack.length * 10 + 1;
@@ -5713,6 +7178,35 @@ com.idc.ui = {
         });
       };
     },
+    setComplexLinkElement: function () {
+      let slideId = com.idc.clm.vars.navigation.currentSlide.id;
+
+      if (slideId != com.idc.clm.persistentData.complexLinks.toSlide) return;
+
+      let element = document.querySelector(`#${com.idc.clm.persistentData.complexLinks.element.id}`);
+      if (!element) return;
+
+      let instance;
+
+      switch (com.idc.clm.persistentData.complexLinks.element.type) {
+        case "accordion":
+          instance = com.idc.clm.persistentData.complexLinks.element.instance;
+          if (instance) {
+            element.setInstance(instance, true);
+          }
+          break;
+        case "tab":
+        case "multi":
+          instance = com.idc.clm.persistentData.complexLinks.element.instance;
+          if (instance) {
+            element.setInstance(instance);
+          }
+          break;
+        case "modal":
+          element.open();
+          break;
+      }
+    },
   },
   dynamicPresentation: {
     setMenu: function (slidesSequence) {
@@ -5727,7 +7221,9 @@ com.idc.ui = {
       if (menuMode == "custom") {
         if (functionName) {
           let populateMenuFunction = functionName;
-          window[populateMenuFunction](slidesSequence);
+          if (typeof window[populateMenuFunction] === "function") {
+            window[populateMenuFunction](slidesSequence);
+          }
         }
 
         if (document.querySelector("#com_idc_ui_dynamic_menu_bundle")) {
@@ -5789,7 +7285,12 @@ com.idc.ui = {
 
       //option: external function (custom dynamic menu)
       if (menuMode == "custom") {
-        //do nothing (ToDo: could call the external function with null parameter)
+        if (functionName) {
+          let populateMenuFunction = functionName;
+          if (typeof window[populateMenuFunction] === "function") {
+            window[populateMenuFunction](null);
+          }
+        }
         return;
       }
 
@@ -6143,6 +7644,9 @@ com.idc.ui = {
       this.button.element = util.jsonToHTML(templates.button, "com_idc_ui_inspector_button", document.querySelector("body"), null);
       this.dropDown.element = util.jsonToHTML(templates.dropDown, "com_idc_ui_inspector_dropDown", document.querySelector("body"), null);
 
+      //shortcut inspector.open()
+      window.inspector = this.dropDown.element;
+
       //button event (open dropdown)
       this.button.element.querySelector('[data-type="com.idc.ui.inspector.button.label"]').addEventListener("click", () => {
         document.querySelector("#com_idc_ui_inspector_dropDown").open();
@@ -6254,17 +7758,25 @@ com.idc.ui = {
             let textArea;
 
             switch (activeInstance.name) {
+              case "params":
+                textArea = this.dropDown.element.querySelector('[data-type="com.idc.ui.core.tab.content"][data-instance="params"] textarea');
+                break;
               case "log":
                 textArea = this.dropDown.element.querySelector('[data-type="com.idc.ui.core.tab.content"][data-instance="log"] textarea');
                 break;
               case "vars":
                 textArea = this.dropDown.element.querySelector('[data-type="com.idc.ui.core.tab.content"][data-instance="vars"] textarea');
                 break;
+              case "persistentData":
+                textArea = this.dropDown.element.querySelector('[data-type="com.idc.ui.core.tab.content"][data-instance="persistentData"] textarea');
+                break;
             }
 
-            if (typeof textArea !== undefined) {
+            if (textArea) {
+              textArea.style.display = "block";
               textArea.select();
               document.execCommand("copy");
+              textArea.style.display = "none";
 
               //copied to clipboard label
               this.dropDown.element.querySelector('[data-type="com.idc.ui.inspector.copyToCliboard.copied"]').setAttribute("data-view-state", "active");
@@ -6298,8 +7810,6 @@ com.idc.ui = {
       textArea.value = `${textArea.value}${JSON.stringify(pText, null, 4)}\n`;
     },
     refreshParams: function () {
-      const textArea = this.dropDown.element.querySelector('[data-type="com.idc.ui.core.tab.content"][data-instance="params"] textarea');
-
       let vars = JSON.parse(JSON.stringify(com.idc.clm.vars));
       let params = {};
 
@@ -6312,11 +7822,24 @@ com.idc.ui = {
       params.emailCart = vars.emailCart;
       params.references = vars.references;
 
-      textArea.value = `${JSON.stringify(params, null, 4)}\n`;
+      let treeData = params;
+
+      //render
+      const textAreaContainer = this.dropDown.element.querySelector('[data-type="com.idc.ui.core.tab.content"][data-instance="params"]');
+      textAreaContainer.innerHTML = "";
+
+      //text area
+      let textArea = document.createElement("textarea");
+      textArea.style.display = "none";
+      textArea.value = `${JSON.stringify(treeData, null, 4)}\n`;
+      textAreaContainer.appendChild(textArea);
+
+      //tree
+      const tree = jsonview.create(treeData);
+      jsonview.render(tree, textAreaContainer);
+      jsonview.toggleNode(tree, true);
     },
     refreshVars: function () {
-      const textArea = this.dropDown.element.querySelector('[data-type="com.idc.ui.core.tab.content"][data-instance="vars"] textarea');
-
       let vars = JSON.parse(JSON.stringify(com.idc.clm.vars)); //all but the ones selected for params
       delete vars.project;
       delete vars.options;
@@ -6326,11 +7849,40 @@ com.idc.ui = {
       delete vars.emailCart;
       delete vars.references;
 
-      textArea.value = `${JSON.stringify(vars, null, 4)}\n`;
+      let treeData = vars;
+
+      //render
+      const textAreaContainer = this.dropDown.element.querySelector('[data-type="com.idc.ui.core.tab.content"][data-instance="vars"]');
+      textAreaContainer.innerHTML = "";
+
+      //text area
+      let textArea = document.createElement("textarea");
+      textArea.style.display = "none";
+      textArea.value = `${JSON.stringify(treeData, null, 4)}\n`;
+      textAreaContainer.appendChild(textArea);
+
+      //tree
+      const tree = jsonview.create(treeData);
+      jsonview.render(tree, textAreaContainer);
+      jsonview.toggleNode(tree, true);
     },
     refreshPersistentData: function () {
-      const textArea = this.dropDown.element.querySelector('[data-type="com.idc.ui.core.tab.content"][data-instance="persistentData"] textarea');
-      textArea.value = `${JSON.stringify(com.idc.clm.persistentData, null, 4)}\n`;
+      let treeData = com.idc.clm.persistentData;
+
+      //render
+      const textAreaContainer = this.dropDown.element.querySelector('[data-type="com.idc.ui.core.tab.content"][data-instance="persistentData"]');
+      textAreaContainer.innerHTML = "";
+
+      //text area
+      let textArea = document.createElement("textarea");
+      textArea.style.display = "none";
+      textArea.value = `${JSON.stringify(treeData, null, 4)}\n`;
+      textAreaContainer.appendChild(textArea);
+
+      //tree
+      const tree = jsonview.create(treeData);
+      jsonview.render(tree, textAreaContainer);
+      jsonview.toggleNode(tree, true);
     },
     cmdExec: function () {
       const textInput = this.dropDown.element.querySelector('[data-type="com.idc.ui.inspector.execute.input"]');
@@ -6457,7 +8009,1278 @@ com.idc.ui = {
       }
     },
   },
-  interactionSummary: {},
+  interactionSummary: {
+    elements: {
+      openButton: null,
+      modal: null,
+      cover: null,
+      tab: null,
+      selectors: {
+        previousInteractions: {
+          filters: null,
+        },
+        slides: {
+          filters: null,
+          modal: null,
+          openButton: null,
+        },
+        emails: {
+          modal: null,
+          openButton: null,
+        },
+      },
+    },
+    options: {
+      previousInteractions: {
+        filter: "all",
+      },
+      slides: {
+        filter: "all",
+        sort: "default",
+      },
+      emails: {
+        sort: "default",
+        allExpanded: false,
+      },
+    },
+    init: function () {
+      let vars = com.idc.clm.vars;
+      let util = com.idc.util;
+
+      //elements
+      if (vars.interactionSummary.components.openButton.id) {
+        this.elements.openButton = document.querySelector(`#${vars.interactionSummary.components.openButton.id}`);
+      }
+      if (vars.interactionSummary.components.modal.id) {
+        this.elements.modal = document.querySelector(`#${vars.interactionSummary.components.modal.id}`);
+        if (!this.elements.modal) {
+          util.log(`com.idc.ui.interactionSummary.init(): modal not found`);
+          return;
+        }
+      }
+      if (vars.interactionSummary.components.tab.id) {
+        this.elements.tab = this.elements.modal.querySelector(`#${vars.interactionSummary.components.tab.id}`);
+
+        let cover = this.elements.modal.querySelector(`[data-type="com.idc.ui.core.tab.cover"][data-target-id="${vars.interactionSummary.components.tab.id}"]`);
+        if (cover) {
+          this.elements.cover = cover;
+        }
+
+        if (this.elements.tab) {
+          //previous interactions filters
+          this.elements.selectors.previousInteractions.filters = this.elements.tab.querySelector(
+            `[data-ui-id="previousInteractions"] [data-ui-id="filters_wrapper"]`
+          );
+          //slides filters
+          this.elements.selectors.slides.filters = this.elements.tab.querySelector(`[data-ui-id="slides"] [data-ui-id="filters_wrapper"]`);
+          //slides sort
+          this.elements.selectors.slides.modal = this.elements.tab.querySelector(`[data-ui-id="slides"] [data-ui-id="slides_sort_modal"]`);
+          this.elements.selectors.slides.openButton = this.elements.tab.querySelector(`[data-ui-id="slides"] [data-ui-id="slides_sort_modal_open"]`);
+          //emails sort
+          this.elements.selectors.emails.modal = this.elements.tab.querySelector(`[data-ui-id="emails"] [data-ui-id="emails_sort_modal"]`);
+          this.elements.selectors.emails.openButton = this.elements.tab.querySelector(`[data-ui-id="emails"] [data-ui-id="emails_sort_modal_open"]`);
+        }
+      }
+
+      //set labels
+      util.setLabels(this.elements.modal, vars.interactionSummary.labels);
+
+      //set selectors events
+      this.setSelectorsEvents();
+
+      //account name
+      this.accountName_Populate();
+
+      //previous interactions
+      this.previousInteractions_Populate();
+
+      //slides
+      this.slides_Populate();
+
+      //emails
+      this.emails_Populate();
+
+      //tabs visibility
+      this.setTabsVisibility();
+    },
+    disableOpenButton() {
+      let vars = com.idc.clm.vars;
+
+      //used to disable util menu open button when not in a call
+      this.elements.openButton = document.querySelector(`#${vars.interactionSummary.components.openButton.id}`);
+      if (this.elements.openButton) {
+        this.elements.openButton.setAttribute("data-view-state", "disabled");
+      }
+      return;
+    },
+    accountName_Populate: function () {
+      let vars = com.idc.clm.vars;
+      if (this.elements.modal) {
+        this.elements.modal.querySelectorAll(`[data-ui-id="hcpName"]`).forEach((element) => {
+          let accountName = vars.interactionSummary.output.account.name;
+          if (vars.interactionSummary.output.account.salutation) {
+            accountName = `${vars.interactionSummary.output.account.salutation} ${accountName}`;
+          }
+          element.innerHTML = accountName;
+        });
+      }
+    },
+    setSelectorsEvents: function () {
+      let vars = com.idc.clm.vars;
+
+      //previous interactions filter
+      if (this.elements.selectors.previousInteractions.filters) {
+        this.elements.selectors.previousInteractions.filters
+          .querySelectorAll(`[data-ui-id="previousInteractions"] [data-ui-type="filter"]`)
+          .forEach((option) => {
+            let vars = com.idc.clm.vars;
+            let view = option.getAttribute("data-view");
+
+            //check if are there any records for the selected view
+            let recordsCount = vars.interactionSummary.output.timeline.filter((interaction) => {
+              switch (view) {
+                case "all":
+                  return true;
+                case "approvedEmail":
+                  return interaction.type == "email";
+                case "inPerson":
+                  return interaction.type == "call" && (interaction.call.channel == "Face_to_face_vod" || !interaction.call.channel);
+                case "videoCall":
+                  return interaction.type == "call" && interaction.call.channel == "Video_vod";
+              }
+            }).length;
+
+            if (recordsCount == 0) {
+              option.setAttribute("data-view-state", "disabled");
+            }
+
+            //set event
+            option.addEventListener("click", (event) => {
+              //do not proceed if no records
+              if (option.getAttribute("data-view-state") == "disabled") return;
+
+              //populate
+              this.options.previousInteractions.filter = view;
+              this.previousInteractions_Populate();
+
+              //set active
+              this.elements.selectors.previousInteractions.filters
+                .querySelectorAll(`[data-ui-id="previousInteractions"] [data-ui-type="filter"]`)
+                .forEach((opt) => {
+                  if (opt.getAttribute("data-view") == view) {
+                    opt.setAttribute("data-view-state", "active");
+                  } else {
+                    if (opt.getAttribute("data-view-state") == "active") {
+                      opt.removeAttribute("data-view-state");
+                    }
+                  }
+                });
+            });
+          });
+      }
+
+      //slides filter
+      if (this.elements.selectors.slides.filters) {
+        this.elements.selectors.slides.filters.querySelectorAll(`[data-ui-id="slides"] [data-ui-type="filter"]`).forEach((option) => {
+          let vars = com.idc.clm.vars;
+          let view = option.getAttribute("data-view");
+
+          //check if are there any records for the selected view
+          let recordsCount = vars.interactionSummary.output.slides.filter((slide) => {
+            switch (view) {
+              case "all":
+                return true;
+              case "discussed":
+                return slide.status == "discussed";
+              case "notDiscussed":
+                return slide.status == "notDiscussed";
+            }
+          }).length;
+
+          if (recordsCount == 0) {
+            option.setAttribute("data-view-state", "disabled");
+          }
+
+          //set event
+          option.addEventListener("click", (event) => {
+            //do not proceed if no records
+            if (option.getAttribute("data-view-state") == "disabled") return;
+
+            //enable/disable sort button; reset sort if necessary
+            if (this.elements.selectors.slides.openButton.getAttribute("data-view-state") != "hidden") {
+              switch (view) {
+                case "all":
+                case "notDiscussed":
+                  this.elements.selectors.slides.openButton.setAttribute("data-view-state", "disabled");
+                  this.options.slides.sort = "default";
+                  break;
+                case "discussed":
+                  this.elements.selectors.slides.openButton.setAttribute("data-view-state", "active");
+                  break;
+              }
+            }
+
+            //populate
+            this.options.slides.filter = view;
+            this.slides_Populate();
+
+            //set active
+            this.elements.selectors.slides.filters.querySelectorAll(`[data-ui-id="slides"] [data-ui-type="filter"]`).forEach((opt) => {
+              if (opt.getAttribute("data-view") == view) {
+                opt.setAttribute("data-view-state", "active");
+              } else {
+                if (opt.getAttribute("data-view-state") == "active") {
+                  opt.removeAttribute("data-view-state");
+                }
+              }
+            });
+          });
+        });
+      }
+
+      //slides order
+      if (this.elements.selectors.slides.modal) {
+        let hiddenSlideSortOptionsCount = 0;
+        this.elements.selectors.slides.modal.querySelectorAll(`[data-ui-id="slides_sort_modal"] [data-type="sortOption"]`).forEach((option) => {
+          let sort = option.getAttribute("data-sort");
+
+          //hide option if not available as per fields availability/visibility
+          switch (sort) {
+            case "default":
+              break;
+            case "mostRecentlyDiscussed":
+              if (!vars.interactionSummary.visibility.fields.slides.lastView) {
+                option.setAttribute("data-view-state", "hidden");
+                hiddenSlideSortOptionsCount++;
+              }
+              break;
+            case "moreTimeSpentOn":
+              if (!vars.interactionSummary.visibility.fields.slides.duration) {
+                option.setAttribute("data-view-state", "hidden");
+                hiddenSlideSortOptionsCount++;
+              }
+              break;
+          }
+
+          //set event
+          option.addEventListener("click", (event) => {
+            this.options.slides.sort = sort;
+            this.slides_Populate();
+            this.elements.selectors.slides.modal.close();
+
+            //show active
+            this.elements.selectors.slides.openButton.querySelectorAll("SPAN").forEach((span) => {
+              if (span.getAttribute("data-sort") == sort) {
+                span.setAttribute("data-view-state", "active");
+              } else {
+                span.removeAttribute("data-view-state");
+              }
+            });
+          });
+        });
+
+        //disable button if necessary
+        if (
+          hiddenSlideSortOptionsCount ==
+          this.elements.selectors.slides.modal.querySelectorAll(`[data-ui-id="slides_sort_modal"] [data-type="sortOption"]`).length - 1
+        ) {
+          this.elements.selectors.slides.openButton.setAttribute("data-view-state", "hidden");
+        }
+      }
+
+      //emails order
+      if (this.elements.selectors.emails.modal) {
+        let hiddenEmailSortOptionsCount = 0;
+        this.elements.selectors.emails.modal.querySelectorAll(`[data-ui-id="emails_sort_modal"] [data-type="sortOption"]`).forEach((option) => {
+          let sort = option.getAttribute("data-sort");
+
+          //hide option if not available as per fields availability/visibility
+          switch (sort) {
+            case "default":
+              break;
+            case "mostRecentlySent":
+              if (!vars.interactionSummary.visibility.fields.emails.lastTimeSent_date) {
+                option.setAttribute("data-view-state", "hidden");
+                hiddenEmailSortOptionsCount++;
+              }
+              break;
+            case "moreOpens":
+              if (!vars.interactionSummary.visibility.fields.emails.allTimesSent_open) {
+                option.setAttribute("data-view-state", "hidden");
+                hiddenEmailSortOptionsCount++;
+              }
+              break;
+            case "moreClicks":
+              if (!vars.interactionSummary.visibility.fields.emails.allTimesSent_click) {
+                option.setAttribute("data-view-state", "hidden");
+                hiddenEmailSortOptionsCount++;
+              }
+              break;
+          }
+
+          //set event
+          option.addEventListener("click", (event) => {
+            this.options.emails.sort = sort;
+            this.emails_Populate();
+            this.elements.selectors.emails.modal.close();
+
+            //show active
+            this.elements.selectors.emails.openButton.querySelectorAll("SPAN").forEach((span) => {
+              if (span.getAttribute("data-sort") == sort) {
+                span.setAttribute("data-view-state", "active");
+              } else {
+                span.removeAttribute("data-view-state");
+              }
+            });
+          });
+        });
+
+        //disable button if necessary
+        if (
+          hiddenEmailSortOptionsCount ==
+          this.elements.selectors.emails.modal.querySelectorAll(`[data-ui-id="emails_sort_modal"] [data-type="sortOption"]`).length - 1
+        ) {
+          this.elements.selectors.emails.openButton.setAttribute("data-view-state", "hidden");
+        }
+      }
+
+      //emails expand all
+      this.elements.tab.querySelector(`[data-ui-type="table-header-row"] [data-column-id="email"]`).addEventListener("click", (event) => {
+        this.emails_ExpandAll(this.elements.tab.querySelector(`[data-ui-id="emailsTable"]`));
+      });
+    },
+    setTabsVisibility: function (pVisibility) {
+      let vars = com.idc.clm.vars;
+      let visibility = vars.interactionSummary.visibility;
+      let tab = this.elements.tab;
+
+      if (!tab) return;
+
+      //hide tabs if necessary
+      if (!visibility.tabs.previousInteractions) {
+        tab.setInstanceVisibility("previousInteractions", "hidden");
+      }
+      if (!visibility.tabs.slides) {
+        tab.setInstanceVisibility("slides", "hidden");
+      }
+      if (!visibility.tabs.emails) {
+        tab.setInstanceVisibility("emails", "hidden");
+      }
+    },
+    previousInteractions_Populate: function () {
+      let vars = com.idc.clm.vars;
+      let fieldsVisibility = vars.interactionSummary.visibility.fields.previousInteractions;
+      const minInteractions = vars.interactionSummary.minRows.previousInteractions;
+      let util = com.idc.util;
+      let rowClassBool = true;
+      let subRowClassBool = true;
+
+      if (!this.elements.tab) return;
+
+      let container = this.elements.tab.querySelector('[data-ui-id="previousInteractionsTable"]');
+      let tbody = container.querySelector("tbody");
+      let templates = {
+        inPerson: {
+          row: container.querySelector('[data-ui-type="table-row-template"][data-ui-subtype="inPerson"]'),
+          subRowHeader: container.querySelector('[data-ui-type="table-subrow-template"][data-ui-subtype="inPerson"].header'),
+          subRow: container.querySelector('[data-ui-type="table-subrow-template"][data-ui-subtype="inPerson"]:not(.header)'),
+        },
+        videoCall: {
+          row: container.querySelector('[data-ui-type="table-row-template"][data-ui-subtype="videoCall"]'),
+          subRowHeader: container.querySelector('[data-ui-type="table-subrow-template"][data-ui-subtype="videoCall"].header'),
+          subRow: container.querySelector('[data-ui-type="table-subrow-template"][data-ui-subtype="videoCall"]:not(.header)'),
+        },
+        approvedEmail: {
+          row: container.querySelector('[data-ui-type="table-row-template"][data-ui-subtype="approvedEmail"]'),
+          subRowHeader: container.querySelector('[data-ui-type="table-subrow-template"][data-ui-subtype="approvedEmail"].header'),
+          subRow: container.querySelector('[data-ui-type="table-subrow-template"][data-ui-subtype="approvedEmail"]:not(.header)'),
+        },
+        blank: {
+          row: container.querySelector('[data-ui-type="table-row-template"][data-ui-subtype="blank"]'),
+        },
+      };
+
+      //remove previous
+      container.querySelectorAll('[data-ui-type="table-row"]').forEach((row) => {
+        row.remove();
+      });
+      container.querySelectorAll('[data-ui-type="table-subrow"]').forEach((subRow) => {
+        subRow.remove();
+      });
+
+      //fields visibility: header attributes and labels
+      {
+        //row field: email status
+        if (!fieldsVisibility.email_opened) {
+          //flag
+          container.setAttribute("data-email_opened-hidden", true);
+        }
+
+        //subrow field: fragment times clicked
+        if (!fieldsVisibility.email_timesClicked) {
+          //flag
+          container.setAttribute("data-email_timesClicked-hidden", true);
+          //header label
+          container.querySelectorAll('[data-ui-type="table-subrow-template"][data-ui-subtype="approvedEmail"].header').forEach((header) => {
+            header.querySelector('[data-column-id="timesClicked"]').innerHTML = "";
+          });
+        }
+
+        //subrow field: slide duration
+        if (!fieldsVisibility.pres_duration) {
+          //flag
+          container.setAttribute("data-pres_duration-hidden", true);
+          //header label
+          container
+            .querySelectorAll(
+              '[data-ui-type="table-subrow-template"][data-ui-subtype="inPerson"].header, [data-ui-type="table-subrow-template"][data-ui-subtype="videoCall"].header'
+            )
+            .forEach((header) => {
+              header.querySelector('[data-column-id="duration"]').innerHTML = "";
+            });
+        }
+
+        //subrow field: slide reaction
+        if (!fieldsVisibility.pres_reaction) {
+          //flag
+          container.setAttribute("data-pres_reaction-hidden", true);
+          //header label
+          container
+            .querySelectorAll(
+              '[data-ui-type="table-subrow-template"][data-ui-subtype="inPerson"].header, [data-ui-type="table-subrow-template"][data-ui-subtype="videoCall"].header'
+            )
+            .forEach((header) => {
+              header.querySelector('[data-column-id="reaction"]').innerHTML = "";
+            });
+        }
+      }
+
+      //filter by view type
+      let filteredInteractions;
+      switch (this.options.previousInteractions.filter) {
+        case "all":
+          filteredInteractions = vars.interactionSummary.output.timeline;
+          break;
+        case "approvedEmail":
+          filteredInteractions = vars.interactionSummary.output.timeline.filter((interaction) => {
+            return interaction.type == "email";
+          });
+          break;
+        case "inPerson":
+          filteredInteractions = vars.interactionSummary.output.timeline.filter((interaction) => {
+            return interaction.type == "call" && (interaction.call.channel == "Face_to_face_vod" || !interaction.call.channel);
+          });
+          break;
+        case "videoCall":
+          filteredInteractions = vars.interactionSummary.output.timeline.filter((interaction) => {
+            return interaction.type == "call" && interaction.call.channel == "Video_vod";
+          });
+      }
+
+      //populate
+      let interactionsCount = filteredInteractions.length;
+      filteredInteractions.forEach((interaction) => {
+        //create elements
+        let row, subRowHeader, subRow;
+
+        switch (interaction.type) {
+          case "email":
+            row = templates.approvedEmail.row.cloneNode(true);
+            subRowHeader = templates.approvedEmail.subRowHeader.cloneNode(true);
+            subRow = templates.approvedEmail.subRow.cloneNode(true);
+            break;
+          case "call":
+            switch (interaction.call.channel) {
+              case "Video_vod":
+                row = templates.videoCall.row.cloneNode(true);
+                subRowHeader = templates.videoCall.subRowHeader.cloneNode(true);
+                subRow = templates.videoCall.subRow.cloneNode(true);
+                break;
+              case "Face_to_face_vod":
+              default:
+                row = templates.inPerson.row.cloneNode(true);
+                subRowHeader = templates.inPerson.subRowHeader.cloneNode(true);
+                subRow = templates.inPerson.subRow.cloneNode(true);
+                if (!interaction.call.channel) {
+                  util.log(`com.idc.ui.interactionSummary.previousInteractions_Populate: unable to determine call channel for interaction ${interaction.id}`);
+                }
+                break;
+            }
+            break;
+          default:
+            return;
+        }
+
+        //row attributes (table-row, table-subrow)
+        row.setAttribute("data-ui-type", "table-row");
+        subRowHeader.setAttribute("data-ui-type", "table-subrow");
+        subRow.setAttribute("data-ui-type", "table-subrow");
+
+        //interaction id
+        row.setAttribute("data-interaction-id", interaction.id);
+        subRowHeader.setAttribute("data-interaction-id", interaction.id);
+        subRow.setAttribute("data-interaction-id", interaction.id);
+
+        //row bg class
+        row.classList.add(rowClassBool ? "even" : "odd");
+        rowClassBool = !rowClassBool;
+
+        //row contents
+        {
+          //field: date
+          let dateArr = interaction.date.split("-");
+          let formattedDate = new Date(dateArr[0], dateArr[1] - 1, dateArr[2]); //format Month, Day, Year
+          //field: time
+          row.querySelector('[data-ui-subtype="day"]').innerHTML = formattedDate.toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+          });
+
+          row.querySelector('[data-ui-subtype="time"]').innerHTML = interaction.time + " - " + interaction.time_AMPM;
+
+          switch (interaction.type) {
+            case "email":
+              //field: contentName
+              row.querySelector('[data-column-id="contentName"] [data-ui-type="table-row-cell-value"]').innerHTML = interaction.email.title;
+              //field: status
+              if (fieldsVisibility.email_opened) {
+                if (interaction.email.opens > 0) {
+                  row.querySelector('[data-column-id="status"] [data-ui-type="table-row-cell-value"][data-ui-subtype="valueNotOpened"]').remove();
+                } else {
+                  row.querySelector('[data-column-id="status"] [data-ui-type="table-row-cell-value"][data-ui-subtype="valueOpened"]').remove();
+                }
+              } else {
+                row.querySelector('[data-column-id="status"] [data-ui-type="table-row-cell-value"][data-ui-subtype="valueNotOpened"]').remove();
+                row.querySelector('[data-column-id="status"] [data-ui-type="table-row-cell-value"][data-ui-subtype="valueOpened"]').remove();
+              }
+              break;
+            case "call":
+              break;
+          }
+
+          //expand icon
+          let actionIcon = row; //.querySelector('[data-ui-type="table-row-cell-action"]');
+          if (actionIcon) {
+            actionIcon.addEventListener("click", (event) => {
+              let targetRow = event.currentTarget.closest('[data-ui-type="table-row"]');
+              this.previousInteractions_ExpandCollapse(targetRow, container);
+            });
+          }
+
+          //add to container
+          tbody.appendChild(row);
+
+          //subrow header
+          tbody.appendChild(subRowHeader);
+        }
+
+        //subrow contents
+        {
+          switch (interaction.type) {
+            case "email":
+              interaction.email.fragments.forEach((fragment) => {
+                let subRowClone = subRow.cloneNode(true);
+
+                //field: name
+                subRowClone.querySelector('[data-column-id="name"] [data-ui-type="table-subrow-cell-value"]').innerHTML = fragment.title;
+
+                //field: links to
+                subRowClone.querySelector('[data-column-id="linksTo"] [data-ui-type="table-subrow-cell-value"]').innerHTML = fragment.linksTo;
+
+                //field: clicks
+                if (fieldsVisibility.email_timesClicked) {
+                  subRowClone.querySelector('[data-column-id="timesClicked"] [data-ui-type="table-subrow-cell-value"]').innerHTML = fragment.clicks;
+                } else {
+                  subRowClone.querySelector('[data-column-id="timesClicked"] [data-ui-type="table-subrow-cell-value"]').innerHTML = "";
+                }
+
+                //is last subrow? add last class
+                if (fragment == interaction.email.fragments[interaction.email.fragments.length - 1]) {
+                  subRowClone.classList.add("last");
+                }
+
+                //row bg class
+                subRowClone.classList.add(subRowClassBool ? "even" : "odd");
+                subRowClassBool = !subRowClassBool;
+
+                tbody.appendChild(subRowClone);
+              });
+              break;
+            case "call":
+              interaction.call.slides.forEach((slide) => {
+                let subRowClone = subRow.cloneNode(true);
+
+                //field: name
+                subRowClone.querySelector('[data-column-id="name"] [data-ui-type="table-subrow-cell-value"]').innerHTML = slide.title;
+                //field: thumb
+                subRowClone
+                  .querySelector('[data-column-id="order"] [data-ui-type="table-subrow-cell-value"] img')
+                  .setAttribute("src", util.getSharedResourcesPath() + `img/thumbnails/${slide.id}.png`);
+                //field: reaction
+                if (fieldsVisibility.pres_reaction) {
+                  if (slide.reaction) {
+                    subRowClone.querySelector('[data-column-id="reaction"]').classList.add(slide.reaction.toLowerCase());
+                    subRowClone.querySelector('[data-column-id="reaction"] [data-ui-type="table-subrow-cell-value"].text').innerHTML = slide.reaction;
+                  } else {
+                    subRowClone.querySelector('[data-column-id="reaction"] [data-ui-type="table-subrow-cell-value"].text').innerHTML = "";
+                  }
+                } else {
+                  subRowClone.querySelector('[data-column-id="reaction"] [data-ui-type="table-subrow-cell-value"].text').innerHTML = "";
+                }
+                //field: duration
+                if (fieldsVisibility.pres_duration) {
+                  let duration = slide.duration;
+                  if (duration > 60) {
+                    duration = Math.floor(duration / 60) + ":" + (duration % 60).toString().padStart(2, "0") + "m";
+                  } else {
+                    duration = duration + "s";
+                  }
+                  subRowClone.querySelector('[data-column-id="duration"] [data-ui-type="table-subrow-cell-value"]').innerHTML = duration;
+                } else {
+                  subRowClone.querySelector('[data-column-id="duration"] [data-ui-type="table-subrow-cell-value"]').innerHTML = "";
+                }
+
+                //is last subrow? add last class
+                if (slide == interaction.call.slides[interaction.call.slides.length - 1]) {
+                  subRowClone.classList.add("last");
+                }
+
+                //row bg class
+                subRowClone.classList.add(subRowClassBool ? "even" : "odd");
+                subRowClassBool = !subRowClassBool;
+
+                tbody.appendChild(subRowClone);
+              });
+              break;
+          }
+        }
+      });
+
+      //if only one, expand
+      if (filteredInteractions.length == 1) {
+        this.previousInteractions_ExpandCollapse(container.querySelector('[data-ui-type="table-row"]'), container);
+      } else {
+        //if less than minInteractions, add blank rows
+        if (interactionsCount < minInteractions) {
+          for (let i = 0; i < minInteractions - interactionsCount; i++) {
+            let row = templates.blank.row.cloneNode(true);
+
+            //row attributes (table-row)
+            row.setAttribute("data-ui-type", "table-row");
+
+            //row bg class
+            row.classList.add(rowClassBool ? "even" : "odd");
+            rowClassBool = !rowClassBool;
+
+            //append
+            tbody.appendChild(row);
+          }
+        }
+      }
+    },
+    previousInteractions_ExpandCollapse: function (pRow, pContainer) {
+      let rowStatus = pRow.getAttribute("data-view-state");
+      let interactionId = pRow.getAttribute("data-interaction-id");
+      let interactionType = pRow.getAttribute("data-ui-subtype");
+
+      //collapse all
+      pContainer.querySelectorAll('[data-ui-type="table-row"]').forEach((row) => {
+        row.removeAttribute("data-view-state");
+      });
+      pContainer.querySelectorAll(`[data-ui-type="table-subrow"]`).forEach((subRow) => {
+        subRow.removeAttribute("data-view-state");
+      });
+      pContainer.removeAttribute("data-any-expanded");
+
+      if (rowStatus != "active") {
+        //set row to active
+        pRow.setAttribute("data-view-state", "active");
+
+        //set container attribute any-expanded
+        pContainer.setAttribute("data-any-expanded", true);
+
+        //show subrows
+        pContainer
+          .querySelectorAll(`[data-ui-type="table-subrow"][data-interaction-id="${interactionId}"][data-ui-subtype="${interactionType}"]`)
+          .forEach((subRow) => {
+            subRow.setAttribute("data-view-state", "active");
+          });
+
+        //set all other rows to inactive
+        pContainer.querySelectorAll('[data-ui-type="table-row"]').forEach((row) => {
+          if (row != pRow) {
+            row.setAttribute("data-view-state", "inactive");
+          }
+        });
+
+        //scroll to row
+        pRow.scrollIntoView(true);
+      }
+    },
+    slides_Populate: function () {
+      let vars = com.idc.clm.vars;
+      let fieldsVisibility = vars.interactionSummary.visibility.fields.slides;
+
+      if (!this.elements.tab) return;
+
+      let container = this.elements.tab.querySelector('[data-ui-id="slides_contents"]');
+      let template = container.querySelector('[data-type="slides_content_template"]');
+
+      //remove previous
+      container.querySelectorAll('[data-type="slides_content"]').forEach((slide) => {
+        slide.remove();
+      });
+
+      //filtered slides
+      let filteredSlides;
+      switch (this.options.slides.filter) {
+        case "all":
+          filteredSlides = vars.interactionSummary.output.slides;
+          break;
+        case "discussed":
+          filteredSlides = vars.interactionSummary.output.slides.filter((slide) => {
+            return slide.status == "discussed";
+          });
+          break;
+        case "notDiscussed":
+          filteredSlides = vars.interactionSummary.output.slides.filter((slide) => {
+            return slide.status == "notDiscussed";
+          });
+          break;
+      }
+
+      //sort
+      switch (this.options.slides.sort) {
+        case "default":
+          filteredSlides.sort((a, b) => {
+            let indexOfA = vars.interactionSummary.output.slides.indexOf(a);
+            let indexOfB = vars.interactionSummary.output.slides.indexOf(b);
+            return indexOfA - indexOfB;
+          });
+          break;
+        case "mostRecentlyDiscussed":
+          filteredSlides.sort((a, b) => {
+            let dateA = new Date(a.mostRecentCall.date);
+            let dateB = new Date(b.mostRecentCall.date);
+            return dateB - dateA;
+          });
+          break;
+        case "moreTimeSpentOn":
+          filteredSlides.sort((a, b) => {
+            return b.mostRecentCall.duration - a.mostRecentCall.duration;
+          });
+          break;
+      }
+
+      //populate
+      filteredSlides.forEach((slide) => {
+        let slideClone = template.cloneNode(true);
+
+        slideClone.setAttribute("data-type", "slides_content");
+
+        //slide id
+        slideClone.setAttribute("data-slide-id", slide.id);
+
+        //flags
+        let hiddenRowsCount = 0;
+        if (!fieldsVisibility.lastView) {
+          hiddenRowsCount++;
+        }
+        if (!fieldsVisibility.reaction) {
+          hiddenRowsCount++;
+        }
+        if (!fieldsVisibility.duration) {
+          hiddenRowsCount++;
+        }
+        if (!fieldsVisibility.totalViews) {
+          hiddenRowsCount++;
+        }
+        slideClone.setAttribute("data-hidden-rows-count", hiddenRowsCount);
+
+        //thumb
+        slideClone
+          .querySelector('[data-type="slides_content_thumbnail"] img')
+          .setAttribute("src", com.idc.util.getSharedResourcesPath() + `img/thumbnails/${slide.id}.png`);
+
+        //title
+        slideClone.querySelector('[data-type="slides_content_name"] [data-ui-type="value"]').innerHTML = slide.title;
+
+        if (slide.status == "discussed") {
+          //last view
+          if (fieldsVisibility.lastView) {
+            let dateArr = slide.mostRecentCall.date.split("-");
+            let tempDate = new Date(dateArr[0], dateArr[1] - 1, dateArr[2]); //format Month, Day, Year
+
+            let formattedDate = tempDate.toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+              year: "numeric",
+            });
+            slideClone.querySelector('[data-type="slides_content_lastViewDate"] [data-ui-type="value"]').innerHTML =
+              formattedDate + " - " + slide.mostRecentCall.time + " " + slide.mostRecentCall.time_AMPM;
+          } else {
+            slideClone.querySelector('[data-type="slides_content_lastViewDate"]').remove();
+          }
+
+          //duration
+          if (fieldsVisibility.duration) {
+            if (slide.mostRecentCall.duration > 0) {
+              let duration = slide.mostRecentCall.duration;
+              if (duration > 60) {
+                duration = Math.floor(duration / 60) + ":" + (duration % 60).toString().padStart(2, "0") + "m";
+              } else {
+                duration = duration + "s";
+              }
+              slideClone.querySelector('[data-type="slides_content_duration"] [data-ui-type="value"]').innerHTML = duration;
+            }
+          } else {
+            slideClone.querySelector('[data-type="slides_content_duration"]').remove();
+          }
+
+          //reaction
+          if (fieldsVisibility.reaction) {
+            if (slide.mostRecentCall.reaction) {
+              slideClone.querySelector('[data-type="slides_content_reaction"]').classList.add(slide.mostRecentCall.reaction.toLowerCase());
+              slideClone.querySelector('[data-type="slides_content_reaction"] [data-ui-type="value"]').innerHTML = slide.mostRecentCall.reaction;
+            } else {
+              slideClone.querySelector('[data-type="slides_content_reaction"] [data-ui-type="value"]').innerHTML = " -- ";
+            }
+          } else {
+            slideClone.querySelector('[data-type="slides_content_reaction"]').remove();
+          }
+
+          //total views
+          if (fieldsVisibility.totalViews) {
+            slideClone.querySelector('[data-type="slides_content_totalViews"] [data-ui-type="value"]').innerHTML = slide.overall.timesDisplayed;
+          } else {
+            slideClone.querySelector('[data-type="slides_content_totalViews"]').remove();
+          }
+        } else {
+          if (fieldsVisibility.lastView) {
+            slideClone.querySelector('[data-type="slides_content_lastViewDate"] [data-ui-type="value"]').innerHTML = " -- ";
+          } else {
+            slideClone.querySelector('[data-type="slides_content_lastViewDate"]').remove();
+          }
+          if (fieldsVisibility.duration) {
+            slideClone.querySelector('[data-type="slides_content_duration"] [data-ui-type="value"]').innerHTML = " -- ";
+          } else {
+            slideClone.querySelector('[data-type="slides_content_duration"]').remove();
+          }
+          if (fieldsVisibility.reaction) {
+            slideClone.querySelector('[data-type="slides_content_reaction"] [data-ui-type="value"]').innerHTML = " -- ";
+          } else {
+            slideClone.querySelector('[data-type="slides_content_reaction"]').remove();
+          }
+          if (fieldsVisibility.totalViews) {
+            slideClone.querySelector('[data-type="slides_content_totalViews"] [data-ui-type="value"]').innerHTML = " -- ";
+          } else {
+            slideClone.querySelector('[data-type="slides_content_totalViews"]').remove();
+          }
+        }
+
+        //add to container
+        container.appendChild(slideClone);
+      });
+    },
+    emails_Populate: function () {
+      let vars = com.idc.clm.vars;
+      let fieldsVisibility = vars.interactionSummary.visibility.fields.emails;
+      let util = com.idc.util;
+      const minEmails = vars.interactionSummary.minRows.emails;
+      let rowClassBool = true;
+      let subRowClassBool = true;
+
+      if (!this.elements.tab) return;
+
+      let container = this.elements.tab.querySelector('[data-ui-id="emailsTable"]');
+      let tbody = container.querySelector("tbody");
+      let templates = {
+        approvedEmail: {
+          row: container.querySelector('[data-ui-type="table-row-template"][data-ui-subtype="approvedEmail"]'),
+          subRow: container.querySelector('[data-ui-type="table-subrow-template"][data-ui-subtype="approvedEmail"]:not(.header)'),
+        },
+        blank: {
+          row: container.querySelector('[data-ui-type="table-row-template"][data-ui-subtype="blank"]'),
+        },
+      };
+
+      //remove previous
+      container.querySelectorAll('[data-ui-type="table-row"]').forEach((row) => {
+        row.remove();
+      });
+      container.querySelectorAll('[data-ui-type="table-subrow"]').forEach((subRow) => {
+        subRow.remove();
+      });
+
+      //fields visibility: header attributes and labels
+      {
+        //subrow field: last time sent date
+        if (!fieldsVisibility.lastTimeSent_date) {
+          //flag
+          container.setAttribute("data-lastTimeSent_date-hidden", true);
+          //header label
+          container.querySelector('[data-ui-type="table-header-row"] [data-column-id="lastTimeSent_date"]').innerHTML = "";
+        }
+
+        //subrow field: last time sent open
+        if (!fieldsVisibility.lastTimeSent_open) {
+          //flag
+          container.setAttribute("data-lastTimeSent_open-hidden", true);
+          //header label
+          container.querySelector('[data-ui-type="table-header-row"] [data-column-id="lastTimeSent_open"]').innerHTML = "";
+        }
+
+        //subrow field: last time sent click
+        if (!fieldsVisibility.lastTimeSent_click) {
+          //flag
+          container.setAttribute("data-lastTimeSent_click-hidden", true);
+          //header label
+          container.querySelector('[data-ui-type="table-header-row"] [data-column-id="lastTimeSent_click"]').innerHTML = "";
+        }
+
+        //subrow field: all times sent
+        if (!fieldsVisibility.allTimesSent_sent) {
+          //flag
+          container.setAttribute("data-allTimesSent_sent-hidden", true);
+          //header label
+          container.querySelector('[data-ui-type="table-header-row"] [data-column-id="allTimes_sent"]').innerHTML = "";
+        }
+
+        //subrow field: all times sent open
+        if (!fieldsVisibility.allTimesSent_open) {
+          //flag
+          container.setAttribute("data-allTimesSent_open-hidden", true);
+          //header label
+          container.querySelector('[data-ui-type="table-header-row"] [data-column-id="allTimes_open"]').innerHTML = "";
+        }
+
+        //subrow field: all times sent click
+        if (!fieldsVisibility.allTimesSent_click) {
+          //flag
+          container.setAttribute("data-allTimesSent_click-hidden", true);
+          //header label
+          container.querySelector('[data-ui-type="table-header-row"] [data-column-id="allTimes_click"]').innerHTML = "";
+        }
+      }
+
+      //sort
+      let filteredEmails = vars.interactionSummary.output.emails;
+      switch (this.options.emails.sort) {
+        case "default":
+          filteredEmails.sort((a, b) => {
+            let indexOfA = vars.interactionSummary.output.emails.indexOf(a);
+            let indexOfB = vars.interactionSummary.output.emails.indexOf(b);
+            return indexOfA - indexOfB;
+          });
+          //fragments
+          filteredEmails.forEach((email) => {
+            email.fragments.sort((a, b) => {
+              let indexOfA = email.fragments.indexOf(a);
+              let indexOfB = email.fragments.indexOf(b);
+              return indexOfA - indexOfB;
+            });
+          });
+          break;
+        case "mostRecentlySent":
+          filteredEmails.sort((a, b) => {
+            let dateA = new Date(a.mostRecentSent.date);
+            let dateB = new Date(b.mostRecentSent.date);
+            return dateB - dateA;
+          });
+          //fragments
+          filteredEmails.forEach((email) => {
+            email.fragments.sort((a, b) => {
+              let dateA = new Date(a.mostRecentSent.date);
+              let dateB = new Date(b.mostRecentSent.date);
+              return dateB - dateA;
+            });
+          });
+          break;
+        case "moreOpens":
+          filteredEmails.sort((a, b) => {
+            return b.overall.opens - a.overall.opens;
+          });
+          break;
+        case "moreClicks":
+          filteredEmails.sort((a, b) => {
+            return b.overall.clicks - a.overall.clicks;
+          });
+          //fragments
+          filteredEmails.forEach((email) => {
+            email.fragments.sort((a, b) => {
+              return b.overall.clicks - a.overall.clicks;
+            });
+          });
+          break;
+      }
+
+      //populate
+      let emailsCount = filteredEmails.length;
+      filteredEmails.forEach((email) => {
+        //create elements
+        let row, subRow;
+
+        //templates
+        row = templates.approvedEmail.row.cloneNode(true);
+        subRow = templates.approvedEmail.subRow.cloneNode(true);
+
+        //row attributes (table-row, table-subrow)
+        row.setAttribute("data-ui-type", "table-row");
+        subRow.setAttribute("data-ui-type", "table-subrow");
+
+        //email id
+        row.setAttribute("data-email-id", email.id);
+        subRow.setAttribute("data-email-id", email.id);
+
+        //row bg class
+        row.classList.add(rowClassBool ? "even" : "odd");
+        rowClassBool = !rowClassBool;
+
+        //row contents
+        row.querySelector('[data-ui-subtype="thumbnail"] img').src = com.idc.util.getSharedResourcesPath() + `img/emailCart/thumbs/${email.thumbnail}`;
+        row.querySelector('[data-ui-subtype="name"]').innerHTML = email.title;
+
+        if (email.mostRecentSent.date) {
+          //field: most recent sent date
+          if (fieldsVisibility.lastTimeSent_date) {
+            let dateArr = email.mostRecentSent.date.split("-");
+            let formattedDate = new Date(dateArr[0], dateArr[1] - 1, dateArr[2]); //format Month, Day, Year
+            row.querySelector('[data-ui-subtype="day"]').innerHTML = formattedDate.toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+              year: "numeric",
+            });
+            row.querySelector('[data-ui-subtype="time"]').innerHTML = email.mostRecentSent.time + " - " + email.mostRecentSent.time_AMPM;
+          } else {
+            row.querySelector('[data-ui-subtype="day"]').innerHTML = "";
+            row.querySelector('[data-ui-subtype="time"]').innerHTML = "";
+          }
+
+          //field: most recent sent open
+          if (fieldsVisibility.lastTimeSent_open) {
+            if (email.mostRecentSent.opens > 0) {
+              row.querySelector('[data-column-id="lastTimeSent_open"] [data-ui-type="table-row-cell-value"][data-ui-subtype="valueNo"]').remove();
+            } else {
+              row.querySelector('[data-column-id="lastTimeSent_open"] [data-ui-type="table-row-cell-value"][data-ui-subtype="valueYes"]').remove();
+            }
+          } else {
+            row.querySelector('[data-column-id="lastTimeSent_open"] [data-ui-type="table-row-cell-value"][data-ui-subtype="valueYes"]').remove();
+            row.querySelector('[data-column-id="lastTimeSent_open"] [data-ui-type="table-row-cell-value"][data-ui-subtype="valueNo"]').remove();
+          }
+
+          //field: most recent sent click
+          if (fieldsVisibility.lastTimeSent_click) {
+            row.querySelector('[data-column-id="lastTimeSent_click"] [data-ui-type="table-row-cell-value"]').innerHTML = email.mostRecentSent.clicks;
+          } else {
+            row.querySelector('[data-column-id="lastTimeSent_click"] [data-ui-type="table-row-cell-value"]').innerHTML = "";
+          }
+
+          //field: all times sent
+          if (fieldsVisibility.allTimesSent_sent) {
+            row.querySelector('[data-column-id="allTimes_sent"] [data-ui-type="table-row-cell-value"]').innerHTML = email.overall.sent;
+          } else {
+            row.querySelector('[data-column-id="allTimes_sent"] [data-ui-type="table-row-cell-value"]').innerHTML = "";
+          }
+
+          //field: all times open
+          if (fieldsVisibility.allTimesSent_open) {
+            row.querySelector('[data-column-id="allTimes_open"] [data-ui-type="table-row-cell-value"]').innerHTML = email.overall.opens;
+          } else {
+            row.querySelector('[data-column-id="allTimes_open"] [data-ui-type="table-row-cell-value"]').innerHTML = "";
+          }
+
+          //field: all times click
+          if (fieldsVisibility.allTimesSent_click) {
+            row.querySelector('[data-column-id="allTimes_click"] [data-ui-type="table-row-cell-value"]').innerHTML = email.overall.clicks;
+          } else {
+            row.querySelector('[data-column-id="allTimes_click"] [data-ui-type="table-row-cell-value"]').innerHTML = "";
+          }
+        } else {
+          if (fieldsVisibility.lastTimeSent_date) {
+            row.querySelector('[data-ui-subtype="day"]').innerHTML = vars.interactionSummary.labels.emails_value_notSent;
+          } else {
+            row.querySelector('[data-ui-subtype="day"]').innerHTML = "";
+          }
+          row.querySelector('[data-ui-subtype="time"]').innerHTML = "";
+
+          row.querySelector('[data-column-id="lastTimeSent_open"] [data-ui-type="table-row-cell-value"][data-ui-subtype="valueYes"]').remove();
+          row.querySelector('[data-column-id="lastTimeSent_open"] [data-ui-type="table-row-cell-value"][data-ui-subtype="valueNo"]').remove();
+
+          row.querySelector('[data-column-id="lastTimeSent_click"] [data-ui-type="table-row-cell-value"]').innerHTML = "";
+
+          row.querySelector('[data-column-id="allTimes_sent"] [data-ui-type="table-row-cell-value"]').innerHTML = "";
+          row.querySelector('[data-column-id="allTimes_open"] [data-ui-type="table-row-cell-value"]').innerHTML = "";
+          row.querySelector('[data-column-id="allTimes_click"] [data-ui-type="table-row-cell-value"]').innerHTML = "";
+        }
+
+        //expand icon
+        let actionIcon = row; //.querySelector('[data-ui-type="table-row-cell-action"]');
+        if (actionIcon) {
+          actionIcon.addEventListener("click", (event) => {
+            let targetRow = event.currentTarget.closest('[data-ui-type="table-row"]');
+            this.emails_ExpandCollapse(targetRow, container);
+          });
+        }
+
+        //add to container
+        tbody.appendChild(row);
+
+        //subrow
+        email.fragments.forEach((fragment) => {
+          let subRowClone = subRow.cloneNode(true);
+
+          subRowClone.querySelector('[data-column-id="email"] [data-ui-type="table-subrow-cell-value"]').innerHTML = fragment.title;
+
+          if (fragment.mostRecentSent.date) {
+            //field: most recent sent date
+            if (fieldsVisibility.lastTimeSent_date) {
+              let dateArr = fragment.mostRecentSent.date.split("-");
+              let formattedDate = new Date(dateArr[0], dateArr[1] - 1, dateArr[2]); //format Month, Day, Year
+              subRowClone.querySelector('[data-ui-subtype="day"]').innerHTML = formattedDate.toLocaleDateString("en-US", {
+                month: "short",
+                day: "numeric",
+                year: "numeric",
+              });
+              subRowClone.querySelector('[data-ui-subtype="time"]').innerHTML = fragment.mostRecentSent.time + " - " + fragment.mostRecentSent.time_AMPM;
+            } else {
+              subRowClone.querySelector('[data-ui-subtype="day"]').innerHTML = "";
+              subRowClone.querySelector('[data-ui-subtype="time"]').innerHTML = "";
+            }
+
+            //field: most recent sent click
+            if (fieldsVisibility.lastTimeSent_click) {
+              subRowClone.querySelector('[data-column-id="lastTimeSent_click"] [data-ui-type="table-subrow-cell-value"]').innerHTML =
+                fragment.mostRecentSent.clicks;
+            } else {
+              subRowClone.querySelector('[data-column-id="lastTimeSent_click"] [data-ui-type="table-subrow-cell-value"]').innerHTML = "";
+            }
+
+            //field: all times sent
+            if (fieldsVisibility.allTimesSent_sent) {
+              subRowClone.querySelector('[data-column-id="allTimes_sent"] [data-ui-type="table-subrow-cell-value"]').innerHTML = fragment.overall.sent;
+            } else {
+              subRowClone.querySelector('[data-column-id="allTimes_sent"] [data-ui-type="table-subrow-cell-value"]').innerHTML = "";
+            }
+
+            //field: all times click
+            if (fieldsVisibility.allTimesSent_click) {
+              subRowClone.querySelector('[data-column-id="allTimes_click"] [data-ui-type="table-subrow-cell-value"]').innerHTML = fragment.overall.clicks;
+            } else {
+              subRowClone.querySelector('[data-column-id="allTimes_click"] [data-ui-type="table-subrow-cell-value"]').innerHTML = "";
+            }
+          } else {
+            subRowClone.querySelector('[data-ui-subtype="day"]').innerHTML = "";
+            subRowClone.querySelector('[data-ui-subtype="time"]').innerHTML = "";
+
+            subRowClone.querySelector('[data-column-id="lastTimeSent_click"] [data-ui-type="table-subrow-cell-value"]').innerHTML = "";
+
+            subRowClone.querySelector('[data-column-id="allTimes_sent"] [data-ui-type="table-subrow-cell-value"]').innerHTML = "";
+            subRowClone.querySelector('[data-column-id="allTimes_click"] [data-ui-type="table-subrow-cell-value"]').innerHTML = "";
+          }
+
+          //is last subrow? add last class
+          if (fragment == email.fragments[email.fragments.length - 1]) {
+            subRowClone.classList.add("last");
+          }
+
+          //row bg class
+          subRowClone.classList.add(subRowClassBool ? "even" : "odd");
+          subRowClassBool = !subRowClassBool;
+
+          tbody.appendChild(subRowClone);
+        });
+      });
+
+      //if only one, expand
+      if (filteredEmails.length == 1) {
+        this.emails_ExpandCollapse(container.querySelector('[data-ui-type="table-row"]'), container);
+      } else {
+        //if less than minEmails, add blank rows
+        if (emailsCount < minEmails) {
+          for (let i = 0; i < minEmails - emailsCount; i++) {
+            let row = templates.blank.row.cloneNode(true);
+
+            //row attributes (table-row)
+            row.setAttribute("data-ui-type", "table-row");
+
+            //row bg class
+            row.classList.add(rowClassBool ? "even" : "odd");
+            rowClassBool = !rowClassBool;
+
+            //append
+            tbody.appendChild(row);
+          }
+        }
+      }
+
+      //expand all if necessary
+      if (this.options.emails.expandAll) {
+        this.emails_ExpandAll(container);
+      }
+    },
+    emails_ExpandCollapse: function (pRow, pContainer) {
+      let rowStatus = pRow.getAttribute("data-view-state");
+      let emailId = pRow.getAttribute("data-email-id");
+
+      //collapse all
+      pContainer.querySelectorAll('[data-ui-type="table-row"]').forEach((row) => {
+        row.removeAttribute("data-view-state");
+      });
+      pContainer.querySelectorAll(`[data-ui-type="table-subrow"]`).forEach((subRow) => {
+        subRow.removeAttribute("data-view-state");
+      });
+      pContainer.removeAttribute("data-any-expanded");
+
+      //expand/collapse row
+      if (rowStatus != "active") {
+        //set row to active
+        pRow.setAttribute("data-view-state", "active");
+
+        //set container attribute any-expanded
+        pContainer.setAttribute("data-any-expanded", true);
+
+        //show subrows
+        pContainer.querySelectorAll(`[data-ui-type="table-subrow"][data-email-id="${emailId}"]`).forEach((subRow) => {
+          subRow.setAttribute("data-view-state", "active");
+        });
+
+        //set all other rows to inactive
+        pContainer.querySelectorAll('[data-ui-type="table-row"]').forEach((row) => {
+          if (row != pRow) {
+            row.setAttribute("data-view-state", "inactive");
+          }
+        });
+      }
+
+      //clear all expanded flag
+      this.options.emails.expandAll = false;
+    },
+    emails_ExpandAll: function (pContainer) {
+      //show rows
+      pContainer.querySelectorAll('[data-ui-type="table-row"]').forEach((row) => {
+        let subtype = row.getAttribute("data-ui-subtype");
+
+        //set row to active
+        if (subtype != "blank") {
+          row.setAttribute("data-view-state", "active");
+        } else {
+          row.setAttribute("data-view-state", "inactive");
+        }
+
+        //set container attribute any-expanded
+        pContainer.setAttribute("data-any-expanded", true);
+      });
+
+      //show subrows
+      pContainer.querySelectorAll(`[data-ui-type="table-subrow"]`).forEach((subRow) => {
+        subRow.setAttribute("data-view-state", "active");
+      });
+
+      //set flag
+      this.options.emails.expandAll = true;
+    },
+  },
 };
 
 let log = com.idc.util.log;
