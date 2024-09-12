@@ -683,6 +683,7 @@ com.idc.clm = {
     complexLinks: {
       fromSlide: null,
       toSlide: null,
+      originatorType: null,
       element: {
         type: null,
         id: null,
@@ -3996,11 +3997,25 @@ com.idc.clm = {
     }
 
     //complex links >> set element if necessary
-    if (this.persistentData.complexLinks.element.id && this.persistentData.complexLinks.toSlide == this.vars.navigation.currentSlide.id) {
-      com.idc.ui.common.setComplexLinkElement(); //set element
-      //clear data
-      this.persistentData.complexLinks = JSON.parse(JSON.stringify(this.persistentDataTemplate.complexLinks)); 
-      this.updatePersistentData();
+    if (this.persistentData.complexLinks.element.id) {
+      //is the "from slide" the previous slide or 1 before the previous slide?
+      let fromSlide = this.persistentData.complexLinks.fromSlide;
+      let navigationHistory = this.persistentData.session.navigationHistory;
+      let isPrevSlide = navigationHistory.length > 1 && navigationHistory[1] == fromSlide;
+      let isPrevSlideMinus1 = navigationHistory.length > 2 && navigationHistory[2] == fromSlide;
+      if (isPrevSlide || isPrevSlideMinus1) {
+        //is the current slide the target slide?
+        if (this.persistentData.complexLinks.toSlide == this.vars.navigation.currentSlide.id) {
+          com.idc.ui.common.setComplexLinkElement();
+          //clear data
+          this.persistentData.complexLinks = JSON.parse(JSON.stringify(this.persistentDataTemplate.complexLinks)); 
+          this.updatePersistentData();
+        }
+      } else {
+        //clear data
+        this.persistentData.complexLinks = JSON.parse(JSON.stringify(this.persistentDataTemplate.complexLinks)); 
+        this.updatePersistentData();
+      }
     }
   },
 
@@ -4728,6 +4743,7 @@ com.idc.ui = {
               if (el.params.elId) {
                 persistentData.complexLinks.fromSlide = vars.navigation.currentSlide.id;
                 persistentData.complexLinks.toSlide = targetId;
+                persistentData.complexLinks.originatorType = "link";
                 persistentData.complexLinks.element.type = el.params.elType;
                 persistentData.complexLinks.element.id = el.params.elId;
                 persistentData.complexLinks.element.instance = el.params.elInstance;
@@ -4944,6 +4960,9 @@ com.idc.ui = {
               beforeClose: null,
               afterClose: null,
               closeAction: null, //"opener" or slideId
+              elId: null, //back slide element id (complex link)
+              elType: null, //back slide element type (complex link)
+              elInstance: null, //back slide element instance (complex link tab/accordion/multi)
             });
 
             //is standalone modal?
@@ -5156,6 +5175,9 @@ com.idc.ui = {
         }
       },
       close: function () {
+        let vars = com.idc.clm.vars;
+        let persistentData = com.idc.clm.persistentData;
+
         //standalone or standard functionality
         if (!this.isStandalone) {
           //execute before close
@@ -5204,22 +5226,38 @@ com.idc.ui = {
           //execute after close
           this.executeAfterClose();
         } else {
+          let destinationSlide;
+
           //redirect to opener slide or slideId in closeAction
           let nav = com.idc.clm.vars.navigation;
           if (this.params.closeAction == null || this.params.closeAction == "opener" || this.params.closeAction == "openerStrict") {
             //no close slide defined (closeAction = slideId), or close action = opener (last main slide) or opener strict (actual last slide even if it is a standalone modal)
             let lastSlideType = this.params.closeAction == null || this.params.closeAction == "opener" ? "main" : "actual"; //last slide type: last main slide or actual last slide (can be another standalone)
             if (nav.lastSlide && nav.lastSlide.main && nav.lastSlide[lastSlideType].id != null) {
-              com.idc.clm.gotoSlide(nav.lastSlide[lastSlideType].id);
+              destinationSlide = nav.lastSlide[lastSlideType].id;
             }
           } else {
             //a slie has been defined in closeAction, redirect to that slide
             if (com.idc.clm.findSlide(this.params.closeAction) != null) {
-              com.idc.clm.gotoSlide(this.params.closeAction); //if close action is not null and not opener/openerStrict, it's a slide id
+              destinationSlide = this.params.closeAction; //if close action is not null and not opener/openerStrict, it's a slide id
             } else {
-              com.idc.clm.gotoSlide(nav.actualSlidesSequence[0]); //first slide in the sequence by default
+              destinationSlide = nav.actualSlidesSequence[0]; //first slide in the sequence by default
             }
           }
+
+          //complex link >> update persistent data
+          if (this.params.elId) {
+            persistentData.complexLinks.fromSlide = vars.navigation.currentSlide.id;
+            persistentData.complexLinks.toSlide = destinationSlide;
+            persistentData.complexLinks.originatorType = "modal";
+            persistentData.complexLinks.element.type = this.params.elType;
+            persistentData.complexLinks.element.id = this.params.elId;
+            persistentData.complexLinks.element.instance = this.params.elInstance;
+            com.idc.clm.updatePersistentData();
+          }
+
+          //redirect
+          com.idc.clm.gotoSlide(destinationSlide)
         }
       },
       hide: function () {
@@ -5571,7 +5609,9 @@ com.idc.ui = {
             };
 
             //params
-            el.params = com.idc.ui.common.readElementOptions(el, {});
+            el.params = com.idc.ui.common.readElementOptions(el, {
+              selectorAttribute: null,
+            });
 
             //assign functions and events: main element
             el.setInstance = this.setInstance;
@@ -5609,6 +5649,7 @@ com.idc.ui = {
                       beforeClose: null,
                       afterClose: null,
                       initialState: null, //'open' will set the instance open by default
+                      selectorValue: null,
                     }),
                     viewState: null,
                   };
@@ -5632,15 +5673,15 @@ com.idc.ui = {
             }
 
             //restore saved state if returned from standalone pop-up
-            if (
-              com.idc.clm.isBackFromStandAloneSlide() &&
-              com.idc.ui.common.backFromStandalone.getPersistentProperty(com.idc.clm.vars.navigation.currentSlide.id, el.id, "activeInstance") !== null &&
-              com.idc.ui.common.backFromStandalone.getPersistentProperty(com.idc.clm.vars.navigation.currentSlide.id, el.id, "activeInstance").value !== null
-            ) {
-              //set instance
-              el.setInstance(
-                com.idc.ui.common.backFromStandalone.getPersistentProperty(com.idc.clm.vars.navigation.currentSlide.id, el.id, "activeInstance").value
-              );
+            if (com.idc.clm.isBackFromStandAloneSlide()) {
+              let activeInstance = com.idc.ui.common.backFromStandalone.getPersistentProperty(com.idc.clm.vars.navigation.currentSlide.id, el.id, "activeInstance");
+              if (activeInstance && activeInstance.value) {
+                //set instance
+                el.setInstance(activeInstance.value);
+              } else {
+                //no active instance to set, reset to defaults
+                el.resetToDefaults();
+              }
             } else {
               //not back from standalone slide: reset to defaults
               el.resetToDefaults();
@@ -5744,21 +5785,45 @@ com.idc.ui = {
       resetToDefaults: function () {
         if (this.recentlySet) return;
 
-        if (
-          this.components.instances.findIndex((instance) => {
+        //selector attribute configuration, need to wait until selector value is set
+        if (this.params.selectorAttribute) {
+          let instanceToSet_byAttribute;
+          if (this.params.selectorAttribute) {
+
+            //interval to wait for selector value to be set
+            let interval = setInterval(() => {
+              let selectorAttributeValue = document.body.getAttribute(this.params.selectorAttribute);
+              
+              if (selectorAttributeValue) {
+                instanceToSet_byAttribute = this.components.instances.findIndex((instance) => {
+                  return instance.params.selectorValue == selectorAttributeValue;
+                })
+              }
+              if (instanceToSet_byAttribute >= 0) {
+                //need to set an instance
+                this.setInstance(this.components.instances[instanceToSet_byAttribute].name);
+              }
+              if (selectorAttributeValue) {
+                clearInterval(interval);
+              }
+            }, 100);
+          }
+        }
+
+        //no selector attribute configuration, use first instance or instance set to open by default
+        if (!this.params.selectorAttribute) {
+          let instanceToSet_byInitialState; 
+          instanceToSet_byInitialState = this.components.instances.findIndex((instance) => {
             return instance.params.initialState === "open";
-          }) >= 0
-        ) {
-          //there's a default instance set by param
-          this.components.instances.forEach((instance) => {
-            if (instance.params.initialState === "open") {
-              this.setInstance(instance.name, true);
-            }
           });
-        } else {
-          //no default instance set by param, use first
-          if (this.components.instances.length > 0) {
-            this.setInstance(this.components.instances[0].name);
+          if (instanceToSet_byInitialState >= 0) {
+            //need to set an instance
+            this.setInstance(this.components.instances[instanceToSet_byInitialState].name);
+          } else {
+            //no default instance set by param, use first
+            if (this.components.instances.length > 0) {
+              this.setInstance(this.components.instances[0].name);
+            }
           }
         }
       },
@@ -6712,8 +6777,9 @@ com.idc.ui = {
         if (!this.components.el) return;
 
         let activeModalsStack = com.idc.ui.core.modal.activeModalsStack;
-        let aModalIsActive = activeModalsStack.length > 0;
-        let activeModalId = aModalIsActive ? activeModalsStack[activeModalsStack.length - 1] : null;
+        let activeModalStackLength = activeModalsStack.length;
+        let aModalIsActive = activeModalStackLength > 0;
+        let activeModalId = aModalIsActive ? activeModalsStack[activeModalStackLength - 1] : null;
         let isActiveModalStandalone = aModalIsActive ? document.querySelector(`#${activeModalId}`).isStandalone : false;
         let slideType = vars.navigation.currentSlide.isStandalone ? "standaloneModal" : "mainSlide";
         let isDynamicPresentation = vars.navigation.dynamicPresentation.active;
@@ -6742,7 +6808,7 @@ com.idc.ui = {
         //style name
         let viewStateName;
         if (!aModalIsActive) {
-          //main slide
+          //main slide or just 1 modal object open
           viewStateName = sets.mainSlide.buttonViewState;
         } else {
           if (isActiveModalStandalone) {
@@ -6770,14 +6836,14 @@ com.idc.ui = {
             } else {
               if (isActiveModalStandalone) {
                 //standalone, bring all buttons to front
-                el.style.zIndex = activeModalsStack.length * 10 + 1;
+                el.style.zIndex = activeModalStackLength * 10 + 1;
               } else {
                 //normal modal, bring to front dual button if necessary
                 if (sets.regularModals.bringToFront.dualButtonForActiveModal.active) {
                   let isDualButtonOfCurrentModal =
                     el.getAttribute("data-sub-type") == "com.idc.ui.core.modal.dualButton" && el.getAttribute("data-target-id") == activeModalId;
                   if (isDualButtonOfCurrentModal) {
-                    el.style.zIndex = activeModalsStack.length * 10 + 1;
+                    el.style.zIndex = activeModalStackLength * 10 + 1;
                   }
                 }
 
@@ -6787,7 +6853,7 @@ com.idc.ui = {
                   if (!sets.regularModals.bringToFront.referencesButton.excludeModals.includes(activeModalId)) {
                     let isReferencesOpenButton = el.getAttribute("id") == vars.references.components.openButton.id;
                     if (isReferencesOpenButton) {
-                      el.style.zIndex = activeModalsStack.length * 10 + 1;
+                      el.style.zIndex = activeModalStackLength * 10 + 1;
                     }
                   }
                 }
