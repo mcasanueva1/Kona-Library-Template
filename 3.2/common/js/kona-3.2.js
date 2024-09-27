@@ -5125,7 +5125,9 @@ com.idc.ui = {
         }
 
         //add to active modals stack
-        com.idc.ui.core.modal.activeModalsStack.push(this.id);
+        if (this.type == "popUp" || this.type == "dropDown") {
+          com.idc.ui.core.modal.activeModalsStack.push(this.id);
+        }
 
         //assign z-index depending on active modals stack
         this.style.zIndex = com.idc.ui.core.modal.activeModalsStack.length * 10;
@@ -5184,7 +5186,9 @@ com.idc.ui = {
           this.executeBeforeClose();
 
           //remove from active modals stack
-          com.idc.ui.core.modal.activeModalsStack.splice(com.idc.ui.core.modal.activeModalsStack.indexOf(this.id), 1);
+          if (this.type == "popUp" || this.type == "dropDown") {
+            com.idc.ui.core.modal.activeModalsStack.splice(com.idc.ui.core.modal.activeModalsStack.indexOf(this.id), 1);
+          }
 
           //refresh utilities menu
           if (com.idc.clm.vars.utilitiesMenu.active) {
