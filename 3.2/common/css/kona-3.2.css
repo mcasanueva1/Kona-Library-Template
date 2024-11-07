@@ -1063,6 +1063,17 @@ body[data-screen-orientation="portrait"] > [data-type="com.idc.ui.contentSize"] 
     position: absolute;
     right: 30px;
 }
+#interactionSummaryTab [data-ui-id="slides"] [data-ui-id="sort_wrapper"][data-view-state="hidden"] {
+    display: none;
+}
+
+#interactionSummaryTab [data-ui-id="slides"] [data-ui-id="launchNextBestContent"] {
+    position: absolute;
+    right: 30px;
+}
+#interactionSummaryTab [data-ui-id="slides"] [data-ui-id="launchNextBestContent"][data-view-state="hidden"] {
+    display: none;
+}
 
 #interactionSummaryTab [data-ui-id="slides"] [data-ui-id="slides_contents"] {
     display: flex;

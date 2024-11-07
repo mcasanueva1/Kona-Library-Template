@@ -542,11 +542,19 @@ com.idc.clm = {
           },
         ],
       },
+      nextBestContent: {
+        clm: {
+          active: null,
+          source: null,
+          dynamicCallflowName: null,
+        },
+      },
       input: {
         Call2_vod__c: [],
         Call2_Key_Message_vod__c: [],
         Sent_Email_vod__c: [],
         Email_Activity_vod__c: [],
+        Next_Best_Content_CLM: [],
       },
       output: {
         ready: null,
@@ -612,6 +620,10 @@ com.idc.clm = {
                 average: null, //seconds
               },
               allCallDates: [],
+            },
+            nextBestContent: {
+              recommended: null,
+              order: null,
             },
           },
         ],
@@ -1577,6 +1589,14 @@ com.idc.clm = {
         "object",
         com.idc.clm.varsTemplate.interactionSummary.visibility
       );
+
+      //nextBestContent
+      vars.interactionSummary.nextBestContent = util.readSetting(
+        com_idc_params,
+        "interactionSummary.nextBestContent",
+        "object",
+        com.idc.clm.varsTemplate.interactionSummary.nextBestContent
+      );
     }
   },
   setSessionIdentifier: function () {
@@ -2242,6 +2262,17 @@ com.idc.clm = {
           }
         }
 
+        //Next best content CLM
+        if (this.vars.interactionSummary.active && this.vars.session.isAnActualCall && this.vars.interactionSummary.nextBestContent.clm.active) {
+          let sourceFnc = this.vars.interactionSummary.nextBestContent.clm.source.call;
+          if (sourceFnc !== "undefined" && sourceFnc !== "" && typeof window[sourceFnc] === "function") {
+            let nextBestContentCLM = await window[sourceFnc]();
+            if (Array.isArray(nextBestContentCLM) && nextBestContentCLM.length > 0) {
+              this.vars.interactionSummary.input.Next_Best_Content_CLM = nextBestContentCLM;
+            }
+          }
+        }
+
         resolve();
       })();
     });
@@ -2783,60 +2814,75 @@ com.idc.clm = {
   },
   callflows: function () {
     return new Promise((resolve) => {
-      let defaultProfileParam = this.vars.options.dynamicPresentation.source.callflows.default;
-      let selectedCallflow = null;
+      (async () => {
+        let defaultProfileParam = this.vars.options.dynamicPresentation.source.callflows.default;
+        let selectedCallflow = null;
 
-      //identify selected callflow (could be stored as a session variable, or passed as a function or text parameter)
-      //check if persistent session data contains a callflow selection
-      if (this.persistentData.session.selectedCallflow) {
-        if (this.vars.options.dynamicPresentation.source.callflows.flows.find((callflow) => callflow.name == this.persistentData.session.selectedCallflow)) {
-          selectedCallflow = this.persistentData.session.selectedCallflow;
+        //get slides for dynamic callflows
+        for (let callflow of this.vars.options.dynamicPresentation.source.callflows.flows) {
+          if (callflow.source) {
+            let sourceFnc = callflow.source;
+            if (sourceFnc !== "undefined" && sourceFnc !== "" && typeof window[sourceFnc] === "function") {
+              let dyncamicCallflowSlides = await window[sourceFnc]();
+              if (Array.isArray(dyncamicCallflowSlides) && dyncamicCallflowSlides.length > 0) {
+                callflow.slides = dyncamicCallflowSlides;
+              }
+            }
+          }
         }
-      } else {
-        //check if defaultProfileParam is a function and returns a valid callflow name
-        if (typeof window[defaultProfileParam] == "function") {
-          let functionOutput = window[defaultProfileParam]();
-          if (this.vars.options.dynamicPresentation.source.callflows.flows.find((callflow) => callflow.name == functionOutput)) {
-            selectedCallflow = functionOutput;
+
+        //identify selected callflow (could be stored as a session variable, or passed as a function or text parameter)
+        //check if persistent session data contains a callflow selection
+        if (this.persistentData.session.selectedCallflow) {
+          if (this.vars.options.dynamicPresentation.source.callflows.flows.find((callflow) => callflow.name == this.persistentData.session.selectedCallflow)) {
+            selectedCallflow = this.persistentData.session.selectedCallflow;
           }
         } else {
-          //check is defaultProfileParam is a valid callflow name
-          if (this.vars.options.dynamicPresentation.source.callflows.flows.find((callflow) => callflow.name == defaultProfileParam)) {
-            selectedCallflow = defaultProfileParam;
+          //check if defaultProfileParam is a function and returns a valid callflow name
+          if (typeof window[defaultProfileParam] == "function") {
+            let functionOutput = window[defaultProfileParam]();
+            if (this.vars.options.dynamicPresentation.source.callflows.flows.find((callflow) => callflow.name == functionOutput)) {
+              selectedCallflow = functionOutput;
+            }
+          } else {
+            //check is defaultProfileParam is a valid callflow name
+            if (this.vars.options.dynamicPresentation.source.callflows.flows.find((callflow) => callflow.name == defaultProfileParam)) {
+              selectedCallflow = defaultProfileParam;
+            }
           }
         }
-      }
 
-      let slidesSequence = [];
+        let slidesSequence = [];
+        if (selectedCallflow) {
+          let callflow = this.vars.options.dynamicPresentation.source.callflows.flows.find((callflow) => callflow.name == selectedCallflow);
+          let slidesSequenceInput = callflow.slides
 
-      if (selectedCallflow) {
-        let slidesSequenceInput = this.vars.options.dynamicPresentation.source.callflows.flows.find((callflow) => callflow.name == selectedCallflow).slides;
+          if (Array.isArray(slidesSequenceInput)) {
+            //identify slide ids
+            slidesSequenceInput.forEach((item) => {
+              let slide;
+              if (item.indexOf(".zip") > -1) {
+                //input is a zip name
+                slide = this.vars.slides.find((slide) => {
+                  return slide.player.zipName == item;
+                });
+              } else {
+                //input is a slideId
+                slide = this.vars.slides.find((slide) => {
+                  return slide.id == item;
+                });
+              }
+              if (slide) slidesSequence.push(slide.id);
+            });
+          }
 
-        if (Array.isArray(slidesSequenceInput)) {
-          //identify slide ids
-          slidesSequenceInput.forEach((item) => {
-            let slide;
-            if (item.indexOf(".zip") > -1) {
-              //input is a zip name
-              slide = this.vars.slides.find((slide) => {
-                return slide.player.zipName == item;
-              });
-            } else {
-              //input is a slideId
-              slide = this.vars.slides.find((slide) => {
-                return slide.id == item;
-              });
-            }
-            if (slide) slidesSequence.push(slide.id);
-          });
+          if (!slidesSequence || slidesSequence.length == 0) {
+            com.idc.util.log(`com.idc.clm.callflows: unable to retrieve slides for callflow ${selectedCallflow}`);
+          }
         }
 
-        if (slidesSequence.length == 0) {
-          com.idc.util.log(`com.idc.clm.callflows: unable to retrieve slides for callflow ${selectedCallflow}`);
-        }
-      }
-
-      resolve({ name: selectedCallflow, sequence: slidesSequence });
+        resolve({ name: selectedCallflow, sequence: slidesSequence });
+      })();
     });
   },
   setCallflow: function (callflowName) {
@@ -2859,7 +2905,8 @@ com.idc.clm = {
     let slidesSequence = [];
 
     if (selectedCallflow) {
-      let slidesSequenceInput = this.vars.options.dynamicPresentation.source.callflows.flows.find((callflow) => callflow.name == selectedCallflow).slides;
+      let callflow = this.vars.options.dynamicPresentation.source.callflows.flows.find((callflow) => callflow.name == selectedCallflow);
+      let slidesSequenceInput = callflow.slides;
 
       if (Array.isArray(slidesSequenceInput)) {
         //identify slide ids
@@ -3251,6 +3298,15 @@ com.idc.clm = {
       });
     });
     this.vars.interactionSummary.input.Email_Activity_vod__c = Email_Activity_vod__c;
+
+    //Next Best Content CLM
+    let sourceFnc = this.vars.interactionSummary.nextBestContent.clm.source.browser;
+    if (sourceFnc !== "undefined" && sourceFnc !== "" && typeof window[sourceFnc] === "function") {
+      let nextBestContentCLM = window[sourceFnc]();
+      if (Array.isArray(nextBestContentCLM) && nextBestContentCLM.length > 0) {
+        this.vars.interactionSummary.input.Next_Best_Content_CLM = nextBestContentCLM;
+      }
+    }
   },
   interactionSummaryModel: function () {
     let vars = this.vars;
@@ -3535,6 +3591,30 @@ com.idc.clm = {
         //add to array
         vars.interactionSummary.output.slides.push(record);
       });
+
+      //next best content
+      if (vars.interactionSummary.nextBestContent.clm.active) {
+        vars.interactionSummary.input.Next_Best_Content_CLM.forEach((item) => {
+          let slideIndex = vars.interactionSummary.output.slides.findIndex(function (slide) {
+            if (item.zipName) {
+              let tmpSlide = vars.slides.find((s) => s.player.zipName == item.zipName);
+              if (tmpSlide) {
+                return slide.id == tmpSlide.id;
+              }
+            } else {
+              if (item.id) {
+                return slide.id == item.id;
+              }
+            }
+          });
+          if (slideIndex >= 0) {
+            vars.interactionSummary.output.slides[slideIndex].nextBestContent.recommended = true;
+            if (Number.isInteger(item.order)) {
+              vars.interactionSummary.output.slides[slideIndex].nextBestContent.order = item.order;
+            }
+          }
+        });
+      }
     }
 
     //emails ---------------------------------------------
@@ -4008,12 +4088,12 @@ com.idc.clm = {
         if (this.persistentData.complexLinks.toSlide == this.vars.navigation.currentSlide.id) {
           com.idc.ui.common.setComplexLinkElement();
           //clear data
-          this.persistentData.complexLinks = JSON.parse(JSON.stringify(this.persistentDataTemplate.complexLinks)); 
+          this.persistentData.complexLinks = JSON.parse(JSON.stringify(this.persistentDataTemplate.complexLinks));
           this.updatePersistentData();
         }
       } else {
         //clear data
-        this.persistentData.complexLinks = JSON.parse(JSON.stringify(this.persistentDataTemplate.complexLinks)); 
+        this.persistentData.complexLinks = JSON.parse(JSON.stringify(this.persistentDataTemplate.complexLinks));
         this.updatePersistentData();
       }
     }
@@ -4963,6 +5043,7 @@ com.idc.ui = {
               elId: null, //back slide element id (complex link)
               elType: null, //back slide element type (complex link)
               elInstance: null, //back slide element instance (complex link tab/accordion/multi)
+              zIndexIncrement: null, //used to add / subtract from the default z-index
             });
 
             //is standalone modal?
@@ -5130,8 +5211,15 @@ com.idc.ui = {
         }
 
         //assign z-index depending on active modals stack
-        this.style.zIndex = com.idc.ui.core.modal.activeModalsStack.length * 10;
-        this.components.backModal.element.style.zIndex = com.idc.ui.core.modal.activeModalsStack.length * 10;
+        let increment;
+        if (this.params.zIndexIncrement !== null && !isNaN(this.params.zIndexIncrement)) {
+          increment = parseInt(this.params.zIndexIncrement);
+        } else {
+          increment = 0;
+        }
+        let zIndex = com.idc.ui.core.modal.activeModalsStack.length * 10 + increment;
+        this.style.zIndex = zIndex;
+        this.components.backModal.element.style.zIndex = zIndex;
 
         //refresh utilities menu
         if (com.idc.clm.vars.utilitiesMenu.active) {
@@ -5261,7 +5349,7 @@ com.idc.ui = {
           }
 
           //redirect
-          com.idc.clm.gotoSlide(destinationSlide)
+          com.idc.clm.gotoSlide(destinationSlide);
         }
       },
       hide: function () {
@@ -5678,7 +5766,11 @@ com.idc.ui = {
 
             //restore saved state if returned from standalone pop-up
             if (com.idc.clm.isBackFromStandAloneSlide()) {
-              let activeInstance = com.idc.ui.common.backFromStandalone.getPersistentProperty(com.idc.clm.vars.navigation.currentSlide.id, el.id, "activeInstance");
+              let activeInstance = com.idc.ui.common.backFromStandalone.getPersistentProperty(
+                com.idc.clm.vars.navigation.currentSlide.id,
+                el.id,
+                "activeInstance"
+              );
               if (activeInstance && activeInstance.value) {
                 //set instance
                 el.setInstance(activeInstance.value);
@@ -5793,15 +5885,14 @@ com.idc.ui = {
         if (this.params.selectorAttribute) {
           let instanceToSet_byAttribute;
           if (this.params.selectorAttribute) {
-
             //interval to wait for selector value to be set
             let interval = setInterval(() => {
               let selectorAttributeValue = document.body.getAttribute(this.params.selectorAttribute);
-              
+
               if (selectorAttributeValue) {
                 instanceToSet_byAttribute = this.components.instances.findIndex((instance) => {
                   return instance.params.selectorValue == selectorAttributeValue;
-                })
+                });
               }
               if (instanceToSet_byAttribute >= 0) {
                 //need to set an instance
@@ -5816,7 +5907,7 @@ com.idc.ui = {
 
         //no selector attribute configuration, use first instance or instance set to open by default
         if (!this.params.selectorAttribute) {
-          let instanceToSet_byInitialState; 
+          let instanceToSet_byInitialState;
           instanceToSet_byInitialState = this.components.instances.findIndex((instance) => {
             return instance.params.initialState === "open";
           });
@@ -8093,6 +8184,7 @@ com.idc.ui = {
           filters: null,
           modal: null,
           openButton: null,
+          launchButton: null,
         },
         emails: {
           modal: null,
@@ -8146,6 +8238,8 @@ com.idc.ui = {
           //slides sort
           this.elements.selectors.slides.modal = this.elements.tab.querySelector(`[data-ui-id="slides"] [data-ui-id="slides_sort_modal"]`);
           this.elements.selectors.slides.openButton = this.elements.tab.querySelector(`[data-ui-id="slides"] [data-ui-id="slides_sort_modal_open"]`);
+          //slides launch callflow
+          this.elements.selectors.slides.launchButton = this.elements.tab.querySelector(`[data-ui-id="slides"] [data-ui-id="launchNextBestContent"]`);
           //emails sort
           this.elements.selectors.emails.modal = this.elements.tab.querySelector(`[data-ui-id="emails"] [data-ui-id="emails_sort_modal"]`);
           this.elements.selectors.emails.openButton = this.elements.tab.querySelector(`[data-ui-id="emails"] [data-ui-id="emails_sort_modal_open"]`);
@@ -8264,11 +8358,19 @@ com.idc.ui = {
                 return slide.status == "discussed";
               case "notDiscussed":
                 return slide.status == "notDiscussed";
+              case "recommended":
+                return slide.nextBestContent.recommended;
             }
           }).length;
 
           if (recordsCount == 0) {
-            option.setAttribute("data-view-state", "disabled");
+            if (option.getAttribute("data-view-state") != "hidden") {
+              option.setAttribute("data-view-state", "disabled");
+            }
+          } else {
+            if (option.getAttribute("data-view-state") == "hidden") {
+              option.removeAttribute("data-view-state");
+            }
           }
 
           //set event
@@ -8277,17 +8379,25 @@ com.idc.ui = {
             if (option.getAttribute("data-view-state") == "disabled") return;
 
             //enable/disable sort button; reset sort if necessary
-            if (this.elements.selectors.slides.openButton.getAttribute("data-view-state") != "hidden") {
-              switch (view) {
-                case "all":
-                case "notDiscussed":
-                  this.elements.selectors.slides.openButton.setAttribute("data-view-state", "disabled");
-                  this.options.slides.sort = "default";
-                  break;
-                case "discussed":
-                  this.elements.selectors.slides.openButton.setAttribute("data-view-state", "active");
-                  break;
-              }
+            switch (view) {
+              case "all":
+              case "notDiscussed":
+                this.elements.selectors.slides.openButton.setAttribute("data-view-state", "disabled");
+                this.options.slides.sort = "default";
+                break;
+              case "recommended":
+                this.elements.selectors.slides.openButton.setAttribute("data-view-state", "hidden");
+                break;
+              case "discussed":
+                this.elements.selectors.slides.openButton.setAttribute("data-view-state", "active");
+                break;
+            }
+
+            //show/hide launch callflow button
+            if (view == "recommended") {
+              this.elements.selectors.slides.launchButton.removeAttribute("data-view-state");
+            } else {
+              this.elements.selectors.slides.launchButton.setAttribute("data-view-state", "hidden");
             }
 
             //populate
@@ -8305,6 +8415,18 @@ com.idc.ui = {
               }
             });
           });
+        });
+      }
+
+      //slides launch callflow button
+      if (this.elements.selectors.slides.launchButton) {
+        this.elements.selectors.slides.launchButton.addEventListener("click", (event) => {
+          let callflow = com.idc.clm.vars.interactionSummary.nextBestContent.clm.dynamicCallflowName;
+          com.idc.clm.setCallflow(callflow);
+          let activeSlidesSequence = com.idc.clm.vars.navigation.actualSlidesSequence;
+          if (activeSlidesSequence.length > 0) {
+            com.idc.clm.gotoSlide(activeSlidesSequence[0]);
+          }
         });
       }
 
@@ -8818,29 +8940,42 @@ com.idc.ui = {
             return slide.status == "notDiscussed";
           });
           break;
+        case "recommended":
+          filteredSlides = vars.interactionSummary.output.slides.filter((slide) => {
+            return slide.nextBestContent.recommended;
+          });
+          break;
       }
 
       //sort
-      switch (this.options.slides.sort) {
-        case "default":
-          filteredSlides.sort((a, b) => {
-            let indexOfA = vars.interactionSummary.output.slides.indexOf(a);
-            let indexOfB = vars.interactionSummary.output.slides.indexOf(b);
-            return indexOfA - indexOfB;
-          });
-          break;
-        case "mostRecentlyDiscussed":
-          filteredSlides.sort((a, b) => {
-            let dateA = new Date(a.mostRecentCall.date);
-            let dateB = new Date(b.mostRecentCall.date);
-            return dateB - dateA;
-          });
-          break;
-        case "moreTimeSpentOn":
-          filteredSlides.sort((a, b) => {
-            return b.mostRecentCall.duration - a.mostRecentCall.duration;
-          });
-          break;
+      if (this.options.slides.filter == "recommended") {
+        //sort for recommended slides comes as param
+        filteredSlides.sort((a, b) => {
+          return a.nextBestContent.order - b.nextBestContent.order;
+        });
+      } else {
+        //for all other views, use the sort option
+        switch (this.options.slides.sort) {
+          case "default":
+            filteredSlides.sort((a, b) => {
+              let indexOfA = vars.interactionSummary.output.slides.indexOf(a);
+              let indexOfB = vars.interactionSummary.output.slides.indexOf(b);
+              return indexOfA - indexOfB;
+            });
+            break;
+          case "mostRecentlyDiscussed":
+            filteredSlides.sort((a, b) => {
+              let dateA = new Date(a.mostRecentCall.date);
+              let dateB = new Date(b.mostRecentCall.date);
+              return dateB - dateA;
+            });
+            break;
+          case "moreTimeSpentOn":
+            filteredSlides.sort((a, b) => {
+              return b.mostRecentCall.duration - a.mostRecentCall.duration;
+            });
+            break;
+        }
       }
 
       //populate
@@ -8851,6 +8986,9 @@ com.idc.ui = {
 
         //slide id
         slideClone.setAttribute("data-slide-id", slide.id);
+
+        //filter related class
+        slideClone.classList.add(this.options.slides.filter);
 
         //flags
         let hiddenRowsCount = 0;
