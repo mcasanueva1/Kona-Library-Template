@@ -195,7 +195,7 @@ let com_idc_params = {
     }
   },
   "interactionSummary": {
-    "active": false,
+    "active": true,
     "minRows": {
       "previousInteractions": 8,
       "emails": 7,
@@ -264,8 +264,7 @@ let com_idc_params = {
       ]
     },
     "nonEmailCartItems": {
-      "templates": [
-      ],
+      "templates": [],
     },
     "labels": {
       "interactionSummary_title1": "What has been going on with ",
@@ -293,9 +292,11 @@ let com_idc_params = {
       "slides_filter_all": "All",
       "slides_filter_discussed": "Discussed",
       "slides_filter_notDiscussed": "Not Discussed",
+      "slides_filter_recommended": "Next Best Content",
       "slides_sort_default": "Sort",
       "slides_sort_mostRecentlyDiscussed": "Most Recently Discussed",
       "slides_sort_moreTimeSpentOn": "More Time Spent On",
+      "slides_launch_nextBestContent": "Start recommended flow",
       "slides_label_lastView": "Last View",
       "slides_label_reaction": "Reaction",
       "slides_label_duration": "Duration",
@@ -346,6 +347,16 @@ let com_idc_params = {
           "allTimesSent_click": true
         }
       }
+    },
+    "nextBestContent": {
+      "clm": {
+        "active": false,
+        "source": {
+          "call": "",
+          "browser": ""
+        },
+        "dynamicCallflowName": ""
+      },
     }
   },
   "templates": {
