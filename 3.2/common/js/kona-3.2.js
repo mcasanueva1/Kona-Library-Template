@@ -4861,8 +4861,10 @@ com.idc.ui = {
           }
         }
 
+        let targetIdEmptyFlag = com.idc.util.getElementAttribute(pElement, "data-target-id-empty-flag");
+
         if (targetId) {
-          if (!com.idc.clm.findSlide(targetId)) {
+          if (!com.idc.clm.findSlide(targetId) && !targetIdEmptyFlag) {
             errorList = `${errorList} invalid target id ${targetId}; `;
           }
         }
