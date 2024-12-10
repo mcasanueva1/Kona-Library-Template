@@ -1920,9 +1920,13 @@ com.idc.clm = {
       delete navVars.nextSlide; //do not apply for standalone modal
     }
   },
-  findSlide: function (slideId) {
+  findSlide: function (slideId, abbreviated) {
     return this.vars.slides.find((slide) => {
-      return slide.id == slideId;
+      if (abbreviated) {
+        return slide.id.includes(slideId);
+      } else {
+        return slide.id == slideId;
+      }
     });
   },
   addSlideToNavHistory: async function (slideId) {
@@ -2371,6 +2375,16 @@ com.idc.clm = {
 
   /*navigation --------------------------------------------*/
   gotoSlide: async function (slideId) {
+
+    //account for abbreviated links
+    if (slideId.endsWith("..")) {
+      let slideFound = com.idc.clm.findSlide(slideId.replace("..", ""), true);
+      if (slideFound) {
+        slideId = slideFound.id;
+      }
+    }
+
+    //do not proceed if slide is not among available slides
     if (com.idc.clm.vars.navigation.allAvaliableSlides.findIndex((slide) => slide === slideId) < 0) return;
 
     let slide = this.findSlide(slideId);
@@ -4864,7 +4878,15 @@ com.idc.ui = {
         let targetIdEmptyFlag = com.idc.util.getElementAttribute(pElement, "data-target-id-empty-flag");
 
         if (targetId) {
-          if (!com.idc.clm.findSlide(targetId) && !targetIdEmptyFlag) {
+          let slideFound
+          //if target id ends with .. perform and approximate search
+          if (targetId.endsWith("..")) {
+            slideFound = com.idc.clm.findSlide(targetId.replace("..", ""), true);
+          } else {
+            slideFound = com.idc.clm.findSlide(targetId);
+          }
+          //validate
+          if (!slideFound && !targetIdEmptyFlag) {
             errorList = `${errorList} invalid target id ${targetId}; `;
           }
         }
@@ -4954,7 +4976,15 @@ com.idc.ui = {
       setActiveInstance: function () {
         document.querySelectorAll(this.selector).forEach((el) => {
           el.querySelectorAll(`[data-sub-type="com.idc.ui.core.menu.button"]`).forEach((button) => {
-            if (button.getAttribute("data-target-id") == com.idc.clm.vars.navigation.currentSlide.id) {
+            let correspondsToCurrentSlide;
+            let targetId = button.getAttribute("data-target-id")
+            if (targetId.endsWith("..")) {
+              correspondsToCurrentSlide = com.idc.clm.vars.navigation.currentSlide.id.includes(targetId.replace("..", ""))
+            } else {
+              correspondsToCurrentSlide = com.idc.clm.vars.navigation.currentSlide.id == targetId
+            }
+
+            if (correspondsToCurrentSlide) {
               button.setAttribute("data-view-state", "on");
             } else {
               button.setAttribute("data-view-state", "off");
