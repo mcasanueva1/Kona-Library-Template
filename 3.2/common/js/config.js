@@ -6,7 +6,7 @@ let com_idc_params = {
   "options": {
     "debugMode": {
       "active": true,
-      "showInspector": true,
+      "showInspector": false,
     },
     "browserMode": {
         "active": true,
