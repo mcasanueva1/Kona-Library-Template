@@ -490,25 +490,23 @@ com.idc.templates = {
                             ]
                         }
                     ]
+                },
+                {
+                  "type": "DIV",
+                  "attributes": [
+                      {
+                          "data-type": "com.idc.ui.references.switch"
+                      },
+                      {
+                          "data-view-state": ""
+                      },
+                      {
+                          "data-selected": ""
+                      }
+                    ]
                 }
             ]
         },
-      ],
-      "switch": [
-        {
-          "type": "DIV",
-          "attributes": [
-              {
-                  "data-type": "com.idc.ui.references.switch"
-              },
-              {
-                  "data-view-state": ""
-              },
-              {
-                  "data-selected": ""
-              }
-            ]
-        }
       ]
     }, 
     "tab": {
