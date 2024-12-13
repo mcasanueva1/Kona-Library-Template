@@ -397,6 +397,9 @@ body[data-screen-orientation="portrait"] > [data-type="com.idc.ui.contentSize"] 
 [data-screen-orientation="portrait"] #references [data-type="com.idc.ui.references.switch"] {
     left: 409px;
 }
+#referencesModal [data-type="com.idc.ui.references.switch"] {
+    z-index: 1;
+}
 #referencesModal [data-type="com.idc.ui.references.switch"][data-selected="slide"],
 #references [data-type="com.idc.ui.references.switch"][data-selected="slide"] {
     background: url(../img/references/switch/switchSlide.png) no-repeat 0 0 / 190px;
