@@ -3,6 +3,26 @@ if (com.idc == undefined) com.idc = {};
 
 com.idc.templates = {
   "core": {
+    "animation": [
+      {
+        "type": "DIV",
+        "attributes": [
+          {
+            "data-type": "com.idc.core.animation",
+          },
+          {
+            "data-animation-type": "",
+          },
+          {
+            "data-animation-subtype": "",
+          },
+          {
+            "data-animation-delay": "",
+          },
+        ],
+        "childNodes": [],
+      }
+    ],
     "accordion": {
       "container": [
         {
