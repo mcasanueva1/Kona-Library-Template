@@ -443,25 +443,6 @@ com.idc.templates = {
       ],
     },  
     "references": {
-      "openButton": [
-        {
-          "type": "DIV",
-          "attributes": [
-              {
-                  "data-type": "com.idc.ui.core.button"
-              },
-              {
-                  "data-sub-type": "com.idc.ui.core.modal.dualButton"
-              },
-              {
-                  "data-target-id": ""
-              },
-              {
-                  "id": ""
-              }
-          ]
-        }
-      ],
       "modalContent": [
         {
             "type": "DIV",
@@ -512,27 +493,20 @@ com.idc.templates = {
                 }
             ]
         },
+      ],
+      "switch": [
         {
-            "type": "DIV",
-            "attributes": [
-                {
-                    "data-type": "com.idc.ui.references.title"
-                }
-            ],
-            "childNodes": []
-        },
-        {
-            "type": "DIV",
-            "attributes": [
-                {
-                    "data-type": "com.idc.ui.references.switch"
-                },
-                {
-                    "data-view-state": "active"
-                },
-                {
-                    "data-selected": "slide"
-                }
+          "type": "DIV",
+          "attributes": [
+              {
+                  "data-type": "com.idc.ui.references.switch"
+              },
+              {
+                  "data-view-state": "active"
+              },
+              {
+                  "data-selected": "slide"
+              }
             ]
         }
       ]
