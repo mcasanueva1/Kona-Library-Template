@@ -1502,8 +1502,7 @@ body[data-screen-orientation="portrait"] > [data-type="com.idc.ui.contentSize"] 
     padding: 10px;
 }
 
-
-/* animations-----------------------------------------------*/
+/* animations (legacy)-----------------------------------------------*/
 
 /*inDown*/
 .r0 {
@@ -2189,3 +2188,412 @@ body[data-screen-orientation="portrait"] > [data-type="com.idc.ui.contentSize"] 
 }
 
 /*-------------*/
+
+[data-type="com.idc.core.animation"] {
+    background: none;
+    background-color: white;
+}
+
+/* WIDTH ANIMATION ************************************************************************************/
+
+@-webkit-keyframes konaWidthAnimation {
+    0% { width: 100%;}
+    100% {width: 0%;}
+}
+@keyframes konaWidthAnimation {
+    0% { width: 100%;}
+    100% {width: 0%;}
+}
+
+[data-type="com.idc.core.animation"][data-animation-type="widthAnimation"] {
+    overflow: hidden;
+}
+
+[data-type="com.idc.core.animation"][data-animation-type="widthAnimation"][data-animation-subtype="maskRight"] {
+    left: auto;
+    right: 0px;
+}
+
+[data-type="com.idc.core.animation"][data-animation-type="widthAnimation"][data-animation-delay="1"]
+{
+    -webkit-animation: konaWidthAnimation 1s .1s 1 ease-in-out both; 
+    animation: konaWidthAnimation 1s .1s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="widthAnimation"][data-animation-delay="2"]
+{
+    -webkit-animation: konaWidthAnimation 1s .2s 1 ease-in-out both; 
+    animation: konaWidthAnimation 1s .2s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="widthAnimation"][data-animation-delay="3"]
+{
+    -webkit-animation: konaWidthAnimation 1s .3s 1 ease-in-out both; 
+    animation: konaWidthAnimation 1s .3s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="widthAnimation"][data-animation-delay="4"]
+{
+    -webkit-animation: konaWidthAnimation 1s .4s 1 ease-in-out both; 
+    animation: konaWidthAnimation 1s .4s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="widthAnimation"][data-animation-delay="5"]
+{
+    -webkit-animation: konaWidthAnimation 1s .5s 1 ease-in-out both; 
+    animation: konaWidthAnimation 1s .5s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="widthAnimation"][data-animation-delay="6"]
+{
+    -webkit-animation: konaWidthAnimation 1s .6s 1 ease-in-out both; 
+    animation: konaWidthAnimation 1s .6s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="widthAnimation"][data-animation-delay="7"]
+{
+    -webkit-animation: konaWidthAnimation 1s .7s 1 ease-in-out both; 
+    animation: konaWidthAnimation 1s .7s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="widthAnimation"][data-animation-delay="8"]
+{
+    -webkit-animation: konaWidthAnimation 1s .8s 1 ease-in-out both; 
+    animation: konaWidthAnimation 1s .8s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="widthAnimation"][data-animation-delay="9"]
+{
+    -webkit-animation: konaWidthAnimation 1s .9s 1 ease-in-out both; 
+    animation: konaWidthAnimation 1s .9s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="widthAnimation"][data-animation-delay="10"]
+{
+    -webkit-animation: konaWidthAnimation 1s 1s 1 ease-in-out both; 
+    animation: konaWidthAnimation 1s 1s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="widthAnimation"][data-animation-delay="11"]
+{
+    -webkit-animation: konaWidthAnimation 1s 1.1s 1 ease-in-out both; 
+    animation: konaWidthAnimation 1s 1.1s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="widthAnimation"][data-animation-delay="12"]
+{
+    -webkit-animation: konaWidthAnimation 1s 1.2s 1 ease-in-out both; 
+    animation: konaWidthAnimation 1s 1.2s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="widthAnimation"][data-animation-delay="13"]
+{
+    -webkit-animation: konaWidthAnimation 1s 1.3s 1 ease-in-out both; 
+    animation: konaWidthAnimation 1s 1.3s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="widthAnimation"][data-animation-delay="14"]
+{
+    -webkit-animation: konaWidthAnimation 1s 1.4s 1 ease-in-out both; 
+    animation: konaWidthAnimation 1s 1.4s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="widthAnimation"][data-animation-delay="15"]
+{
+    -webkit-animation: konaWidthAnimation 1s 1.5s 1 ease-in-out both; 
+    animation: konaWidthAnimation 1s 1.5s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="widthAnimation"][data-animation-delay="16"]
+{
+    -webkit-animation: konaWidthAnimation 1s 1.6s 1 ease-in-out both; 
+    animation: konaWidthAnimation 1s 1.6s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="widthAnimation"][data-animation-delay="17"]
+{
+    -webkit-animation: konaWidthAnimation 1s 1.7s 1 ease-in-out both; 
+    animation: konaWidthAnimation 1s 1.7s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="widthAnimation"][data-animation-delay="18"]
+{
+    -webkit-animation: konaWidthAnimation 1s 1.8s 1 ease-in-out both; 
+    animation: konaWidthAnimation 1s 1.8s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="widthAnimation"][data-animation-delay="19"]
+{
+    -webkit-animation: konaWidthAnimation 1s 1.9s 1 ease-in-out both; 
+    animation: konaWidthAnimation 1s 1.9s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="widthAnimation"][data-animation-delay="20"]
+{
+    -webkit-animation: konaWidthAnimation 1s 2s 1 ease-in-out both; 
+    animation: konaWidthAnimation 1s 2s 1 ease-in-out both;
+}
+
+/* HEIGHT ANIMATION ************************************************************************************/
+
+@-webkit-keyframes konaHeightAnimation {
+    0% { height: 100%;}
+    100% {height: 0%;}
+}
+@keyframes konaHeightAnimation {
+    0% { height: 100%;}
+    100% {height: 0%;}
+}
+
+[data-type="com.idc.core.animation"][data-animation-type="heightAnimation"] {
+    overflow: hidden;
+}
+
+[data-type="com.idc.core.animation"][data-animation-type="heightAnimation"][data-animation-subtype="maskDown"] {
+    top: auto;
+    bottom: 0px;
+}
+
+[data-type="com.idc.core.animation"][data-animation-type="heightAnimation"][data-animation-delay="1"]
+{
+    -webkit-animation: konaHeightAnimation 1s .1s 1 ease-in-out both; 
+    animation: konaHeightAnimation 1s .1s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="heightAnimation"][data-animation-delay="2"]
+{
+    -webkit-animation: konaHeightAnimation 1s .2s 1 ease-in-out both; 
+    animation: konaHeightAnimation 1s .2s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="heightAnimation"][data-animation-delay="3"]
+{
+    -webkit-animation: konaHeightAnimation 1s .3s 1 ease-in-out both; 
+    animation: konaHeightAnimation 1s .3s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="heightAnimation"][data-animation-delay="4"]
+{
+    -webkit-animation: konaHeightAnimation 1s .4s 1 ease-in-out both; 
+    animation: konaHeightAnimation 1s .4s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="heightAnimation"][data-animation-delay="5"]
+{
+    -webkit-animation: konaHeightAnimation 1s .5s 1 ease-in-out both; 
+    animation: konaHeightAnimation 1s .5s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="heightAnimation"][data-animation-delay="6"]
+{
+    -webkit-animation: konaHeightAnimation 1s .6s 1 ease-in-out both; 
+    animation: konaHeightAnimation 1s .6s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="heightAnimation"][data-animation-delay="7"]
+{
+    -webkit-animation: konaHeightAnimation 1s .7s 1 ease-in-out both; 
+    animation: konaHeightAnimation 1s .7s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="heightAnimation"][data-animation-delay="8"]
+{
+    -webkit-animation: konaHeightAnimation 1s .8s 1 ease-in-out both; 
+    animation: konaHeightAnimation 1s .8s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="heightAnimation"][data-animation-delay="9"]
+{
+    -webkit-animation: konaHeightAnimation 1s .9s 1 ease-in-out both; 
+    animation: konaHeightAnimation 1s .9s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="heightAnimation"][data-animation-delay="10"]
+{
+    -webkit-animation: konaHeightAnimation 1s 1s 1 ease-in-out both; 
+    animation: konaHeightAnimation 1s 1s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="heightAnimation"][data-animation-delay="11"]
+{
+    -webkit-animation: konaHeightAnimation 1s 1.1s 1 ease-in-out both; 
+    animation: konaHeightAnimation 1s 1.1s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="heightAnimation"][data-animation-delay="12"]
+{
+    -webkit-animation: konaHeightAnimation 1s 1.2s 1 ease-in-out both; 
+    animation: konaHeightAnimation 1s 1.2s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="heightAnimation"][data-animation-delay="13"]
+{
+    -webkit-animation: konaHeightAnimation 1s 1.3s 1 ease-in-out both; 
+    animation: konaHeightAnimation 1s 1.3s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="heightAnimation"][data-animation-delay="14"]
+{
+    -webkit-animation: konaHeightAnimation 1s 1.4s 1 ease-in-out both; 
+    animation: konaHeightAnimation 1s 1.4s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="heightAnimation"][data-animation-delay="15"]
+{
+    -webkit-animation: konaHeightAnimation 1s 1.5s 1 ease-in-out both; 
+    animation: konaHeightAnimation 1s 1.5s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="heightAnimation"][data-animation-delay="16"]
+{
+    -webkit-animation: konaHeightAnimation 1s 1.6s 1 ease-in-out both; 
+    animation: konaHeightAnimation 1s 1.6s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="heightAnimation"][data-animation-delay="17"]
+{
+    -webkit-animation: konaHeightAnimation 1s 1.7s 1 ease-in-out both; 
+    animation: konaHeightAnimation 1s 1.7s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="heightAnimation"][data-animation-delay="18"]
+{
+    -webkit-animation: konaHeightAnimation 1s 1.8s 1 ease-in-out both; 
+    animation: konaHeightAnimation 1s 1.8s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="heightAnimation"][data-animation-delay="19"]
+{
+    -webkit-animation: konaHeightAnimation 1s 1.9s 1 ease-in-out both; 
+    animation: konaHeightAnimation 1s 1.9s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="heightAnimation"][data-animation-delay="20"]
+{
+    -webkit-animation: konaHeightAnimation 1s 2s 1 ease-in-out both; 
+    animation: konaHeightAnimation 1s 2s 1 ease-in-out both;
+}
+
+/* FADE ANIMATION ************************************************************************************/
+
+@-webkit-keyframes konaFadeAnimation {
+    0% { opacity: 1;}
+    100% {opacity: 0;}
+}
+@keyframes konaFadeAnimation {
+    0% { opacity: 1;}
+    100% {opacity: 0;}
+}
+
+[data-type="com.idc.core.animation"][data-animation-type="fadeAnimation"][data-animation-delay="1"]
+{
+    -webkit-animation: konaFadeAnimation 1s .1s 1 ease-in-out both; 
+    animation: konaFadeAnimation 1s .1s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="fadeAnimation"][data-animation-delay="2"]
+{
+    -webkit-animation: konaFadeAnimation 1s .2s 1 ease-in-out both; 
+    animation: konaFadeAnimation 1s .2s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="fadeAnimation"][data-animation-delay="3"]
+{
+    -webkit-animation: konaFadeAnimation 1s .3s 1 ease-in-out both; 
+    animation: konaFadeAnimation 1s .3s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="fadeAnimation"][data-animation-delay="4"]
+{
+    -webkit-animation: konaFadeAnimation 1s .4s 1 ease-in-out both; 
+    animation: konaFadeAnimation 1s .4s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="fadeAnimation"][data-animation-delay="5"]
+{
+    -webkit-animation: konaFadeAnimation 1s .5s 1 ease-in-out both; 
+    animation: konaFadeAnimation 1s .5s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="fadeAnimation"][data-animation-delay="6"]
+{
+    -webkit-animation: konaFadeAnimation 1s .6s 1 ease-in-out both; 
+    animation: konaFadeAnimation 1s .6s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="fadeAnimation"][data-animation-delay="7"]
+{
+    -webkit-animation: konaFadeAnimation 1s .7s 1 ease-in-out both; 
+    animation: konaFadeAnimation 1s .7s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="fadeAnimation"][data-animation-delay="8"]
+{
+    -webkit-animation: konaFadeAnimation 1s .8s 1 ease-in-out both; 
+    animation: konaFadeAnimation 1s .8s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="fadeAnimation"][data-animation-delay="9"]
+{
+    -webkit-animation: konaFadeAnimation 1s .9s 1 ease-in-out both; 
+    animation: konaFadeAnimation 1s .9s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="fadeAnimation"][data-animation-delay="10"]
+{
+    -webkit-animation: konaFadeAnimation 1s 1s 1 ease-in-out both; 
+    animation: konaFadeAnimation 1s 1s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="fadeAnimation"][data-animation-delay="11"]
+{
+    -webkit-animation: konaFadeAnimation 1s 1.1s 1 ease-in-out both; 
+    animation: konaFadeAnimation 1s 1.1s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="fadeAnimation"][data-animation-delay="12"]
+{
+    -webkit-animation: konaFadeAnimation 1s 1.2s 1 ease-in-out both; 
+    animation: konaFadeAnimation 1s 1.2s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="fadeAnimation"][data-animation-delay="13"]
+{
+    -webkit-animation: konaFadeAnimation 1s 1.3s 1 ease-in-out both; 
+    animation: konaFadeAnimation 1s 1.3s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="fadeAnimation"][data-animation-delay="14"]
+{
+    -webkit-animation: konaFadeAnimation 1s 1.4s 1 ease-in-out both; 
+    animation: konaFadeAnimation 1s 1.4s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="fadeAnimation"][data-animation-delay="15"]
+{
+    -webkit-animation: konaFadeAnimation 1s 1.5s 1 ease-in-out both; 
+    animation: konaFadeAnimation 1s 1.5s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="fadeAnimation"][data-animation-delay="16"]
+{
+    -webkit-animation: konaFadeAnimation 1s 1.6s 1 ease-in-out both; 
+    animation: konaFadeAnimation 1s 1.6s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="fadeAnimation"][data-animation-delay="17"]
+{
+    -webkit-animation: konaFadeAnimation 1s 1.7s 1 ease-in-out both; 
+    animation: konaFadeAnimation 1s 1.7s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="fadeAnimation"][data-animation-delay="18"]
+{
+    -webkit-animation: konaFadeAnimation 1s 1.8s 1 ease-in-out both; 
+    animation: konaFadeAnimation 1s 1.8s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="fadeAnimation"][data-animation-delay="19"]
+{
+    -webkit-animation: konaFadeAnimation 1s 1.9s 1 ease-in-out both; 
+    animation: konaFadeAnimation 1s 1.9s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="fadeAnimation"][data-animation-delay="20"]
+{
+    -webkit-animation: konaFadeAnimation 1s 2s 1 ease-in-out both; 
+    animation: konaFadeAnimation 1s 2s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="fadeAnimation"][data-animation-delay="21"]
+{
+    -webkit-animation: konaFadeAnimation 1s 2.1s 1 ease-in-out both; 
+    animation: konaFadeAnimation 1s 2.1s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="fadeAnimation"][data-animation-delay="22"]
+{
+    -webkit-animation: konaFadeAnimation 1s 2.2s 1 ease-in-out both; 
+    animation: konaFadeAnimation 1s 2.2s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="fadeAnimation"][data-animation-delay="23"]
+{
+    -webkit-animation: konaFadeAnimation 1s 2.3s 1 ease-in-out both; 
+    animation: konaFadeAnimation 1s 2.3s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="fadeAnimation"][data-animation-delay="24"]
+{
+    -webkit-animation: konaFadeAnimation 1s 2.4s 1 ease-in-out both; 
+    animation: konaFadeAnimation 1s 2.4s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="fadeAnimation"][data-animation-delay="25"]
+{
+    -webkit-animation: konaFadeAnimation 1s 2.5s 1 ease-in-out both; 
+    animation: konaFadeAnimation 1s 2.5s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="fadeAnimation"][data-animation-delay="26"]
+{
+    -webkit-animation: konaFadeAnimation 1s 2.6s 1 ease-in-out both; 
+    animation: konaFadeAnimation 1s 2.6s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="fadeAnimation"][data-animation-delay="27"]
+{
+    -webkit-animation: konaFadeAnimation 1s 2.7s 1 ease-in-out both; 
+    animation: konaFadeAnimation 1s 2.7s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="fadeAnimation"][data-animation-delay="28"]
+{
+    -webkit-animation: konaFadeAnimation 1s 2.8s 1 ease-in-out both; 
+    animation: konaFadeAnimation 1s 2.8s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="fadeAnimation"][data-animation-delay="29"]
+{
+    -webkit-animation: konaFadeAnimation 1s 2.9s 1 ease-in-out both; 
+    animation: konaFadeAnimation 1s 2.9s 1 ease-in-out both;
+}
+[data-type="com.idc.core.animation"][data-animation-type="fadeAnimation"][data-animation-delay="30"]
+{
+    -webkit-animation: konaFadeAnimation 1s 3s 1 ease-in-out both; 
+    animation: konaFadeAnimation 1s 3s 1 ease-in-out both;
+}
