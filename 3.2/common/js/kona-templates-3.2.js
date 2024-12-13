@@ -502,10 +502,10 @@ com.idc.templates = {
                   "data-type": "com.idc.ui.references.switch"
               },
               {
-                  "data-view-state": "active"
+                  "data-view-state": ""
               },
               {
-                  "data-selected": "slide"
+                  "data-selected": ""
               }
             ]
         }
