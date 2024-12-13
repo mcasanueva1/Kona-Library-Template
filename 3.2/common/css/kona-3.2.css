@@ -2190,8 +2190,8 @@ body[data-screen-orientation="portrait"] > [data-type="com.idc.ui.contentSize"] 
 /*-------------*/
 
 [data-type="com.idc.core.animation"] {
-    background: none;
-    background-color: white;
+    background: none!important;
+    background-color: white!important;
 }
 
 /* WIDTH ANIMATION ************************************************************************************/
