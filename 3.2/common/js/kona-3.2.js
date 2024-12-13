@@ -2377,7 +2377,7 @@ com.idc.clm = {
   gotoSlide: async function (slideId) {
 
     //account for abbreviated links
-    if (slideId.endsWith("..")) {
+    if (slideId && slideId.endsWith("..")) {
       let slideFound = com.idc.clm.findSlide(slideId.replace("..", ""), true);
       if (slideFound) {
         slideId = slideFound.id;
@@ -4880,7 +4880,7 @@ com.idc.ui = {
         if (targetId) {
           let slideFound
           //if target id ends with .. perform and approximate search
-          if (targetId.endsWith("..")) {
+          if (targetId && targetId.endsWith("..")) {
             slideFound = com.idc.clm.findSlide(targetId.replace("..", ""), true);
           } else {
             slideFound = com.idc.clm.findSlide(targetId);
@@ -4978,7 +4978,7 @@ com.idc.ui = {
           el.querySelectorAll(`[data-sub-type="com.idc.ui.core.menu.button"]`).forEach((button) => {
             let correspondsToCurrentSlide;
             let targetId = button.getAttribute("data-target-id")
-            if (targetId.endsWith("..")) {
+            if (targetId && targetId.endsWith("..")) {
               correspondsToCurrentSlide = com.idc.clm.vars.navigation.currentSlide.id.includes(targetId.replace("..", ""))
             } else {
               correspondsToCurrentSlide = com.idc.clm.vars.navigation.currentSlide.id == targetId
