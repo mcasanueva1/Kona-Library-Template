@@ -213,10 +213,10 @@ let com_idc_params = {
     },
     "components": {
       "openButton": {
-        "id": "interactionSummaryOpenButton",
+        "id": "",
       },
       "modal": {
-        "id": "interactionSummaryModal",
+        "id": "",
       },
       "tab": {
         "id": "interactionSummaryTab",
@@ -323,7 +323,7 @@ let com_idc_params = {
       "tabs": {
         "previousInteractions": true,
         "slides": true,
-        "emails": true,
+        "emails": false,
       },
       "fields": {
         "previousInteractions": {
