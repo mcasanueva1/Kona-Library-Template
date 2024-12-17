@@ -195,12 +195,12 @@ let com_idc_params = {
     }
   },
   "interactionSummary": {
-    "active": true,
+    "active": false,
     "minRows": {
       "previousInteractions": 8,
       "emails": 7,
     },
-    "groupViewsForSameSlide": "true",
+    "groupViewsForSameSlide": true,
     "testModel": {
       "calls": {
         "min": 1,
