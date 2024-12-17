@@ -2447,11 +2447,13 @@ com.idc.clm = {
     //overWrite
     if (this.vars.navigation.overWrite.prevSlide) {
       this.gotoSlide(this.vars.navigation.overWrite.prevSlide);
+      return
     }
 
     //standard
     if (!this.vars.navigation.currentSlide.isFirst) {
       this.gotoSlide(this.vars.navigation.prevSlide.id);
+      return
     }
   },
   isBackFromStandAloneSlide: function () {
