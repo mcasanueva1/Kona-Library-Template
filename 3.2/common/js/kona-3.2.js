@@ -6144,17 +6144,19 @@ com.idc.ui = {
         //depending on global/slide refs, set switch and open button state
         let openButtonState = this.disableFlag || (!this.activeRefs.slide && !this.activeRefs.all) ? "disabled" : "enabled";
 
-        let openButton = document.querySelector(`#${vars.references.components.openButton.id}`);
-        if (openButton) {
-          switch (openButtonState) {
-            case "enabled":
-              if (openButton.getAttribute("data-view-state") == "disabled") {
-                openButton.setAttribute("data-view-state", openButton.parentNode.getAttribute("children-view-state"));
-              }
-              break;
-            case "disabled":
-              openButton.setAttribute("data-view-state", "disabled");
-              break;
+        if (vars.references.components.openButton.id) {
+          let openButton = document.querySelector(`#${vars.references.components.openButton.id}`);
+          if (openButton) {
+            switch (openButtonState) {
+              case "enabled":
+                if (openButton.getAttribute("data-view-state") == "disabled") {
+                  openButton.setAttribute("data-view-state", openButton.parentNode.getAttribute("children-view-state"));
+                }
+                break;
+              case "disabled":
+                openButton.setAttribute("data-view-state", "disabled");
+                break;
+            }
           }
         }
 
@@ -6174,6 +6176,8 @@ com.idc.ui = {
       },
       setEvents: function () {
         let vars = com.idc.clm.vars;
+
+        if (!vars.references.components.modal.id) return;
 
         //before and after open
         let modal = document.querySelector(`#${vars.references.components.modal.id}`);
@@ -6209,7 +6213,7 @@ com.idc.ui = {
       removeContent: function () {
         let vars = com.idc.clm.vars;
 
-        if (!document.querySelector(`#${vars.references.components.modal.id}`)) return;
+        if (!vars.references.components.modal.id || !document.querySelector(`#${vars.references.components.modal.id}`)) return;
 
         document.querySelector(`#${vars.references.components.modal.id} [data-type="com.idc.ui.references.landscapeView"]`).innerHTML = "";
         document.querySelector(`#${vars.references.components.modal.id} [data-type="com.idc.ui.references.landscapeView"]`).removeAttribute("data-view-state");
@@ -6222,6 +6226,7 @@ com.idc.ui = {
         let screenOrientation = vars.screen.orientation;
 
         if (!source.all && !source.slide) return;
+        if (!vars.references.components.modal.id) return;
 
         //img source
         let refsFile = screenOrientation == "landscape" ? source[type].landscape : source[type].portrait ? source[type].portrait : source[type].landscape;
