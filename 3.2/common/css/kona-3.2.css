@@ -237,6 +237,10 @@ body[data-screen-orientation="portrait"] > [data-type="com.idc.ui.contentSize"] 
 }
 
 /* MODAL / DROPDOWN / MODAL OBJECT ------------------ */
+#standaloneModal1 {
+    width: 1024px;
+}
+
 [data-type="com.idc.ui.core.modal.popUp"] {
     position: absolute;
     display: none;
@@ -2347,6 +2351,10 @@ body[data-screen-orientation="portrait"] > [data-type="com.idc.ui.contentSize"] 
 [data-type="com.idc.core.animation"][data-animation-type="heightAnimation"][data-animation-subtype="maskDown"] {
     top: auto;
     bottom: 0px;
+}
+[data-type="com.idc.core.animation"][data-animation-type="heightAnimation"][data-animation-subtype="maskUp"] {
+    top: 0px;
+    bottom: auto;
 }
 
 [data-type="com.idc.core.animation"][data-animation-type="heightAnimation"][data-animation-delay="1"]
