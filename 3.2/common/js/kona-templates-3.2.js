@@ -1268,7 +1268,7 @@ com.idc.templates = {
                         "type": "DIV",
                         "attributes": [
                             {
-                                "data-type": "com.idc.ui.emailCart.item"
+                                "data-type": "com.idc.ui.emailCart.itemTemplate"
                             },
                             {
                                 "data-item-id": ""
