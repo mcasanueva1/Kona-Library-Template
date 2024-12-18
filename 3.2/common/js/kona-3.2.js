@@ -3956,6 +3956,11 @@ com.idc.clm = {
       //alert and timer
       let alertDiv = document.createElement("div");
       alertDiv.setAttribute("id", "__redirectAlertDiv");
+      alertDiv.style.position = "absolute";
+      alertDiv.style.zIndex = "1000";
+      alertDiv.style.backgroundColor = "#ddd";
+      alertDiv.style.color = "#000";
+      alertDiv.style.padding = "10px";
       if (document.body.querySelector('[data-type="com.idc.ui.mainContent"]')) {
         document.body.querySelector('[data-type="com.idc.ui.mainContent"]').appendChild(alertDiv);
       } else {
@@ -6616,7 +6621,7 @@ com.idc.ui = {
         });
 
         if (!instance) return;
-
+        
         //set visibility: tab buttons
         switch (pViewState) {
           case "hidden":
