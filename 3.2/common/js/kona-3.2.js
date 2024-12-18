@@ -2375,7 +2375,6 @@ com.idc.clm = {
 
   /*navigation --------------------------------------------*/
   gotoSlide: async function (slideId) {
-
     //account for abbreviated links
     if (slideId && slideId.endsWith("..")) {
       let slideFound = com.idc.clm.findSlide(slideId.replace("..", ""), true);
@@ -2447,13 +2446,13 @@ com.idc.clm = {
     //overWrite
     if (this.vars.navigation.overWrite.prevSlide) {
       this.gotoSlide(this.vars.navigation.overWrite.prevSlide);
-      return
+      return;
     }
 
     //standard
     if (!this.vars.navigation.currentSlide.isFirst) {
       this.gotoSlide(this.vars.navigation.prevSlide.id);
-      return
+      return;
     }
   },
   isBackFromStandAloneSlide: function () {
@@ -2871,7 +2870,7 @@ com.idc.clm = {
         let slidesSequence = [];
         if (selectedCallflow) {
           let callflow = this.vars.options.dynamicPresentation.source.callflows.flows.find((callflow) => callflow.name == selectedCallflow);
-          let slidesSequenceInput = callflow.slides
+          let slidesSequenceInput = callflow.slides;
 
           if (Array.isArray(slidesSequenceInput)) {
             //identify slide ids
@@ -3187,7 +3186,7 @@ com.idc.clm = {
           .forEach((item) => {
             aeArray.push(item);
           });
-  
+
         this.vars.interactionSummary.nonEmailCartItems.templates.forEach((template) => {
           aeArray.push({
             id: template.id,
@@ -3195,7 +3194,7 @@ com.idc.clm = {
             crmId: template.crmId,
             group: "nonEmailCartTemplates",
           });
-  
+
           template.fragments.forEach((fragment) => {
             aeArray.push({
               id: fragment.id,
@@ -3207,25 +3206,25 @@ com.idc.clm = {
           });
         });
       }
-  
+
       for (let i = 0; i < Math.floor(Math.random() * maxEmails) + minEmails; i++) {
         let emailDate = new Date();
         emailDate.setDate(emailDate.getDate() - Math.floor(Math.random() * 30));
-  
+
         let emailOpened = Math.random() < 0.7 ? 1 : 0;
-  
+
         let openEmailDate;
         let openCount;
         let clickCount;
         if (emailOpened) {
           openEmailDate = new Date(); //has to be after emailDate
           openEmailDate.setDate(emailDate.getDate() + Math.floor(Math.random() * 3));
-  
+
           openCount = Math.floor(Math.random() * 6) + 1;
-  
+
           clickCount = Math.floor(Math.random() * 6);
         }
-  
+
         let templatesArr = aeArray.filter((item) => item.group == "templates" || item.group == "nonEmailCartTemplates");
         let templateIndex = Math.floor(Math.random() * templatesArr.length);
         let template = templatesArr[templateIndex];
@@ -3235,7 +3234,7 @@ com.idc.clm = {
         } else {
           fragments = aeArray.filter((item) => item.group == "nonEmailCartFragments" && item.template == template.id);
         }
-  
+
         let Sent_Email_vod__c_Record = {
           Opened_vod__c: emailOpened,
           Email_Sent_Date_vod__c: emailDate.toISOString(),
@@ -3248,9 +3247,9 @@ com.idc.clm = {
           Status_vod__c: "Delivered_vod",
           Email_Fragments_vod__c: fragments.map((item) => item.crmId).join(","),
         };
-  
+
         Sent_Email_vod__c.push(Sent_Email_vod__c_Record);
-  
+
         Sent_Email_vod__c_Counter++;
       }
       Sent_Email_vod__c.forEach((record) => {
@@ -3268,7 +3267,7 @@ com.idc.clm = {
     if (considerEmailData) {
       Sent_Email_vod__c.forEach((sentEmail) => {
         if (!sentEmail.Opened_vod__c) return;
-  
+
         let activitiesArr = [];
         for (let i = 0; i < sentEmail.Open_Count_vod__c; i++) {
           activitiesArr.push("Opened_vod");
@@ -3276,7 +3275,7 @@ com.idc.clm = {
         for (let i = 0; i < sentEmail.Click_Count_vod__c; i++) {
           activitiesArr.push("Clicked_vod");
         }
-  
+
         activitiesArr.forEach((activityType) => {
           let vaultDocID;
           let vaultDocName;
@@ -3287,15 +3286,15 @@ com.idc.clm = {
             let fragmentsArr = sentEmail.Email_Fragments_vod__c.split(",");
             let fragmentIndex = Math.floor(Math.random() * fragmentsArr.length);
             let fragment = aeArray.find((item) => item.crmId == fragmentsArr[fragmentIndex]);
-  
+
             if (!fragment) return;
-  
+
             vaultDocID = fragment.vaultId;
             vaultDocName = fragment.id;
             vaultDocNumber = fragment.crmId;
             fragmentId = fragment.crmId;
           }
-  
+
           let Email_Activity_vod__c_Record = {
             Activity_DateTime_vod__c: sentEmail.Last_Activity_Date_vod__c,
             Vault_Doc_ID_vod__c: vaultDocID ? vaultDocID : "",
@@ -3306,9 +3305,9 @@ com.idc.clm = {
             ID: "0000000000000000" + (Email_Activity_vod__c_Counter + 10),
             Approved_Document_vod__c: fragmentId ? fragmentId : "",
           };
-  
+
           Email_Activity_vod__c.push(Email_Activity_vod__c_Record);
-  
+
           Email_Activity_vod__c_Counter++;
         });
       });
@@ -4891,7 +4890,7 @@ com.idc.ui = {
         let targetIdEmptyFlag = com.idc.util.getElementAttribute(pElement, "data-target-id-empty-flag");
 
         if (targetId) {
-          let slideFound
+          let slideFound;
           //if target id ends with .. perform and approximate search
           if (targetId && targetId.endsWith("..")) {
             slideFound = com.idc.clm.findSlide(targetId.replace("..", ""), true);
@@ -4990,11 +4989,11 @@ com.idc.ui = {
         document.querySelectorAll(this.selector).forEach((el) => {
           el.querySelectorAll(`[data-sub-type="com.idc.ui.core.menu.button"]`).forEach((button) => {
             let correspondsToCurrentSlide;
-            let targetId = button.getAttribute("data-target-id")
+            let targetId = button.getAttribute("data-target-id");
             if (targetId && targetId.endsWith("..")) {
-              correspondsToCurrentSlide = com.idc.clm.vars.navigation.currentSlide.id.includes(targetId.replace("..", ""))
+              correspondsToCurrentSlide = com.idc.clm.vars.navigation.currentSlide.id.includes(targetId.replace("..", ""));
             } else {
-              correspondsToCurrentSlide = com.idc.clm.vars.navigation.currentSlide.id == targetId
+              correspondsToCurrentSlide = com.idc.clm.vars.navigation.currentSlide.id == targetId;
             }
 
             if (correspondsToCurrentSlide) {
@@ -6054,6 +6053,14 @@ com.idc.ui = {
       onlySlideRefsFlag: null, //config setting to show only slide refs (not all refs)
       init: function () {
         let vars = com.idc.clm.vars;
+        let util = com.idc.util;
+
+        //check components
+        let modalEl = document.querySelector(`#${vars.references.components.modal.id}`);
+        if (!modalEl) {
+          util.log(`com.idc.ui.core.references.init(): modal not found`);
+          return;
+        }
 
         //all references
         if (vars.references.content.landscape) {
@@ -6241,6 +6248,7 @@ com.idc.ui = {
         //container
         let selector = `#${vars.references.components.modal.id} [data-type="com.idc.ui.references"] [data-type="com.idc.ui.references.${screenOrientation}View"]`;
         let refsContainer = document.querySelector(selector);
+        if (!refsContainer) return;
         refsContainer.innerHTML = "";
 
         //container attributes
@@ -6621,7 +6629,7 @@ com.idc.ui = {
         });
 
         if (!instance) return;
-        
+
         //set visibility: tab buttons
         switch (pViewState) {
           case "hidden":
