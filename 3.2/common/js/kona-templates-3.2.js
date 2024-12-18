@@ -1248,120 +1248,11 @@ com.idc.templates = {
     ],
   },
   "emailCart": {
-    "emailButton": [
-      {
-        "type": "DIV",
-        "attributes": [
-          {
-            "data-type": "com.idc.ui.core.button",
-          },
-          {
-            "data-sub-type": "com.idc.ui.core.emailButton",
-          },
-        ],
-        "childNodes": [],
-      }
-    ],
-    "emailCartOpenButton": [
-      {
-        "type": "DIV",
-        "attributes": [
-          {
-            "data-type": "com.idc.ui.core.button",
-          },
-          {
-            "data-sub-type": "com.idc.ui.core.modal.openButton",
-          },
-        ],
-        "childNodes": [
-          {
-            "type": "DIV",
-            "attributes": [
-              {
-                "data-type": "com.idc.ui.emailCart.badge",
-              },
-            ],
-            "childNodes": [],
-          }
-        ],
-      }
-    ],
-    "modalContent": [
-      {
+    "modalContent": [{
         "type": "DIV",
         "attributes": [
             {
-                "data-type": "com.idc.ui.emailCart.items"
-            }
-        ],
-        "childNodes": []
-      },
-      {
-          "type": "DIV",
-          "attributes": [
-              {
-                  "data-type": "com.idc.ui.emailCart.buttons"
-              }
-          ],
-          "childNodes": []
-      }
-    ],
-    "buttons": {
-      "cancel": [
-        {
-          "type": "DIV",
-          "attributes": [
-              {
-                  "data-type": "com.idc.ui.core.button"
-              },
-              {
-                  "data-sub-type": "com.idc.ui.emailCart.cancelButton"
-              },
-          ],
-          "childNodes": []
-        },
-      ],
-      "send": [
-        {
-          "type": "DIV",
-          "attributes": [
-              {
-                  "data-type": "com.idc.ui.core.button"
-              },
-              {
-                  "data-sub-type": "com.idc.ui.emailCart.sendButton"
-              },
-          ],
-          "childNodes": []
-        },
-      ],
-      "done": [
-        {
-          "type": "DIV",
-          "attributes": [
-              {
-                  "data-type": "com.idc.ui.core.button"
-              },
-              {
-                  "data-sub-type": "com.idc.ui.emailCart.doneButton"
-              },
-          ],
-          "childNodes": []
-        },
-      ]
-    },
-    "itemTemplate": [
-      {
-        "type": "DIV",
-        "attributes": [
-            {
-                "data-type": "com.idc.ui.emailCart.item"
-            },
-            {
-                "data-item-id": ""
-            },
-            {
-                "data-status": "unChecked"
+                "data-type": "com.idc.ui.core.modal.contentArea"
             }
         ],
         "childNodes": [
@@ -1369,66 +1260,107 @@ com.idc.templates = {
                 "type": "DIV",
                 "attributes": [
                     {
-                        "data-type": "com.idc.ui.emailCart.thumb"
-                    },
-                    {
-                        "data-item-id": ""
+                        "data-type": "com.idc.ui.emailCart.items"
                     }
                 ],
                 "childNodes": [
                     {
-                        "type": "IMG",
-                        "attributes": []
+                        "type": "DIV",
+                        "attributes": [
+                            {
+                                "data-type": "com.idc.ui.emailCart.item"
+                            },
+                            {
+                                "data-item-id": ""
+                            },
+                            {
+                                "data-status": "unChecked"
+                            }
+                        ],
+                        "childNodes": [
+                            {
+                                "type": "DIV",
+                                "attributes": [
+                                    {
+                                        "data-type": "com.idc.ui.emailCart.thumb"
+                                    }
+                                ],
+                                "childNodes": [
+                                    {
+                                        "type": "IMG",
+                                        "attributes": []
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "DIV",
+                                "attributes": [
+                                    {
+                                        "data-type": "com.idc.ui.emailCart.title"
+                                    }
+                                ],
+                                "childNodes": []
+                            },
+                            {
+                                "type": "DIV",
+                                "attributes": [
+                                    {
+                                        "data-type": "com.idc.ui.emailCart.checkbox"
+                                    }
+                                ]
+                            }
+                        ]
                     }
                 ]
-            },
-            {
+                },
+                {
                 "type": "DIV",
                 "attributes": [
                     {
-                        "data-type": "com.idc.ui.emailCart.title"
-                    },
-                    {
-                        "data-item-id": ""
+                        "data-type": "com.idc.ui.emailCart.buttons"
                     }
                 ],
-                "childNodes": []
-            },
-            {
-                "type": "DIV",
-                "attributes": [
-                    {
-                        "data-type": "com.idc.ui.emailCart.checkbox"
-                    },
-                    {
-                        "data-item-id": ""
-                    }
+                "childNodes": [
+                {
+                    "type": "DIV",
+                    "attributes": [
+                        {
+                            "data-type": "com.idc.ui.core.button"
+                        },
+                        {
+                            "data-sub-type": "com.idc.ui.emailCart.cancelButton"
+                        },
+                    ],
+                    "childNodes": []
+                },
+                {
+                    "type": "DIV",
+                    "attributes": [
+                        {
+                            "data-type": "com.idc.ui.core.button"
+                        },
+                        {
+                            "data-sub-type": "com.idc.ui.emailCart.doneButton"
+                        },
+                    ],
+                    "childNodes": []
+                },
+                {
+                    "type": "DIV",
+                    "attributes": [
+                        {
+                            "data-type": "com.idc.ui.core.button"
+                        },
+                        {
+                            "data-sub-type": "com.idc.ui.emailCart.sendButton"
+                        },
+                    ],
+                    "childNodes": []
+                }
                 ]
             }
         ]
-      }
-    ],
-    "simplifiedItemTemplate": [
-      {
-        "type": "DIV",
-        "attributes": [
-            {
-                "data-type": "com.idc.ui.emailCart.item"
-            },
-            {
-              "data-sub-type": "com.idc.ui.emailCart.simplifiedItem"
-            },
-            {
-                "data-item-id": ""
-            },
-            {
-                "data-status": "unChecked"
-            }
-        ],
-        "childNodes": [
-        ]
-      }
-    ],
+    }],
   },
   "interactionSummary": {
     "modalContent": [{

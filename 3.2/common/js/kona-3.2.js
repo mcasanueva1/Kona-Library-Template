@@ -3159,8 +3159,8 @@ com.idc.clm = {
     //Sent_Email_vod__c
     let Sent_Email_vod__c = [];
     let Sent_Email_vod__c_Counter = 0;
+    let aeArray = [];
     if (considerEmailData) {
-      let aeArray = [];
       {
         this.vars.emailCart.templates
           .map((item) => {
