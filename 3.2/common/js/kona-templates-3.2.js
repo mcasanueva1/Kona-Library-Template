@@ -1277,39 +1277,7 @@ com.idc.templates = {
                                 "data-status": "unChecked"
                             }
                         ],
-                        "childNodes": [
-                            {
-                                "type": "DIV",
-                                "attributes": [
-                                    {
-                                        "data-type": "com.idc.ui.emailCart.thumb"
-                                    }
-                                ],
-                                "childNodes": [
-                                    {
-                                        "type": "IMG",
-                                        "attributes": []
-                                    }
-                                ]
-                            },
-                            {
-                                "type": "DIV",
-                                "attributes": [
-                                    {
-                                        "data-type": "com.idc.ui.emailCart.title"
-                                    }
-                                ],
-                                "childNodes": []
-                            },
-                            {
-                                "type": "DIV",
-                                "attributes": [
-                                    {
-                                        "data-type": "com.idc.ui.emailCart.checkbox"
-                                    }
-                                ]
-                            }
-                        ]
+                        "childNodes": []
                     }
                 ]
                 },
