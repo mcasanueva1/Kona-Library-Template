@@ -170,7 +170,7 @@ let com_idc_params = {
     },
     "vaultInstance": {
         "development": {
-          "url": ""
+          "url": "https://vv-agency-idc.veevavault.com"
         },
         "release": {
           "url": null
