@@ -1248,6 +1248,43 @@ com.idc.templates = {
     ],
   },
   "emailCart": {
+    "emailButton": [{
+        "type": "DIV",
+        "attributes": [
+        {
+            "data-type": "com.idc.ui.core.button",
+        },
+        {
+            "data-sub-type": "com.idc.ui.core.emailButton",
+        },
+        ],
+        "childNodes": [],
+    }],
+    "emailCartOpenButton": [{
+        "type": "DIV",
+        "attributes": [
+        {
+            "data-type": "com.idc.ui.core.button",
+        },
+        {
+            "data-sub-type": "com.idc.ui.core.modal.dualButton",
+        },
+        {
+            "data-target-id": "",
+        }
+        ],
+        "childNodes": [
+        {
+            "type": "DIV",
+            "attributes": [
+            {
+                "data-type": "com.idc.ui.emailCart.badge",
+            },
+            ],
+            "childNodes": [],
+        }
+        ]
+    }],
     "modalContent": [{
         "type": "DIV",
         "attributes": [
@@ -1280,52 +1317,52 @@ com.idc.templates = {
                         "childNodes": []
                     }
                 ]
-                },
+            },
+            {
+            "type": "DIV",
+            "attributes": [
                 {
+                    "data-type": "com.idc.ui.emailCart.buttons"
+                }
+            ],
+            "childNodes": [
+            {
                 "type": "DIV",
                 "attributes": [
                     {
-                        "data-type": "com.idc.ui.emailCart.buttons"
-                    }
+                        "data-type": "com.idc.ui.core.button"
+                    },
+                    {
+                        "data-sub-type": "com.idc.ui.emailCart.cancelButton"
+                    },
                 ],
-                "childNodes": [
-                {
-                    "type": "DIV",
-                    "attributes": [
-                        {
-                            "data-type": "com.idc.ui.core.button"
-                        },
-                        {
-                            "data-sub-type": "com.idc.ui.emailCart.cancelButton"
-                        },
-                    ],
-                    "childNodes": []
-                },
-                {
-                    "type": "DIV",
-                    "attributes": [
-                        {
-                            "data-type": "com.idc.ui.core.button"
-                        },
-                        {
-                            "data-sub-type": "com.idc.ui.emailCart.doneButton"
-                        },
-                    ],
-                    "childNodes": []
-                },
-                {
-                    "type": "DIV",
-                    "attributes": [
-                        {
-                            "data-type": "com.idc.ui.core.button"
-                        },
-                        {
-                            "data-sub-type": "com.idc.ui.emailCart.sendButton"
-                        },
-                    ],
-                    "childNodes": []
-                }
-                ]
+                "childNodes": []
+            },
+            {
+                "type": "DIV",
+                "attributes": [
+                    {
+                        "data-type": "com.idc.ui.core.button"
+                    },
+                    {
+                        "data-sub-type": "com.idc.ui.emailCart.doneButton"
+                    },
+                ],
+                "childNodes": []
+            },
+            {
+                "type": "DIV",
+                "attributes": [
+                    {
+                        "data-type": "com.idc.ui.core.button"
+                    },
+                    {
+                        "data-sub-type": "com.idc.ui.emailCart.sendButton"
+                    },
+                ],
+                "childNodes": []
+            }
+            ]
             }
         ]
     }],
