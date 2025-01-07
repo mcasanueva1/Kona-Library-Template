@@ -2112,7 +2112,8 @@ com.idc.clm = {
                     }
                   }
                 } else {
-                  util.log(`com.idc.clm.getDataForContextObjects: could not retrieve CRM ID for ${item.id}`);
+                  util.log(`com.idc.clm.getDataForContextObjects: could not retrieve CRM ID for ${item.id} (${item.group}): ${item.vaultId} + ${this.vars.emailCart.vaultURL}`);
+                  util.log(data.message);
                 }
                 resolve();
               });
@@ -3011,7 +3012,10 @@ com.idc.clm = {
     if (!this.vars.standaloneModalGroups.active) return false;
 
     //is dynamic presentation >> return false
-    if (this.vars.navigation.dynamicPresentation.active) return false;
+    if  (this.vars.navigation.dynamicPresentation.active) {
+      com.idc.util.log("com.idc.clm.validateStandaloneGroup: dynamic presentation / unable to activate standalone group");
+      return false;
+    }
 
     //find group
     let groupObj = this.vars.standaloneModalGroups.groups.find((item) => {
@@ -4829,19 +4833,13 @@ com.idc.ui = {
 
               //standalone modal group (not in dynamic presentation mode or eval function)
               let standaloneGroup = com.idc.util.getElementAttribute(el, "data-standalone-group");
-              let isDynamicPresentation = com.idc.clm.vars.navigation.dynamicPresentation.active;
               if (standaloneGroup) {
-                if (!isDynamicPresentation && !overrideFnc) {
+                if (!overrideFnc) {
                   if (com.idc.clm.validateStandaloneGroup(standaloneGroup, targetId)) {
                     com.idc.clm.activateStandaloneGroup(standaloneGroup);
                   }
                 } else {
-                  if (isDynamicPresentation) {
-                    com.idc.util.log("com.idc.ui.core.link: dynamic presentation / unable to activate standalone group");
-                  }
-                  if (overrideFnc) {
-                    com.idc.util.log("com.idc.ui.core.link: link eval function / unable to activate standalone group");
-                  }
+                  com.idc.util.log("com.idc.ui.core.link: link eval function / unable to activate standalone group");
                 }
               }
 
@@ -5088,6 +5086,7 @@ com.idc.ui = {
               elType: null, //back slide element type (complex link)
               elInstance: null, //back slide element instance (complex link tab/accordion/multi)
               zIndexIncrement: null, //used to add / subtract from the default z-index
+              standaloneGroup: null, //used to set standalone modal group in modal param
             });
 
             //is standalone modal?
@@ -5212,6 +5211,14 @@ com.idc.ui = {
                 el.components.paginator = {
                   element: paginator,
                 };
+              }
+
+              //standalone modal group (not in dynamic presentation mode or eval function)\
+              if (el.params.standaloneGroup) {
+                //activate group if comes as param (could have been activated from a link also)
+                if (com.idc.clm.validateStandaloneGroup(el.params.standaloneGroup, com.idc.clm.vars.navigation.currentSlide.id)) {
+                  com.idc.clm.activateStandaloneGroup(el.params.standaloneGroup);
+                }
               }
 
               if (this.standaloneModalGroups.standalonelBelongsToActiveGroup()) {
