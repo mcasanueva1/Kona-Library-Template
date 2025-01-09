@@ -885,6 +885,9 @@ body[data-screen-orientation="portrait"] > [data-type="com.idc.ui.contentSize"] 
 #interactionSummaryTab [data-ui-type="filter"][data-view-state="disabled"] {
     opacity: 0.3;
 }
+#interactionSummaryTab [data-ui-type="filter"][data-view-state="hidden"] {
+    display: none;
+}
 
 /*sort*/
 #interactionSummaryTab [data-ui-id="slides_sort_modal_open"] SPAN,
