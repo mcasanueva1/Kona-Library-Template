@@ -8424,7 +8424,7 @@ com.idc.ui = {
               case "notDiscussed":
                 return slide.status == "notDiscussed";
               case "recommended":
-                return slide.nextBestContent.recommended;
+                return slide.nextBestContent.recommended && vars.interactionSummary.nextBestContent.clm.active;
             }
           }).length;
 
