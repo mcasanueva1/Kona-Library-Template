@@ -2210,7 +2210,7 @@ com.idc.clm = {
 
         //Sent_Email_vod__c for account and templates
         if (this.vars.interactionSummary.active && this.vars.session.isAnActualCall && this.vars.emailCart.active) {
-          let sentEmailRecords;
+          let sentEmailRecords;          
           if (this.vars.emailCart.templates && this.vars.metadata.account.id) {
             sentEmailRecords = await new Promise((resolve) => {
               let allTemplates = this.vars.emailCart.templates.concat(this.vars.interactionSummary.nonEmailCartItems.templates);
@@ -3491,42 +3491,42 @@ com.idc.clm = {
         //fragments
         let fragmentTemplate = record.email.fragments.splice(0)[0];
 
-        if (!sentEmail.Email_Fragments_vod__c) return; //only events for approved documents (email fragments
-
-        let fragmentIDs = sentEmail.Email_Fragments_vod__c.split(",");
-        fragmentIDs.forEach((fragmentID) => {
-          //search fragment
-          let fragment;
-          if (templateType == "emailCart") {
-            fragment = vars.emailCart.fragments.find((fragment) => fragment.crmId == fragmentID);
-          } else {
-            fragment = template.fragments.find((fragment) => fragment.crmId == fragmentID);
-          }
-          if (!fragment) return;
-
-          //populate fragment record
-          let fragmentRecord = JSON.parse(JSON.stringify(fragmentTemplate));
-          fragmentRecord.id = fragment.id;
-          fragmentRecord.title = fragment.title;
-          fragmentRecord.linksTo = fragment.linksTo;
-          fragmentRecord.clicks = 0;
-
-          vars.interactionSummary.input.Email_Activity_vod__c.filter(
-            (emailActivity) => emailActivity.Sent_Email_vod__c == sentEmail.ID && emailActivity.Approved_Document_vod__c == fragment.crmId
-          ).forEach((emailActivity) => {
-            if (!emailActivity.Approved_Document_vod__c) return; //only events for approved documents (email fragments)
-            if (emailActivity.Event_type_vod__c != "Clicked_vod") return; //only click events
-
-            //increment fragment clicks
-            fragmentRecord.clicks++;
-
-            //increment email clicks
-            record.email.clicks++;
+        if (sentEmail.Email_Fragments_vod__c) {
+          let fragmentIDs = sentEmail.Email_Fragments_vod__c.split(",");
+          fragmentIDs.forEach((fragmentID) => {
+            //search fragment
+            let fragment;
+            if (templateType == "emailCart") {
+              fragment = vars.emailCart.fragments.find((fragment) => fragment.crmId == fragmentID);
+            } else {
+              fragment = template.fragments.find((fragment) => fragment.crmId == fragmentID);
+            }
+            if (!fragment) return;
+  
+            //populate fragment record
+            let fragmentRecord = JSON.parse(JSON.stringify(fragmentTemplate));
+            fragmentRecord.id = fragment.id;
+            fragmentRecord.title = fragment.title;
+            fragmentRecord.linksTo = fragment.linksTo;
+            fragmentRecord.clicks = 0;
+  
+            vars.interactionSummary.input.Email_Activity_vod__c.filter(
+              (emailActivity) => emailActivity.Sent_Email_vod__c == sentEmail.ID && emailActivity.Approved_Document_vod__c == fragment.crmId
+            ).forEach((emailActivity) => {
+              if (!emailActivity.Approved_Document_vod__c) return; //only events for approved documents (email fragments)
+              if (emailActivity.Event_type_vod__c != "Clicked_vod") return; //only click events
+  
+              //increment fragment clicks
+              fragmentRecord.clicks++;
+  
+              //increment email clicks
+              record.email.clicks++;
+            });
+  
+            //add to array
+            record.email.fragments.push(fragmentRecord);
           });
-
-          //add to array
-          record.email.fragments.push(fragmentRecord);
-        });
+        }
 
         //add to timeline
         vars.interactionSummary.output.timeline.push(record);
@@ -3672,6 +3672,12 @@ com.idc.clm = {
             //add to array
             record.fragments.push(fragmentRecord);
           });
+
+          if (!vars.emailCart.fragments || vars.emailCart.fragments.length == 0) {
+            record.fragments = [];
+          }
+        } else {
+          record.fragments = [];
         }
 
         //add to array
@@ -3701,6 +3707,9 @@ com.idc.clm = {
           //add to array
           record.fragments.push(fragmentRecord);
         });
+        if (template.fragments.length == 0) {
+          record.fragments = [];
+        }
 
         //add to array
         vars.interactionSummary.output.emails.push(record);
@@ -8602,9 +8611,11 @@ com.idc.ui = {
       }
 
       //emails expand all
-      this.elements.tab.querySelector(`[data-ui-type="table-header-row"] [data-column-id="email"]`).addEventListener("click", (event) => {
-        this.emails_ExpandAll(this.elements.tab.querySelector(`[data-ui-id="emailsTable"]`));
-      });
+      if (vars.emailCart.mode == "fragments") {
+        this.elements.tab.querySelector(`[data-ui-type="table-header-row"] [data-column-id="email"]`).addEventListener("click", (event) => {
+          this.emails_ExpandAll(this.elements.tab.querySelector(`[data-ui-id="emailsTable"]`));
+        });
+      }
     },
     setTabsVisibility: function (pVisibility) {
       let vars = com.idc.clm.vars;
@@ -8817,12 +8828,23 @@ com.idc.ui = {
           }
 
           //expand icon
-          let actionIcon = row; //.querySelector('[data-ui-type="table-row-cell-action"]');
-          if (actionIcon) {
+          let needToHidePlusIcon = false;
+          if (interaction.type == "email") {
+            if (interaction.email.fragments.length == 0) {
+              needToHidePlusIcon = true;
+            }
+          }
+
+          let actionIcon = row;
+          if (actionIcon && !needToHidePlusIcon) {
             actionIcon.addEventListener("click", (event) => {
               let targetRow = event.currentTarget.closest('[data-ui-type="table-row"]');
               this.previousInteractions_ExpandCollapse(targetRow, container);
             });
+          } else {
+            if (needToHidePlusIcon) {
+              row.querySelector('[data-ui-type="table-row-cell-action"]').style.opacity = "0";
+            }
           }
 
           //add to container
@@ -9388,12 +9410,21 @@ com.idc.ui = {
         }
 
         //expand icon
+        let needToHidePlusIcon = false;
+        if (email.fragments.length == 0) {
+          needToHidePlusIcon = true;
+        }
+
         let actionIcon = row; //.querySelector('[data-ui-type="table-row-cell-action"]');
-        if (actionIcon) {
+        if (actionIcon && !needToHidePlusIcon) {
           actionIcon.addEventListener("click", (event) => {
             let targetRow = event.currentTarget.closest('[data-ui-type="table-row"]');
             this.emails_ExpandCollapse(targetRow, container);
           });
+        } else {
+          if (needToHidePlusIcon) {
+            row.querySelector('[data-ui-type="table-row-cell-action"]').style.opacity = "0";
+          }
         }
 
         //add to container
