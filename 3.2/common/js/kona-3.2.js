@@ -4008,7 +4008,19 @@ com.idc.clm = {
   loadCommonHTML: function () {
     let util = com.idc.util;
 
+    let processedItems = [];
+
     this.vars.commonHTML.elements.forEach((commonElementId) => {
+
+      if (processedItems.includes(commonElementId)) {
+        com.idc.util.log(
+          `com.idc.clm.loadCommonHTML: duplicated id "${commonElementId}"`
+        );
+        return;
+      } else {
+        processedItems.push(commonElementId);
+      }
+
       let elementDataKey = this.commonElementDataKey(commonElementId);
       let commonElement = window.localStorage.getItem(elementDataKey);
       let elementPlaceholder = document.querySelector(`[data-common-html="${commonElementId}"]`);
