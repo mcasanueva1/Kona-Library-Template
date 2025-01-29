@@ -245,6 +245,10 @@ body[data-screen-orientation="portrait"] > [data-type="com.idc.ui.contentSize"] 
 #standaloneModal1 {
     width: 1024px;
 }
+#sitemap, #references, #preCall, #resources, #emailCart {
+    animation: none;
+    -webkit-animation: none;
+}
 
 [data-type="com.idc.ui.core.modal.popUp"] {
     position: absolute;
