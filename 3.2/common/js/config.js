@@ -149,7 +149,12 @@ let com_idc_params = {
           },
           "referencesButton": {
             "active": true,
-            "excludeModals": []
+            "excludeModals": [
+              "sitemap",
+              "preCall",
+              "resources",
+              "emailCart"
+            ]
           }
         }
       }
