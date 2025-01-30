@@ -493,6 +493,10 @@ body[data-screen-orientation="portrait"] > [data-type="com.idc.ui.contentSize"] 
     margin-left: 0px;
     margin-right: -1px;
 }
+[data-type="com.idc.ui.utilitiesMenu"] [data-type="com.idc.ui.utilitiesMenu.container"][data-sub-type="com.idc.ui.utilitiesMenu.container.center"] [data-view-state="disabled"],
+[data-type="com.idc.ui.utilitiesMenu"] [data-type="com.idc.ui.utilitiesMenu.container"][data-sub-type="com.idc.ui.utilitiesMenu.container.right"] [data-view-state="disabled"] {
+    opacity: 0.3;
+}
 
 /* email badge */
 [data-type="com.idc.ui.utilitiesMenu"] [data-sub-type="com.idc.ui.core.modal.openButton"] [data-type="com.idc.ui.emailCart.badge"],
