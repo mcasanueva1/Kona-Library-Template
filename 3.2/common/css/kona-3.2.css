@@ -245,7 +245,7 @@ body[data-screen-orientation="portrait"] > [data-type="com.idc.ui.contentSize"] 
 #standaloneModal1 {
     width: 1024px;
 }
-#sitemap, #references, #preCall, #resources, #emailCart {
+#sitemap, #references, #preCall, #resources, #emailCart, #quickLinks {
     animation: none;
     -webkit-animation: none;
 }
