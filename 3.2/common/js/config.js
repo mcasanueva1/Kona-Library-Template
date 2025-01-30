@@ -153,7 +153,8 @@ let com_idc_params = {
               "sitemap",
               "preCall",
               "resources",
-              "emailCart"
+              "emailCart",
+              "quickLinks",
             ]
           }
         }
