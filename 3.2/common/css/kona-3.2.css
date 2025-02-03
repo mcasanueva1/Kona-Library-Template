@@ -245,11 +245,6 @@ body[data-screen-orientation="portrait"] > [data-type="com.idc.ui.contentSize"] 
 #standaloneModal1 {
     width: 1024px;
 }
-#sitemap, #references, #preCall, #resources, #emailCart, #quickLinks {
-    animation: none;
-    -webkit-animation: none;
-}
-
 [data-type="com.idc.ui.core.modal.popUp"] {
     position: absolute;
     display: none;
@@ -257,8 +252,8 @@ body[data-screen-orientation="portrait"] > [data-type="com.idc.ui.contentSize"] 
 }
 [data-type="com.idc.ui.core.modal.popUp"][data-view-state="active"] {
     display: block;
-    -webkit-animation: growUpPopUp 0.4s 0s 1 normal both;
-    animation: growUpPopUp 0.4s 0s 1 normal both;
+    /*-webkit-animation: growUpPopUp 0.4s 0s 1 normal both;
+    animation: growUpPopUp 0.4s 0s 1 normal both;*/
 }
 [data-type="com.idc.ui.core.modal.modalObject"] {
     position: absolute;
