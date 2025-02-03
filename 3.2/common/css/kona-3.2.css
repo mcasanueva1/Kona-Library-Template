@@ -41,7 +41,10 @@ body[data-slide-id="Common"] [data-type="com.idc.ui.contentSize"] {
     height: 768px;
 }
 [data-type="com.idc.ui.mainContent"] {
-    padding: 10px;
+    width: 1024px;
+    height: 768px;
+    padding: 0;
+    overflow: hidden;
 }
 body[data-screen-orientation="landscape"] > [data-type="com.idc.ui.contentSize"] {
     width: 1024px;
