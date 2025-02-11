@@ -761,6 +761,9 @@ com.idc.clm = {
     //post init tasks
     await this.getDataForContextObjects();
 
+    //konaAfterContextObjects event
+    com.idc.util.dispatchEvent("konaAfterContextObjects", {});
+
     //interaction summary
     if (this.vars.interactionSummary.active && this.vars.session.isAnActualCall) {
       this.interactionSummaryModel();
@@ -2323,6 +2326,9 @@ com.idc.clm = {
     } else {
       document.querySelector("body").setAttribute("data-dynamic-presentation-callflow", "");
     }
+
+    //is standalone modal slide
+    document.querySelector("body").setAttribute("data-is-standalone-modal-slide", this.vars.navigation.currentSlide.isStandalone);
 
     //is standalone modal group active
     document.querySelector("body").setAttribute("data-active-standalone-group", this.persistentData.session.selectedStandaloneGroup);
