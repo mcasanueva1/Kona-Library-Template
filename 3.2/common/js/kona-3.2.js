@@ -464,6 +464,7 @@ com.idc.clm = {
         emails: null,
       },
       groupViewsForSameSlide: null,
+      considerDraftCalls: null,
       testModel: {
         calls: {
           min: null,
@@ -546,6 +547,10 @@ com.idc.clm = {
         clm: {
           active: null,
           source: null,
+          source: {
+            call: null,
+            browser: null
+          },
           dynamicCallflowName: null,
         },
       },
@@ -1526,6 +1531,9 @@ com.idc.clm = {
       //group views for same slide
       vars.interactionSummary.groupViewsForSameSlide = util.readSetting(com_idc_params, "interactionSummary.groupViewsForSameSlide", "boolean", null);
 
+      //consider draft calls (no need for Status_vod__c == "Approved_vod")
+      vars.interactionSummary.considerDraftCalls = util.readSetting(com_idc_params, "interactionSummary.considerDraftCalls", "boolean", false);
+
       //components
       vars.interactionSummary.components.openButton.id = util.readSetting(com_idc_params, "interactionSummary.components.openButton.id", "string", null);
       vars.interactionSummary.components.modal.id = util.readSetting(com_idc_params, "interactionSummary.components.modal.id", "string", null);
@@ -2131,7 +2139,7 @@ com.idc.clm = {
               if (data.success) {
                 resolve(data.Key_Message_vod__c);
               } else {
-                util.log(`com.idc.clm.getDataForContextObjects: 111 failed to retrieve Key_Message_vod__c IDs ${data.message}`);
+                util.log(`com.idc.clm.getDataForContextObjects: failed to retrieve Key_Message_vod__c IDs ${data.message}`);
               }
             });
           });
@@ -2195,7 +2203,11 @@ com.idc.clm = {
                 .join(" ")
                 .slice(0, -3);
 
-              whereClause = `Status_vod__c = "Submitted_vod" AND Account_vod__c = "${this.vars.metadata.account.id}" AND (${whereClause})`;
+              if (this.vars.interactionSummary.considerDraftCalls) {
+                whereClause = `Account_vod__c = "${this.vars.metadata.account.id}" AND (${whereClause})`;
+              } else {
+                whereClause = `Status_vod__c = "Submitted_vod" AND Account_vod__c = "${this.vars.metadata.account.id}" AND (${whereClause})`;
+              }
 
               com.veeva.clm.queryRecord("Call2_vod__c", this.vars.interactionSummary.fields.Call2_vod__c, whereClause, [], null, (data) => {
                 if (data.success) {
@@ -2837,7 +2849,7 @@ com.idc.clm = {
   callflows: function () {
     return new Promise((resolve) => {
       (async () => {
-        let defaultProfileParam = this.vars.options.dynamicPresentation.source.callflows.default;
+        let defaultCallflowParam = this.vars.options.dynamicPresentation.source.callflows.default;
         let selectedCallflow = null;
 
         //get slides for dynamic callflows
@@ -2860,16 +2872,16 @@ com.idc.clm = {
             selectedCallflow = this.persistentData.session.selectedCallflow;
           }
         } else {
-          //check if defaultProfileParam is a function and returns a valid callflow name
-          if (typeof window[defaultProfileParam] == "function") {
-            let functionOutput = window[defaultProfileParam]();
+          //check if defaultCallflowParam is a function and returns a valid callflow name
+          if (typeof window[defaultCallflowParam] == "function") {
+            let functionOutput = window[defaultCallflowParam]();
             if (this.vars.options.dynamicPresentation.source.callflows.flows.find((callflow) => callflow.name == functionOutput)) {
               selectedCallflow = functionOutput;
             }
           } else {
-            //check is defaultProfileParam is a valid callflow name
-            if (this.vars.options.dynamicPresentation.source.callflows.flows.find((callflow) => callflow.name == defaultProfileParam)) {
-              selectedCallflow = defaultProfileParam;
+            //check is defaultCallflowParam is a valid callflow name
+            if (this.vars.options.dynamicPresentation.source.callflows.flows.find((callflow) => callflow.name == defaultCallflowParam)) {
+              selectedCallflow = defaultCallflowParam;
             }
           }
         }
@@ -8486,10 +8498,12 @@ com.idc.ui = {
             }
 
             //show/hide launch callflow button
-            if (view == "recommended") {
-              this.elements.selectors.slides.launchButton.removeAttribute("data-view-state");
-            } else {
-              this.elements.selectors.slides.launchButton.setAttribute("data-view-state", "hidden");
+            if (this.elements.selectors.slides.launchButton) {
+              if (view == "recommended") {
+                this.elements.selectors.slides.launchButton.removeAttribute("data-view-state");
+              } else {
+                this.elements.selectors.slides.launchButton.setAttribute("data-view-state", "hidden");
+              }
             }
 
             //populate
