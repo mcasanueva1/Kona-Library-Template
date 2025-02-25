@@ -207,6 +207,7 @@ let com_idc_params = {
       "emails": 7,
     },
     "groupViewsForSameSlide": true,
+    "considerDaftCalls": false,
     "testModel": {
       "calls": {
         "min": 1,
