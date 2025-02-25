@@ -3577,7 +3577,7 @@ com.idc.clm = {
         }) //only call key message records for this slide
           .filter(
             (callKeyMessage) =>
-              vars.interactionSummary.input.Call2_vod__c.find((call) => call.ID == callKeyMessage.Call2_vod__c && call.Status_vod__c == "Submitted_vod") //only call key message records for submitted calls
+              vars.interactionSummary.input.Call2_vod__c.find((call) => call.ID == callKeyMessage.Call2_vod__c)
           )
           .sort((a, b) => new Date(b.Start_Time_vod__c) - new Date(a.Start_Time_vod__c)); //sort by start time
 
