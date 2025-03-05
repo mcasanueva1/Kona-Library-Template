@@ -1969,6 +1969,8 @@ com.idc.clm = {
   getDataForContextObjects: function () {
     let util = com.idc.util;
 
+    let unableToRetrieveCRMIdFlag = false; //for email templates and fragments
+
     return new Promise((resolve) => {
       (async () => {
         //only for actual calls
@@ -2125,6 +2127,7 @@ com.idc.clm = {
                 } else {
                   util.log(`com.idc.clm.getDataForContextObjects: could not retrieve CRM ID for ${item.id} (${item.group}): ${item.vaultId} + ${this.vars.emailCart.vaultURL}`);
                   util.log(data.message);
+                  unableToRetrieveCRMIdFlag = true;
                 }
                 resolve();
               });
@@ -2140,6 +2143,7 @@ com.idc.clm = {
                 resolve(data.Key_Message_vod__c);
               } else {
                 util.log(`com.idc.clm.getDataForContextObjects: failed to retrieve Key_Message_vod__c IDs ${data.message}`);
+                resolve([]);
               }
             });
           });
@@ -2170,6 +2174,7 @@ com.idc.clm = {
                     resolve(data.Call2_Key_Message_vod__c);
                   } else {
                     util.log(`com.idc.clm.getDataForContextObjects: failed to retrieve Call2_Key_Message_vod__c records ${data.message}`);
+                    resolve([]);
                   }
                 }
               );
@@ -2214,6 +2219,7 @@ com.idc.clm = {
                   resolve(data.Call2_vod__c);
                 } else {
                   util.log(`com.idc.clm.getDataForContextObjects: failed to retrieve Call2_vod__c records ${data.message}`);
+                  resolve([]);
                 }
               });
             });
@@ -2224,7 +2230,7 @@ com.idc.clm = {
         }
 
         //Sent_Email_vod__c for account and templates
-        if (this.vars.interactionSummary.active && this.vars.session.isAnActualCall && this.vars.emailCart.active) {
+        if (this.vars.interactionSummary.active && this.vars.session.isAnActualCall && this.vars.emailCart.active && !unableToRetrieveCRMIdFlag) {
           let sentEmailRecords;          
           if (this.vars.emailCart.templates && this.vars.metadata.account.id) {
             sentEmailRecords = await new Promise((resolve) => {
@@ -2247,6 +2253,7 @@ com.idc.clm = {
                   resolve(data.Sent_Email_vod__c);
                 } else {
                   util.log(`com.idc.clm.getDataForContextObjects: failed to retrieve Sent_Email_vod__c records ${data.message}`);
+                  resolve([]);
                 }
               });
             });
@@ -2272,6 +2279,7 @@ com.idc.clm = {
                   resolve(data.Email_Activity_vod__c);
                 } else {
                   util.log(`com.idc.clm.getDataForContextObjects: failed to retrieve Email_Activity_vod__c records ${data.message}`);
+                  resolve([]);
                 }
               });
             });
