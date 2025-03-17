@@ -549,7 +549,7 @@ com.idc.clm = {
           source: null,
           source: {
             call: null,
-            browser: null
+            browser: null,
           },
           dynamicCallflowName: null,
         },
@@ -688,6 +688,28 @@ com.idc.clm = {
         ],
       },
     },
+    relatedCLM: [
+      {
+        id: null,
+        vaultExternalID: {
+          presentation: null,
+          keyMessage: null,
+        },
+      },
+    ],
+    schemaRelatedVars: {
+      activeSchema: null,
+      vars: [
+        {
+          token: null,
+          value: {
+            schema1: null,
+            schema2: null,
+            schema3: null,
+          },
+        },
+      ],
+    },
   },
   persistentDataTemplate: {
     session: {
@@ -788,6 +810,11 @@ com.idc.clm = {
 
     //slide id from slide/index.html
     vars.options.htmlSlideId = util.getElementAttribute(document.querySelector("body"), "data-slide-id");
+
+    //schema-related vars
+    if (com_idc_params.schemaRelatedVars) {
+      vars.schemaRelatedVars = util.readSetting(com_idc_params, "schemaRelatedVars", "object", this.varsTemplate.schemaRelatedVars);
+    }
 
     //options
     vars.options.debugMode.active = util.readSetting(com_idc_params, "options.debugMode.active", "boolean", true);
@@ -1609,6 +1636,11 @@ com.idc.clm = {
         com.idc.clm.varsTemplate.interactionSummary.nextBestContent
       );
     }
+
+    //related CLM
+    if (com_idc_params.relatedCLM) {
+      vars.relatedCLM = util.readSetting(com_idc_params, "relatedCLM", "object", []);
+    }
   },
   setSessionIdentifier: function () {
     let util = com.idc.util;
@@ -2125,7 +2157,9 @@ com.idc.clm = {
                     }
                   }
                 } else {
-                  util.log(`com.idc.clm.getDataForContextObjects: could not retrieve CRM ID for ${item.id} (${item.group}): ${item.vaultId} + ${this.vars.emailCart.vaultURL}`);
+                  util.log(
+                    `com.idc.clm.getDataForContextObjects: could not retrieve CRM ID for ${item.id} (${item.group}): ${item.vaultId} + ${this.vars.emailCart.vaultURL}`
+                  );
                   util.log(data.message);
                   unableToRetrieveCRMIdFlag = true;
                 }
@@ -2231,7 +2265,7 @@ com.idc.clm = {
 
         //Sent_Email_vod__c for account and templates
         if (this.vars.interactionSummary.active && this.vars.session.isAnActualCall && this.vars.emailCart.active && !unableToRetrieveCRMIdFlag) {
-          let sentEmailRecords;          
+          let sentEmailRecords;
           if (this.vars.emailCart.templates && this.vars.metadata.account.id) {
             sentEmailRecords = await new Promise((resolve) => {
               let allTemplates = this.vars.emailCart.templates.concat(this.vars.interactionSummary.nonEmailCartItems.templates);
@@ -2555,6 +2589,20 @@ com.idc.clm = {
       case "prev":
         this.vars.navigation.overWrite.prevSlide = slideId;
         break;
+    }
+  },
+  gotoRelatedCLM: function (clmId) {
+    let vars = com.idc.clm.vars;
+
+    let relatedCLM = vars.relatedCLM.find((clm) => {
+      return clm.id == clmId;
+    });
+    if (!relatedCLM) return;
+
+    console.log("Jump to external presentation:", relatedCLM.id, relatedCLM.vaultExternalID.presentation, relatedCLM.vaultExternalID.keyMessage);
+
+    if (!vars.options.browserMode.active) {
+      com.veeva.clm.gotoSlideV2(relatedCLM.vaultExternalID.keyMessage, relatedCLM.vaultExternalID.presentation);
     }
   },
 
@@ -3038,7 +3086,7 @@ com.idc.clm = {
     if (!this.vars.standaloneModalGroups.active) return false;
 
     //is dynamic presentation >> return false
-    if  (this.vars.navigation.dynamicPresentation.active) {
+    if (this.vars.navigation.dynamicPresentation.active) {
       com.idc.util.log("com.idc.clm.validateStandaloneGroup: dynamic presentation / unable to activate standalone group");
       return false;
     }
@@ -3528,27 +3576,27 @@ com.idc.clm = {
               fragment = template.fragments.find((fragment) => fragment.crmId == fragmentID);
             }
             if (!fragment) return;
-  
+
             //populate fragment record
             let fragmentRecord = JSON.parse(JSON.stringify(fragmentTemplate));
             fragmentRecord.id = fragment.id;
             fragmentRecord.title = fragment.title;
             fragmentRecord.linksTo = fragment.linksTo;
             fragmentRecord.clicks = 0;
-  
+
             vars.interactionSummary.input.Email_Activity_vod__c.filter(
               (emailActivity) => emailActivity.Sent_Email_vod__c == sentEmail.ID && emailActivity.Approved_Document_vod__c == fragment.crmId
             ).forEach((emailActivity) => {
               if (!emailActivity.Approved_Document_vod__c) return; //only events for approved documents (email fragments)
               if (emailActivity.Event_type_vod__c != "Clicked_vod") return; //only click events
-  
+
               //increment fragment clicks
               fragmentRecord.clicks++;
-  
+
               //increment email clicks
               record.email.clicks++;
             });
-  
+
             //add to array
             record.email.fragments.push(fragmentRecord);
           });
@@ -3583,10 +3631,7 @@ com.idc.clm = {
             return callKeyMessage.Key_Message_vod__c.Media_File_Name_vod__c == slide.player.zipName;
           }
         }) //only call key message records for this slide
-          .filter(
-            (callKeyMessage) =>
-              vars.interactionSummary.input.Call2_vod__c.find((call) => call.ID == callKeyMessage.Call2_vod__c)
-          )
+          .filter((callKeyMessage) => vars.interactionSummary.input.Call2_vod__c.find((call) => call.ID == callKeyMessage.Call2_vod__c))
           .sort((a, b) => new Date(b.Start_Time_vod__c) - new Date(a.Start_Time_vod__c)); //sort by start time
 
         //discussed/not discussed and mostRecentCall info
@@ -4037,11 +4082,8 @@ com.idc.clm = {
     let processedItems = [];
 
     this.vars.commonHTML.elements.forEach((commonElementId) => {
-
       if (processedItems.includes(commonElementId)) {
-        com.idc.util.log(
-          `com.idc.clm.loadCommonHTML: duplicated id "${commonElementId}"`
-        );
+        com.idc.util.log(`com.idc.clm.loadCommonHTML: duplicated id "${commonElementId}"`);
         return;
       } else {
         processedItems.push(commonElementId);
@@ -4084,6 +4126,7 @@ com.idc.clm = {
     com.idc.ui.core.tab.awake();
     com.idc.ui.core.navigationArrows.awake();
     com.idc.ui.core.link.awake();
+    com.idc.ui.core.relatedCLMLink.awake();
 
     //utilities menu
     com.idc.ui.core.utilitiesMenu.awake();
@@ -4440,7 +4483,54 @@ com.idc.util = {
       }
     }
 
+    //schema related vars: string values
+    if (pType == "string" && value) {
+      if (value.startsWith("{{") && value.endsWith("}}")) {
+        let schemaRelatedValue = com.idc.util.getSchemaRelatedVar(value);
+        if (schemaRelatedValue !== null) {
+          value = schemaRelatedValue;
+        }
+      }
+    }
+
+    //schema related vars: object values
+    if (pType == "object" && value) {
+      let objectAsText = JSON.stringify(value);
+      let tokens = objectAsText.match(/{{(.*?)}}/g); //look for tokens: starting with {{ and ending with }}
+      if (tokens) {
+        tokens.forEach((token) => {
+          let schemaRelatedValue = com.idc.util.getSchemaRelatedVar(token); //look for schemaRelatedVar
+          if (schemaRelatedValue) {
+            objectAsText = objectAsText.replace(token, schemaRelatedValue); //replace
+          }
+        });
+        value = JSON.parse(objectAsText);
+      }
+    }
+
     return value === null ? pDefault : typeof value === pType ? value : pDefault;
+  },
+
+  getSchemaRelatedVar: (pToken) => {
+    let vars = com.idc.clm.vars;
+
+    //active schema
+    let activeSchema = vars.schemaRelatedVars.activeSchema;
+    if (!activeSchema) return;
+
+    //find token in schemaRelatedVars
+    let arrItem = vars.schemaRelatedVars.vars.find((item) => {
+      return item.token == pToken;
+    });
+
+    let schemaRelatedVar = null;
+    if (arrItem) {
+      schemaRelatedVar = arrItem.value[activeSchema];
+    } else {
+      com.idc.util.log(`getSchemaRelatedVar: ${pToken} not found in schemaRelatedVars`);
+    }
+
+    return schemaRelatedVar;
   },
 
   dispatchEvent: function (eventName, eventDetail) {
@@ -6193,7 +6283,7 @@ com.idc.ui = {
               if (ref.uiRelated.multi) {
                 let multi = document.querySelector(`#${ref.uiRelated.multi.id}`);
                 if (multi) {
-                  let instance = tab.querySelector(`[data-instance="${ref.uiRelated.multi.instance}"]`);
+                  let instance = multi.querySelector(`[data-instance="${ref.uiRelated.multi.instance}"]`);
                   if (instance) {
                     if (instance.getAttribute("data-view-state") == "active") {
                       alternativeIsValid = true;
@@ -7085,6 +7175,95 @@ com.idc.ui = {
         if (separatorBefore) {
           separatorBefore.style.display = "none";
         }
+      },
+    },
+    relatedCLMLink: {
+      selector: '[data-type="com.idc.ui.core.relatedCLMLink"]',
+      collection: [],
+      awake: function () {
+        document.querySelectorAll(this.selector).forEach((el) => {
+          //set attributes or buttons to validate
+          const toValidate = {
+            attributes: [],
+            other: [],
+          };
+
+          if (this.isHTMLValid(el, toValidate)) {
+            //retrieve or set link id
+            let el_id;
+            if (el.id === "") {
+              el_id = com.idc.ui.common.generateUniqueId("com_idc_ui_core_relatedCLMLink", this.collection);
+              el.id = el_id;
+              el.setAttribute("id", el_id);
+              el.codeGeneratedId = true;
+            } else {
+              el_id = el.id;
+            }
+
+            //collection (do not proceed if already exists)
+            if (this.collection.indexOf(el_id) >= 0) {
+              if (document.querySelector(`#${el_id}`)) {
+                if (el.activated) {
+                  //do not proceed if element has already been activated
+                  return;
+                } else {
+                  //the element exists in the collection and dom, but has not been activated (e.g. html code has been replaced)
+                }
+              } else {
+                //element has been removed from DOM, remove from collection
+                this.collection.splice(this.collection.indexOf(el_id), 1);
+              }
+            } else {
+              //add to accordions collection
+              this.collection.push(el_id);
+            }
+
+            //flag elements as activated
+            el.activated = true;
+
+            //params
+            el.params = com.idc.ui.common.readElementOptions(el, {});
+
+            el.addEventListener("click", (evt) => {
+              let vars = com.idc.clm.vars;
+              let persistentData = com.idc.clm.persistentData;
+              //do not proceed if non-working-link or disabled
+              if (el.getAttribute("data-non-working-link") || el.getAttribute("data-view-state") == "disabled") return;
+
+              //target CLM id
+              let targetCLMId = com.idc.util.getElementAttribute(el, "data-target-clm");
+
+              //goto CKN
+              if (targetCLMId != "") {
+                com.idc.clm.gotoRelatedCLM(targetCLMId);
+              }
+            });
+          }
+        });
+      },
+      isHTMLValid: function (pElement, pToValidate) {
+        let vars = com.idc.clm.vars;
+        let errorList = "";
+
+        //attributes
+        pToValidate.attributes.forEach((attribute) => {
+          if (com.idc.util.getElementAttribute(pElement, attribute) === "") {
+            errorList = `${errorList} missing ${attribute} attribute; `;
+          }
+        });
+
+        //target CLM id
+        let targetCLMId = com.idc.util.getElementAttribute(pElement, "data-target-clm");
+        let relatedCLM = vars.relatedCLM.find((clm) => {
+          return clm.id == targetCLMId;
+        });
+        if (!relatedCLM) {
+          errorList = `${errorList} target CLM id ${targetCLMId} not found; `;
+        }
+
+        if (errorList !== "") com.idc.util.log(`${com.idc.util.getElementAttribute(pElement, "data-type")} ${pElement.id}: ${errorList}`);
+
+        return errorList === "";
       },
     },
   },
