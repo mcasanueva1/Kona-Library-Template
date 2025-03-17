@@ -14,6 +14,16 @@ let com_idc_params = {
             "active": false,
             "mode": "",
             "objects": {
+              "Account": {
+                "ID": "0010Y00000B6V0IQAV",
+                "Salutation": "Dr.",
+                "Name": "John Smith",
+                "Profile__c": "Progressive",
+              },
+              "User": {
+                  "ID": "0050Y000000Yf7EQAS",
+                  "Name": "Peter Sales Rep",
+              }
             }
         }
     },
@@ -390,23 +400,21 @@ let com_idc_params = {
           "landscape": null,
           "portrait": null
         },
-        "references2": {
-          "landscape": null,
-          "portrait": null,
-          "uiRelated": {
-            "modal": {
-              "id": null
-            },
-            "tab": {
-              "id": null,
-              "instance": null
-            },
-            "multi": {
-              "id": null,
-              "instance": null
-            }
-          }
-        }
+      }
+    },
+    "relatedCLM": {
+      "id": "",
+      "vaultExternalID": {
+        "presentation": "", 
+        "keyMessage": "", 
+      },
+    },
+    "schemaRelatedVar": {
+      "token": "{{token}}",
+      "value": {
+        "iDC": "",
+        "Client1": "",
+        "Client2": ""
       }
     },
   }
