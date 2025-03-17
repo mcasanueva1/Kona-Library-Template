@@ -366,6 +366,11 @@ let com_idc_params = {
       },
     }
   },
+  "relatedCLM": [],
+  "schemaRelatedVars": {
+    "activeSchema": "iDC",
+    "vars": []
+  },
   "templates": {
     "slide": {
       "id": "",
