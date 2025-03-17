@@ -84,12 +84,12 @@ com.idc.templates = {
         "childNodes": [],
       }
     ],
-    "externalCLMLink": [
+    "relatedCLMLink": [
         {
           "type": "DIV",
           "attributes": [
             {
-              "data-type": "com.idc.ui.core.externalCLMLink",
+              "data-type": "com.idc.ui.core.relatedCLMLink",
             },
             {
               "data-target-clm": "",
