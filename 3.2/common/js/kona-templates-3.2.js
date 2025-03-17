@@ -84,6 +84,20 @@ com.idc.templates = {
         "childNodes": [],
       }
     ],
+    "externalCLMLink": [
+        {
+          "type": "DIV",
+          "attributes": [
+            {
+              "data-type": "com.idc.ui.core.externalCLMLink",
+            },
+            {
+              "data-target-clm": "",
+            },
+          ],
+          "childNodes": [],
+        }
+      ],
     "menu": {
       "container": [
         {
