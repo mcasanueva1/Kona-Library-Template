@@ -8285,9 +8285,13 @@ com.idc.ui = {
       textAreaContainer.appendChild(textArea);
 
       //tree
-      const tree = jsonview.create(treeData);
-      jsonview.render(tree, textAreaContainer);
-      jsonview.toggleNode(tree, true);
+      if (typeof jsonview != "undefined") {
+        const tree = jsonview.create(treeData);
+        jsonview.render(tree, textAreaContainer);
+        jsonview.toggleNode(tree, true);
+      } else {
+        textAreaContainer.innerHTML = JSON.stringify(treeData, null, 4);
+      }
     },
     refreshVars: function () {
       let vars = JSON.parse(JSON.stringify(com.idc.clm.vars)); //all but the ones selected for params
@@ -8312,9 +8316,13 @@ com.idc.ui = {
       textAreaContainer.appendChild(textArea);
 
       //tree
-      const tree = jsonview.create(treeData);
-      jsonview.render(tree, textAreaContainer);
-      jsonview.toggleNode(tree, true);
+      if (typeof jsonview != "undefined") {
+        const tree = jsonview.create(treeData);
+        jsonview.render(tree, textAreaContainer);
+        jsonview.toggleNode(tree, true);
+      } else {
+        textAreaContainer.innerHTML = JSON.stringify(treeData, null, 4);
+      }
     },
     refreshPersistentData: function () {
       let treeData = com.idc.clm.persistentData;
@@ -8330,9 +8338,13 @@ com.idc.ui = {
       textAreaContainer.appendChild(textArea);
 
       //tree
-      const tree = jsonview.create(treeData);
-      jsonview.render(tree, textAreaContainer);
-      jsonview.toggleNode(tree, true);
+      if (typeof jsonview != "undefined") {
+        const tree = jsonview.create(treeData);
+        jsonview.render(tree, textAreaContainer);
+        jsonview.toggleNode(tree, true);
+      } else {
+        textAreaContainer.innerHTML = JSON.stringify(treeData, null, 4);
+      }
     },
     cmdExec: function () {
       const textInput = this.dropDown.element.querySelector('[data-type="com.idc.ui.inspector.execute.input"]');
