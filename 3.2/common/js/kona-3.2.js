@@ -7225,15 +7225,13 @@ com.idc.ui = {
             el.params = com.idc.ui.common.readElementOptions(el, {});
 
             el.addEventListener("click", (evt) => {
-              let vars = com.idc.clm.vars;
-              let persistentData = com.idc.clm.persistentData;
               //do not proceed if non-working-link or disabled
               if (el.getAttribute("data-non-working-link") || el.getAttribute("data-view-state") == "disabled") return;
 
               //target CLM id
               let targetCLMId = com.idc.util.getElementAttribute(el, "data-target-clm");
 
-              //goto CKN
+              //goto CLM
               if (targetCLMId != "") {
                 com.idc.clm.gotoRelatedCLM(targetCLMId);
               }
