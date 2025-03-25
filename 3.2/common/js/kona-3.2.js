@@ -4643,13 +4643,23 @@ com.idc.ui = {
                     `:scope > [data-type="com.idc.ui.core.accordion.content"][data-instance="${button.getAttribute("data-instance")}"]`
                   ),
                 },
-                params: com.idc.ui.common.readElementOptions(button, {
-                  beforeOpen: null,
-                  afterOpen: null,
-                  beforeClose: null,
-                  afterClose: null,
-                  initialState: null, //'open' will set the instance open by default
-                }),
+                params: com.idc.ui.common.readElementOptions(
+                  button, 
+                  {
+                    beforeOpen: null,
+                    afterOpen: null,
+                    beforeClose: null,
+                    afterClose: null,
+                    initialState: null, //'open' will set the instance open by default
+                  },
+                  {
+                    beforeOpen: "bO", //abbreviations
+                    afterOpen: "aO",
+                    beforeClose: "bC",
+                    afterClose: "aC",
+                    initialState: "iS",
+                  }
+              ),
                 viewState: null,
               };
               el.components.instances.push(instance);
@@ -4658,6 +4668,9 @@ com.idc.ui = {
             //params
             el.params = com.idc.ui.common.readElementOptions(el, {
               oneByOne: true, //if 'true', just one instance at a time can be open
+            },
+            {
+              oneByOne: "oBO", //abbreviations
             });
 
             //assign functions and events
@@ -4938,6 +4951,11 @@ com.idc.ui = {
               elId: null, //target slide element id (complex link)
               elType: null, //target slide element type (complex link)
               elInstance: null, //target slide element instance (complex link tab/accordion/multi)
+            },
+            {
+              elId: "elI", //abbreviations
+              elType: "elT", 
+              elInstance: "elN", 
             });
 
             el.addEventListener("click", (evt) => {
@@ -5224,6 +5242,20 @@ com.idc.ui = {
               elInstance: null, //back slide element instance (complex link tab/accordion/multi)
               zIndexIncrement: null, //used to add / subtract from the default z-index
               standaloneGroup: null, //used to set standalone modal group in modal param
+            },
+            {
+              preventCloseOnBackModalTap: "pCB", //abbreviations
+              backModalStyle: "bMS",
+              beforeOpen: "bO",
+              afterOpen: "aO",
+              beforeClose: "bC",
+              afterClose: "aC", 
+              closeAction: "cA",
+              elId: "eId", 
+              elType: "eTp", 
+              elInstance: "eIn",
+              zIndexIncrement: "zII",
+              standaloneGroup: "sG",
             });
 
             //is standalone modal?
@@ -5891,6 +5923,9 @@ com.idc.ui = {
             //params
             el.params = com.idc.ui.common.readElementOptions(el, {
               selectorAttribute: null,
+            },
+            {
+              selectorAttribute: "sA",
             });
 
             //assign functions and events: main element
@@ -5930,7 +5965,16 @@ com.idc.ui = {
                       afterClose: null,
                       initialState: null, //'open' will set the instance open by default
                       selectorValue: null,
-                    }),
+                    },
+                    {
+                      beforeOpen: "bO",
+                      afterOpen: "aO",
+                      beforeClose: "bC",
+                      afterClose: "aC",
+                      initialState: "iS",
+                      selectorValue: "sV",
+                    }
+                  ),
                     viewState: null,
                   };
                   el.components.instances.push(instance);
@@ -6504,7 +6548,15 @@ com.idc.ui = {
                       beforeClose: null,
                       afterClose: null,
                       initialState: null, //'open' will set the instance open by default
-                    }),
+                    },
+                    {
+                      beforeOpen: "bO",
+                      afterOpen: "aO",
+                      beforeClose: "bC",
+                      afterClose: "aC",
+                      initialState: "iS",
+                    }
+                    ),
                     viewState: null,
                   };
                   el.components.instances.push(instance);
@@ -6547,7 +6599,13 @@ com.idc.ui = {
               backModalStyle: null, //used to assign a class to back modal
               btnTransitionCoverToTab: null, //used to assign a transition class from cover button to tab button
               btnTransitionTabToCover: null, //used to assign a transition class from tab button to cover button
-            });
+            },
+            {
+              backModalStyle: "bMS",
+              btnTransitionCoverToTab: "bTCT",
+              btnTransitionTabToCover: "bTTC",
+            }
+            );
 
             //assign functions and events: main element
             el.itemClick = this.itemClick;
@@ -7324,10 +7382,19 @@ com.idc.ui = {
           this.backFromStandalone.resetPersistentPropertiesStylesAndClasses(el.id);
         });
     },
-    readElementOptions: function (pEl, pOptionsSchema) {
+    readElementOptions: function (pEl, pOptionsSchema, pAbbreviations) {
       const optionsTxt = com.idc.util.getElementAttribute(pEl, "data-options");
       const returnObj = pOptionsSchema;
       let optionsArr, optionItem;
+
+      // Create a reverse mapping of abbreviations to full names
+      const abbreviationMap = {};
+      if (pAbbreviations) {
+        for (const [fullName, abbreviation] of Object.entries(pAbbreviations)) {
+          abbreviationMap[abbreviation] = fullName;
+        }
+      }
+
       if (optionsTxt !== "") {
         try {
           optionsArr = optionsTxt.split(";");
@@ -7345,8 +7412,13 @@ com.idc.ui = {
           }
 
           if (Array.isArray(optionItem) && optionItem.length !== 0) {
-            const optionKey = optionItem[0];
+            let optionKey = optionItem[0];
             const optionValue = optionItem[1];
+
+            // Normalize the key to the full name if it's an abbreviation
+            if (abbreviationMap.hasOwnProperty(optionKey)) {
+              optionKey = abbreviationMap[optionKey];
+            }
 
             if (pOptionsSchema.hasOwnProperty(optionKey)) {
               //check if option exists in params object schema
