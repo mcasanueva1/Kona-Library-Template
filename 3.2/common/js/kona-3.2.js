@@ -5546,7 +5546,9 @@ com.idc.ui = {
 
           //remove from active modals stack
           if (this.type == "popUp" || this.type == "dropDown") {
-            com.idc.ui.core.modal.activeModalsStack.splice(com.idc.ui.core.modal.activeModalsStack.indexOf(this.id), 1);
+            if (com.idc.ui.core.modal.activeModalsStack.indexOf(this.id) >= 0) {
+              com.idc.ui.core.modal.activeModalsStack.splice(com.idc.ui.core.modal.activeModalsStack.indexOf(this.id), 1);
+            }
           }
 
           //refresh utilities menu
