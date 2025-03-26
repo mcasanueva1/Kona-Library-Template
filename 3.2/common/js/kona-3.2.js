@@ -164,6 +164,19 @@ com.idc.clm = {
         active: null,
         global: null,
       },
+      alternateModals: [
+        [
+          {
+            modalId: null,
+            otherModals: [
+              {
+                openButton: null,
+                modalId: null
+              }
+            ]
+          },
+        ]
+      ]
     },
     commonHTML: {
       active: null,
@@ -832,6 +845,10 @@ com.idc.clm = {
       if (vars.options.linkOverride.active) {
         vars.options.linkOverride.global = util.readSetting(com_idc_params, "options.linkOverride.global", "string", null);
       }
+    }
+
+    if (com_idc_params.options.alternateModals) {
+      vars.options.alternateModals = util.readSetting(com_idc_params, "options.alternateModals", "object", []);
     }
 
     //common html
@@ -5177,6 +5194,8 @@ com.idc.ui = {
       collection: [],
       activeModalsStack: [],
       awake: function () {
+        let vars = com.idc.clm.vars;
+
         //for each of the following:
         document.querySelectorAll(this.selector).forEach((el) => {
           //set attributes or buttons to validate
@@ -5397,6 +5416,38 @@ com.idc.ui = {
                 this.standaloneModalGroups.preventCloseIfMandatoryGroup(el);
               }
               this.standaloneModalGroups.setGroupElementsVisibility(el);
+            }
+
+            //alternate modals
+            if (vars.options.alternateModals.length > 0) {
+              vars.options.alternateModals.forEach((alternateModal) => {
+                if (alternateModal.modalId == el.id) {
+                  alternateModal.otherModals.forEach((otherModal) => {
+                    let otherModalElement = document.querySelector(`#${otherModal.modalId}`);
+                    let otherModalOpenButton = document.querySelector(`#${otherModal.openButton}`);
+                    if (otherModalElement && otherModalOpenButton) {
+                      otherModalOpenButton.addEventListener("click", () => {
+                        //open modal
+                        otherModalElement.open();
+
+                        //identify and close all other modals
+                        let modalsToClose = [el.id];
+                        alternateModal.otherModals.forEach((modalToClose) => {
+                          if (modalToClose.modalId != otherModal.modalId) {
+                            modalsToClose.push(modalToClose.modalId);
+                          }
+                        });
+                        modalsToClose.forEach((modalToClose) => {
+                          let modalElement = document.querySelector(`#${modalToClose}`);
+                          if (modalElement) {
+                            modalElement.close();
+                          }
+                        });
+                      });
+                    }
+                  });
+                }
+              });
             }
           }
         });
