@@ -120,7 +120,9 @@ let com_idc_params = {
     "linkOverride": {
       "active": false,
       "global": "",
-    }
+    },
+    "alternateModals": [
+    ]
   },
   "commonHTML": {
     "active": true,
