@@ -710,6 +710,12 @@ com.idc.clm = {
         },
       },
     ],
+    websites: [
+      {
+        id: null,
+        url: null,
+      },
+    ],
     schemaRelatedVars: {
       activeSchema: null,
       vars: [
@@ -1657,6 +1663,11 @@ com.idc.clm = {
     //related CLM
     if (com_idc_params.relatedCLM) {
       vars.relatedCLM = util.readSetting(com_idc_params, "relatedCLM", "object", []);
+    }
+
+    //websites
+    if (com_idc_params.websites) {
+      vars.websites = util.readSetting(com_idc_params, "websites", "object", []);
     }
   },
   setSessionIdentifier: function () {
@@ -2621,6 +2632,19 @@ com.idc.clm = {
     if (!vars.options.browserMode.active) {
       com.veeva.clm.gotoSlideV2(relatedCLM.vaultExternalID.keyMessage, relatedCLM.vaultExternalID.presentation);
     }
+  },
+  gotoWebsite: function (websiteId) {
+    let vars = com.idc.clm.vars;
+
+    let website = vars.websites.find((web) => {
+      return web.id == websiteId;
+    });
+    if (!website) return;
+
+    console.log("Opening website:", website.id, website.url);
+
+    //open in blank window
+    window.open(website.url, "_blank");
   },
 
   /*dyamic presentation -----------------------------------*/
@@ -4144,6 +4168,7 @@ com.idc.clm = {
     com.idc.ui.core.navigationArrows.awake();
     com.idc.ui.core.link.awake();
     com.idc.ui.core.relatedCLMLink.awake();
+    com.idc.ui.core.websiteLink.awake();
 
     //utilities menu
     com.idc.ui.core.utilitiesMenu.awake();
@@ -7369,7 +7394,94 @@ com.idc.ui = {
           return clm.id == targetCLMId;
         });
         if (!relatedCLM) {
-          errorList = `${errorList} target CLM id ${targetCLMId} not found; `;
+          errorList = `${errorList} target CLM id ${targetCLMId} not found;`;
+        }
+
+        if (errorList !== "") com.idc.util.log(`${com.idc.util.getElementAttribute(pElement, "data-type")} ${pElement.id}: ${errorList}`);
+
+        return errorList === "";
+      },
+    },
+    websiteLink: {
+      selector: '[data-type="com.idc.ui.core.websiteLink"]',
+      collection: [],
+      awake: function () {
+        document.querySelectorAll(this.selector).forEach((el) => {
+          //set attributes or buttons to validate
+          const toValidate = {
+            attributes: [],
+            other: [],
+          };
+
+          if (this.isHTMLValid(el, toValidate)) {
+            //retrieve or set link id
+            let el_id;
+            if (el.id === "") {
+              el_id = com.idc.ui.common.generateUniqueId("com_idc_ui_core_websiteLink", this.collection);
+              el.id = el_id;
+              el.setAttribute("id", el_id);
+              el.codeGeneratedId = true;
+            } else {
+              el_id = el.id;
+            }
+
+            //collection (do not proceed if already exists)
+            if (this.collection.indexOf(el_id) >= 0) {
+              if (document.querySelector(`#${el_id}`)) {
+                if (el.activated) {
+                  //do not proceed if element has already been activated
+                  return;
+                } else {
+                  //the element exists in the collection and dom, but has not been activated (e.g. html code has been replaced)
+                }
+              } else {
+                //element has been removed from DOM, remove from collection
+                this.collection.splice(this.collection.indexOf(el_id), 1);
+              }
+            } else {
+              //add to accordions collection
+              this.collection.push(el_id);
+            }
+
+            //flag elements as activated
+            el.activated = true;
+
+            //params
+            el.params = com.idc.ui.common.readElementOptions(el, {});
+
+            el.addEventListener("click", (evt) => {
+              //do not proceed if non-working-link or disabled
+              if (el.getAttribute("data-non-working-link") || el.getAttribute("data-view-state") == "disabled") return;
+
+              //target website id
+              let targetWebsiteId = com.idc.util.getElementAttribute(el, "data-target-website");
+
+              //goto website
+              if (targetWebsiteId != "") {
+                com.idc.clm.gotoWebsite(targetWebsiteId);
+              }
+            });
+          }
+        });
+      },
+      isHTMLValid: function (pElement, pToValidate) {
+        let vars = com.idc.clm.vars;
+        let errorList = "";
+
+        //attributes
+        pToValidate.attributes.forEach((attribute) => {
+          if (com.idc.util.getElementAttribute(pElement, attribute) === "") {
+            errorList = `${errorList} missing ${attribute} attribute; `;
+          }
+        });
+
+        //target Website id
+        let targetWebsiteId = com.idc.util.getElementAttribute(pElement, "data-target-website");
+        let relatedWebsite = vars.websites.find((web) => {
+          return web.id == targetWebsiteId;
+        });
+        if (!relatedWebsite) {
+          errorList = `${errorList} target Website id ${targetWebsiteId} not found;`;
         }
 
         if (errorList !== "") com.idc.util.log(`${com.idc.util.getElementAttribute(pElement, "data-type")} ${pElement.id}: ${errorList}`);
