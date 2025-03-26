@@ -7141,7 +7141,7 @@ com.idc.ui = {
 
             //if not last item, add separator
             let isLastItem = currentSet[groupName].indexOf(elementId) == currentSet[groupName].length - 1;
-            if (!isLastItem) {
+            if (!isLastItem && this.components.items.separator) {
               let newSeparator = this.components.items.separator.cloneNode(true);
               newSeparator.setAttribute("data-after-item", elementId);
               this.components.containers[groupName].appendChild(newSeparator);
@@ -7164,9 +7164,11 @@ com.idc.ui = {
                 //change position to static (disables top and left properties)
                 closeButtonEl.style.position = "static";
                 //add separator
-                let newSeparator = this.components.items.separator.cloneNode(true);
-                newSeparator.setAttribute("data-before-item", closeButtonEl.getAttribute("id"));
-                this.components.containers.rightGroup.appendChild(newSeparator);
+                if (this.components.items.separator) {
+                  let newSeparator = this.components.items.separator.cloneNode(true);
+                  newSeparator.setAttribute("data-before-item", closeButtonEl.getAttribute("id"));
+                  this.components.containers.rightGroup.appendChild(newSeparator);
+                }
                 //add close button
                 this.components.containers.rightGroup.appendChild(closeButtonEl);
                 //flag button as inside utilities menu
