@@ -97,7 +97,21 @@ com.idc.templates = {
           ],
           "childNodes": [],
         }
-      ],
+    ],
+    "websiteLink": [
+        {
+          "type": "DIV",
+          "attributes": [
+            {
+              "data-type": "com.idc.ui.core.websiteLink",
+            },
+            {
+              "data-target-website": "",
+            },
+          ],
+          "childNodes": [],
+        }
+    ],
     "menu": {
       "container": [
         {
