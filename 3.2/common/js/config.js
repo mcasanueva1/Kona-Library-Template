@@ -379,6 +379,7 @@ let com_idc_params = {
     }
   },
   "relatedCLM": [],
+  "websites": [],
   "schemaRelatedVars": {
     "activeSchema": "iDC",
     "vars": []
@@ -410,6 +411,10 @@ let com_idc_params = {
         "presentation": "", 
         "keyMessage": "", 
       },
+    },
+    "website": {
+      "id": "",
+      "url": ""
     },
     "schemaRelatedVar": {
       "token": "{{token}}",
