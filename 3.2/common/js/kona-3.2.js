@@ -6626,6 +6626,7 @@ com.idc.ui = {
                       beforeClose: null,
                       afterClose: null,
                       initialState: null, //'open' will set the instance open by default
+                      selectorValue: null,
                     },
                     {
                       beforeOpen: "bO",
@@ -6633,6 +6634,7 @@ com.idc.ui = {
                       beforeClose: "bC",
                       afterClose: "aC",
                       initialState: "iS",
+                      selectorValue: "sV",
                     }
                     ),
                     viewState: null,
@@ -6677,11 +6679,13 @@ com.idc.ui = {
               backModalStyle: null, //used to assign a class to back modal
               btnTransitionCoverToTab: null, //used to assign a transition class from cover button to tab button
               btnTransitionTabToCover: null, //used to assign a transition class from tab button to cover button
+              selectorAttribute: null, //used to set the instance to open by default
             },
             {
               backModalStyle: "bMS",
               btnTransitionCoverToTab: "bTCT",
               btnTransitionTabToCover: "bTTC",
+              selectorAttribute: "sA",
             }
             );
 
@@ -7055,7 +7059,7 @@ com.idc.ui = {
           this.components.container.element.setAttribute("data-view-state", "active");
 
           //open instance option 1: selector attribute configuration (e.g. body var with profile)
-          if (!this.params.selectorAttribute) {
+          if (this.params.selectorAttribute) {
             let instanceToSet_byAttribute;
             if (this.params.selectorAttribute) {
               //interval to wait for selector value to be set
