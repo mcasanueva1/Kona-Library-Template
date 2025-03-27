@@ -6191,7 +6191,7 @@ com.idc.ui = {
       resetToDefaults: function () {
         if (this.recentlySet) return;
 
-        //selector attribute configuration, need to wait until selector value is set
+        //open instance option 1: selector attribute configuration (e.g. body var with profile)
         if (this.params.selectorAttribute) {
           let instanceToSet_byAttribute;
           if (this.params.selectorAttribute) {
@@ -6215,17 +6215,17 @@ com.idc.ui = {
           }
         }
 
-        //no selector attribute configuration, use first instance or instance set to open by default
+        //open instance option 2: use first instance or instance set to open by default
         if (!this.params.selectorAttribute) {
           let instanceToSet_byInitialState;
           instanceToSet_byInitialState = this.components.instances.findIndex((instance) => {
             return instance.params.initialState === "open";
           });
           if (instanceToSet_byInitialState >= 0) {
-            //need to set an instance
+            //option 2.1: need to set an instance
             this.setInstance(this.components.instances[instanceToSet_byInitialState].name);
           } else {
-            //no default instance set by param, use first
+            //option 2.2: no default instance set by param, use first
             if (this.components.instances.length > 0) {
               this.setInstance(this.components.instances[0].name);
             }
@@ -7054,21 +7054,48 @@ com.idc.ui = {
           //show instances
           this.components.container.element.setAttribute("data-view-state", "active");
 
-          if (
-            this.components.instances.findIndex((instance) => {
-              return instance.params.initialState === "open";
-            }) >= 0
-          ) {
-            //there's a default instance set by param
-            this.components.instances.forEach((instance) => {
-              if (instance.params.initialState === "open") {
-                this.setInstance(instance.name, true);
+          //open instance option 1: selector attribute configuration (e.g. body var with profile)
+          if (!this.params.selectorAttribute) {
+            let instanceToSet_byAttribute;
+            if (this.params.selectorAttribute) {
+              //interval to wait for selector value to be set
+              let interval = setInterval(() => {
+                let selectorAttributeValue = document.body.getAttribute(this.params.selectorAttribute);
+  
+                if (selectorAttributeValue) {
+                  instanceToSet_byAttribute = this.components.instances.findIndex((instance) => {
+                    return instance.params.selectorValue == selectorAttributeValue;
+                  });
+                }
+                if (instanceToSet_byAttribute >= 0) {
+                  //need to set an instance
+                  this.setInstance(this.components.instances[instanceToSet_byAttribute].name);
+                }
+                if (selectorAttributeValue) {
+                  clearInterval(interval);
+                }
+              }, 100);
+            }
+          }
+
+          //open instance option 2: use first instance or instance set to open by default
+          if (!this.params.selectorAttribute) {
+            if (
+              this.components.instances.findIndex((instance) => {
+                return instance.params.initialState === "open";
+              }) >= 0
+            ) {
+              //option 2.1: there's a default instance set by param
+              this.components.instances.forEach((instance) => {
+                if (instance.params.initialState === "open") {
+                  this.setInstance(instance.name, true);
+                }
+              });
+            } else {
+              //option 2.2: no default instance set by param, use first
+              if (this.components.instances.length > 0) {
+                this.setInstance(this.components.instances[0].name, true);
               }
-            });
-          } else {
-            //no default instance set by param, use first
-            if (this.components.instances.length > 0) {
-              this.setInstance(this.components.instances[0].name, true);
             }
           }
         }
