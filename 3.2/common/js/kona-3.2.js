@@ -5042,6 +5042,15 @@ com.idc.ui = {
 
               //complex link >> update persistent data
               if (el.params.elId) {
+
+                //account for abbreviated links in target Id
+                if (targetId && targetId.endsWith("..")) {
+                  let slideFound = com.idc.clm.findSlide(targetId.replace("..", ""), true);
+                  if (slideFound) {
+                    targetId = slideFound.id;
+                  }
+                }
+
                 persistentData.complexLinks.fromSlide = vars.navigation.currentSlide.id;
                 persistentData.complexLinks.toSlide = targetId;
                 persistentData.complexLinks.originatorType = "link";
@@ -5637,6 +5646,15 @@ com.idc.ui = {
 
           //complex link >> update persistent data
           if (this.params.elId) {
+
+            //account for abbreviated links in destinationSlide
+            if (destinationSlide && destinationSlide.endsWith("..")) {
+              let slideFound = com.idc.clm.findSlide(destinationSlide.replace("..", ""), true);
+              if (slideFound) {
+                destinationSlide = slideFound.id;
+              }
+            }
+
             persistentData.complexLinks.fromSlide = vars.navigation.currentSlide.id;
             persistentData.complexLinks.toSlide = destinationSlide;
             persistentData.complexLinks.originatorType = "modal";
