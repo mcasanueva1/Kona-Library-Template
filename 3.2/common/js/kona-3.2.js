@@ -5625,22 +5625,30 @@ com.idc.ui = {
           //execute after close
           this.executeAfterClose();
         } else {
+          let nav = com.idc.clm.vars.navigation;
           let destinationSlide;
 
+          destinationSlide = nav.actualSlidesSequence[0]; //first slide in the sequence by default
+
           //redirect to opener slide or slideId in closeAction
-          let nav = com.idc.clm.vars.navigation;
-          if (this.params.closeAction == null || this.params.closeAction == "opener" || this.params.closeAction == "openerStrict") {
-            //no close slide defined (closeAction = slideId), or close action = opener (last main slide) or opener strict (actual last slide even if it is a standalone modal)
-            let lastSlideType = this.params.closeAction == null || this.params.closeAction == "opener" ? "main" : "actual"; //last slide type: last main slide or actual last slide (can be another standalone)
-            if (nav.lastSlide && nav.lastSlide.main && nav.lastSlide[lastSlideType].id != null) {
-              destinationSlide = nav.lastSlide[lastSlideType].id;
-            }
-          } else {
-            //a slie has been defined in closeAction, redirect to that slide
-            if (com.idc.clm.findSlide(this.params.closeAction) != null) {
-              destinationSlide = this.params.closeAction; //if close action is not null and not opener/openerStrict, it's a slide id
+          if (typeof this.params.closeAction === "string") {
+            if (this.params.closeAction == null || this.params.closeAction == "opener" || this.params.closeAction == "openerStrict") {
+              //no close slide defined (closeAction = slideId), or close action = opener (last main slide) or opener strict (actual last slide even if it is a standalone modal)
+              let lastSlideType = this.params.closeAction == null || this.params.closeAction == "opener" ? "main" : "actual"; //last slide type: last main slide or actual last slide (can be another standalone)
+              if (nav.lastSlide && nav.lastSlide.main && nav.lastSlide[lastSlideType].id != null) {
+                destinationSlide = nav.lastSlide[lastSlideType].id;
+              }
             } else {
-              destinationSlide = nav.actualSlidesSequence[0]; //first slide in the sequence by default
+              //a slide ID has been defined in closeAction, redirect to that slide
+              let slideFound;
+              if (this.params.closeAction.endsWith("..")) {
+                slideFound = com.idc.clm.findSlide(this.params.closeAction.replace("..", ""), true)
+              } else {
+                slideFound = com.idc.clm.findSlide(this.params.closeAction);
+              }
+              if (slideFound) {
+                destinationSlide = slideFound.id; //if close action is not null and not opener/openerStrict, it's a slide id
+              }
             }
           }
 
