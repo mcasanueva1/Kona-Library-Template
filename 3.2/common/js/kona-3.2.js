@@ -5628,9 +5628,10 @@ com.idc.ui = {
           let nav = com.idc.clm.vars.navigation;
           let destinationSlide;
 
-          destinationSlide = nav.actualSlidesSequence[0]; //first slide in the sequence by default
+          //default destination slide
+          destinationSlide = nav.lastSlide["main"].id;
 
-          //redirect to opener slide or slideId in closeAction
+          //set destinationSlie to opener slide (main or strict) or slideId if closeAction is set
           if (typeof this.params.closeAction === "string") {
             if (this.params.closeAction == null || this.params.closeAction == "opener" || this.params.closeAction == "openerStrict") {
               //no close slide defined (closeAction = slideId), or close action = opener (last main slide) or opener strict (actual last slide even if it is a standalone modal)
@@ -5652,7 +5653,7 @@ com.idc.ui = {
             }
           }
 
-          //complex link >> update persistent data
+          //set destination slide with complex link (and update persistent data)
           if (this.params.elId) {
 
             //account for abbreviated links in destinationSlide
@@ -5672,7 +5673,7 @@ com.idc.ui = {
             com.idc.clm.updatePersistentData();
           }
 
-          //redirect
+          //redirect          
           com.idc.clm.gotoSlide(destinationSlide);
         }
       },
