@@ -168,6 +168,11 @@ let com_idc_params = {
               "emailCart",
               "quickLinks",
             ]
+          },
+          "sitemapButton": {
+            "active": false,
+            "buttoId": null,
+            "excludeModals": []
           }
         }
       }
