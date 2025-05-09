@@ -253,6 +253,11 @@ com.idc.clm = {
               active: null,
               excludeModals: [],
             },
+            sitemapButton: {
+              active: null,
+              buttonId: null,
+              excludeModals: [],
+            },
           },
         },
         dynamicPresentation: {
@@ -276,6 +281,11 @@ com.idc.clm = {
                 },
                 referencesButton: {
                   active: null,
+                  excludeModals: [],
+                },
+                sitemapButton: {
+                  active: null,
+                  buttonId: null,
                   excludeModals: [],
                 },
               },
@@ -303,6 +313,11 @@ com.idc.clm = {
                   active: null,
                   excludeModals: [],
                 },
+                sitemapButton: {
+                  active: null,
+                  buttonId: null,
+                  excludeModals: [],
+                },
               },
             },
           },
@@ -328,6 +343,11 @@ com.idc.clm = {
                   active: null,
                   excludeModals: [],
                 },
+                sitemapButton: {
+                  active: null,
+                  buttonId: null,
+                  excludeModals: [],
+                },
               },
             },
           },
@@ -351,6 +371,11 @@ com.idc.clm = {
                 },
                 referencesButton: {
                   active: null,
+                  excludeModals: [],
+                },
+                sitemapButton: {
+                  active: null,
+                  buttonId: null,
                   excludeModals: [],
                 },
               },
@@ -1144,6 +1169,24 @@ com.idc.clm = {
         "object",
         []
       );
+      vars.utilitiesMenu.sets.regularModals.bringToFront.sitemapButton.active = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.regularModals.bringToFront.sitemapButton.active",
+        "boolean",
+        false
+      );
+      vars.utilitiesMenu.sets.regularModals.bringToFront.sitemapButton.excludeModals = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.regularModals.bringToFront.sitemapButton.excludeModals",
+        "object",
+        []
+      );
+      vars.utilitiesMenu.sets.regularModals.bringToFront.sitemapButton.buttonId = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.regularModals.bringToFront.sitemapButton.buttonId",
+        "string",
+        ""
+      );
 
       //dynamic presentation / contentTargeting / main slide
       vars.utilitiesMenu.sets.dynamicPresentation.contentTargeting.mainSlide.buttonViewState = util.readSetting(
@@ -1226,6 +1269,26 @@ com.idc.clm = {
         "object",
         [],
         false
+      );
+      vars.utilitiesMenu.sets.dynamicPresentation.contentTargeting.regularModals.bringToFront.sitemapButton.active = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.dynamicPresentation.contentTargeting.regularModals.bringToFront.sitemapButton.active",
+        "boolean",
+        false,
+        false
+      );
+      vars.utilitiesMenu.sets.dynamicPresentation.contentTargeting.regularModals.bringToFront.sitemapButton.excludeModals = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.dynamicPresentation.contentTargeting.regularModals.bringToFront.sitemapButton.excludeModals",
+        "object",
+        [],
+        false
+      );
+      vars.utilitiesMenu.sets.dynamicPresentation.contentTargeting.regularModals.bringToFront.sitemapButton.buttonId = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.dynamicPresentation.contentTargeting.regularModals.bringToFront.sitemapButton.buttonId",
+        "string",
+        ""
       );
 
       //dynamic presentation / myPresentations / main slide
@@ -1310,6 +1373,26 @@ com.idc.clm = {
         [],
         false
       );
+      vars.utilitiesMenu.sets.dynamicPresentation.myPresentations.regularModals.bringToFront.sitemapButton.active = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.dynamicPresentation.myPresentations.regularModals.bringToFront.sitemapButton.active",
+        "boolean",
+        false,
+        false
+      );
+      vars.utilitiesMenu.sets.dynamicPresentation.myPresentations.regularModals.bringToFront.sitemapButton.excludeModals = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.dynamicPresentation.myPresentations.regularModals.bringToFront.sitemapButton.excludeModals",
+        "object",
+        [],
+        false
+      );
+      vars.utilitiesMenu.sets.dynamicPresentation.myPresentations.regularModals.bringToFront.sitemapButton.buttonId = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.dynamicPresentation.myPresentations.regularModals.bringToFront.sitemapButton.buttonId",
+        "string",
+        ""
+      );
 
       //dynamic presentation / externalFunction / main slide
       vars.utilitiesMenu.sets.dynamicPresentation.externalFunction.mainSlide.buttonViewState = util.readSetting(
@@ -1393,6 +1476,26 @@ com.idc.clm = {
         [],
         false
       );
+      vars.utilitiesMenu.sets.dynamicPresentation.externalFunction.regularModals.bringToFront.sitemapButton.active = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.dynamicPresentation.externalFunction.regularModals.bringToFront.sitemapButton.active",
+        "boolean",
+        false,
+        false
+      );
+      vars.utilitiesMenu.sets.dynamicPresentation.externalFunction.regularModals.bringToFront.sitemapButton.excludeModals = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.dynamicPresentation.externalFunction.regularModals.bringToFront.sitemapButton.excludeModals",
+        "object",
+        [],
+        false
+      );
+      vars.utilitiesMenu.sets.dynamicPresentation.externalFunction.regularModals.bringToFront.sitemapButton.buttonId = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.dynamicPresentation.externalFunction.regularModals.bringToFront.sitemapButton.buttonId",
+        "string",
+        ""
+      );
 
       //dynamic presentation / callflows / main slide
       vars.utilitiesMenu.sets.dynamicPresentation.callflows.mainSlide.buttonViewState = util.readSetting(
@@ -1475,6 +1578,26 @@ com.idc.clm = {
         "object",
         [],
         false
+      );
+      vars.utilitiesMenu.sets.dynamicPresentation.callflows.regularModals.bringToFront.sitemapButton.active = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.dynamicPresentation.callflows.regularModals.bringToFront.sitemapButton.active",
+        "boolean",
+        false,
+        false
+      );
+      vars.utilitiesMenu.sets.dynamicPresentation.callflows.regularModals.bringToFront.sitemapButton.excludeModals = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.dynamicPresentation.callflows.regularModals.bringToFront.sitemapButton.excludeModals",
+        "object",
+        [],
+        false
+      );
+      vars.utilitiesMenu.sets.dynamicPresentation.callflows.regularModals.bringToFront.sitemapButton.buttonId = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.sets.dynamicPresentation.callflows.regularModals.bringToFront.sitemapButton.buttonId",
+        "string",
+        ""
       );
     }
 
@@ -7346,6 +7469,17 @@ com.idc.ui = {
                   if (!sets.regularModals.bringToFront.referencesButton.excludeModals.includes(activeModalId)) {
                     let isReferencesOpenButton = el.getAttribute("id") == vars.references.components.openButton.id;
                     if (isReferencesOpenButton) {
+                      el.style.zIndex = activeModalStackLength * 10 + 1;
+                    }
+                  }
+                }
+
+                //normal modal, bring to front sitemap button if necessary
+                if (sets.regularModals.bringToFront.sitemapButton.active) {
+                  //bring forward unless the modal is excluded from params
+                  if (!sets.regularModals.bringToFront.sitemapButton.excludeModals.includes(activeModalId)) {
+                    let isSitemapOpenButton = el.getAttribute("id") == sets.regularModals.bringToFront.sitemapButton.buttonId;
+                    if (isSitemapOpenButton) {
                       el.style.zIndex = activeModalStackLength * 10 + 1;
                     }
                   }
