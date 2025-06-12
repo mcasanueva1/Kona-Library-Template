@@ -175,6 +175,216 @@ let com_idc_params = {
             "excludeModals": []
           }
         }
+      },
+      "dynamicPresentation": {
+        "contentTargeting": {
+          "mainSlide": {
+            "buttonViewState": "off",
+            "centerGroup": [
+              "quickTourOpenButton",
+              "langOpenButton",
+              "emailCartOpenButton",
+              "interactionSummaryOpenButton",
+              "emailButton",
+            ],
+            "rightGroup": [
+              "safetyButton",
+              "siteMapOpenButton",
+              "referencesOpenButton",
+              "additionalResourcesOpenButton"
+            ],
+          },
+          "standaloneModal": {
+            "buttonViewState": "on",
+            "appendCloseButtonToRightGroup": true,
+            "centerGroup": [
+            ],
+            "rightGroup": [
+              "quickTourOpenButton",
+              "langOpenButton",
+              "emailCartOpenButton",
+              "interactionSummaryOpenButton",
+              "emailButton",
+              "safetyButton",
+              "siteMapOpenButton",
+              "referencesOpenButton",
+              "additionalResourcesOpenButton"
+            ],
+          },
+          "regularModals": {
+            "buttonViewState": "on",
+            "bringToFront": {
+              "dualButtonForActiveModal": {
+                "active": true
+              },
+              "referencesButton": {
+                "active": true,
+                "excludeModals": ["mandatoryPopUp", "emailCartModal", "interactionSummaryModal"]
+              },
+              "sitemapButton": {
+                "active": false,
+                "buttoId": null,
+                "excludeModals": []
+              }
+            }
+          }
+        },
+        "myPresentations": {
+          "mainSlide": {
+            "buttonViewState": "off",
+            "centerGroup": [
+              "quickTourOpenButton",
+              "langOpenButton",
+              "emailCartOpenButton",
+              "interactionSummaryOpenButton",
+              "emailButton",
+            ],
+            "rightGroup": [
+              "safetyButton",
+              "siteMapOpenButton",
+              "referencesOpenButton",
+              "additionalResourcesOpenButton"
+            ],
+          },
+          "standaloneModal": {
+            "buttonViewState": "on",
+            "appendCloseButtonToRightGroup": true,
+            "centerGroup": [
+            ],
+            "rightGroup": [
+              "quickTourOpenButton",
+              "langOpenButton",
+              "emailCartOpenButton",
+              "interactionSummaryOpenButton",
+              "emailButton",
+              "safetyButton",
+              "siteMapOpenButton",
+              "referencesOpenButton",
+              "additionalResourcesOpenButton"
+            ],
+          },
+          "regularModals": {
+            "buttonViewState": "on",
+            "bringToFront": {
+              "dualButtonForActiveModal": {
+                "active": true
+              },
+              "referencesButton": {
+                "active": true,
+                "excludeModals": ["mandatoryPopUp", "emailCartModal", "interactionSummaryModal"]
+              },
+              "sitemapButton": {
+                "active": false,
+                "buttoId": null,
+                "excludeModals": []
+              }
+            }
+          }
+        },
+        "callflows": {
+          "mainSlide": {
+            "buttonViewState": "off",
+            "centerGroup": [
+              "quickTourOpenButton",
+              "langOpenButton",
+              "emailCartOpenButton",
+              "interactionSummaryOpenButton",
+              "emailButton",
+            ],
+            "rightGroup": [
+              "safetyButton",
+              "siteMapOpenButton",
+              "referencesOpenButton",
+              "additionalResourcesOpenButton"
+            ],
+          },
+          "standaloneModal": {
+            "buttonViewState": "on",
+            "appendCloseButtonToRightGroup": true,
+            "centerGroup": [
+            ],
+            "rightGroup": [
+              "quickTourOpenButton",
+              "langOpenButton",
+              "emailCartOpenButton",
+              "interactionSummaryOpenButton",
+              "emailButton",
+              "safetyButton",
+              "siteMapOpenButton",
+              "referencesOpenButton",
+              "additionalResourcesOpenButton"
+            ],
+          },
+          "regularModals": {
+            "buttonViewState": "on",
+            "bringToFront": {
+              "dualButtonForActiveModal": {
+                "active": true
+              },
+              "referencesButton": {
+                "active": true,
+                "excludeModals": ["mandatoryPopUp", "emailCartModal", "interactionSummaryModal"]
+              },
+              "sitemapButton": {
+                "active": false,
+                "buttoId": null,
+                "excludeModals": []
+              }
+            }
+          }
+        },
+        "externalFunction": {
+          "mainSlide": {
+            "buttonViewState": "off",
+            "centerGroup": [
+              "quickTourOpenButton",
+              "langOpenButton",
+              "emailCartOpenButton",
+              "interactionSummaryOpenButton",
+              "emailButton",
+            ],
+            "rightGroup": [
+              "safetyButton",
+              "siteMapOpenButton",
+              "referencesOpenButton",
+              "additionalResourcesOpenButton"
+            ],
+          },
+          "standaloneModal": {
+            "buttonViewState": "on",
+            "appendCloseButtonToRightGroup": true,
+            "centerGroup": [
+            ],
+            "rightGroup": [
+              "quickTourOpenButton",
+              "langOpenButton",
+              "emailCartOpenButton",
+              "interactionSummaryOpenButton",
+              "emailButton",
+              "safetyButton",
+              "siteMapOpenButton",
+              "referencesOpenButton",
+              "additionalResourcesOpenButton"
+            ],
+          },
+          "regularModals": {
+            "buttonViewState": "on",
+            "bringToFront": {
+              "dualButtonForActiveModal": {
+                "active": true
+              },
+              "referencesButton": {
+                "active": true,
+                "excludeModals": ["mandatoryPopUp", "emailCartModal", "interactionSummaryModal"]
+              },
+              "sitemapButton": {
+                "active": false,
+                "buttoId": null,
+                "excludeModals": []
+              }
+            }
+          }
+        }
       }
     },
   },
