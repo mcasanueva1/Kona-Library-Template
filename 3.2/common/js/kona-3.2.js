@@ -848,17 +848,17 @@ com.idc.clm = {
 
     util.log("com.idc.clm.readSettings()");
 
+    //schema-related vars
+    if (com_idc_params.schemaRelatedVars) {
+      vars.schemaRelatedVars = util.readSetting(com_idc_params, "schemaRelatedVars", "object", this.varsTemplate.schemaRelatedVars);
+    }
+
     //project name and settings
     vars.project.name = util.readSetting(com_idc_params, "project.name", "string", "ProjectName");
     vars.project.version = util.readSetting(com_idc_params, "project.version", "string", "1.0");
 
     //slide id from slide/index.html
     vars.options.htmlSlideId = util.getElementAttribute(document.querySelector("body"), "data-slide-id");
-
-    //schema-related vars
-    if (com_idc_params.schemaRelatedVars) {
-      vars.schemaRelatedVars = util.readSetting(com_idc_params, "schemaRelatedVars", "object", this.varsTemplate.schemaRelatedVars);
-    }
 
     //options
     vars.options.debugMode.active = util.readSetting(com_idc_params, "options.debugMode.active", "boolean", true);
@@ -1188,417 +1188,429 @@ com.idc.clm = {
         ""
       );
 
-      //dynamic presentation / contentTargeting / main slide
-      vars.utilitiesMenu.sets.dynamicPresentation.contentTargeting.mainSlide.buttonViewState = util.readSetting(
-        com_idc_params,
-        "utilitiesMenu.sets.dynamicPresentation.contentTargeting.mainSlide.buttonViewState",
-        "string",
-        null,
-        false
-      );
-      vars.utilitiesMenu.sets.dynamicPresentation.contentTargeting.mainSlide.centerGroup = util.readSetting(
-        com_idc_params,
-        "utilitiesMenu.sets.dynamicPresentation.contentTargeting.mainSlide.centerGroup",
-        "object",
-        [],
-        false
-      );
-      vars.utilitiesMenu.sets.dynamicPresentation.contentTargeting.mainSlide.rightGroup = util.readSetting(
-        com_idc_params,
-        "utilitiesMenu.sets.dynamicPresentation.contentTargeting.mainSlide.rightGroup",
-        "object",
-        [],
-        false
-      );
+      //dynamic presentation / contentTargeting
+      {
+        //dynamic presentation / contentTargeting / main slide
+        vars.utilitiesMenu.sets.dynamicPresentation.contentTargeting.mainSlide.buttonViewState = util.readSetting(
+          com_idc_params,
+          "utilitiesMenu.sets.dynamicPresentation.contentTargeting.mainSlide.buttonViewState",
+          "string",
+          null,
+          false
+        );
+        vars.utilitiesMenu.sets.dynamicPresentation.contentTargeting.mainSlide.centerGroup = util.readSetting(
+          com_idc_params,
+          "utilitiesMenu.sets.dynamicPresentation.contentTargeting.mainSlide.centerGroup",
+          "object",
+          [],
+          false
+        );
+        vars.utilitiesMenu.sets.dynamicPresentation.contentTargeting.mainSlide.rightGroup = util.readSetting(
+          com_idc_params,
+          "utilitiesMenu.sets.dynamicPresentation.contentTargeting.mainSlide.rightGroup",
+          "object",
+          [],
+          false
+        );
 
-      //dynamic presentation / contentTargeting / standalone modal
-      vars.utilitiesMenu.sets.dynamicPresentation.contentTargeting.standaloneModal.buttonViewState = util.readSetting(
-        com_idc_params,
-        "utilitiesMenu.sets.dynamicPresentation.contentTargeting.standaloneModal.buttonViewState",
-        "string",
-        null,
-        false
-      );
-      vars.utilitiesMenu.sets.dynamicPresentation.contentTargeting.standaloneModal.appendCloseButtonToRightGroup = util.readSetting(
-        com_idc_params,
-        "utilitiesMenu.sets.dynamicPresentation.contentTargeting.standaloneModal.appendCloseButtonToRightGroup",
-        "boolean",
-        false,
-        false
-      );
-      vars.utilitiesMenu.sets.dynamicPresentation.contentTargeting.standaloneModal.centerGroup = util.readSetting(
-        com_idc_params,
-        "utilitiesMenu.sets.dynamicPresentation.contentTargeting.standaloneModal.centerGroup",
-        "object",
-        [],
-        false
-      );
-      vars.utilitiesMenu.sets.dynamicPresentation.contentTargeting.standaloneModal.rightGroup = util.readSetting(
-        com_idc_params,
-        "utilitiesMenu.sets.dynamicPresentation.contentTargeting.standaloneModal.rightGroup",
-        "object",
-        [],
-        false
-      );
+        //dynamic presentation / contentTargeting / standalone modal
+        vars.utilitiesMenu.sets.dynamicPresentation.contentTargeting.standaloneModal.buttonViewState = util.readSetting(
+          com_idc_params,
+          "utilitiesMenu.sets.dynamicPresentation.contentTargeting.standaloneModal.buttonViewState",
+          "string",
+          null,
+          false
+        );
+        vars.utilitiesMenu.sets.dynamicPresentation.contentTargeting.standaloneModal.appendCloseButtonToRightGroup = util.readSetting(
+          com_idc_params,
+          "utilitiesMenu.sets.dynamicPresentation.contentTargeting.standaloneModal.appendCloseButtonToRightGroup",
+          "boolean",
+          false,
+          false
+        );
+        vars.utilitiesMenu.sets.dynamicPresentation.contentTargeting.standaloneModal.centerGroup = util.readSetting(
+          com_idc_params,
+          "utilitiesMenu.sets.dynamicPresentation.contentTargeting.standaloneModal.centerGroup",
+          "object",
+          [],
+          false
+        );
+        vars.utilitiesMenu.sets.dynamicPresentation.contentTargeting.standaloneModal.rightGroup = util.readSetting(
+          com_idc_params,
+          "utilitiesMenu.sets.dynamicPresentation.contentTargeting.standaloneModal.rightGroup",
+          "object",
+          [],
+          false
+        );
 
-      //dynamic presentation / contentTargeting / regular modals
-      vars.utilitiesMenu.sets.dynamicPresentation.contentTargeting.regularModals.buttonViewState = util.readSetting(
-        com_idc_params,
-        "utilitiesMenu.sets.dynamicPresentation.contentTargeting.regularModals.buttonViewState",
-        "string",
-        null,
-        false
-      );
-      vars.utilitiesMenu.sets.dynamicPresentation.contentTargeting.regularModals.bringToFront.dualButtonForActiveModal.active = util.readSetting(
-        com_idc_params,
-        "utilitiesMenu.sets.dynamicPresentation.contentTargeting.regularModals.bringToFront.dualButtonForActiveModal.active",
-        "boolean",
-        false,
-        false
-      );
-      vars.utilitiesMenu.sets.dynamicPresentation.contentTargeting.regularModals.bringToFront.referencesButton.active = util.readSetting(
-        com_idc_params,
-        "utilitiesMenu.sets.dynamicPresentation.contentTargeting.regularModals.bringToFront.referencesButton.active",
-        "boolean",
-        false,
-        false
-      );
-      vars.utilitiesMenu.sets.dynamicPresentation.contentTargeting.regularModals.bringToFront.referencesButton.excludeModals = util.readSetting(
-        com_idc_params,
-        "utilitiesMenu.sets.dynamicPresentation.contentTargeting.regularModals.bringToFront.referencesButton.excludeModals",
-        "object",
-        [],
-        false
-      );
-      vars.utilitiesMenu.sets.dynamicPresentation.contentTargeting.regularModals.bringToFront.sitemapButton.active = util.readSetting(
-        com_idc_params,
-        "utilitiesMenu.sets.dynamicPresentation.contentTargeting.regularModals.bringToFront.sitemapButton.active",
-        "boolean",
-        false,
-        false
-      );
-      vars.utilitiesMenu.sets.dynamicPresentation.contentTargeting.regularModals.bringToFront.sitemapButton.excludeModals = util.readSetting(
-        com_idc_params,
-        "utilitiesMenu.sets.dynamicPresentation.contentTargeting.regularModals.bringToFront.sitemapButton.excludeModals",
-        "object",
-        [],
-        false
-      );
-      vars.utilitiesMenu.sets.dynamicPresentation.contentTargeting.regularModals.bringToFront.sitemapButton.buttonId = util.readSetting(
-        com_idc_params,
-        "utilitiesMenu.sets.dynamicPresentation.contentTargeting.regularModals.bringToFront.sitemapButton.buttonId",
-        "string",
-        ""
-      );
+        //dynamic presentation / contentTargeting / regular modals
+        vars.utilitiesMenu.sets.dynamicPresentation.contentTargeting.regularModals.buttonViewState = util.readSetting(
+          com_idc_params,
+          "utilitiesMenu.sets.dynamicPresentation.contentTargeting.regularModals.buttonViewState",
+          "string",
+          null,
+          false
+        );
+        vars.utilitiesMenu.sets.dynamicPresentation.contentTargeting.regularModals.bringToFront.dualButtonForActiveModal.active = util.readSetting(
+          com_idc_params,
+          "utilitiesMenu.sets.dynamicPresentation.contentTargeting.regularModals.bringToFront.dualButtonForActiveModal.active",
+          "boolean",
+          false,
+          false
+        );
+        vars.utilitiesMenu.sets.dynamicPresentation.contentTargeting.regularModals.bringToFront.referencesButton.active = util.readSetting(
+          com_idc_params,
+          "utilitiesMenu.sets.dynamicPresentation.contentTargeting.regularModals.bringToFront.referencesButton.active",
+          "boolean",
+          false,
+          false
+        );
+        vars.utilitiesMenu.sets.dynamicPresentation.contentTargeting.regularModals.bringToFront.referencesButton.excludeModals = util.readSetting(
+          com_idc_params,
+          "utilitiesMenu.sets.dynamicPresentation.contentTargeting.regularModals.bringToFront.referencesButton.excludeModals",
+          "object",
+          [],
+          false
+        );
+        vars.utilitiesMenu.sets.dynamicPresentation.contentTargeting.regularModals.bringToFront.sitemapButton.active = util.readSetting(
+          com_idc_params,
+          "utilitiesMenu.sets.dynamicPresentation.contentTargeting.regularModals.bringToFront.sitemapButton.active",
+          "boolean",
+          false,
+          false
+        );
+        vars.utilitiesMenu.sets.dynamicPresentation.contentTargeting.regularModals.bringToFront.sitemapButton.excludeModals = util.readSetting(
+          com_idc_params,
+          "utilitiesMenu.sets.dynamicPresentation.contentTargeting.regularModals.bringToFront.sitemapButton.excludeModals",
+          "object",
+          [],
+          false
+        );
+        vars.utilitiesMenu.sets.dynamicPresentation.contentTargeting.regularModals.bringToFront.sitemapButton.buttonId = util.readSetting(
+          com_idc_params,
+          "utilitiesMenu.sets.dynamicPresentation.contentTargeting.regularModals.bringToFront.sitemapButton.buttonId",
+          "string",
+          ""
+        );
+      }
 
-      //dynamic presentation / myPresentations / main slide
-      vars.utilitiesMenu.sets.dynamicPresentation.myPresentations.mainSlide.buttonViewState = util.readSetting(
-        com_idc_params,
-        "utilitiesMenu.sets.dynamicPresentation.myPresentations.mainSlide.buttonViewState",
-        "string",
-        null,
-        false
-      );
-      vars.utilitiesMenu.sets.dynamicPresentation.myPresentations.mainSlide.centerGroup = util.readSetting(
-        com_idc_params,
-        "utilitiesMenu.sets.dynamicPresentation.myPresentations.mainSlide.centerGroup",
-        "object",
-        [],
-        false
-      );
-      vars.utilitiesMenu.sets.dynamicPresentation.myPresentations.mainSlide.rightGroup = util.readSetting(
-        com_idc_params,
-        "utilitiesMenu.sets.dynamicPresentation.myPresentations.mainSlide.rightGroup",
-        "object",
-        [],
-        false
-      );
+      //dynamic presentation / myPresentations
+      {
+        //dynamic presentation / myPresentations / main slide
+        vars.utilitiesMenu.sets.dynamicPresentation.myPresentations.mainSlide.buttonViewState = util.readSetting(
+          com_idc_params,
+          "utilitiesMenu.sets.dynamicPresentation.myPresentations.mainSlide.buttonViewState",
+          "string",
+          null,
+          false
+        );
+        vars.utilitiesMenu.sets.dynamicPresentation.myPresentations.mainSlide.centerGroup = util.readSetting(
+          com_idc_params,
+          "utilitiesMenu.sets.dynamicPresentation.myPresentations.mainSlide.centerGroup",
+          "object",
+          [],
+          false
+        );
+        vars.utilitiesMenu.sets.dynamicPresentation.myPresentations.mainSlide.rightGroup = util.readSetting(
+          com_idc_params,
+          "utilitiesMenu.sets.dynamicPresentation.myPresentations.mainSlide.rightGroup",
+          "object",
+          [],
+          false
+        );
 
-      //dynamic presentation / myPresentations / standalone modal
-      vars.utilitiesMenu.sets.dynamicPresentation.myPresentations.standaloneModal.buttonViewState = util.readSetting(
-        com_idc_params,
-        "utilitiesMenu.sets.dynamicPresentation.myPresentations.standaloneModal.buttonViewState",
-        "string",
-        null,
-        false
-      );
-      vars.utilitiesMenu.sets.dynamicPresentation.myPresentations.standaloneModal.appendCloseButtonToRightGroup = util.readSetting(
-        com_idc_params,
-        "utilitiesMenu.sets.dynamicPresentation.myPresentations.standaloneModal.appendCloseButtonToRightGroup",
-        "boolean",
-        false,
-        false
-      );
-      vars.utilitiesMenu.sets.dynamicPresentation.myPresentations.standaloneModal.centerGroup = util.readSetting(
-        com_idc_params,
-        "utilitiesMenu.sets.dynamicPresentation.myPresentations.standaloneModal.centerGroup",
-        "object",
-        [],
-        false
-      );
-      vars.utilitiesMenu.sets.dynamicPresentation.myPresentations.standaloneModal.rightGroup = util.readSetting(
-        com_idc_params,
-        "utilitiesMenu.sets.dynamicPresentation.myPresentations.standaloneModal.rightGroup",
-        "object",
-        [],
-        false
-      );
+        //dynamic presentation / myPresentations / standalone modal
+        vars.utilitiesMenu.sets.dynamicPresentation.myPresentations.standaloneModal.buttonViewState = util.readSetting(
+          com_idc_params,
+          "utilitiesMenu.sets.dynamicPresentation.myPresentations.standaloneModal.buttonViewState",
+          "string",
+          null,
+          false
+        );
+        vars.utilitiesMenu.sets.dynamicPresentation.myPresentations.standaloneModal.appendCloseButtonToRightGroup = util.readSetting(
+          com_idc_params,
+          "utilitiesMenu.sets.dynamicPresentation.myPresentations.standaloneModal.appendCloseButtonToRightGroup",
+          "boolean",
+          false,
+          false
+        );
+        vars.utilitiesMenu.sets.dynamicPresentation.myPresentations.standaloneModal.centerGroup = util.readSetting(
+          com_idc_params,
+          "utilitiesMenu.sets.dynamicPresentation.myPresentations.standaloneModal.centerGroup",
+          "object",
+          [],
+          false
+        );
+        vars.utilitiesMenu.sets.dynamicPresentation.myPresentations.standaloneModal.rightGroup = util.readSetting(
+          com_idc_params,
+          "utilitiesMenu.sets.dynamicPresentation.myPresentations.standaloneModal.rightGroup",
+          "object",
+          [],
+          false
+        );
 
-      //dynamic presentation / myPresentations / regular modals
-      vars.utilitiesMenu.sets.dynamicPresentation.myPresentations.regularModals.buttonViewState = util.readSetting(
-        com_idc_params,
-        "utilitiesMenu.sets.dynamicPresentation.myPresentations.regularModals.buttonViewState",
-        "string",
-        null,
-        false
-      );
-      vars.utilitiesMenu.sets.dynamicPresentation.myPresentations.regularModals.bringToFront.dualButtonForActiveModal.active = util.readSetting(
-        com_idc_params,
-        "utilitiesMenu.sets.dynamicPresentation.myPresentations.regularModals.bringToFront.dualButtonForActiveModal.active",
-        "boolean",
-        false,
-        false
-      );
-      vars.utilitiesMenu.sets.dynamicPresentation.myPresentations.regularModals.bringToFront.referencesButton.active = util.readSetting(
-        com_idc_params,
-        "utilitiesMenu.sets.dynamicPresentation.myPresentations.regularModals.bringToFront.referencesButton.active",
-        "boolean",
-        false,
-        false
-      );
-      vars.utilitiesMenu.sets.dynamicPresentation.myPresentations.regularModals.bringToFront.referencesButton.excludeModals = util.readSetting(
-        com_idc_params,
-        "utilitiesMenu.sets.dynamicPresentation.myPresentations.regularModals.bringToFront.referencesButton.excludeModals",
-        "object",
-        [],
-        false
-      );
-      vars.utilitiesMenu.sets.dynamicPresentation.myPresentations.regularModals.bringToFront.sitemapButton.active = util.readSetting(
-        com_idc_params,
-        "utilitiesMenu.sets.dynamicPresentation.myPresentations.regularModals.bringToFront.sitemapButton.active",
-        "boolean",
-        false,
-        false
-      );
-      vars.utilitiesMenu.sets.dynamicPresentation.myPresentations.regularModals.bringToFront.sitemapButton.excludeModals = util.readSetting(
-        com_idc_params,
-        "utilitiesMenu.sets.dynamicPresentation.myPresentations.regularModals.bringToFront.sitemapButton.excludeModals",
-        "object",
-        [],
-        false
-      );
-      vars.utilitiesMenu.sets.dynamicPresentation.myPresentations.regularModals.bringToFront.sitemapButton.buttonId = util.readSetting(
-        com_idc_params,
-        "utilitiesMenu.sets.dynamicPresentation.myPresentations.regularModals.bringToFront.sitemapButton.buttonId",
-        "string",
-        ""
-      );
+        //dynamic presentation / myPresentations / regular modals
+        vars.utilitiesMenu.sets.dynamicPresentation.myPresentations.regularModals.buttonViewState = util.readSetting(
+          com_idc_params,
+          "utilitiesMenu.sets.dynamicPresentation.myPresentations.regularModals.buttonViewState",
+          "string",
+          null,
+          false
+        );
+        vars.utilitiesMenu.sets.dynamicPresentation.myPresentations.regularModals.bringToFront.dualButtonForActiveModal.active = util.readSetting(
+          com_idc_params,
+          "utilitiesMenu.sets.dynamicPresentation.myPresentations.regularModals.bringToFront.dualButtonForActiveModal.active",
+          "boolean",
+          false,
+          false
+        );
+        vars.utilitiesMenu.sets.dynamicPresentation.myPresentations.regularModals.bringToFront.referencesButton.active = util.readSetting(
+          com_idc_params,
+          "utilitiesMenu.sets.dynamicPresentation.myPresentations.regularModals.bringToFront.referencesButton.active",
+          "boolean",
+          false,
+          false
+        );
+        vars.utilitiesMenu.sets.dynamicPresentation.myPresentations.regularModals.bringToFront.referencesButton.excludeModals = util.readSetting(
+          com_idc_params,
+          "utilitiesMenu.sets.dynamicPresentation.myPresentations.regularModals.bringToFront.referencesButton.excludeModals",
+          "object",
+          [],
+          false
+        );
+        vars.utilitiesMenu.sets.dynamicPresentation.myPresentations.regularModals.bringToFront.sitemapButton.active = util.readSetting(
+          com_idc_params,
+          "utilitiesMenu.sets.dynamicPresentation.myPresentations.regularModals.bringToFront.sitemapButton.active",
+          "boolean",
+          false,
+          false
+        );
+        vars.utilitiesMenu.sets.dynamicPresentation.myPresentations.regularModals.bringToFront.sitemapButton.excludeModals = util.readSetting(
+          com_idc_params,
+          "utilitiesMenu.sets.dynamicPresentation.myPresentations.regularModals.bringToFront.sitemapButton.excludeModals",
+          "object",
+          [],
+          false
+        );
+        vars.utilitiesMenu.sets.dynamicPresentation.myPresentations.regularModals.bringToFront.sitemapButton.buttonId = util.readSetting(
+          com_idc_params,
+          "utilitiesMenu.sets.dynamicPresentation.myPresentations.regularModals.bringToFront.sitemapButton.buttonId",
+          "string",
+          ""
+        );
+      }
 
-      //dynamic presentation / externalFunction / main slide
-      vars.utilitiesMenu.sets.dynamicPresentation.externalFunction.mainSlide.buttonViewState = util.readSetting(
-        com_idc_params,
-        "utilitiesMenu.sets.dynamicPresentation.externalFunction.mainSlide.buttonViewState",
-        "string",
-        null,
-        false
-      );
-      vars.utilitiesMenu.sets.dynamicPresentation.externalFunction.mainSlide.centerGroup = util.readSetting(
-        com_idc_params,
-        "utilitiesMenu.sets.dynamicPresentation.externalFunction.mainSlide.centerGroup",
-        "object",
-        [],
-        false
-      );
-      vars.utilitiesMenu.sets.dynamicPresentation.externalFunction.mainSlide.rightGroup = util.readSetting(
-        com_idc_params,
-        "utilitiesMenu.sets.dynamicPresentation.externalFunction.mainSlide.rightGroup",
-        "object",
-        [],
-        false
-      );
+      //dynamic presentation / externalFunction
+      {
+        //dynamic presentation / externalFunction / main slide
+        vars.utilitiesMenu.sets.dynamicPresentation.externalFunction.mainSlide.buttonViewState = util.readSetting(
+          com_idc_params,
+          "utilitiesMenu.sets.dynamicPresentation.externalFunction.mainSlide.buttonViewState",
+          "string",
+          null,
+          false
+        );
+        vars.utilitiesMenu.sets.dynamicPresentation.externalFunction.mainSlide.centerGroup = util.readSetting(
+          com_idc_params,
+          "utilitiesMenu.sets.dynamicPresentation.externalFunction.mainSlide.centerGroup",
+          "object",
+          [],
+          false
+        );
+        vars.utilitiesMenu.sets.dynamicPresentation.externalFunction.mainSlide.rightGroup = util.readSetting(
+          com_idc_params,
+          "utilitiesMenu.sets.dynamicPresentation.externalFunction.mainSlide.rightGroup",
+          "object",
+          [],
+          false
+        );
 
-      //dynamic presentation / externalFunction / standalone modal
-      vars.utilitiesMenu.sets.dynamicPresentation.externalFunction.standaloneModal.buttonViewState = util.readSetting(
-        com_idc_params,
-        "utilitiesMenu.sets.dynamicPresentation.externalFunction.standaloneModal.buttonViewState",
-        "string",
-        null,
-        false
-      );
-      vars.utilitiesMenu.sets.dynamicPresentation.externalFunction.standaloneModal.appendCloseButtonToRightGroup = util.readSetting(
-        com_idc_params,
-        "utilitiesMenu.sets.dynamicPresentation.externalFunction.standaloneModal.appendCloseButtonToRightGroup",
-        "boolean",
-        false,
-        false
-      );
-      vars.utilitiesMenu.sets.dynamicPresentation.externalFunction.standaloneModal.centerGroup = util.readSetting(
-        com_idc_params,
-        "utilitiesMenu.sets.dynamicPresentation.externalFunction.standaloneModal.centerGroup",
-        "object",
-        [],
-        false
-      );
-      vars.utilitiesMenu.sets.dynamicPresentation.externalFunction.standaloneModal.rightGroup = util.readSetting(
-        com_idc_params,
-        "utilitiesMenu.sets.dynamicPresentation.externalFunction.standaloneModal.rightGroup",
-        "object",
-        [],
-        false
-      );
+        //dynamic presentation / externalFunction / standalone modal
+        vars.utilitiesMenu.sets.dynamicPresentation.externalFunction.standaloneModal.buttonViewState = util.readSetting(
+          com_idc_params,
+          "utilitiesMenu.sets.dynamicPresentation.externalFunction.standaloneModal.buttonViewState",
+          "string",
+          null,
+          false
+        );
+        vars.utilitiesMenu.sets.dynamicPresentation.externalFunction.standaloneModal.appendCloseButtonToRightGroup = util.readSetting(
+          com_idc_params,
+          "utilitiesMenu.sets.dynamicPresentation.externalFunction.standaloneModal.appendCloseButtonToRightGroup",
+          "boolean",
+          false,
+          false
+        );
+        vars.utilitiesMenu.sets.dynamicPresentation.externalFunction.standaloneModal.centerGroup = util.readSetting(
+          com_idc_params,
+          "utilitiesMenu.sets.dynamicPresentation.externalFunction.standaloneModal.centerGroup",
+          "object",
+          [],
+          false
+        );
+        vars.utilitiesMenu.sets.dynamicPresentation.externalFunction.standaloneModal.rightGroup = util.readSetting(
+          com_idc_params,
+          "utilitiesMenu.sets.dynamicPresentation.externalFunction.standaloneModal.rightGroup",
+          "object",
+          [],
+          false
+        );
 
-      //dynamic presentation / externalFunction / regular modals
-      vars.utilitiesMenu.sets.dynamicPresentation.externalFunction.regularModals.buttonViewState = util.readSetting(
-        com_idc_params,
-        "utilitiesMenu.sets.dynamicPresentation.externalFunction.regularModals.buttonViewState",
-        "string",
-        null,
-        false
-      );
-      vars.utilitiesMenu.sets.dynamicPresentation.externalFunction.regularModals.bringToFront.dualButtonForActiveModal.active = util.readSetting(
-        com_idc_params,
-        "utilitiesMenu.sets.dynamicPresentation.externalFunction.regularModals.bringToFront.dualButtonForActiveModal.active",
-        "boolean",
-        false,
-        false
-      );
-      vars.utilitiesMenu.sets.dynamicPresentation.externalFunction.regularModals.bringToFront.referencesButton.active = util.readSetting(
-        com_idc_params,
-        "utilitiesMenu.sets.dynamicPresentation.externalFunction.regularModals.bringToFront.referencesButton.active",
-        "boolean",
-        false,
-        false
-      );
-      vars.utilitiesMenu.sets.dynamicPresentation.externalFunction.regularModals.bringToFront.referencesButton.excludeModals = util.readSetting(
-        com_idc_params,
-        "utilitiesMenu.sets.dynamicPresentation.externalFunction.regularModals.bringToFront.referencesButton.excludeModals",
-        "object",
-        [],
-        false
-      );
-      vars.utilitiesMenu.sets.dynamicPresentation.externalFunction.regularModals.bringToFront.sitemapButton.active = util.readSetting(
-        com_idc_params,
-        "utilitiesMenu.sets.dynamicPresentation.externalFunction.regularModals.bringToFront.sitemapButton.active",
-        "boolean",
-        false,
-        false
-      );
-      vars.utilitiesMenu.sets.dynamicPresentation.externalFunction.regularModals.bringToFront.sitemapButton.excludeModals = util.readSetting(
-        com_idc_params,
-        "utilitiesMenu.sets.dynamicPresentation.externalFunction.regularModals.bringToFront.sitemapButton.excludeModals",
-        "object",
-        [],
-        false
-      );
-      vars.utilitiesMenu.sets.dynamicPresentation.externalFunction.regularModals.bringToFront.sitemapButton.buttonId = util.readSetting(
-        com_idc_params,
-        "utilitiesMenu.sets.dynamicPresentation.externalFunction.regularModals.bringToFront.sitemapButton.buttonId",
-        "string",
-        ""
-      );
+        //dynamic presentation / externalFunction / regular modals
+        vars.utilitiesMenu.sets.dynamicPresentation.externalFunction.regularModals.buttonViewState = util.readSetting(
+          com_idc_params,
+          "utilitiesMenu.sets.dynamicPresentation.externalFunction.regularModals.buttonViewState",
+          "string",
+          null,
+          false
+        );
+        vars.utilitiesMenu.sets.dynamicPresentation.externalFunction.regularModals.bringToFront.dualButtonForActiveModal.active = util.readSetting(
+          com_idc_params,
+          "utilitiesMenu.sets.dynamicPresentation.externalFunction.regularModals.bringToFront.dualButtonForActiveModal.active",
+          "boolean",
+          false,
+          false
+        );
+        vars.utilitiesMenu.sets.dynamicPresentation.externalFunction.regularModals.bringToFront.referencesButton.active = util.readSetting(
+          com_idc_params,
+          "utilitiesMenu.sets.dynamicPresentation.externalFunction.regularModals.bringToFront.referencesButton.active",
+          "boolean",
+          false,
+          false
+        );
+        vars.utilitiesMenu.sets.dynamicPresentation.externalFunction.regularModals.bringToFront.referencesButton.excludeModals = util.readSetting(
+          com_idc_params,
+          "utilitiesMenu.sets.dynamicPresentation.externalFunction.regularModals.bringToFront.referencesButton.excludeModals",
+          "object",
+          [],
+          false
+        );
+        vars.utilitiesMenu.sets.dynamicPresentation.externalFunction.regularModals.bringToFront.sitemapButton.active = util.readSetting(
+          com_idc_params,
+          "utilitiesMenu.sets.dynamicPresentation.externalFunction.regularModals.bringToFront.sitemapButton.active",
+          "boolean",
+          false,
+          false
+        );
+        vars.utilitiesMenu.sets.dynamicPresentation.externalFunction.regularModals.bringToFront.sitemapButton.excludeModals = util.readSetting(
+          com_idc_params,
+          "utilitiesMenu.sets.dynamicPresentation.externalFunction.regularModals.bringToFront.sitemapButton.excludeModals",
+          "object",
+          [],
+          false
+        );
+        vars.utilitiesMenu.sets.dynamicPresentation.externalFunction.regularModals.bringToFront.sitemapButton.buttonId = util.readSetting(
+          com_idc_params,
+          "utilitiesMenu.sets.dynamicPresentation.externalFunction.regularModals.bringToFront.sitemapButton.buttonId",
+          "string",
+          ""
+        );
+      }
 
-      //dynamic presentation / callflows / main slide
-      vars.utilitiesMenu.sets.dynamicPresentation.callflows.mainSlide.buttonViewState = util.readSetting(
-        com_idc_params,
-        "utilitiesMenu.sets.dynamicPresentation.callflows.mainSlide.buttonViewState",
-        "string",
-        null,
-        false
-      );
-      vars.utilitiesMenu.sets.dynamicPresentation.callflows.mainSlide.centerGroup = util.readSetting(
-        com_idc_params,
-        "utilitiesMenu.sets.dynamicPresentation.callflows.mainSlide.centerGroup",
-        "object",
-        [],
-        false
-      );
-      vars.utilitiesMenu.sets.dynamicPresentation.callflows.mainSlide.rightGroup = util.readSetting(
-        com_idc_params,
-        "utilitiesMenu.sets.dynamicPresentation.callflows.mainSlide.rightGroup",
-        "object",
-        [],
-        false
-      );
+      //dynamic presentation / callflows
+      {
+        //dynamic presentation / callflows / main slide
+        vars.utilitiesMenu.sets.dynamicPresentation.callflows.mainSlide.buttonViewState = util.readSetting(
+          com_idc_params,
+          "utilitiesMenu.sets.dynamicPresentation.callflows.mainSlide.buttonViewState",
+          "string",
+          null,
+          false
+        );
+        vars.utilitiesMenu.sets.dynamicPresentation.callflows.mainSlide.centerGroup = util.readSetting(
+          com_idc_params,
+          "utilitiesMenu.sets.dynamicPresentation.callflows.mainSlide.centerGroup",
+          "object",
+          [],
+          false
+        );
+        vars.utilitiesMenu.sets.dynamicPresentation.callflows.mainSlide.rightGroup = util.readSetting(
+          com_idc_params,
+          "utilitiesMenu.sets.dynamicPresentation.callflows.mainSlide.rightGroup",
+          "object",
+          [],
+          false
+        );
 
-      //dynamic presentation / callflows / standalone modal
-      vars.utilitiesMenu.sets.dynamicPresentation.callflows.standaloneModal.buttonViewState = util.readSetting(
-        com_idc_params,
-        "utilitiesMenu.sets.dynamicPresentation.callflows.standaloneModal.buttonViewState",
-        "string",
-        null,
-        false
-      );
-      vars.utilitiesMenu.sets.dynamicPresentation.callflows.standaloneModal.appendCloseButtonToRightGroup = util.readSetting(
-        com_idc_params,
-        "utilitiesMenu.sets.dynamicPresentation.callflows.standaloneModal.appendCloseButtonToRightGroup",
-        "boolean",
-        false,
-        false
-      );
-      vars.utilitiesMenu.sets.dynamicPresentation.callflows.standaloneModal.centerGroup = util.readSetting(
-        com_idc_params,
-        "utilitiesMenu.sets.dynamicPresentation.callflows.standaloneModal.centerGroup",
-        "object",
-        [],
-        false
-      );
-      vars.utilitiesMenu.sets.dynamicPresentation.callflows.standaloneModal.rightGroup = util.readSetting(
-        com_idc_params,
-        "utilitiesMenu.sets.dynamicPresentation.callflows.standaloneModal.rightGroup",
-        "object",
-        [],
-        false
-      );
+        //dynamic presentation / callflows / standalone modal
+        vars.utilitiesMenu.sets.dynamicPresentation.callflows.standaloneModal.buttonViewState = util.readSetting(
+          com_idc_params,
+          "utilitiesMenu.sets.dynamicPresentation.callflows.standaloneModal.buttonViewState",
+          "string",
+          null,
+          false
+        );
+        vars.utilitiesMenu.sets.dynamicPresentation.callflows.standaloneModal.appendCloseButtonToRightGroup = util.readSetting(
+          com_idc_params,
+          "utilitiesMenu.sets.dynamicPresentation.callflows.standaloneModal.appendCloseButtonToRightGroup",
+          "boolean",
+          false,
+          false
+        );
+        vars.utilitiesMenu.sets.dynamicPresentation.callflows.standaloneModal.centerGroup = util.readSetting(
+          com_idc_params,
+          "utilitiesMenu.sets.dynamicPresentation.callflows.standaloneModal.centerGroup",
+          "object",
+          [],
+          false
+        );
+        vars.utilitiesMenu.sets.dynamicPresentation.callflows.standaloneModal.rightGroup = util.readSetting(
+          com_idc_params,
+          "utilitiesMenu.sets.dynamicPresentation.callflows.standaloneModal.rightGroup",
+          "object",
+          [],
+          false
+        );
 
-      //dynamic presentation / callflows / regular modals
-      vars.utilitiesMenu.sets.dynamicPresentation.callflows.regularModals.buttonViewState = util.readSetting(
-        com_idc_params,
-        "utilitiesMenu.sets.dynamicPresentation.callflows.regularModals.buttonViewState",
-        "string",
-        null,
-        false
-      );
-      vars.utilitiesMenu.sets.dynamicPresentation.callflows.regularModals.bringToFront.dualButtonForActiveModal.active = util.readSetting(
-        com_idc_params,
-        "utilitiesMenu.sets.dynamicPresentation.callflows.regularModals.bringToFront.dualButtonForActiveModal.active",
-        "boolean",
-        false,
-        false
-      );
-      vars.utilitiesMenu.sets.dynamicPresentation.callflows.regularModals.bringToFront.referencesButton.active = util.readSetting(
-        com_idc_params,
-        "utilitiesMenu.sets.dynamicPresentation.callflows.regularModals.bringToFront.referencesButton.active",
-        "boolean",
-        false,
-        false
-      );
-      vars.utilitiesMenu.sets.dynamicPresentation.callflows.regularModals.bringToFront.referencesButton.excludeModals = util.readSetting(
-        com_idc_params,
-        "utilitiesMenu.sets.dynamicPresentation.callflows.regularModals.bringToFront.referencesButton.excludeModals",
-        "object",
-        [],
-        false
-      );
-      vars.utilitiesMenu.sets.dynamicPresentation.callflows.regularModals.bringToFront.sitemapButton.active = util.readSetting(
-        com_idc_params,
-        "utilitiesMenu.sets.dynamicPresentation.callflows.regularModals.bringToFront.sitemapButton.active",
-        "boolean",
-        false,
-        false
-      );
-      vars.utilitiesMenu.sets.dynamicPresentation.callflows.regularModals.bringToFront.sitemapButton.excludeModals = util.readSetting(
-        com_idc_params,
-        "utilitiesMenu.sets.dynamicPresentation.callflows.regularModals.bringToFront.sitemapButton.excludeModals",
-        "object",
-        [],
-        false
-      );
-      vars.utilitiesMenu.sets.dynamicPresentation.callflows.regularModals.bringToFront.sitemapButton.buttonId = util.readSetting(
-        com_idc_params,
-        "utilitiesMenu.sets.dynamicPresentation.callflows.regularModals.bringToFront.sitemapButton.buttonId",
-        "string",
-        ""
-      );
+        //dynamic presentation / callflows / regular modals
+        vars.utilitiesMenu.sets.dynamicPresentation.callflows.regularModals.buttonViewState = util.readSetting(
+          com_idc_params,
+          "utilitiesMenu.sets.dynamicPresentation.callflows.regularModals.buttonViewState",
+          "string",
+          null,
+          false
+        );
+        vars.utilitiesMenu.sets.dynamicPresentation.callflows.regularModals.bringToFront.dualButtonForActiveModal.active = util.readSetting(
+          com_idc_params,
+          "utilitiesMenu.sets.dynamicPresentation.callflows.regularModals.bringToFront.dualButtonForActiveModal.active",
+          "boolean",
+          false,
+          false
+        );
+        vars.utilitiesMenu.sets.dynamicPresentation.callflows.regularModals.bringToFront.referencesButton.active = util.readSetting(
+          com_idc_params,
+          "utilitiesMenu.sets.dynamicPresentation.callflows.regularModals.bringToFront.referencesButton.active",
+          "boolean",
+          false,
+          false
+        );
+        vars.utilitiesMenu.sets.dynamicPresentation.callflows.regularModals.bringToFront.referencesButton.excludeModals = util.readSetting(
+          com_idc_params,
+          "utilitiesMenu.sets.dynamicPresentation.callflows.regularModals.bringToFront.referencesButton.excludeModals",
+          "object",
+          [],
+          false
+        );
+        vars.utilitiesMenu.sets.dynamicPresentation.callflows.regularModals.bringToFront.sitemapButton.active = util.readSetting(
+          com_idc_params,
+          "utilitiesMenu.sets.dynamicPresentation.callflows.regularModals.bringToFront.sitemapButton.active",
+          "boolean",
+          false,
+          false
+        );
+        vars.utilitiesMenu.sets.dynamicPresentation.callflows.regularModals.bringToFront.sitemapButton.excludeModals = util.readSetting(
+          com_idc_params,
+          "utilitiesMenu.sets.dynamicPresentation.callflows.regularModals.bringToFront.sitemapButton.excludeModals",
+          "object",
+          [],
+          false
+        );
+        vars.utilitiesMenu.sets.dynamicPresentation.callflows.regularModals.bringToFront.sitemapButton.buttonId = util.readSetting(
+          com_idc_params,
+          "utilitiesMenu.sets.dynamicPresentation.callflows.regularModals.bringToFront.sitemapButton.buttonId",
+          "string",
+          ""
+        );
+      }
     }
 
     //standalone modal groups
@@ -4666,7 +4678,7 @@ com.idc.util = {
         tokens.forEach((token) => {
           let schemaRelatedValue = com.idc.util.getSchemaRelatedVar(token); //look for schemaRelatedVar
           if (schemaRelatedValue) {
-            objectAsText = objectAsText.replace(token, schemaRelatedValue); //replace
+            objectAsText = objectAsText.replace(`"${token}"`, JSON.stringify(schemaRelatedValue)); //replace
           }
         });
         value = JSON.parse(objectAsText);
@@ -5241,7 +5253,14 @@ com.idc.ui = {
 
           if (!com.idc.util.getElementAttribute(el, "data-target-id")) return; //do not proceed if no target id
 
-          if (vars.navigation.allAvaliableSlides.findIndex((slide) => slide === com.idc.util.getElementAttribute(el, "data-target-id")) < 0) {
+          let targetId = com.idc.util.getElementAttribute(el, "data-target-id");
+
+          //if target id ends with .. perform an approximate search
+          if (targetId && targetId.endsWith("..")) {
+            targetId = com.idc.clm.findSlide(targetId.replace("..", ""), true).id;
+          }
+          
+          if (vars.navigation.allAvaliableSlides.findIndex((slide) => slide === targetId) < 0) {
             el.setAttribute("data-non-working-link", true);
 
             el.addEventListener("click", (evt) => {
@@ -7135,7 +7154,7 @@ com.idc.ui = {
           const buttons = container.querySelector(':scope > [data-type="com.idc.ui.core.tab.buttons"]');
           let buttonCount;
           if (buttons) {
-            buttonCount = buttons.querySelectorAll('[data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.core.tab.button"]').length;
+            buttonCount = buttons.querySelectorAll(':scope > [data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.core.tab.button"]').length;
           } else {
             errorList = `${errorList} unable to find buttons container; `;
           }
@@ -7143,13 +7162,13 @@ com.idc.ui = {
           const contents = container.querySelector(':scope > [data-type="com.idc.ui.core.tab.contents"]');
           let contentCount;
           if (contents) {
-            contentCount = contents.querySelectorAll('[data-type="com.idc.ui.core.tab.content"]').length;
+            contentCount = contents.querySelectorAll(':scope > [data-type="com.idc.ui.core.tab.content"]').length;
           } else {
             errorList = `${errorList} unable to find contents container; `;
           }
 
           if (!buttonCount || !contentCount || buttonCount !== contentCount) {
-            errorList = `${errorList} number of buttons and content instances do not match; `;
+            errorList = `${errorList} number of buttons (${buttonCount}) and content instances (${contentCount}) do not match; `;
           }
         }
 
