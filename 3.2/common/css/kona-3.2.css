@@ -165,9 +165,13 @@ body[data-screen-orientation="portrait"] > [data-type="com.idc.ui.contentSize"] 
 }
 
 /* LINK --------------------------------------------- */
-[data-non-working-link=true] {
+body[data-is-dynamic-presentation="true"] [data-non-working-link=true]:not(:has([data-accepts-non-working-style="true"])) {
     opacity: 0.5;
 }
+body[data-is-dynamic-presentation="true"] [data-non-working-link=true] [data-accepts-non-working-style="true"] {
+    opacity: 0.2;
+}
+
 
 /* MENU --------------------------------------------- */
 [data-type="com.idc.ui.core.menu"] {
