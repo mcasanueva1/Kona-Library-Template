@@ -100,7 +100,7 @@ com.idc.templates = {
     ],
     "websiteLink": [
         {
-          "type": "DIV",
+          "type": "A",
           "attributes": [
             {
               "data-type": "com.idc.ui.core.websiteLink",

@@ -2768,19 +2768,6 @@ com.idc.clm = {
       com.veeva.clm.gotoSlideV2(relatedCLM.vaultExternalID.keyMessage, relatedCLM.vaultExternalID.presentation);
     }
   },
-  gotoWebsite: function (websiteId) {
-    let vars = com.idc.clm.vars;
-
-    let website = vars.websites.find((web) => {
-      return web.id == websiteId;
-    });
-    if (!website) return;
-
-    console.log("Opening website:", website.id, website.url);
-
-    //open in blank window
-    window.open(website.url, "_blank");
-  },
 
   /*dyamic presentation -----------------------------------*/
   contentTargeting: function () {
@@ -7660,18 +7647,17 @@ com.idc.ui = {
             //params
             el.params = com.idc.ui.common.readElementOptions(el, {});
 
-            el.addEventListener("click", (evt) => {
-              //do not proceed if non-working-link or disabled
-              if (el.getAttribute("data-non-working-link") || el.getAttribute("data-view-state") == "disabled") return;
-
-              //target website id
-              let targetWebsiteId = com.idc.util.getElementAttribute(el, "data-target-website");
-
-              //goto website
-              if (targetWebsiteId != "") {
-                com.idc.clm.gotoWebsite(targetWebsiteId);
-              }
+            //set href
+            let targetWebsiteId = com.idc.util.getElementAttribute(el, "data-target-website");
+            let website = com.idc.clm.vars.websites.find((web) => {
+              return web.id == targetWebsiteId;
             });
+            if (website) {
+              el.setAttribute("href", website.url);
+            }
+
+            //set target
+            el.setAttribute("target", "_blank");
           }
         });
       },
