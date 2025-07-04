@@ -6763,6 +6763,7 @@ com.idc.ui = {
             //components: instances
             if (el.components.container.element) {
               let buttons = el.components.container.element.querySelector(':scope > [data-type="com.idc.ui.core.tab.buttons"]');
+              let contents = el.components.container.element.querySelector(':scope > [data-type="com.idc.ui.core.tab.contents"]');
               if (buttons) {
                 buttons.querySelectorAll('[data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.core.tab.button"]').forEach((button) => {
                   const instance = {
@@ -6772,8 +6773,8 @@ com.idc.ui = {
                       element: button,
                     },
                     content: {
-                      element: el.components.container.element.querySelector(
-                        `[data-type="com.idc.ui.core.tab.content"][data-instance="${button.getAttribute("data-instance")}"]`
+                      element: contents.querySelector(
+                        `:scope > [data-type="com.idc.ui.core.tab.content"][data-instance="${button.getAttribute("data-instance")}"]`
                       ),
                     },
                     params: com.idc.ui.common.readElementOptions(button, {
