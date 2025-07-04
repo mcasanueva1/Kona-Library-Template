@@ -703,7 +703,24 @@ com.idc.templates = {
           ]
         }
       ]
-    }
+    },
+    "video": [
+      {
+        "type": "video",
+        "attributes": [
+          {
+            "src": "",
+          },
+          {
+            "height": "",
+          },
+          {
+            "width": "",
+          },
+        ],
+        "childNodes": [],
+      }
+    ]
   },
   "dynamicPresentation": {
     "menuBundle": [
