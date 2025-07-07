@@ -181,17 +181,8 @@ let com_idc_params = {
           "mainSlide": {
             "buttonViewState": "off",
             "centerGroup": [
-              "quickTourOpenButton",
-              "langOpenButton",
-              "emailCartOpenButton",
-              "interactionSummaryOpenButton",
-              "emailButton",
             ],
             "rightGroup": [
-              "safetyButton",
-              "siteMapOpenButton",
-              "referencesOpenButton",
-              "additionalResourcesOpenButton"
             ],
           },
           "standaloneModal": {
@@ -200,15 +191,6 @@ let com_idc_params = {
             "centerGroup": [
             ],
             "rightGroup": [
-              "quickTourOpenButton",
-              "langOpenButton",
-              "emailCartOpenButton",
-              "interactionSummaryOpenButton",
-              "emailButton",
-              "safetyButton",
-              "siteMapOpenButton",
-              "referencesOpenButton",
-              "additionalResourcesOpenButton"
             ],
           },
           "regularModals": {
@@ -219,7 +201,7 @@ let com_idc_params = {
               },
               "referencesButton": {
                 "active": true,
-                "excludeModals": ["mandatoryPopUp", "emailCartModal", "interactionSummaryModal"]
+                "excludeModals": []
               },
               "sitemapButton": {
                 "active": false,
@@ -233,17 +215,8 @@ let com_idc_params = {
           "mainSlide": {
             "buttonViewState": "off",
             "centerGroup": [
-              "quickTourOpenButton",
-              "langOpenButton",
-              "emailCartOpenButton",
-              "interactionSummaryOpenButton",
-              "emailButton",
             ],
             "rightGroup": [
-              "safetyButton",
-              "siteMapOpenButton",
-              "referencesOpenButton",
-              "additionalResourcesOpenButton"
             ],
           },
           "standaloneModal": {
@@ -252,15 +225,6 @@ let com_idc_params = {
             "centerGroup": [
             ],
             "rightGroup": [
-              "quickTourOpenButton",
-              "langOpenButton",
-              "emailCartOpenButton",
-              "interactionSummaryOpenButton",
-              "emailButton",
-              "safetyButton",
-              "siteMapOpenButton",
-              "referencesOpenButton",
-              "additionalResourcesOpenButton"
             ],
           },
           "regularModals": {
@@ -271,7 +235,7 @@ let com_idc_params = {
               },
               "referencesButton": {
                 "active": true,
-                "excludeModals": ["mandatoryPopUp", "emailCartModal", "interactionSummaryModal"]
+                "excludeModals": []
               },
               "sitemapButton": {
                 "active": false,
@@ -285,17 +249,8 @@ let com_idc_params = {
           "mainSlide": {
             "buttonViewState": "off",
             "centerGroup": [
-              "quickTourOpenButton",
-              "langOpenButton",
-              "emailCartOpenButton",
-              "interactionSummaryOpenButton",
-              "emailButton",
             ],
             "rightGroup": [
-              "safetyButton",
-              "siteMapOpenButton",
-              "referencesOpenButton",
-              "additionalResourcesOpenButton"
             ],
           },
           "standaloneModal": {
@@ -304,15 +259,6 @@ let com_idc_params = {
             "centerGroup": [
             ],
             "rightGroup": [
-              "quickTourOpenButton",
-              "langOpenButton",
-              "emailCartOpenButton",
-              "interactionSummaryOpenButton",
-              "emailButton",
-              "safetyButton",
-              "siteMapOpenButton",
-              "referencesOpenButton",
-              "additionalResourcesOpenButton"
             ],
           },
           "regularModals": {
@@ -323,7 +269,7 @@ let com_idc_params = {
               },
               "referencesButton": {
                 "active": true,
-                "excludeModals": ["mandatoryPopUp", "emailCartModal", "interactionSummaryModal"]
+                "excludeModals": []
               },
               "sitemapButton": {
                 "active": false,
@@ -337,17 +283,8 @@ let com_idc_params = {
           "mainSlide": {
             "buttonViewState": "off",
             "centerGroup": [
-              "quickTourOpenButton",
-              "langOpenButton",
-              "emailCartOpenButton",
-              "interactionSummaryOpenButton",
-              "emailButton",
             ],
             "rightGroup": [
-              "safetyButton",
-              "siteMapOpenButton",
-              "referencesOpenButton",
-              "additionalResourcesOpenButton"
             ],
           },
           "standaloneModal": {
@@ -356,15 +293,6 @@ let com_idc_params = {
             "centerGroup": [
             ],
             "rightGroup": [
-              "quickTourOpenButton",
-              "langOpenButton",
-              "emailCartOpenButton",
-              "interactionSummaryOpenButton",
-              "emailButton",
-              "safetyButton",
-              "siteMapOpenButton",
-              "referencesOpenButton",
-              "additionalResourcesOpenButton"
             ],
           },
           "regularModals": {
@@ -375,7 +303,7 @@ let com_idc_params = {
               },
               "referencesButton": {
                 "active": true,
-                "excludeModals": ["mandatoryPopUp", "emailCartModal", "interactionSummaryModal"]
+                "excludeModals": []
               },
               "sitemapButton": {
                 "active": false,
