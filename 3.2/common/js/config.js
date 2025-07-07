@@ -387,6 +387,9 @@ let com_idc_params = {
         }
       }
     },
+    "clickstreamTracking": {
+      "active": true,
+    }
   },
   "emailCart": {
     "active": false,
