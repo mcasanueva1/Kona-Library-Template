@@ -7564,7 +7564,7 @@ com.idc.ui = {
         }
 
         //clickstream tracking
-        if (vars.session.isAnActualCall) {
+        if (vars.session.isAnActualCall && !vars.options.browserMode.simulate.active) {
           let clickstreamRecord = {};
           clickstreamRecord.Track_Element_Id_vod__c = pElId;
           clickstreamRecord.Track_Element_Description_vod__c = "com.idc.ui.utilitiesMenu.clickstreamTracking." + pElId;
