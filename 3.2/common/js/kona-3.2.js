@@ -171,12 +171,12 @@ com.idc.clm = {
             otherModals: [
               {
                 openButton: null,
-                modalId: null
-              }
-            ]
+                modalId: null,
+              },
+            ],
           },
-        ]
-      ]
+        ],
+      ],
     },
     commonHTML: {
       active: null,
@@ -382,6 +382,9 @@ com.idc.clm = {
             },
           },
         },
+      },
+      clickstreamTracking: {
+        active: null,
       },
     },
     navigation: {
@@ -1122,6 +1125,14 @@ com.idc.clm = {
     //utilities menu
     if (com_idc_params.utilitiesMenu) {
       vars.utilitiesMenu.active = util.readSetting(com_idc_params, "utilitiesMenu.active", "boolean", false);
+
+      //tracking
+      vars.utilitiesMenu.clickstreamTracking.active = util.readSetting(
+        com_idc_params,
+        "utilitiesMenu.clickstreamTracking.active",
+        "boolean",
+        false
+      );
 
       //main slide
       vars.utilitiesMenu.sets.mainSlide.buttonViewState = util.readSetting(com_idc_params, "utilitiesMenu.sets.mainSlide.buttonViewState", "string", null);
@@ -4808,7 +4819,7 @@ com.idc.ui = {
                   ),
                 },
                 params: com.idc.ui.common.readElementOptions(
-                  button, 
+                  button,
                   {
                     beforeOpen: null,
                     afterOpen: null,
@@ -4823,19 +4834,22 @@ com.idc.ui = {
                     afterClose: "aC",
                     initialState: "iS",
                   }
-              ),
+                ),
                 viewState: null,
               };
               el.components.instances.push(instance);
             });
 
             //params
-            el.params = com.idc.ui.common.readElementOptions(el, {
-              oneByOne: true, //if 'true', just one instance at a time can be open
-            },
-            {
-              oneByOne: "oBO", //abbreviations
-            });
+            el.params = com.idc.ui.common.readElementOptions(
+              el,
+              {
+                oneByOne: true, //if 'true', just one instance at a time can be open
+              },
+              {
+                oneByOne: "oBO", //abbreviations
+              }
+            );
 
             //assign functions and events
             el.itemClick = this.itemClick;
@@ -5111,16 +5125,19 @@ com.idc.ui = {
             el.activated = true;
 
             //params
-            el.params = com.idc.ui.common.readElementOptions(el, {
-              elId: null, //target slide element id (complex link)
-              elType: null, //target slide element type (complex link)
-              elInstance: null, //target slide element instance (complex link tab/accordion/multi)
-            },
-            {
-              elId: "elI", //abbreviations
-              elType: "elT", 
-              elInstance: "elN", 
-            });
+            el.params = com.idc.ui.common.readElementOptions(
+              el,
+              {
+                elId: null, //target slide element id (complex link)
+                elType: null, //target slide element type (complex link)
+                elInstance: null, //target slide element instance (complex link tab/accordion/multi)
+              },
+              {
+                elId: "elI", //abbreviations
+                elType: "elT",
+                elInstance: "elN",
+              }
+            );
 
             el.addEventListener("click", (evt) => {
               let vars = com.idc.clm.vars;
@@ -5164,7 +5181,6 @@ com.idc.ui = {
 
               //complex link >> update persistent data
               if (el.params.elId) {
-
                 //account for abbreviated links in target Id
                 if (targetId && targetId.endsWith("..")) {
                   let slideFound = com.idc.clm.findSlide(targetId.replace("..", ""), true);
@@ -5246,7 +5262,7 @@ com.idc.ui = {
           if (targetId && targetId.endsWith("..")) {
             targetId = com.idc.clm.findSlide(targetId.replace("..", ""), true).id;
           }
-          
+
           if (vars.navigation.allAvaliableSlides.findIndex((slide) => slide === targetId) < 0) {
             el.setAttribute("data-non-working-link", true);
 
@@ -5411,34 +5427,37 @@ com.idc.ui = {
             el.components = {};
 
             //params
-            el.params = com.idc.ui.common.readElementOptions(el, {
-              preventCloseOnBackModalTap: false, //deactivates close action on back modal
-              backModalStyle: null, //used to assign a class to back modal
-              beforeOpen: null,
-              afterOpen: null,
-              beforeClose: null,
-              afterClose: null,
-              closeAction: null, //"opener" or slideId
-              elId: null, //back slide element id (complex link)
-              elType: null, //back slide element type (complex link)
-              elInstance: null, //back slide element instance (complex link tab/accordion/multi)
-              zIndexIncrement: null, //used to add / subtract from the default z-index
-              standaloneGroup: null, //used to set standalone modal group in modal param
-            },
-            {
-              preventCloseOnBackModalTap: "pCB", //abbreviations
-              backModalStyle: "bMS",
-              beforeOpen: "bO",
-              afterOpen: "aO",
-              beforeClose: "bC",
-              afterClose: "aC", 
-              closeAction: "cA",
-              elId: "eId", 
-              elType: "eTp", 
-              elInstance: "eIn",
-              zIndexIncrement: "zII",
-              standaloneGroup: "sG",
-            });
+            el.params = com.idc.ui.common.readElementOptions(
+              el,
+              {
+                preventCloseOnBackModalTap: false, //deactivates close action on back modal
+                backModalStyle: null, //used to assign a class to back modal
+                beforeOpen: null,
+                afterOpen: null,
+                beforeClose: null,
+                afterClose: null,
+                closeAction: null, //"opener" or slideId
+                elId: null, //back slide element id (complex link)
+                elType: null, //back slide element type (complex link)
+                elInstance: null, //back slide element instance (complex link tab/accordion/multi)
+                zIndexIncrement: null, //used to add / subtract from the default z-index
+                standaloneGroup: null, //used to set standalone modal group in modal param
+              },
+              {
+                preventCloseOnBackModalTap: "pCB", //abbreviations
+                backModalStyle: "bMS",
+                beforeOpen: "bO",
+                afterOpen: "aO",
+                beforeClose: "bC",
+                afterClose: "aC",
+                closeAction: "cA",
+                elId: "eId",
+                elType: "eTp",
+                elInstance: "eIn",
+                zIndexIncrement: "zII",
+                standaloneGroup: "sG",
+              }
+            );
 
             //is standalone modal?
             el.isStandalone = false;
@@ -5772,7 +5791,7 @@ com.idc.ui = {
               //a slide ID has been defined in closeAction, redirect to that slide
               let slideFound;
               if (this.params.closeAction.endsWith("..")) {
-                slideFound = com.idc.clm.findSlide(this.params.closeAction.replace("..", ""), true)
+                slideFound = com.idc.clm.findSlide(this.params.closeAction.replace("..", ""), true);
               } else {
                 slideFound = com.idc.clm.findSlide(this.params.closeAction);
               }
@@ -5784,7 +5803,6 @@ com.idc.ui = {
 
           //set destination slide with complex link (and update persistent data)
           if (this.params.elId) {
-
             //account for abbreviated links in destinationSlide
             if (destinationSlide && destinationSlide.endsWith("..")) {
               let slideFound = com.idc.clm.findSlide(destinationSlide.replace("..", ""), true);
@@ -5802,7 +5820,7 @@ com.idc.ui = {
             com.idc.clm.updatePersistentData();
           }
 
-          //redirect          
+          //redirect
           com.idc.clm.gotoSlide(destinationSlide);
         }
       },
@@ -6155,12 +6173,15 @@ com.idc.ui = {
             };
 
             //params
-            el.params = com.idc.ui.common.readElementOptions(el, {
-              selectorAttribute: null,
-            },
-            {
-              selectorAttribute: "sA",
-            });
+            el.params = com.idc.ui.common.readElementOptions(
+              el,
+              {
+                selectorAttribute: null,
+              },
+              {
+                selectorAttribute: "sA",
+              }
+            );
 
             //assign functions and events: main element
             el.setInstance = this.setInstance;
@@ -6192,23 +6213,25 @@ com.idc.ui = {
                   const instance = {
                     name: instanceEl.getAttribute("data-instance"),
                     element: instanceEl,
-                    params: com.idc.ui.common.readElementOptions(instanceEl, {
-                      beforeOpen: null,
-                      afterOpen: null,
-                      beforeClose: null,
-                      afterClose: null,
-                      initialState: null, //'open' will set the instance open by default
-                      selectorValue: null,
-                    },
-                    {
-                      beforeOpen: "bO",
-                      afterOpen: "aO",
-                      beforeClose: "bC",
-                      afterClose: "aC",
-                      initialState: "iS",
-                      selectorValue: "sV",
-                    }
-                  ),
+                    params: com.idc.ui.common.readElementOptions(
+                      instanceEl,
+                      {
+                        beforeOpen: null,
+                        afterOpen: null,
+                        beforeClose: null,
+                        afterClose: null,
+                        initialState: null, //'open' will set the instance open by default
+                        selectorValue: null,
+                      },
+                      {
+                        beforeOpen: "bO",
+                        afterOpen: "aO",
+                        beforeClose: "bC",
+                        afterClose: "aC",
+                        initialState: "iS",
+                        selectorValue: "sV",
+                      }
+                    ),
                     viewState: null,
                   };
                   el.components.instances.push(instance);
@@ -6777,22 +6800,24 @@ com.idc.ui = {
                         `:scope > [data-type="com.idc.ui.core.tab.content"][data-instance="${button.getAttribute("data-instance")}"]`
                       ),
                     },
-                    params: com.idc.ui.common.readElementOptions(button, {
-                      beforeOpen: null,
-                      afterOpen: null,
-                      beforeClose: null,
-                      afterClose: null,
-                      initialState: null, //'open' will set the instance open by default
-                      selectorValue: null,
-                    },
-                    {
-                      beforeOpen: "bO",
-                      afterOpen: "aO",
-                      beforeClose: "bC",
-                      afterClose: "aC",
-                      initialState: "iS",
-                      selectorValue: "sV",
-                    }
+                    params: com.idc.ui.common.readElementOptions(
+                      button,
+                      {
+                        beforeOpen: null,
+                        afterOpen: null,
+                        beforeClose: null,
+                        afterClose: null,
+                        initialState: null, //'open' will set the instance open by default
+                        selectorValue: null,
+                      },
+                      {
+                        beforeOpen: "bO",
+                        afterOpen: "aO",
+                        beforeClose: "bC",
+                        afterClose: "aC",
+                        initialState: "iS",
+                        selectorValue: "sV",
+                      }
                     ),
                     viewState: null,
                   };
@@ -6832,18 +6857,20 @@ com.idc.ui = {
             }
 
             //params
-            el.params = com.idc.ui.common.readElementOptions(el, {
-              backModalStyle: null, //used to assign a class to back modal
-              btnTransitionCoverToTab: null, //used to assign a transition class from cover button to tab button
-              btnTransitionTabToCover: null, //used to assign a transition class from tab button to cover button
-              selectorAttribute: null, //used to set the instance to open by default
-            },
-            {
-              backModalStyle: "bMS",
-              btnTransitionCoverToTab: "bTCT",
-              btnTransitionTabToCover: "bTTC",
-              selectorAttribute: "sA",
-            }
+            el.params = com.idc.ui.common.readElementOptions(
+              el,
+              {
+                backModalStyle: null, //used to assign a class to back modal
+                btnTransitionCoverToTab: null, //used to assign a transition class from cover button to tab button
+                btnTransitionTabToCover: null, //used to assign a transition class from tab button to cover button
+                selectorAttribute: null, //used to set the instance to open by default
+              },
+              {
+                backModalStyle: "bMS",
+                btnTransitionCoverToTab: "bTCT",
+                btnTransitionTabToCover: "bTTC",
+                selectorAttribute: "sA",
+              }
             );
 
             //assign functions and events: main element
@@ -7222,7 +7249,7 @@ com.idc.ui = {
               //interval to wait for selector value to be set
               let interval = setInterval(() => {
                 let selectorAttributeValue = document.body.getAttribute(this.params.selectorAttribute);
-  
+
                 if (selectorAttributeValue) {
                   instanceToSet_byAttribute = this.components.instances.findIndex((instance) => {
                     return instance.params.selectorValue == selectorAttributeValue;
@@ -7314,6 +7341,18 @@ com.idc.ui = {
 
           //set style and z-index
           this.updateStyleAndZIndex();
+        }
+
+        //clickstream tracking
+        if (vars.utilitiesMenu.clickstreamTracking.active) {
+          this.components.items.buttons.forEach((button) => {
+            button.addEventListener("click", (event) => {
+              let buttonId = button.getAttribute("id");
+              if (buttonId) {
+                this.track(buttonId);
+              }
+            });
+          });
         }
       },
       updateGroupsContents: function () {
@@ -7511,6 +7550,35 @@ com.idc.ui = {
         let separatorBefore = group.querySelector(`[data-before-item="${pItemId}"]`);
         if (separatorBefore) {
           separatorBefore.style.display = "none";
+        }
+      },
+      track: function (pElId) {
+        let vars = com.idc.clm.vars;
+
+        //track once per session
+        let sessionStorageId = "com.idc.ui.utilitiesMenu.clickstreamTracking." + pElId;
+        if (sessionStorage.getItem(sessionStorageId) == "true") {
+          return;
+        } else {
+          sessionStorage.setItem(sessionStorageId, "true");
+        }
+
+        //clickstream tracking
+        if (vars.session.isAnActualCall) {
+          let clickstreamRecord = {};
+          clickstreamRecord.Track_Element_Id_vod__c = pElId;
+          clickstreamRecord.Track_Element_Description_vod__c = "com.idc.ui.utilitiesMenu.clickstreamTracking." + pElId;
+          clickstreamRecord.Track_Element_Type_vod__c = "com.idc.ui.utilitiesMenu.clickstreamTracking";
+
+          com.veeva.clm.createRecord("Call_Clickstream_vod__c", clickstreamRecord, (data) => {
+            if (!data.success) {
+              com.idc.util.log(`Utilmenu tracking ERROR (${data.code}) ${data.message}`);
+            } else {
+              com.idc.util.log(`Utilmenu tracking (${pElId})`);
+            }
+          });
+        } else {
+          com.idc.util.log(`Utilmenu tracking (simulated) ${pElId}`);
         }
       },
     },
