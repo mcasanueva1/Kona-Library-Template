@@ -52,7 +52,7 @@ com.idc.templates = {
               "data-instance": "",
             },
             {
-              "class": "uiBtnResponse",
+              "data-btn-response": "true",
             },
           ],
           "childNodes": [],
@@ -84,7 +84,7 @@ com.idc.templates = {
             "data-target-id": "",
           },
           {
-            "class": "uiBtnResponse",
+            "data-btn-response": "true",
           },
         ],
         "childNodes": [],
@@ -101,7 +101,7 @@ com.idc.templates = {
               "data-target-clm": "",
             },
             {
-                "class": "uiBtnResponse",
+                "data-btn-response": "true",
             },            
           ],
           "childNodes": [],
@@ -118,7 +118,7 @@ com.idc.templates = {
               "data-target-website": "",
             },
             {
-                "class": "uiBtnResponse",
+                "data-btn-response": "true",
             },            
           ],
           "childNodes": [],
@@ -160,7 +160,7 @@ com.idc.templates = {
                     "data-target-id": ""
                 },
                 {
-                    "class": "uiBtnResponse",
+                    "data-btn-response": "true",
                 },                
             ],
             "childNodes": []
@@ -192,7 +192,7 @@ com.idc.templates = {
               "data-target-id": "",
             },
             {
-              "class": "uiBtnResponse",
+              "data-btn-response": "true",
             },
           ],
           "childNodes": [],
@@ -212,7 +212,7 @@ com.idc.templates = {
               "data-target-id": "",
             },
             {
-              "class": "uiBtnResponse",
+              "data-btn-response": "true",
             },
           ],
           "childNodes": [],
@@ -229,7 +229,7 @@ com.idc.templates = {
               "data-sub-type": "com.idc.ui.core.modal.closeButton",
             },
             {
-              "class": "uiBtnResponse",
+              "data-btn-response": "true",
             },
           ],
           "childNodes": [],
@@ -331,7 +331,7 @@ com.idc.templates = {
                   "data-sub-type": "com.idc.ui.core.modal.prevArrow",
                 },
                 {
-                  "class": "uiBtnResponse",
+                  "data-btn-response": "true",
                 },
               ],
               "childNodes": []
@@ -348,7 +348,7 @@ com.idc.templates = {
                   "data-sub-type": "com.idc.ui.core.modal.nextArrow",
                 },
                 {
-                  "class": "uiBtnResponse",
+                  "data-btn-response": "true",
                 },                
               ],
               "childNodes": []
@@ -458,7 +458,7 @@ com.idc.templates = {
               "data-sub-type": "com.idc.ui.core.multi.prevButton",
             },
             {
-              "class": "uiBtnResponse",
+              "data-btn-response": "true",
             },
           ],
           "childNodes": [],
@@ -475,7 +475,7 @@ com.idc.templates = {
               "data-sub-type": "com.idc.ui.core.multi.nextButton",
             },
             {
-              "class": "uiBtnResponse",
+              "data-btn-response": "true",
             },
           ],
           "childNodes": [],
@@ -646,7 +646,7 @@ com.idc.templates = {
             "data-instance": "",
           },
           {
-            "class": "uiBtnResponse",
+            "data-btn-response": "true",
           },
         ],
         "childNodes": [],
@@ -1342,7 +1342,7 @@ com.idc.templates = {
                 "data-sub-type": "com.idc.ui.core.emailButton",
             },
             {
-                "class": "uiBtnResponse",
+                "data-btn-response": "true",
             },
         ],
         "childNodes": [],
@@ -1360,7 +1360,7 @@ com.idc.templates = {
                 "data-target-id": "",
             },
             {
-                "class": "uiBtnResponse",
+                "data-btn-response": "true",
             },
         ],
         "childNodes": [
@@ -1404,7 +1404,7 @@ com.idc.templates = {
                                 "data-status": "unChecked"
                             },
                             {
-                                "class": "uiBtnResponse",
+                                "data-btn-response": "true",
                             },
                         ],
                         "childNodes": []
@@ -1429,7 +1429,7 @@ com.idc.templates = {
                         "data-sub-type": "com.idc.ui.emailCart.cancelButton"
                     },
                     {
-                        "class": "uiBtnResponse",
+                        "data-btn-response": "true",
                     },
                 ],
                 "childNodes": []
@@ -1444,7 +1444,7 @@ com.idc.templates = {
                         "data-sub-type": "com.idc.ui.emailCart.doneButton"
                     },
                     {
-                        "class": "uiBtnResponse",
+                        "data-btn-response": "true",
                     },
                 ],
                 "childNodes": []
@@ -1459,7 +1459,7 @@ com.idc.templates = {
                         "data-sub-type": "com.idc.ui.emailCart.sendButton"
                     },
                     {
-                        "class": "uiBtnResponse",
+                        "data-btn-response": "true",
                     },
                 ],
                 "childNodes": []
