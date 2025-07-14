@@ -177,6 +177,10 @@ com.idc.clm = {
           },
         ],
       ],
+      btnFeedback: {
+        sound: false,
+        visual: false,
+      },
     },
     commonHTML: {
       active: null,
@@ -885,6 +889,11 @@ com.idc.clm = {
       vars.options.alternateModals = util.readSetting(com_idc_params, "options.alternateModals", "object", []);
     }
 
+    if (com_idc_params.options.btnFeedback) {
+      vars.options.btnFeedback.sound = util.readSetting(com_idc_params, "options.btnFeedback.sound", "boolean", false);
+      vars.options.btnFeedback.visual = util.readSetting(com_idc_params, "options.btnFeedback.visual", "boolean", false);
+    }
+
     //common html
     vars.commonHTML.active = util.readSetting(com_idc_params, "commonHTML.active", "boolean", true);
     vars.commonHTML.elements = util.readSetting(com_idc_params, "commonHTML.elements", "object", []);
@@ -1127,12 +1136,7 @@ com.idc.clm = {
       vars.utilitiesMenu.active = util.readSetting(com_idc_params, "utilitiesMenu.active", "boolean", false);
 
       //tracking
-      vars.utilitiesMenu.clickstreamTracking.active = util.readSetting(
-        com_idc_params,
-        "utilitiesMenu.clickstreamTracking.active",
-        "boolean",
-        false
-      );
+      vars.utilitiesMenu.clickstreamTracking.active = util.readSetting(com_idc_params, "utilitiesMenu.clickstreamTracking.active", "boolean", false);
 
       //main slide
       vars.utilitiesMenu.sets.mainSlide.buttonViewState = util.readSetting(com_idc_params, "utilitiesMenu.sets.mainSlide.buttonViewState", "string", null);
@@ -4392,6 +4396,14 @@ com.idc.clm = {
         this.updatePersistentData();
       }
     }
+
+    //button feedback
+    if (this.vars.options.btnFeedback.visual) {
+      com.idc.ui.btnFeedback.enableVisualFeedback();
+    }
+    if (this.vars.options.btnFeedback.sound) {
+      com.idc.ui.btnFeedback.enableSoundFeedback();
+    }
   },
 
   /*email -------------------------------------------------*/
@@ -4751,6 +4763,31 @@ com.idc.util = {
 };
 
 com.idc.ui = {
+  btnFeedback: {
+    enableVisualFeedback: function() {
+      document.body.setAttribute("data-enable-btn-feedback", "true");
+    },
+    disableVisualFeedback: function() {
+      document.body.removeAttribute("data-enable-btn-feedback");
+    },
+    enableSoundFeedback: function() {
+      document.querySelectorAll('[data-btn-response="true"]').forEach((el) => {
+        el.addEventListener("click", () => {
+          if (com.idc.clm.vars.options.btnFeedback.sound) {
+            let audio = new Audio(com.idc.util.getSharedResourcesPath() + "mp3/" + "click.mp3");
+            audio.volume = 0.01;
+            audio.currentTime = 0;
+            audio.play().catch((error) => {
+              com.idc.util.log(`com.idc.ui.btnFeedback.enableSoundFeedback: error playing sound - ${error}`);
+            });
+          }
+        });
+      });
+    },
+    disableSoundFeedback: function() {
+      com.idc.clm.vars.options.btnFeedback.sound = false;
+    }
+  },
   core: {
     accordion: {
       selector: '[data-type="com.idc.ui.core.accordion"]',
