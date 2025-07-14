@@ -51,6 +51,9 @@ com.idc.templates = {
             {
               "data-instance": "",
             },
+            {
+              "class": "uiBtnResponse",
+            },
           ],
           "childNodes": [],
         }
@@ -80,6 +83,9 @@ com.idc.templates = {
           {
             "data-target-id": "",
           },
+          {
+            "class": "uiBtnResponse",
+          },
         ],
         "childNodes": [],
       }
@@ -94,6 +100,9 @@ com.idc.templates = {
             {
               "data-target-clm": "",
             },
+            {
+                "class": "uiBtnResponse",
+            },            
           ],
           "childNodes": [],
         }
@@ -108,6 +117,9 @@ com.idc.templates = {
             {
               "data-target-website": "",
             },
+            {
+                "class": "uiBtnResponse",
+            },            
           ],
           "childNodes": [],
         }
@@ -146,7 +158,10 @@ com.idc.templates = {
                 },
                 {
                     "data-target-id": ""
-                }
+                },
+                {
+                    "class": "uiBtnResponse",
+                },                
             ],
             "childNodes": []
         }
@@ -176,6 +191,9 @@ com.idc.templates = {
             {
               "data-target-id": "",
             },
+            {
+              "class": "uiBtnResponse",
+            },
           ],
           "childNodes": [],
         }
@@ -193,6 +211,9 @@ com.idc.templates = {
             {
               "data-target-id": "",
             },
+            {
+              "class": "uiBtnResponse",
+            },
           ],
           "childNodes": [],
         }
@@ -206,6 +227,9 @@ com.idc.templates = {
             },
             {
               "data-sub-type": "com.idc.ui.core.modal.closeButton",
+            },
+            {
+              "class": "uiBtnResponse",
             },
           ],
           "childNodes": [],
@@ -306,6 +330,9 @@ com.idc.templates = {
                 {
                   "data-sub-type": "com.idc.ui.core.modal.prevArrow",
                 },
+                {
+                  "class": "uiBtnResponse",
+                },
               ],
               "childNodes": []
             }
@@ -320,6 +347,9 @@ com.idc.templates = {
                 {
                   "data-sub-type": "com.idc.ui.core.modal.nextArrow",
                 },
+                {
+                  "class": "uiBtnResponse",
+                },                
               ],
               "childNodes": []
             }
@@ -427,6 +457,9 @@ com.idc.templates = {
             {
               "data-sub-type": "com.idc.ui.core.multi.prevButton",
             },
+            {
+              "class": "uiBtnResponse",
+            },
           ],
           "childNodes": [],
           }
@@ -440,6 +473,9 @@ com.idc.templates = {
             },
             {
               "data-sub-type": "com.idc.ui.core.multi.nextButton",
+            },
+            {
+              "class": "uiBtnResponse",
             },
           ],
           "childNodes": [],
@@ -608,6 +644,9 @@ com.idc.templates = {
           },
           {
             "data-instance": "",
+          },
+          {
+            "class": "uiBtnResponse",
           },
         ],
         "childNodes": [],
@@ -1296,27 +1335,33 @@ com.idc.templates = {
     "emailButton": [{
         "type": "DIV",
         "attributes": [
-        {
-            "data-type": "com.idc.ui.core.button",
-        },
-        {
-            "data-sub-type": "com.idc.ui.core.emailButton",
-        },
+            {
+                "data-type": "com.idc.ui.core.button",
+            },
+            {
+                "data-sub-type": "com.idc.ui.core.emailButton",
+            },
+            {
+                "class": "uiBtnResponse",
+            },
         ],
         "childNodes": [],
     }],
     "emailCartOpenButton": [{
         "type": "DIV",
         "attributes": [
-        {
-            "data-type": "com.idc.ui.core.button",
-        },
-        {
-            "data-sub-type": "com.idc.ui.core.modal.dualButton",
-        },
-        {
-            "data-target-id": "",
-        }
+            {
+                "data-type": "com.idc.ui.core.button",
+            },
+            {
+                "data-sub-type": "com.idc.ui.core.modal.dualButton",
+            },
+            {
+                "data-target-id": "",
+            },
+            {
+                "class": "uiBtnResponse",
+            },
         ],
         "childNodes": [
         {
@@ -1357,7 +1402,10 @@ com.idc.templates = {
                             },
                             {
                                 "data-status": "unChecked"
-                            }
+                            },
+                            {
+                                "class": "uiBtnResponse",
+                            },
                         ],
                         "childNodes": []
                     }
@@ -1380,6 +1428,9 @@ com.idc.templates = {
                     {
                         "data-sub-type": "com.idc.ui.emailCart.cancelButton"
                     },
+                    {
+                        "class": "uiBtnResponse",
+                    },
                 ],
                 "childNodes": []
             },
@@ -1392,6 +1443,9 @@ com.idc.templates = {
                     {
                         "data-sub-type": "com.idc.ui.emailCart.doneButton"
                     },
+                    {
+                        "class": "uiBtnResponse",
+                    },
                 ],
                 "childNodes": []
             },
@@ -1403,6 +1457,9 @@ com.idc.templates = {
                     },
                     {
                         "data-sub-type": "com.idc.ui.emailCart.sendButton"
+                    },
+                    {
+                        "class": "uiBtnResponse",
                     },
                 ],
                 "childNodes": []
