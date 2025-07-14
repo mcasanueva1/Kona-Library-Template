@@ -308,6 +308,27 @@ body[data-is-dynamic-presentation="true"] [data-non-working-link=true] [data-acc
 [data-type="com.idc.ui.core.modal.groupSlides"] [data-type="com.idc.ui.core.modal.groupSlides.item"] [data-type="com.idc.ui.core.modal.groupSlides.item.thumb"] img {
     width: 218px;
 }
+body.video #standaloneModal1,
+[data-type="com.idc.ui.backModal"][back-modal-for="standaloneModal1"] {
+    -webkit-animation: none;
+    animation: none;
+}
+
+body.video,
+body.video [data-type="com.idc.ui.contentSize"],
+body.video [data-type="com.idc.ui.core.modal.popUp"]#standaloneModal1 {
+    background: #000000;
+    background-color: #000000;
+    opacity: 1;
+}
+
+body.video #utilMenu [data-type="com.idc.ui.utilitiesMenu.container"] > * {
+    display: none;
+}
+
+body.video #utilMenu [data-type="com.idc.ui.utilitiesMenu.container"] > #utilCloseBtn {
+    display: block;
+}
 
 /* MULTI -------------------------------------------- */
 [data-type="com.idc.ui.core.multi.content"] {
