@@ -56,7 +56,7 @@ body[data-screen-orientation="portrait"] > [data-type="com.idc.ui.contentSize"] 
 }
 
 /* INTERACTIVE ELEMENT FEEDBACK ON CLICK*/
-[data-btn-response="true"]:active {
+body[data-enable-btn-response="true"] [data-btn-response="true"]:active {
     transform: scale(0.98) translateY(2px);
 }
 
