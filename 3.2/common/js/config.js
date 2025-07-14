@@ -122,7 +122,11 @@ let com_idc_params = {
       "global": "",
     },
     "alternateModals": [
-    ]
+    ],
+    "btnFeedback": {
+      "sound": false,
+      "visual": false
+    }
   },
   "commonHTML": {
     "active": true,
