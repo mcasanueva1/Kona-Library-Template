@@ -5237,7 +5237,15 @@ com.idc.ui = {
 
               //goto slide
               if (targetId != "" && !overrideFnc) {
-                com.idc.clm.gotoSlide(targetId);
+
+                //delay redirect to allow for sound feedback
+                if (com.idc.clm.vars.options.btnFeedback.sound) {
+                  setTimeout(() => {
+                    com.idc.clm.gotoSlide(targetId);
+                  }, 500);
+                } else {
+                  com.idc.clm.gotoSlide(targetId);
+                }
               }
 
               //override function
