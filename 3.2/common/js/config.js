@@ -124,7 +124,7 @@ let com_idc_params = {
     "alternateModals": [
     ],
     "btnFeedback": {
-      "sound": true,
+      "sound": false,
       "visual": true
     }
   },
