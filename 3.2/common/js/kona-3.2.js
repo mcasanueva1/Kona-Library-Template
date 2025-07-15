@@ -4764,6 +4764,7 @@ com.idc.util = {
 
 com.idc.ui = {
   btnFeedback: {
+    audio: null,
     enableVisualFeedback: function() {
       document.body.setAttribute("data-enable-btn-feedback", "true");
     },
@@ -4771,13 +4772,22 @@ com.idc.ui = {
       document.body.removeAttribute("data-enable-btn-feedback");
     },
     enableSoundFeedback: function() {
+      this.audio = new Audio(com.idc.util.getSharedResourcesPath() + "mp3/" + "click.mp3");
+      this.audio.volume = 0.01;
+            
       document.querySelectorAll('[data-btn-response="true"]').forEach((el) => {
-        el.addEventListener("click", () => {
+        el.addEventListener("mousedown", () => {
           if (com.idc.clm.vars.options.btnFeedback.sound) {
-            let audio = new Audio(com.idc.util.getSharedResourcesPath() + "mp3/" + "click.mp3");
-            audio.volume = 0.01;
-            audio.currentTime = 0;
-            audio.play().catch((error) => {
+            this.audio.currentTime = 0;
+            this.audio.play().catch((error) => {
+              com.idc.util.log(`com.idc.ui.btnFeedback.enableSoundFeedback: error playing sound - ${error}`);
+            });
+          }
+        });
+        el.addEventListener("touchstart", () => {
+          if (com.idc.clm.vars.options.btnFeedback.sound) {
+            this.audio.currentTime = 0;
+            this.audio.play().catch((error) => {
               com.idc.util.log(`com.idc.ui.btnFeedback.enableSoundFeedback: error playing sound - ${error}`);
             });
           }
@@ -5237,15 +5247,7 @@ com.idc.ui = {
 
               //goto slide
               if (targetId != "" && !overrideFnc) {
-
-                //delay redirect to allow for sound feedback
-                if (com.idc.clm.vars.options.btnFeedback.sound) {
-                  setTimeout(() => {
-                    com.idc.clm.gotoSlide(targetId);
-                  }, 500);
-                } else {
-                  com.idc.clm.gotoSlide(targetId);
-                }
+                com.idc.clm.gotoSlide(targetId);
               }
 
               //override function
