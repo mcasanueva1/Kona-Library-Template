@@ -198,6 +198,26 @@ com.idc.templates = {
           "childNodes": [],
         }
       ],
+      "secondaryOpenButton": [
+        {
+          "type": "DIV",
+          "attributes": [
+            {
+              "data-type": "com.idc.ui.core.button",
+            },
+            {
+              "data-sub-type": "com.idc.ui.core.modal.secondaryOpenButton",
+            },
+            {
+              "data-target-id": "",
+            },
+            {
+              "data-btn-response": "true",
+            },
+          ],
+          "childNodes": [],
+        }
+      ],
       "dualButton": [
         {
           "type": "DIV",
@@ -227,6 +247,23 @@ com.idc.templates = {
             },
             {
               "data-sub-type": "com.idc.ui.core.modal.closeButton",
+            },
+            {
+              "data-btn-response": "true",
+            },
+          ],
+          "childNodes": [],
+        },
+      ],
+      "secondaryCloseButton": [
+        {
+          "type": "DIV",
+          "attributes": [
+            {
+              "data-type": "com.idc.ui.core.button",
+            },
+            {
+              "data-sub-type": "com.idc.ui.core.modal.secondaryCloseButton",
             },
             {
               "data-btn-response": "true",

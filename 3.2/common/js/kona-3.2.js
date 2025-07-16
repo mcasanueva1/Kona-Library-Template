@@ -4765,16 +4765,16 @@ com.idc.util = {
 com.idc.ui = {
   btnFeedback: {
     audio: null,
-    enableVisualFeedback: function() {
+    enableVisualFeedback: function () {
       document.body.setAttribute("data-enable-btn-feedback", "true");
     },
-    disableVisualFeedback: function() {
+    disableVisualFeedback: function () {
       document.body.removeAttribute("data-enable-btn-feedback");
     },
-    enableSoundFeedback: function() {
+    enableSoundFeedback: function () {
       this.audio = new Audio(com.idc.util.getSharedResourcesPath() + "mp3/" + "click.mp3");
       this.audio.volume = 0.01;
-            
+
       document.querySelectorAll('[data-btn-response="true"]').forEach((el) => {
         el.addEventListener("mousedown", () => {
           if (com.idc.clm.vars.options.btnFeedback.sound) {
@@ -4794,9 +4794,9 @@ com.idc.ui = {
         });
       });
     },
-    disableSoundFeedback: function() {
+    disableSoundFeedback: function () {
       com.idc.clm.vars.options.btnFeedback.sound = false;
-    }
+    },
   },
   core: {
     accordion: {
@@ -5470,9 +5470,6 @@ com.idc.ui = {
             el.viewState.visible = false;
             el.viewState.initialTop = el.offsetTop;
 
-            //components collection (open button, close button, dual button, back modal)
-            el.components = {};
-
             //params
             el.params = com.idc.ui.common.readElementOptions(
               el,
@@ -5529,6 +5526,16 @@ com.idc.ui = {
 
             el.closeButtonHiddenFlag = this.closeButtonHiddenFlag;
 
+            //components
+            el.components = {
+              openButton: null,
+              secondaryOpenButtons: [],
+              closeButton: null,
+              secondaryCloseButtons: [],
+              dualButton: null,
+              backModal: null,
+            };
+
             //open button
             const openButton = document.querySelector(
               `[data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.core.modal.openButton"][data-target-id="${el.id}"]`
@@ -5542,6 +5549,20 @@ com.idc.ui = {
                 el.open();
               });
             }
+
+            //secondary open buttons
+            el.components.secondaryOpenButtons = [];
+            document
+              .querySelectorAll(`[data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.core.modal.secondaryOpenButton"][data-target-id="${el.id}"]`)
+              .forEach((secondaryOpenButton) => {
+                secondaryOpenButton.addEventListener("click", (evt) => {
+                  if (evt.currentTarget.getAttribute("data-view-state") == "disabled") return;
+                  el.open();
+                });
+                el.components.secondaryOpenButtons.push({
+                  element: secondaryOpenButton,
+                });
+              });
 
             //close button
             let closeButton;
@@ -5562,6 +5583,33 @@ com.idc.ui = {
                 el.close();
               });
             }
+
+            //secondary close buttons
+            el.components.secondaryCloseButtons = [];
+            //try to find within el
+            el.querySelectorAll(`[data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.core.modal.secondaryCloseButton"]`).forEach(
+              (secondaryCloseButton) => {
+                secondaryCloseButton.addEventListener("click", (evt) => {
+                  if (evt.currentTarget.getAttribute("data-view-state") == "disabled") return;
+                  el.close();
+                });
+                el.components.secondaryCloseButtons.push({
+                  element: secondaryCloseButton,
+                });
+              }
+            );
+            //try to find within document (with target-id)
+            document
+              .querySelectorAll(`[data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.core.modal.secondaryCloseButton"][data-target-id="${el.id}"]`)
+              .forEach((secondaryCloseButton) => {
+                secondaryCloseButton.addEventListener("click", (evt) => {
+                  if (evt.currentTarget.getAttribute("data-view-state") == "disabled") return;
+                  el.close();
+                });
+                el.components.secondaryCloseButtons.push({
+                  element: secondaryCloseButton,
+                });
+              });
 
             //dual button
             const dualButton = document.querySelector(
@@ -6159,15 +6207,25 @@ com.idc.ui = {
       closeButtonHiddenFlag: function () {
         if (!this.components.closeButton) return;
 
-        let closeButton = this.components.closeButton.element;
-
         let isDynamicPresentation = com.idc.clm.vars.navigation.dynamicPresentation.active;
         let treatStandaloneModalsAsMainSlides = com.idc.clm.vars.navigation.dynamicPresentation.treatStandaloneModalsAsMainSlides;
-        if (this.isStandalone && isDynamicPresentation && treatStandaloneModalsAsMainSlides) {
+
+        let shouldBeHidden = this.isStandalone && isDynamicPresentation && treatStandaloneModalsAsMainSlides;
+
+        let closeButton = this.components.closeButton.element;
+        if (shouldBeHidden) {
           closeButton.setAttribute("data-should-be-hidden", "true");
         } else {
           closeButton.removeAttribute("data-should-be-hidden");
         }
+
+        this.components.secondaryCloseButtons.forEach((secondaryCloseButton) => {
+          if (shouldBeHidden) {
+            secondaryCloseButton.element.setAttribute("data-should-be-hidden", "true");
+          } else {
+            secondaryCloseButton.element.removeAttribute("data-should-be-hidden");
+          }
+        });
       },
     },
     multi: {
