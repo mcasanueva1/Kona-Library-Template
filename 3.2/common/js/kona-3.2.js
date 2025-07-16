@@ -6675,10 +6675,10 @@ com.idc.ui = {
               //related to an active tab instance
               if (ref.uiRelated.tab) {
                 let tab = document.querySelector(`#${ref.uiRelated.tab.id}`);
-                if (tab) {
-                  let instance = tab.querySelector(`[data-instance="${ref.uiRelated.tab.instance}"]`);
+                if (tab) {              
+                  let instance = tab.querySelector(`[data-instance="${ref.uiRelated.tab.instance}"]`);                          
                   if (instance) {
-                    if (instance.getAttribute("data-view-state") == "active") {
+                    if (instance.getAttribute("data-view-state") == "on") {
                       alternativeIsValid = true;
                     }
                   }
