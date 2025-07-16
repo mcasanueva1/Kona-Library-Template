@@ -6675,8 +6675,8 @@ com.idc.ui = {
               //related to an active tab instance
               if (ref.uiRelated.tab) {
                 let tab = document.querySelector(`#${ref.uiRelated.tab.id}`);
-                if (tab) {              
-                  let instance = tab.querySelector(`[data-instance="${ref.uiRelated.tab.instance}"]`);                          
+                if (tab) {
+                  let instance = tab.querySelector(`[data-instance="${ref.uiRelated.tab.instance}"]`);
                   if (instance) {
                     if (instance.getAttribute("data-view-state") == "on") {
                       alternativeIsValid = true;
@@ -7691,6 +7691,7 @@ com.idc.ui = {
       selector: '[data-type="com.idc.ui.core.relatedCLMLink"]',
       collection: [],
       awake: function () {
+        let vars = com.idc.clm.vars;
         document.querySelectorAll(this.selector).forEach((el) => {
           //set attributes or buttons to validate
           const toValidate = {
@@ -7741,6 +7742,11 @@ com.idc.ui = {
               //target CLM id
               let targetCLMId = com.idc.util.getElementAttribute(el, "data-target-clm");
 
+              //track
+              if (vars.utilitiesMenu.clickstreamTracking.active) {
+                this.track(targetCLMId);
+              }
+
               //goto CLM
               if (targetCLMId != "") {
                 com.idc.clm.gotoRelatedCLM(targetCLMId);
@@ -7772,6 +7778,40 @@ com.idc.ui = {
         if (errorList !== "") com.idc.util.log(`${com.idc.util.getElementAttribute(pElement, "data-type")} ${pElement.id}: ${errorList}`);
 
         return errorList === "";
+      },
+      track: function (pCLMId) {
+        let vars = com.idc.clm.vars;
+
+        let relatedCLM = vars.relatedCLM.find((clm) => {
+          return clm.id == pCLMId;
+        });
+        if (!relatedCLM) return;
+
+        //track once per session
+        let sessionStorageId = "com.idc.ui.utilitiesMenu.clickstreamTracking." + pCLMId;
+        if (sessionStorage.getItem(sessionStorageId) == "true") {
+          return;
+        } else {
+          sessionStorage.setItem(sessionStorageId, "true");
+        }
+
+        //clickstream tracking
+        if (vars.session.isAnActualCall && !vars.options.browserMode.simulate.active) {
+          let clickstreamRecord = {};
+          clickstreamRecord.Track_Element_Id_vod__c = relatedCLM.vaultExternalID.presentation;
+          clickstreamRecord.Track_Element_Description_vod__c = "com.idc.ui.utilitiesMenu.clickstreamTracking." + pCLMId;
+          clickstreamRecord.Track_Element_Type_vod__c = "com.idc.ui.utilitiesMenu.clickstreamTracking";
+
+          com.veeva.clm.createRecord("Call_Clickstream_vod__c", clickstreamRecord, (data) => {
+            if (!data.success) {
+              com.idc.util.log(`Related CLM tracking ERROR (${data.code}) ${data.message}`);
+            } else {
+              com.idc.util.log(`Related CLM tracking (${pCLMId})`);
+            }
+          });
+        } else {
+          com.idc.util.log(`Related CLM tracking (simulated) ${pCLMId}`);
+        }
       },
     },
     websiteLink: {
