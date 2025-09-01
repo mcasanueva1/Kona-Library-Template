@@ -5703,8 +5703,9 @@ com.idc.ui = {
                     let otherModalElement = document.querySelector(`#${otherModal.modalId}`);
                     let otherModalOpenButton = document.querySelector(`#${otherModal.openButton}`);
                     if (otherModalElement && otherModalOpenButton) {
-                      //close this modal and any other alternate modal if the other modal open button is clicked
+                      //other modal open button event
                       otherModalOpenButton.addEventListener("click", () => {
+                        //close this modal and any other alternate modal if the other modal open button is clicked
                         let modalsToClose = [el.id];
                         alternateModal.otherModals.forEach((modalToClose) => {
                           if (modalToClose.modalId != otherModal.modalId) {
@@ -5717,6 +5718,15 @@ com.idc.ui = {
                             modalElement.close();
                           }
                         });
+
+                        //open other modal if the opener button is not configured to open it
+                        if (
+                          otherModalOpenButton.getAttribute("data-type") != "com.idc.ui.core.button" ||
+                          otherModalOpenButton.getAttribute("data-sub-type") != "com.idc.ui.core.modal.openButton" ||
+                          otherModalOpenButton.getAttribute("data-target-id") != alternateModal.modalId
+                        ) {
+                          otherModalElement.open();
+                        }
                       });
                     }
                   });
