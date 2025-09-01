@@ -5703,11 +5703,8 @@ com.idc.ui = {
                     let otherModalElement = document.querySelector(`#${otherModal.modalId}`);
                     let otherModalOpenButton = document.querySelector(`#${otherModal.openButton}`);
                     if (otherModalElement && otherModalOpenButton) {
+                      //close this modal and any other alternate modal if the other modal open button is clicked
                       otherModalOpenButton.addEventListener("click", () => {
-                        //open modal
-                        otherModalElement.open();
-
-                        //identify and close all other modals
                         let modalsToClose = [el.id];
                         alternateModal.otherModals.forEach((modalToClose) => {
                           if (modalToClose.modalId != otherModal.modalId) {
@@ -5765,15 +5762,19 @@ com.idc.ui = {
         } else {
           increment = 0;
         }
-        let zIndex = com.idc.ui.core.modal.activeModalsStack.length * 10 + increment;
-        this.style.zIndex = zIndex;
-        this.components.backModal.element.style.zIndex = zIndex;
+        setTimeout(() => {
+          let zIndex = com.idc.ui.core.modal.activeModalsStack.length * 10 + increment;
+          this.style.zIndex = zIndex;
+          this.components.backModal.element.style.zIndex = zIndex;
+        }, 300); //to allow for any dom changes (e.g. wait for an alternate modal to close) to take effect before calculating z-index
 
         //refresh utilities menu
         if (com.idc.clm.vars.utilitiesMenu.active) {
           if (this.type == "popUp" || this.type == "dropDown") {
-            com.idc.ui.core.utilitiesMenu.updateGroupsContents();
-            com.idc.ui.core.utilitiesMenu.updateStyleAndZIndex();
+            setTimeout(() => {
+              com.idc.ui.core.utilitiesMenu.updateGroupsContents();
+              com.idc.ui.core.utilitiesMenu.updateStyleAndZIndex();
+            }, 300); //to allow for any dom changes (e.g. wait for an alternate modal to close) to take effect before updating utilities menu z-index
           }
         }
 
