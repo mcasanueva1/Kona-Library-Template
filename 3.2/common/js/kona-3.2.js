@@ -5719,12 +5719,15 @@ com.idc.ui = {
                           }
                         });
 
-                        //open other modal if the opener button is not configured to open it
+                        //open other modal if necessary
                         if (
-                          otherModalOpenButton.getAttribute("data-type") != "com.idc.ui.core.button" ||
-                          otherModalOpenButton.getAttribute("data-sub-type") != "com.idc.ui.core.modal.openButton" ||
-                          otherModalOpenButton.getAttribute("data-target-id") != alternateModal.modalId
+                          otherModalOpenButton.getAttribute("data-type") == "com.idc.ui.core.button" &&
+                          (otherModalOpenButton.getAttribute("data-sub-type") == "com.idc.ui.core.modal.openButton" || otherModalOpenButton.getAttribute("data-sub-type") == "com.idc.ui.core.modal.secondaryOpenButton") &&
+                          otherModalOpenButton.getAttribute("data-target-id") == otherModal.modalId
                         ) {
+                          //do nothing: button acting as open button or secondary open button
+                        } else {
+                          //need to modal
                           otherModalElement.open();
                         }
                       });
