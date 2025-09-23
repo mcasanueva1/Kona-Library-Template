@@ -33,6 +33,13 @@ let com_idc_params = {
         "id": ""
       }
     },
+    "mediaDetection": {
+      "active": false,
+      "watermark": false,
+      "mediaPopup": false,
+      "reloadAfterAccountSelectionAlert": false,
+      "reloadAfterAccountSelectionMessage": "The slide will be reloaded to reflect the selected account"
+    },
     "dynamicPresentation": {
       "source": {
         "contentTargeting": {
