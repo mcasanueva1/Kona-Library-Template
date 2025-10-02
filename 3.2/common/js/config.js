@@ -38,7 +38,9 @@ let com_idc_params = {
       "watermark": false,
       "mediaPopup": false,
       "reloadAfterAccountSelectionAlert": false,
-      "reloadAfterAccountSelectionMessage": "The slide will be reloaded to reflect the selected account"
+      "labels": {
+        "reloadAfterAccountSelectionMessage": "The slide will be reloaded to reflect the selected account",
+      }
     },
     "dynamicPresentation": {
       "source": {
