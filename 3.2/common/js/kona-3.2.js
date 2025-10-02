@@ -15,6 +15,7 @@ com.idc.clm = {
       id: null,
       isNewSession: null,
       isAnActualCall: null,
+      callId: null,
     },
     screen: {
       orientation: null,
@@ -39,6 +40,15 @@ com.idc.clm = {
         element: {
           id: null,
         },
+      },
+      mediaDetection: {
+        active: null,
+        watermark: null,
+        mediaPopup: null,
+        reloadAfterAccountSelectionAlert: null,
+        labels: {
+          reloadAfterAccountSelectionMessage: null,
+        }
       },
       dynamicPresentation: {
         source: {
@@ -460,6 +470,13 @@ com.idc.clm = {
           vaultId: null,
           crmId: null,
           selected: null,
+          available: null,
+          stats: {
+            sent: null,
+            sentCount: null,
+            opens: null,
+            openCount: null
+          }
         },
       ],
       fragments: [
@@ -471,6 +488,13 @@ com.idc.clm = {
           crmId: null,
           selected: null,
           linksTo: null,
+          available: null,
+          stats: {
+            sent: null,
+            sentCount: null,
+            opens: null,
+            openCount: null
+          }
         },
       ],
     },
@@ -495,11 +519,21 @@ com.idc.clm = {
         name: null,
         salutation: null,
       },
+      presentation: {
+        id: null,
+        name: null,
+        status: null,
+        vaultDocID: null,
+        version: null,
+      },
       keyMessage: {
         id: null,
-        mediaFileName: null,
         disableActions: null,
         iOSResolution: null,
+        mediaFileName: null,
+        slideVersion: null,
+        status: null,
+        vaultDocID: null,
       },
     },
     interactionSummary: {
@@ -740,6 +774,7 @@ com.idc.clm = {
           presentation: null,
           keyMessage: null,
         },
+        available: null,
       },
     ],
     websites: [
@@ -797,7 +832,7 @@ com.idc.clm = {
     }
 
     //set up inspector
-    if (this.vars.options.debugMode.active) com.idc.ui.inspector.init();
+    com.idc.ui.inspector.init();
 
     //obtain/generate session identifier
     await this.setSessionIdentifier();
@@ -842,9 +877,11 @@ com.idc.clm = {
     //konaAfterContextObjects event
     com.idc.util.dispatchEvent("konaAfterContextObjects", {});
 
-    //interaction summary
+    //interaction summary and stats
     if (this.vars.interactionSummary.active && this.vars.session.isAnActualCall) {
       this.interactionSummaryModel();
+      this.emailCartStats();
+      this.relatedCLMStats();
     }
   },
 
@@ -901,6 +938,17 @@ com.idc.clm = {
     //mandatory popUp
     vars.options.mandatoryPopUp.active = util.readSetting(com_idc_params, "options.mandatoryPopUp.active", "boolean", false);
     vars.options.mandatoryPopUp.element.id = util.readSetting(com_idc_params, "options.mandatoryPopUp.element.id", "string", null);
+
+    //media detection
+    if (com_idc_params.options.mediaDetection) {
+      vars.options.mediaDetection.active = util.readSetting(com_idc_params, "options.mediaDetection.active", "boolean", false);
+      if (vars.options.mediaDetection.active) {
+        vars.options.mediaDetection.watermark = util.readSetting(com_idc_params, "options.mediaDetection.watermark", "boolean", false);
+        vars.options.mediaDetection.mediaPopup = util.readSetting(com_idc_params, "options.mediaDetection.mediaPopup", "boolean", false);
+        vars.options.mediaDetection.reloadAfterAccountSelectionAlert = util.readSetting(com_idc_params, "options.mediaDetection.reloadAfterAccountSelectionAlert", "boolean", false);
+        vars.options.mediaDetection.labels.reloadAfterAccountSelectionMessage = util.readSetting(com_idc_params, "options.mediaDetection.labels.reloadAfterAccountSelectionMessage", "string", "The slide will be reloaded to reflect the selected account");
+      }
+    }
 
     //dynamic presentation
     {
@@ -1831,24 +1879,19 @@ com.idc.clm = {
       //session data key
       vars.project.sessionDataKey = `com_idc_data_sessionData__${(vars.project.name + vars.project.version).replace(/\s+/g, "").toLowerCase()}`;
 
-      //locally stored session identifier, used to compare with platform identifier to check if it's a new session
-      let storedIdentifier = window.sessionStorage.getItem(vars.project.sessionDataKey);
-      let wasEmpty;
-      if (!storedIdentifier) {
-        wasEmpty = true;
-        storedIdentifier = `com_idc_clm_sessionIdentifier__${Math.round(Math.random() * 10000)}`; //storedIdentifier is empty -> generate new
-        window.sessionStorage.setItem(vars.project.sessionDataKey, storedIdentifier); //store new session identifier
+      //session identifier
+      let sessionIdentifier = window.sessionStorage.getItem(vars.project.sessionDataKey + "_sessionIdentifier"); //try to retrieve stored session identifier
+      if (!sessionIdentifier) {
+        sessionIdentifier = `com_idc_clm_sessionIdentifier__${Math.round(Math.random() * 10000)}`; //sessionIdentifier is empty -> generate new
+        window.sessionStorage.setItem(vars.project.sessionDataKey + "_sessionIdentifier", sessionIdentifier); //store new session identifier
+        vars.session.isNewSession = true; //if sessionIdentifier was empty, it's a new session
       } else {
-        wasEmpty = false;
+        vars.session.isNewSession = false; //if sessionIdentifier was not empty, it's not a new session
       }
+      vars.session.id = sessionIdentifier; //browserMode will always be "new session = false" unless the stored identifier is deleted
 
+      //is an actual call + Veeva call ID
       if (vars.options.browserMode.active) {
-        vars.session.id = storedIdentifier; //browserMode will always be "new session = false" unless the stored identifier is deleted
-        if (wasEmpty) {
-          vars.session.isNewSession = true; //if storedIdentifier was empty, it's a new session
-        } else {
-          vars.session.isNewSession = false; //if storedIdentifier was not empty, it's not a new session
-        }
         let isAnActualCall = false; //default for browser mode
         if (vars.options.browserMode.simulate.active) {
           if (vars.options.browserMode.simulate.mode == "call") {
@@ -1861,26 +1904,11 @@ com.idc.clm = {
         com.veeva.clm.getDataForCurrentObject("Call", "ID", (data) => {
           if (data.success) {
             vars.session.isAnActualCall = true; //Veeva retrieved a call id >> it is an actual call
-            vars.session.id = data.Call.ID; //Use the retrieved call id as session identifier
-
-            if (data.Call.ID == storedIdentifier) {
-              vars.session.isNewSession = false; //retrieved call id does not match storedIdentifier >> is new session
-            } else {
-              vars.session.isNewSession = true;
-              window.sessionStorage.setItem(vars.project.sessionDataKey, vars.session.id); //store new session identifier
-            }
+            vars.session.callId = data.Call.ID; //Store call ID
 
             resolve();
           } else {
             vars.session.isAnActualCall = false; //Veeva did not retrieve a call id >> it is not an actual call
-            vars.session.id = storedIdentifier; //media mode will always be "new session = false" unless the stored identifier is deleted
-
-            if (wasEmpty) {
-              vars.session.isNewSession = true; //if storedIdentifier was empty, it's a new session
-            } else {
-              vars.session.isNewSession = false; //if storedIdentifier was not empty, it's not a new session
-            }
-
             resolve();
           }
         });
@@ -2222,8 +2250,62 @@ com.idc.clm = {
           });
         }
 
+        //Presentation (ID, name, status, version)
+        {
+          //ID
+          await new Promise((resolve) => {
+            com.veeva.clm.getDataForCurrentObject("Presentation", "ID", (data) => {
+              if (data.success) {
+                this.vars.metadata.presentation.id = data.Presentation.ID;
+                resolve();
+              }
+            });
+          });
+          //Name
+          await new Promise((resolve) => {
+            com.veeva.clm.getDataForCurrentObject("Presentation", "Name", (data) => {
+              if (data.success) {
+                this.vars.metadata.presentation.name = data.Presentation.Name;
+                resolve();
+              }
+            });
+          });
+          //Status
+          await new Promise((resolve) => {
+            com.veeva.clm.getDataForCurrentObject("Presentation", "Status_vod__c", (data) => {
+              if (data.success) {
+                this.vars.metadata.presentation.status = data.Presentation.Status_vod__c;
+                resolve();
+              }
+            });
+          });
+          //Vault Doc ID
+          await new Promise((resolve) => {
+            com.veeva.clm.getDataForCurrentObject("Presentation", "Vault_Doc_ID_vod__c", (data) => {
+              if (data.success) {
+                this.vars.metadata.presentation.vaultDocID = data.Presentation.Vault_Doc_ID_vod__c;
+                resolve();
+              }
+            });
+          });
+          //Version
+          await new Promise((resolve) => {
+            com.veeva.clm.getDataForCurrentObject("Presentation", "Version_vod__c", (data) => {
+              if (data.success) {
+                this.vars.metadata.presentation.version = data.Presentation.Version_vod__c;
+                resolve();
+              }
+            });
+          });
+
+          util.log(
+            `This presentation: ${this.vars.metadata.presentation.vaultDocID} (${this.vars.metadata.presentation.version}) - ${this.vars.metadata.presentation.status}`
+          );
+        }
+
         //Key_Message_vod__c (ID, file name, disable actions and ios resolution)
         {
+          //ID
           await new Promise((resolve) => {
             com.veeva.clm.getDataForCurrentObject("KeyMessage", "ID", (data) => {
               if (data.success) {
@@ -2259,6 +2341,37 @@ com.idc.clm = {
               }
             });
           });
+          //key message Vault Doc ID
+          await new Promise((resolve) => {
+            com.veeva.clm.getDataForCurrentObject("KeyMessage", "Vault_Doc_ID_vod__c", (data) => {
+              if (data.success) {
+                this.vars.metadata.keyMessage.vaultDocID = data.KeyMessage.Vault_Doc_ID_vod__c;
+                resolve();
+              }
+            });
+          });
+          //key message status
+          await new Promise((resolve) => {
+            com.veeva.clm.getDataForCurrentObject("KeyMessage", "Status_vod__c", (data) => {
+              if (data.success) {
+                this.vars.metadata.keyMessage.status = data.KeyMessage.Status_vod__c;
+                resolve();
+              }
+            });
+          });
+          //key message slide version
+          await new Promise((resolve) => {
+            com.veeva.clm.getDataForCurrentObject("KeyMessage", "Slide_Version_vod__c", (data) => {
+              if (data.success) {
+                this.vars.metadata.keyMessage.slideVersion = data.KeyMessage.Slide_Version_vod__c;
+                resolve();
+              }
+            });
+          });
+
+          util.log(
+            `This key message: ${this.vars.metadata.keyMessage.vaultDocID} (${this.vars.metadata.keyMessage.slideVersion}) - ${this.vars.metadata.keyMessage.status}`
+          );
         }
 
         //Approved_Document_vod__c for email cart and non email cart (get crmID for templates and fragments)
@@ -2312,31 +2425,47 @@ com.idc.clm = {
                 if (data.success && data.Approved_Document_vod__c) {
                   if (item.group == "templates" || item.group == "fragments") {
                     //email cart templates or fragments
-                    this.vars.emailCart[item.group].find((element) => {
+                    let thisItem = this.vars.emailCart[item.group].find((element) => {
                       return element.id == item.id;
-                    }).crmId = data.Approved_Document_vod__c.ID;
+                    });
+                    if (thisItem) {
+                      thisItem.crmId = data.Approved_Document_vod__c.ID;
+                      thisItem.available = true;
+                    }
                   } else {
                     //interaction summary templates or fragments
                     switch (item.group) {
                       case "nonEmailCartTemplates":
-                        this.vars.interactionSummary.nonEmailCartItems.templates.find((element) => {
-                          return element.id == item.id;
-                        }).crmId = data.Approved_Document_vod__c.ID;
+                        {
+                          let thisItem = this.vars.interactionSummary.nonEmailCartItems.templates.find((element) => {
+                            return element.id == item.id;
+                          });
+                          if (thisItem) {
+                            thisItem.crmId = data.Approved_Document_vod__c.ID;
+                            thisItem.available = true;
+                          }
+                        }
                         break;
                       case "nonEmailCartFragments":
-                        this.vars.interactionSummary.nonEmailCartItems.templates
-                          .find((element) => {
-                            return element.id == item.template;
-                          })
-                          .fragments.find((element) => {
-                            return element.id == item.id;
-                          }).crmId = data.Approved_Document_vod__c.ID;
+                        {
+                          let thisItem = this.vars.interactionSummary.nonEmailCartItems.templates
+                            .find((element) => {
+                              return element.id == item.template;
+                            })
+                            .fragments.find((element) => {
+                              return element.id == item.id;
+                            });
+                          if (thisItem) {
+                            thisItem.crmId = data.Approved_Document_vod__c.ID;
+                          }
+                        }
                         break;
                     }
                   }
                 } else {
                   util.log(
-                    `com.idc.clm.getDataForContextObjects: could not retrieve CRM ID for ${item.id} (${item.group}): ${item.vaultId} + ${this.vars.emailCart.vaultURL}`
+                    `com.idc.clm.getDataForContextObjects: could not retrieve CRM ID for ${item.id} (${item.group}): ${item.vaultId} + ${this.vars.emailCart.vaultURL}`,
+                    "error"
                   );
                   util.log(data.message);
                   unableToRetrieveCRMIdFlag = true;
@@ -2347,6 +2476,52 @@ com.idc.clm = {
           }
         }
 
+        //Related CLM
+        if (this.vars.relatedCLM.length > 0) {
+          for (let relatedItem of this.vars.relatedCLM) {   
+            let idsToCheck = [
+              { type: "Presentation", vaultId: relatedItem.vaultExternalID.presentation, available: null },
+              { type: "Key Message", vaultId: relatedItem.vaultExternalID.keyMessage, available: null },
+            ];
+            for (let thisId of idsToCheck) {      
+              await new Promise((resolve) => {
+                com.veeva.clm.queryRecord(
+                  thisId.type == "Presentation" ? "Clm_Presentation_vod__c" : "Key_Message_vod__c",
+                  ["ID", "Name", "Status_vod__c"],
+                  `Vault_External_Id_vod__c = "${thisId.vaultId}"`,
+                  [],
+                  null,
+                  (data) => {
+                    if (data.success) {
+                      let foundApproved = data[thisId.type == "Presentation" ? "Clm_Presentation_vod__c" : "Key_Message_vod__c"].find((item) => {
+                        return item.Status_vod__c == "Approved_vod";
+                      });
+                      let foundStaged = data[thisId.type == "Presentation" ? "Clm_Presentation_vod__c" : "Key_Message_vod__c"].find((item) => {
+                        return item.Status_vod__c == "Staged_vod";
+                      });
+                      if (!foundApproved && !foundStaged) {
+                        util.log(`com.idc.clm.getDataForContextObjects: related CLM ${relatedItem.id} / no approved or staged record found for ${thisId.type} ${thisId.vaultId}`, "error");
+                      }
+                      if (foundStaged && !foundApproved) {
+                        util.log(`com.idc.clm.getDataForContextObjects: related CLM ${relatedItem.id} / no approved (just staged) record found for ${thisId.type} ${thisId.vaultId}`, "error");
+                      }
+                      if (foundApproved || foundStaged) {
+                        thisId.available = true;
+                      }
+                    } else {
+                      util.log(`com.idc.clm.getDataForContextObjects: failed to retrieve ${thisId.type} ${thisId.vaultId}: ${data.message}`, "error");
+                    }
+                    resolve();
+                  }
+                )
+              });
+            }
+            if (idsToCheck[0].available && idsToCheck[1].available) {
+              relatedItem.available = true;
+            }
+          }
+        }
+
         //Call2_Key_Message_vod__c for current slides
         if (this.vars.interactionSummary.active && this.vars.session.isAnActualCall) {
           let keyMessageIDsAndZipNames = await new Promise((resolve) => {
@@ -2354,7 +2529,7 @@ com.idc.clm = {
               if (data.success) {
                 resolve(data.Key_Message_vod__c);
               } else {
-                util.log(`com.idc.clm.getDataForContextObjects: failed to retrieve Key_Message_vod__c IDs ${data.message}`);
+                util.log(`com.idc.clm.getDataForContextObjects: failed to retrieve Key_Message_vod__c IDs ${data.message}`, "error");
                 resolve([]);
               }
             });
@@ -2385,7 +2560,7 @@ com.idc.clm = {
                   if (data.success) {
                     resolve(data.Call2_Key_Message_vod__c);
                   } else {
-                    util.log(`com.idc.clm.getDataForContextObjects: failed to retrieve Call2_Key_Message_vod__c records ${data.message}`);
+                    util.log(`com.idc.clm.getDataForContextObjects: failed to retrieve Call2_Key_Message_vod__c records ${data.message}`, "error");
                     resolve([]);
                   }
                 }
@@ -2430,7 +2605,7 @@ com.idc.clm = {
                 if (data.success) {
                   resolve(data.Call2_vod__c);
                 } else {
-                  util.log(`com.idc.clm.getDataForContextObjects: failed to retrieve Call2_vod__c records ${data.message}`);
+                  util.log(`com.idc.clm.getDataForContextObjects: failed to retrieve Call2_vod__c records ${data.message}`, "error");
                   resolve([]);
                 }
               });
@@ -2464,7 +2639,7 @@ com.idc.clm = {
                 if (data.success) {
                   resolve(data.Sent_Email_vod__c);
                 } else {
-                  util.log(`com.idc.clm.getDataForContextObjects: failed to retrieve Sent_Email_vod__c records ${data.message}`);
+                  util.log(`com.idc.clm.getDataForContextObjects: failed to retrieve Sent_Email_vod__c records ${data.message}`, "error");
                   resolve([]);
                 }
               });
@@ -2490,7 +2665,7 @@ com.idc.clm = {
                 if (data.success) {
                   resolve(data.Email_Activity_vod__c);
                 } else {
-                  util.log(`com.idc.clm.getDataForContextObjects: failed to retrieve Email_Activity_vod__c records ${data.message}`);
+                  util.log(`com.idc.clm.getDataForContextObjects: failed to retrieve Email_Activity_vod__c records ${data.message}`, "error");
                   resolve([]);
                 }
               });
@@ -2582,7 +2757,7 @@ com.idc.clm = {
       try {
         jsonData = JSON.parse(retrievedData);
       } catch (err) {
-        com.idc.util.log(`com.idc.loadPersistentData: ${err}`);
+        com.idc.util.log(`com.idc.loadPersistentData: ${err}`, "error");
       }
 
       //compare main structure of retreived data vs project template
@@ -3074,7 +3249,7 @@ com.idc.clm = {
       }
 
       if (slidesSequence.length == 0) {
-        com.idc.util.log(`com.idc.clm.externalFunction: no slides found in ${functionName}()} ${slidesSequenceInput}`);
+        com.idc.util.log(`com.idc.clm.externalFunction: no slides found in ${functionName}()} ${slidesSequenceInput}`, "error");
       }
 
       resolve(slidesSequence);
@@ -3145,7 +3320,7 @@ com.idc.clm = {
           }
 
           if (!slidesSequence || slidesSequence.length == 0) {
-            com.idc.util.log(`com.idc.clm.callflows: unable to retrieve slides for callflow ${selectedCallflow}`);
+            com.idc.util.log(`com.idc.clm.callflows: unable to retrieve slides for callflow ${selectedCallflow}`, "error");
           }
         }
 
@@ -3158,7 +3333,7 @@ com.idc.clm = {
 
     //validate if harcoded callflows are active
     if (!this.vars.options.dynamicPresentation.source.callflows.active) {
-      com.idc.util.log(`com.idc.clm.setCallflow: callflows source is inactive`);
+      com.idc.util.log(`com.idc.clm.setCallflow: callflows source is inactive`, "error");
       return;
     }
 
@@ -3166,7 +3341,7 @@ com.idc.clm = {
     if (this.vars.options.dynamicPresentation.source.callflows.flows.find((callflow) => callflow.name == callflowName)) {
       selectedCallflow = callflowName;
     } else {
-      com.idc.util.log(`com.idc.clm.setCallflow: invalid callflow name ${callflowName}`);
+      com.idc.util.log(`com.idc.clm.setCallflow: invalid callflow name ${callflowName}`, "error");
     }
 
     //retrieve slides sequence
@@ -3196,7 +3371,7 @@ com.idc.clm = {
       }
 
       if (slidesSequence.length == 0) {
-        com.idc.util.log(`com.idc.clm.setCallflow: unable to retrieve slides for callflow ${selectedCallflow}`);
+        com.idc.util.log(`com.idc.clm.setCallflow: unable to retrieve slides for callflow ${selectedCallflow}`, "error");
       }
     }
 
@@ -3265,7 +3440,7 @@ com.idc.clm = {
 
     //is dynamic presentation >> return false
     if (this.vars.navigation.dynamicPresentation.active) {
-      com.idc.util.log("com.idc.clm.validateStandaloneGroup: dynamic presentation / unable to activate standalone group");
+      com.idc.util.log("com.idc.clm.validateStandaloneGroup: dynamic presentation / unable to activate standalone group", "error");
       return false;
     }
 
@@ -3274,14 +3449,14 @@ com.idc.clm = {
       return item.id == group;
     });
     if (!groupObj) {
-      com.idc.util.log(`com.idc.clm.validateStandaloneGroup: group ${group} not found`);
+      com.idc.util.log(`com.idc.clm.validateStandaloneGroup: group ${group} not found`, "error");
       groupIsValid = false;
     }
 
     //find slide
     if (slideId) {
       if (!groupObj.slides.includes(slideId)) {
-        com.idc.util.log(`com.idc.clm.validateStandaloneGroup: slide ${slideId} not found in group ${group}`);
+        com.idc.util.log(`com.idc.clm.validateStandaloneGroup: slide ${slideId} not found in group ${group}`, "error");
         groupIsValid = false;
       }
     }
@@ -3299,7 +3474,7 @@ com.idc.clm = {
     this.setBodyVars();
   },
 
-  /*interaction summary -----------------------------------*/
+  /*interaction summary and other stats---------------------*/
   interactionSummaryTestData: function () {
     const minCalls = this.vars.interactionSummary.testModel.calls.min;
     const maxCalls = this.vars.interactionSummary.testModel.calls.max;
@@ -4184,6 +4359,31 @@ com.idc.clm = {
 
     vars.interactionSummary.output.ready = true;
   },
+  emailCartStats: function () {
+    //dependent on interaction summary model
+    let vars = this.vars;
+
+    vars.emailCart.templates.forEach((template) => {
+      //template stats
+      let templateInInteractionSummary = vars.interactionSummary.output.emails.find((email) => email.crmId == template.crmId);
+      if (templateInInteractionSummary) {
+        template.stats = templateInInteractionSummary.overall;
+      }
+
+      //fragments stats
+      if (vars.emailCart.fragments.length == 0 || vars.emailCart.templates.length > 1) return;
+      vars.emailCart.fragments.forEach((fragment) => {
+        let fragmentInInteractionSummary = templateInInteractionSummary.fragments.find((f) => f.crmId == fragment.crmId);
+        if (fragmentInInteractionSummary) {
+          fragment.stats = fragmentInInteractionSummary.overall;
+        }
+      });
+    });
+  },
+  relatedCLMStats: function () {
+    //dependent on interaction summary model
+    let vars = this.vars;
+  },
 
   /*common html -------------------------------------------*/
   commonElementDataKey: function (elementId) {
@@ -4261,7 +4461,7 @@ com.idc.clm = {
 
     this.vars.commonHTML.elements.forEach((commonElementId) => {
       if (processedItems.includes(commonElementId)) {
-        com.idc.util.log(`com.idc.clm.loadCommonHTML: duplicated id "${commonElementId}"`);
+        com.idc.util.log(`com.idc.clm.loadCommonHTML: duplicated id "${commonElementId}"`, "error");
         return;
       } else {
         processedItems.push(commonElementId);
@@ -4272,7 +4472,8 @@ com.idc.clm = {
       let elementPlaceholder = document.querySelector(`[data-common-html="${commonElementId}"]`);
       if (!commonElement && elementPlaceholder) {
         com.idc.util.log(
-          `com.idc.clm.loadCommonHTML: ${commonElementId} not found in localStorage. Please refresh navigate to common/index.html to refresh common elements`
+          `com.idc.clm.loadCommonHTML: ${commonElementId} not found in localStorage. Please refresh navigate to common/index.html to refresh common elements`,
+          "error"
         );
       }
       if (commonElement && elementPlaceholder) {
@@ -4404,6 +4605,11 @@ com.idc.clm = {
     if (this.vars.options.btnFeedback.sound) {
       com.idc.ui.btnFeedback.enableSoundFeedback();
     }
+
+    //media detection
+    if (this.vars.options.mediaDetection.active) {
+      com.idc.ui.mediaDetection.init();
+    }
   },
 
   /*email -------------------------------------------------*/
@@ -4438,7 +4644,7 @@ com.idc.clm = {
     let fragmentIDs = [];
 
     if (!vars.session.isAnActualCall) {
-      util.log("com.idc.clm.launchApprovedEmail: not an actual call");
+      util.log("com.idc.clm.launchApprovedEmail: not an actual call", "error");
       return;
     }
 
@@ -4473,10 +4679,20 @@ com.idc.clm = {
 };
 
 com.idc.util = {
-  log: (pText) => {
+  log: (pText, pType) => {
     let debugMode = com.idc.clm.vars.options.debugMode.active;
 
-    console.log(JSON.stringify(pText, null, 4));
+    //browser console
+    if (pType && pType.toLowerCase() == "error") {
+      console.error(JSON.stringify(pText, null, 4));
+    } else {
+      console.log(JSON.stringify(pText, null, 4));
+    }
+    
+    //in-app inspector
+    if (pType && pType.toLowerCase() == "error") {
+      pText = "***ERROR*** " + pText;
+    }
     if (debugMode && com.idc.ui.inspector.isActive()) com.idc.ui.inspector.addLog(pText);
   },
 
@@ -4553,8 +4769,6 @@ com.idc.util = {
 
     function add(pContainer, pItem, pId) {
       let element;
-
-      //if (!pItem) return;
 
       if (pItem.type === "#text") {
         if (pItem.hasOwnProperty("text")) {
@@ -4637,7 +4851,7 @@ com.idc.util = {
         return window[pFunction](pParam);
       }
     } else {
-      com.idc.util.log(`com.idc.util.executeParameterFunction ERROR: ${pFunction} is not a function`);
+      com.idc.util.log(`com.idc.util.executeParameterFunction ERROR: ${pFunction} is not a function`, "error");
     }
   },
 
@@ -4655,7 +4869,7 @@ com.idc.util = {
       }
     } catch (err) {
       if (typeof pLog == "undefined" || pLog == true) {
-        com.idc.util.log(`readSetting ${pKeyChain} error: ${err}`);
+        com.idc.util.log(`readSetting ${pKeyChain} error: ${err}`, "error");
       }
     }
 
@@ -4714,7 +4928,7 @@ com.idc.util = {
     if (arrItem) {
       schemaRelatedVar = arrItem.value[activeSchema];
     } else {
-      com.idc.util.log(`getSchemaRelatedVar: ${pToken} not found in schemaRelatedVars`);
+      com.idc.util.log(`getSchemaRelatedVar: ${pToken} not found in schemaRelatedVars`, "error");
     }
 
     return schemaRelatedVar;
@@ -4780,7 +4994,7 @@ com.idc.ui = {
           if (com.idc.clm.vars.options.btnFeedback.sound) {
             this.audio.currentTime = 0;
             this.audio.play().catch((error) => {
-              com.idc.util.log(`com.idc.ui.btnFeedback.enableSoundFeedback: error playing sound - ${error}`);
+              com.idc.util.log(`com.idc.ui.btnFeedback.enableSoundFeedback: error playing sound - ${error}`, "error");
             });
           }
         });
@@ -4788,7 +5002,7 @@ com.idc.ui = {
           if (com.idc.clm.vars.options.btnFeedback.sound) {
             this.audio.currentTime = 0;
             this.audio.play().catch((error) => {
-              com.idc.util.log(`com.idc.ui.btnFeedback.enableSoundFeedback: error playing sound - ${error}`);
+              com.idc.util.log(`com.idc.ui.btnFeedback.enableSoundFeedback: error playing sound - ${error}`, "error");
             });
           }
         });
@@ -5082,7 +5296,7 @@ com.idc.ui = {
           }
         }
 
-        if (errorList !== "") com.idc.util.log(`${com.idc.util.getElementAttribute(pElement, "data-type")} ${pElement.id}: ${errorList}`);
+        if (errorList !== "") com.idc.util.log(`${com.idc.util.getElementAttribute(pElement, "data-type")} ${pElement.id}: ${errorList}`, "error");
 
         return errorList === "";
       },
@@ -5222,7 +5436,7 @@ com.idc.ui = {
                     com.idc.clm.activateStandaloneGroup(standaloneGroup);
                   }
                 } else {
-                  com.idc.util.log("com.idc.ui.core.link: link eval function / unable to activate standalone group");
+                  com.idc.util.log("com.idc.ui.core.link: link eval function / unable to activate standalone group", "error");
                 }
               }
 
@@ -5292,7 +5506,7 @@ com.idc.ui = {
           }
         }
 
-        if (errorList !== "") com.idc.util.log(`${com.idc.util.getElementAttribute(pElement, "data-type")} ${pElement.id}: ${errorList}`);
+        if (errorList !== "") com.idc.util.log(`${com.idc.util.getElementAttribute(pElement, "data-type")} ${pElement.id}: ${errorList}`, "error");
 
         return errorList === "";
       },
@@ -5410,7 +5624,7 @@ com.idc.ui = {
           }
         });
 
-        if (errorList !== "") com.idc.util.log(`${com.idc.util.getElementAttribute(pElement, "data-type")} ${pElement.id}: ${errorList}`);
+        if (errorList !== "") com.idc.util.log(`${com.idc.util.getElementAttribute(pElement, "data-type")} ${pElement.id}: ${errorList}`, "error");
 
         return errorList === "";
       },
@@ -5722,7 +5936,8 @@ com.idc.ui = {
                         //open other modal if necessary
                         if (
                           otherModalOpenButton.getAttribute("data-type") == "com.idc.ui.core.button" &&
-                          (otherModalOpenButton.getAttribute("data-sub-type") == "com.idc.ui.core.modal.openButton" || otherModalOpenButton.getAttribute("data-sub-type") == "com.idc.ui.core.modal.secondaryOpenButton") &&
+                          (otherModalOpenButton.getAttribute("data-sub-type") == "com.idc.ui.core.modal.openButton" ||
+                            otherModalOpenButton.getAttribute("data-sub-type") == "com.idc.ui.core.modal.secondaryOpenButton") &&
                           otherModalOpenButton.getAttribute("data-target-id") == otherModal.modalId
                         ) {
                           //do nothing: button acting as open button or secondary open button
@@ -5969,7 +6184,7 @@ com.idc.ui = {
           }
         });
 
-        if (errorList !== "") com.idc.util.log(`${com.idc.util.getElementAttribute(pElement, "data-type")} ${pElement.id}: ${errorList}`);
+        if (errorList !== "") com.idc.util.log(`${com.idc.util.getElementAttribute(pElement, "data-type")} ${pElement.id}: ${errorList}`, "error");
 
         return errorList === "";
       },
@@ -6482,7 +6697,7 @@ com.idc.ui = {
           }
         });
 
-        if (errorList !== "") com.idc.util.log(`${com.idc.util.getElementAttribute(pElement, "data-type")} ${pElement.id}: ${errorList}`);
+        if (errorList !== "") com.idc.util.log(`${com.idc.util.getElementAttribute(pElement, "data-type")} ${pElement.id}: ${errorList}`, "error");
 
         return errorList === "";
       },
@@ -6622,7 +6837,7 @@ com.idc.ui = {
         //check components
         let modalEl = document.querySelector(`#${vars.references.components.modal.id}`);
         if (!modalEl) {
-          util.log(`com.idc.ui.core.references.init(): modal not found`);
+          util.log(`com.idc.ui.core.references.init(): modal not found`, "error");
           return;
         }
 
@@ -7306,7 +7521,7 @@ com.idc.ui = {
           }
         }
 
-        if (errorList !== "") com.idc.util.log(`${com.idc.util.getElementAttribute(pElement, "data-type")} ${pElement.id}: ${errorList}`);
+        if (errorList !== "") com.idc.util.log(`${com.idc.util.getElementAttribute(pElement, "data-type")} ${pElement.id}: ${errorList}`, "error");
 
         return errorList === "";
       },
@@ -7691,7 +7906,7 @@ com.idc.ui = {
 
           com.veeva.clm.createRecord("Call_Clickstream_vod__c", clickstreamRecord, (data) => {
             if (!data.success) {
-              com.idc.util.log(`Utilmenu tracking ERROR (${data.code}) ${data.message}`);
+              com.idc.util.log(`Utilmenu tracking ERROR (${data.code}) ${data.message}`, "error");
             } else {
               com.idc.util.log(`Utilmenu tracking (${pElId})`);
             }
@@ -7789,7 +8004,7 @@ com.idc.ui = {
           errorList = `${errorList} target CLM id ${targetCLMId} not found;`;
         }
 
-        if (errorList !== "") com.idc.util.log(`${com.idc.util.getElementAttribute(pElement, "data-type")} ${pElement.id}: ${errorList}`);
+        if (errorList !== "") com.idc.util.log(`${com.idc.util.getElementAttribute(pElement, "data-type")} ${pElement.id}: ${errorList}`, "error");
 
         return errorList === "";
       },
@@ -7818,7 +8033,7 @@ com.idc.ui = {
 
           com.veeva.clm.createRecord("Call_Clickstream_vod__c", clickstreamRecord, (data) => {
             if (!data.success) {
-              com.idc.util.log(`Related CLM tracking ERROR (${data.code}) ${data.message}`);
+              com.idc.util.log(`Related CLM tracking ERROR (${data.code}) ${data.message}`, "error");
             } else {
               com.idc.util.log(`Related CLM tracking (${pCLMId})`);
             }
@@ -7909,7 +8124,7 @@ com.idc.ui = {
           errorList = `${errorList} target Website id ${targetWebsiteId} not found;`;
         }
 
-        if (errorList !== "") com.idc.util.log(`${com.idc.util.getElementAttribute(pElement, "data-type")} ${pElement.id}: ${errorList}`);
+        if (errorList !== "") com.idc.util.log(`${com.idc.util.getElementAttribute(pElement, "data-type")} ${pElement.id}: ${errorList}`, "error");
 
         return errorList === "";
       },
@@ -7991,7 +8206,7 @@ com.idc.ui = {
         try {
           optionsArr = optionsTxt.split(";");
         } catch (err) {
-          com.idc.util.log(err);
+          com.idc.util.log(err, "error");
           optionsArr = [];
         }
 
@@ -7999,7 +8214,7 @@ com.idc.ui = {
           try {
             optionItem = optionsArr[i].split("=");
           } catch (err) {
-            com.idc.util.log(err);
+            com.idc.util.log(err, "error");
             optionItem = [];
           }
 
@@ -8890,7 +9105,7 @@ com.idc.ui = {
               textArea.style.display = "block";
               textArea.select();
               document.execCommand("copy");
-              textArea.style.display = "none";
+              //textArea.style.display = "none";
 
               //copied to clipboard label
               this.dropDown.element.querySelector('[data-type="com.idc.ui.inspector.copyToCliboard.copied"]').setAttribute("data-view-state", "active");
@@ -8916,6 +9131,49 @@ com.idc.ui = {
           }
         });
       });
+
+      // open with gestures: 4 taps, one in each quadrant, any order
+      (function () {
+        const quadrants = new Set();
+        const required = ["tl", "tr", "bl", "br"];
+        let timeout;
+
+        function getQuadrant(x, y, width, height) {
+          const isLeft = x < width / 2;
+          const isTop = y < height / 2;
+          if (isLeft && isTop) return "tl";
+          if (!isLeft && isTop) return "tr";
+          if (isLeft && !isTop) return "bl";
+          if (!isLeft && !isTop) return "br";
+        }
+
+        function reset() {
+          quadrants.clear();
+          clearTimeout(timeout);
+          timeout = null;
+        }
+
+        window.addEventListener(
+          "touchend",
+          function (e) {
+            const touch = e.changedTouches[0];
+            const w = window.innerWidth,
+              h = window.innerHeight;
+            const q = getQuadrant(touch.clientX, touch.clientY, w, h);
+            quadrants.add(q);
+
+            if (!timeout) {
+              timeout = setTimeout(reset, 2000); // 2s to complete all taps
+            }
+
+            if (required.every((q) => quadrants.has(q))) {
+              reset();
+              com.idc.ui.inspector.dropDown.element.open();
+            }
+          },
+          true
+        );
+      })();
 
       util.log("com.idc.ui.inspector.init()");
     },
@@ -9038,6 +9296,88 @@ com.idc.ui = {
     isActive: function () {
       return com.idc.ui.inspector.dropDown.element;
     },
+  },
+  mediaDetection: {
+    init: function () {
+      let vars = com.idc.clm.vars;
+
+      //media alert popup (new session only)
+      if (vars.options.mediaDetection.mediaPopup) { 
+        com.idc.util.jsonToHTML(com.idc.templates.mediaDetection.mediaPopUp, "com_idc_ui_mediaDetection_popup", document.querySelector(`[data-type="com.idc.ui.contentSize"]`), null);
+        com.idc.ui.core.modal.awake();
+      }
+
+      //watermark
+      if (vars.options.mediaDetection.watermark) {
+        com.idc.util.jsonToHTML(com.idc.templates.mediaDetection.watermark, "com_idc_ui_mediaDetection_watermark", document.querySelector(`[data-type="com.idc.ui.contentSize"]`), null);
+      }
+
+      //after selecting account alert
+      let detectionInterval;
+      if (vars.options.mediaDetection.reloadAfterAccountSelectionAlert && !vars.options.browserMode.active && !vars.session.isAnActualCall) {
+        //wait for 10 seconds before enablig detection interval
+        setTimeout(() => {
+          detectionInterval = setInterval(() => {
+              com.veeva.clm.getDataForCurrentObject("Call", "ID", (data) => {
+                if (data.success) {
+                  let newCallID = data.Call.ID; //obtained call id
+                  clearInterval(detectionInterval);
+                  if (newCallID != vars.session.callId) {
+                    window.alert(vars.options.mediaDetection.labels.reloadAfterAccountSelectionMessage);
+                    window.location.reload();
+                  }
+                }
+            });
+          }, 1000 * 1);
+        }, 1000 * 10);
+      }
+
+      this.refresh();
+    },
+    refresh: function () {
+      let vars = com.idc.clm.vars;
+
+      let isBrowser = vars.options.browserMode.active;
+      let isBrowserSimulating = vars.options.browserMode.simulate.active
+      let isSimulatedCall = isBrowserSimulating && vars.options.browserMode.simulate.mode == "call";
+      let isNewSession = vars.session.isNewSession;
+      let isAnActualCall = vars.session.isAnActualCall;
+      let isCall;
+
+      if (isBrowser) {
+        isCall = isSimulatedCall;
+      } else {
+        isCall = isAnActualCall;
+      }
+      
+      //display popup
+      let popupEl = document.querySelector("#com_idc_ui_mediaDetection_popup");
+      if (popupEl && vars.options.mediaDetection.active && vars.options.mediaDetection.mediaPopup && isNewSession) {
+        if (isBrowser) {
+          if (isBrowserSimulating && !isCall) {
+              popupEl.open();
+          }
+        } else {
+          if (!isCall) {
+            popupEl.open();
+          }
+        }
+      }
+
+      //set watermark visibility
+      let watermarkEl = document.querySelector("#com_idc_ui_mediaDetection_watermark");
+      if (watermarkEl && vars.options.mediaDetection.active && vars.options.mediaDetection.watermark) {
+        if (isBrowser) {
+          if (isBrowserSimulating && !isCall) {
+              watermarkEl.setAttribute("data-view-state", "active");
+          }
+        } else {
+          if (!isCall) {
+            watermarkEl.setAttribute("data-view-state", "active");
+          }
+        }
+      }   
+    }
   },
   screenSize: {
     onResize: function () {
@@ -9181,7 +9521,7 @@ com.idc.ui = {
       if (vars.interactionSummary.components.modal.id) {
         this.elements.modal = document.querySelector(`#${vars.interactionSummary.components.modal.id}`);
         if (!this.elements.modal) {
-          util.log(`com.idc.ui.interactionSummary.init(): modal not found`);
+          util.log(`com.idc.ui.interactionSummary.init(): modal not found`, "error");
           return;
         }
       }
@@ -9663,7 +10003,7 @@ com.idc.ui = {
                 subRowHeader = templates.inPerson.subRowHeader.cloneNode(true);
                 subRow = templates.inPerson.subRow.cloneNode(true);
                 if (!interaction.call.channel) {
-                  util.log(`com.idc.ui.interactionSummary.previousInteractions_Populate: unable to determine call channel for interaction ${interaction.id}`);
+                  util.log(`com.idc.ui.interactionSummary.previousInteractions_Populate: unable to determine call channel for interaction ${interaction.id}`, "error");
                 }
                 break;
             }
@@ -10483,3 +10823,12 @@ com.idc.ui = {
 let log = com.idc.util.log;
 
 com.idc.clm.init();
+
+//empty functions to avoid errors if called from Veeva library
+var pageUnload = function () {}
+if (com && com.veeva && com.veeva.clm) {
+  com.veeva.clm.createRecordsOnExit = function () {}
+  com.veeva.clm.updateRecordsOnExit = function () {}
+  com.veeva.clm.updateCurrentRecordsOnExit = function () {}
+}
+

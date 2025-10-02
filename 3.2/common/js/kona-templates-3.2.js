@@ -1368,6 +1368,81 @@ com.idc.templates = {
       },
     ],
   },
+  "mediaDetection": {
+    "mediaPopUp": [
+      {
+        "type": "DIV",
+        "attributes": [
+          {
+            "data-type": "com.idc.ui.core.modal.popUp",
+          },
+        ],
+        "childNodes": [
+          {
+            "type": "DIV",
+            "attributes": [
+              {
+                "data-type": "com.idc.ui.core.modal.contentArea",
+              },
+            ],
+            "childNodes": [
+              {
+                "type": "DIV",
+                "attributes": [
+                  {
+                    "data-ui-id": "mediaDetectionMessage"
+                  }
+                ],
+                "childNodes": [],
+              },
+              { 
+                "type": "DIV",
+                "attributes": [
+                  {
+                    "data-ui-id": "mediaDetectionTitle"
+                  }
+                ],
+                "childNodes": [],
+              },
+              { 
+                "type": "DIV",
+                "attributes": [
+                  {
+                    "data-ui-id": "mediaDetectionGIF"
+                  }
+                ],
+                "childNodes": [],
+              },
+              {
+                "type": "DIV",
+                "attributes": [
+                  {
+                    "data-type": "com.idc.ui.core.button",
+                  },
+                  {
+                    "data-sub-type": "com.idc.ui.core.modal.closeButton",
+                  },
+                ],
+                "childNodes": [],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    "watermark": [{
+        "type": "DIV",
+        "attributes": [
+            {
+            "data-type": "com.idc.ui.core.mediaDetection.watermark",
+            },
+            {
+            "data-view-state": "hidden",
+            },
+        ],
+        "childNodes": [],
+    }]
+  },
   "emailCart": {
     "emailButton": [{
         "type": "DIV",
