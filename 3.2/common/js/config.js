@@ -135,7 +135,8 @@ let com_idc_params = {
     "btnFeedback": {
       "sound": false,
       "visual": true
-    }
+    },
+    "adjustImagesPath": "common"
   },
   "commonHTML": {
     "active": true,
