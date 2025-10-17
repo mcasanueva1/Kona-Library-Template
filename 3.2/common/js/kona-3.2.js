@@ -1,5 +1,7 @@
 "use strict";
 
+const BUILD_ID = "com.idc.clm";
+
 if (com == null) var com = {};
 if (com.idc == undefined) com.idc = {};
 
@@ -191,6 +193,7 @@ com.idc.clm = {
         sound: false,
         visual: false,
       },
+      adjustImagesPath: null, //null, common, slide
     },
     commonHTML: {
       active: null,
@@ -883,6 +886,9 @@ com.idc.clm = {
       this.emailCartStats();
       this.relatedCLMStats();
     }
+
+    //ui after context objects
+    this.uiAfterContextObjects();
   },
 
   /*configuration -----------------------------------------*/
@@ -930,6 +936,8 @@ com.idc.clm = {
       vars.options.btnFeedback.sound = util.readSetting(com_idc_params, "options.btnFeedback.sound", "boolean", false);
       vars.options.btnFeedback.visual = util.readSetting(com_idc_params, "options.btnFeedback.visual", "boolean", false);
     }
+
+    vars.options.adjustImagesPath = util.readSetting(com_idc_params, "options.adjustImagesPath", "string", null);
 
     //common html
     vars.commonHTML.active = util.readSetting(com_idc_params, "commonHTML.active", "boolean", true);
@@ -4611,6 +4619,10 @@ com.idc.clm = {
       com.idc.ui.mediaDetection.init();
     }
   },
+  uiAfterContextObjects() {
+    //related CLM: update state to reflect non-working links
+    com.idc.ui.core.relatedCLMLink.updateItemsState();
+  },
 
   /*email -------------------------------------------------*/
   loadEmailCart: function () {
@@ -4959,6 +4971,25 @@ com.idc.util = {
           }
         }
       }
+    }
+
+    return path;
+  },
+
+  getAdjustImagesPath: function (slideId) {
+    let vars = com.idc.clm.vars;
+    let path = "";
+
+    if (!slideId || slideId == "") {
+      com.idc.util.log(`getAdjustImagesPath: slideId is empty`, "error");
+      return path;
+    }
+
+    if (!vars.options.adjustImagesPath || vars.options.adjustImagesPath == "common") {
+      path = com.idc.util.getSharedResourcesPath() + "img/adjust/" + slideId + "/";
+    }
+    if (vars.options.adjustImagesPath == "slide") {
+      path = "img/adjust/";
     }
 
     return path;
@@ -8042,6 +8073,20 @@ com.idc.ui = {
           com.idc.util.log(`Related CLM tracking (simulated) ${pCLMId}`);
         }
       },
+      updateItemsState() {
+        this.collection.forEach((el_id) => {
+          let el = document.querySelector(`#${el_id}`);
+          if (el) {
+            let targetCLMId = com.idc.util.getElementAttribute(el, "data-target-clm");
+            let relatedCLM = com.idc.clm.vars.relatedCLM.find((clm) => {
+              return clm.id == targetCLMId;
+            })
+            if (!relatedCLM.available) {
+              el.setAttribute("data-view-state", "disabled");
+            }
+          }
+        });
+      }
     },
     websiteLink: {
       selector: '[data-type="com.idc.ui.core.websiteLink"]',
@@ -8742,6 +8787,8 @@ com.idc.ui = {
             let target = event.currentTarget;
             let itemId = target.getAttribute("data-item-id");
 
+            if (target.getAttribute("data-status") == "disabled") return;
+
             if (target.getAttribute("data-status") == "checked") {
               //remove from temp array
               let index = this.tempState.selectedItems.indexOf(itemId);
@@ -8856,14 +8903,25 @@ com.idc.ui = {
     },
     toggleItemsState: function () {
       let vars = com.idc.clm.vars;
+      let items = vars.emailCart[vars.emailCart.mode];
       let selectedItems = this.tempState.selectedItems;
 
       this.elements.modal.querySelectorAll(`[data-type="com.idc.ui.emailCart.items"] [data-type="com.idc.ui.emailCart.item"]`).forEach((itemElement) => {
         let itemId = itemElement.getAttribute("data-item-id");
-        if (selectedItems.includes(itemId)) {
-          itemElement.setAttribute("data-status", "checked");
+
+        let item = items.find((it) => {
+          return it.id == itemId;
+        });
+        if (!item) return;
+
+        if (item.available) {
+          if (selectedItems.includes(itemId)) {
+            itemElement.setAttribute("data-status", "checked");
+          } else {
+            itemElement.setAttribute("data-status", "unChecked");
+          }
         } else {
-          itemElement.setAttribute("data-status", "unChecked");
+          itemElement.setAttribute("data-status", "disabled");
         }
       });
     },
@@ -8903,7 +8961,7 @@ com.idc.ui = {
         //send button state
         let sendButton = this.elements.modal.querySelector(`[data-type="com.idc.ui.core.button"][data-sub-type="com.idc.ui.emailCart.sendButton"]`);
         if (sendButton) {
-          if (selectedItemsCount > 0 && (inACall || browserMode) && itemsHaveCrmId) {
+          if (selectedItemsCount > 0 && (inACall || browserMode)) {
             sendButton.setAttribute("data-state", "active");
           } else {
             sendButton.setAttribute("data-state", "disabled");
