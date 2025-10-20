@@ -1519,7 +1519,20 @@ com.idc.templates = {
                                 "data-btn-response": "true",
                             },
                         ],
-                        "childNodes": []
+                        "childNodes": [
+                            {
+                                "type": "DIV",
+                                "attributes": [
+                                    {
+                                        "data-type": "com.idc.ui.emailCart.itemStatus"
+                                    },
+                                    {
+                                        "data-view-state": "hidden"
+                                    }
+                                ],
+                                "childNodes": []
+                            }
+                        ]
                     }
                 ]
             },
@@ -1531,52 +1544,52 @@ com.idc.templates = {
                 }
             ],
             "childNodes": [
-            {
-                "type": "DIV",
-                "attributes": [
                     {
-                        "data-type": "com.idc.ui.core.button"
+                        "type": "DIV",
+                        "attributes": [
+                            {
+                                "data-type": "com.idc.ui.core.button"
+                            },
+                            {
+                                "data-sub-type": "com.idc.ui.emailCart.cancelButton"
+                            },
+                            {
+                                "data-btn-response": "true",
+                            },
+                        ],
+                        "childNodes": []
                     },
                     {
-                        "data-sub-type": "com.idc.ui.emailCart.cancelButton"
+                        "type": "DIV",
+                        "attributes": [
+                            {
+                                "data-type": "com.idc.ui.core.button"
+                            },
+                            {
+                                "data-sub-type": "com.idc.ui.emailCart.doneButton"
+                            },
+                            {
+                                "data-btn-response": "true",
+                            },
+                        ],
+                        "childNodes": []
                     },
                     {
-                        "data-btn-response": "true",
-                    },
-                ],
-                "childNodes": []
-            },
-            {
-                "type": "DIV",
-                "attributes": [
-                    {
-                        "data-type": "com.idc.ui.core.button"
-                    },
-                    {
-                        "data-sub-type": "com.idc.ui.emailCart.doneButton"
-                    },
-                    {
-                        "data-btn-response": "true",
-                    },
-                ],
-                "childNodes": []
-            },
-            {
-                "type": "DIV",
-                "attributes": [
-                    {
-                        "data-type": "com.idc.ui.core.button"
-                    },
-                    {
-                        "data-sub-type": "com.idc.ui.emailCart.sendButton"
-                    },
-                    {
-                        "data-btn-response": "true",
-                    },
-                ],
-                "childNodes": []
-            }
-            ]
+                        "type": "DIV",
+                        "attributes": [
+                            {
+                                "data-type": "com.idc.ui.core.button"
+                            },
+                            {
+                                "data-sub-type": "com.idc.ui.emailCart.sendButton"
+                            },
+                            {
+                                "data-btn-response": "true",
+                            },
+                        ],
+                        "childNodes": []
+                    }
+                ]
             }
         ]
     }],

@@ -454,6 +454,9 @@ com.idc.clm = {
       active: null,
       mode: null,
       vaultURL: null,
+      options: {
+        showItemsStatus: null
+      },
       components: {
         openButton: {
           id: null,
@@ -500,6 +503,7 @@ com.idc.clm = {
           }
         },
       ],
+      labels: {}
     },
     references: {
       active: null,
@@ -1722,6 +1726,9 @@ com.idc.clm = {
       //vault url
       vars.emailCart.vaultURL = util.readSetting(com_idc_params, `emailCart.vaultInstance.${selectedVault}.url`, "string", null);
 
+      //options
+      vars.emailCart.options.showItemsStatus = util.readSetting(com_idc_params, "emailCart.options.showItemsStatus", "boolean", null);
+
       //components
       vars.emailCart.components.openButton.id = util.readSetting(com_idc_params, "emailCart.components.openButton.id", "string", null);
       vars.emailCart.components.modal.id = util.readSetting(com_idc_params, "emailCart.components.modal.id", "string", null);
@@ -1758,6 +1765,9 @@ com.idc.clm = {
       } else {
         vars.emailCart.mode = "fragments"; //if one template and one or more fragments, use fragments
       }
+
+      //labels
+      vars.emailCart.labels = util.readSetting(com_idc_params, "emailCart.labels", "object", null);
     }
 
     //references modal
@@ -3508,18 +3518,22 @@ com.idc.clm = {
       if (this.vars.emailCart.active) {
         this.vars.emailCart.templates.forEach((template) => {
           template.crmId = "0000000000000000" + (crmIdCount + 10);
+          template.available = true;
           crmIdCount++;
         });
         this.vars.emailCart.fragments.forEach((fragment) => {
           fragment.crmId = "0000000000000000" + (crmIdCount + 10);
+          fragment.available = true;
           crmIdCount++;
         });
       }
       this.vars.interactionSummary.nonEmailCartItems.templates.forEach((template) => {
         template.crmId = "0000000000000000" + (crmIdCount + 10);
+        template.available = true;
         crmIdCount++;
         template.fragments.forEach((fragment) => {
           fragment.crmId = "0000000000000000" + (crmIdCount + 10);
+          fragment.available = true;
           crmIdCount++;
         });
       });
@@ -3673,6 +3687,7 @@ com.idc.clm = {
         } else {
           fragments = aeArray.filter((item) => item.group == "nonEmailCartFragments" && item.template == template.id);
         }
+        fragments = fragments.sort(() => 0.5 - Math.random()).slice(0, Math.floor(Math.random() * (fragments.length + 1))); //random selection of fragments
 
         let Sent_Email_vod__c_Record = {
           Opened_vod__c: emailOpened,
@@ -8731,7 +8746,7 @@ com.idc.ui = {
     populateItems: function () {
       let vars = com.idc.clm.vars;
       let util = com.idc.util;
-
+      
       if (!this.elements.modal || vars.emailCart.mode == "emailButton") return;
 
       let items = vars.emailCart[vars.emailCart.mode];
@@ -8905,6 +8920,7 @@ com.idc.ui = {
       let vars = com.idc.clm.vars;
       let items = vars.emailCart[vars.emailCart.mode];
       let selectedItems = this.tempState.selectedItems;
+      let labels = vars.emailCart.labels;
 
       this.elements.modal.querySelectorAll(`[data-type="com.idc.ui.emailCart.items"] [data-type="com.idc.ui.emailCart.item"]`).forEach((itemElement) => {
         let itemId = itemElement.getAttribute("data-item-id");
@@ -8914,6 +8930,7 @@ com.idc.ui = {
         });
         if (!item) return;
 
+        //available; checked
         if (item.available) {
           if (selectedItems.includes(itemId)) {
             itemElement.setAttribute("data-status", "checked");
@@ -8922,6 +8939,29 @@ com.idc.ui = {
           }
         } else {
           itemElement.setAttribute("data-status", "disabled");
+        }
+
+        //status
+        let itemStatus = itemElement.querySelector('[data-type="com.idc.ui.emailCart.itemStatus"]');
+        if (itemStatus && vars.emailCart.options.showItemsStatus) {
+          if (item.available) {
+            if (item.stats.sent > 0) {
+              if (item.stats.sent == 1) {
+                itemStatus.innerHTML = labels.sent_1_time;
+              } else {
+                itemStatus.innerHTML = labels.sent_n_times.replace("##count##", item.stats.sent);
+              }
+              if (item.stats.clicks > 0) {
+                itemStatus.innerHTML += ` / ${labels.opened}`;
+              } else {
+                itemStatus.innerHTML += ` / ${labels.not_opened}`;
+              }
+            } else {
+              itemStatus.innerHTML = labels.not_sent;
+            }
+          } else {
+            itemStatus.innerHTML = labels.not_available;
+          }
         }
       });
     },
