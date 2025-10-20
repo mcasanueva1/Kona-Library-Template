@@ -335,6 +335,9 @@ let com_idc_params = {
   },
   "emailCart": {
     "active": false,
+    "options": {
+      "showItemsStatus": false
+    },
     "components": {
       "openButton": {
         "id": "",
@@ -355,7 +358,15 @@ let com_idc_params = {
         },
     },
     "templates": [],
-    "fragments": []
+    "fragments": [],
+    "labels": {
+      "sent_1_time": "Sent 1 time",
+      "sent_n_times": "Sent ##count## times",
+      "not_sent": "Not sent",
+      "opened": "Opened",
+      "not_opened": "Not opened",
+      "not_available": "Not available",
+    }
   },
   "references": {
     "active": false,
@@ -543,6 +554,29 @@ let com_idc_params = {
   "schemaRelatedVars": {
     "activeSchema": "iDC",
     "vars": []
+  },
+  "quickLinks": {
+    "options": {
+      "showDetails": false,
+    },
+    "labels": {
+      "january_short": "Jan",
+      "february_short": "Feb",
+      "march_short": "Mar",
+      "april_short": "Apr",
+      "may_short": "May",
+      "june_short": "Jun",
+      "july_short": "Jul",
+      "august_short": "Aug",
+      "september_short": "Sep",
+      "october_short": "Oct",
+      "november_short": "Nov",
+      "december_short": "Dec",
+      "discussed_1_time": "Discussed 1 time",
+      "discussed_n_times": "Discussed ##count## times",
+      "not_discussed": "Not discussed yet",
+      "last_discussed": "##shortMonth## ##day##, ##year##",
+    }
   },
   "templates": {
     "slide": {
