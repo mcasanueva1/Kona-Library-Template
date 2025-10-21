@@ -160,6 +160,13 @@ body[data-enable-btn-feedback="true"] [data-btn-response="true"]:active {
 #emailCartModal [data-type="com.idc.ui.emailCart.items"] [data-type="com.idc.ui.emailCart.item"][data-status="checked"] [data-type="com.idc.ui.emailCart.checkbox"] {
     background-color: #818286;
 }
+
+#emailCart [data-type="com.idc.ui.emailCart.items"] [data-type="com.idc.ui.emailCart.item"] [data-type="com.idc.ui.emailCart.itemStatus"],
+#emailCartModal [data-type="com.idc.ui.emailCart.items"] [data-type="com.idc.ui.emailCart.item"] [data-type="com.idc.ui.emailCart.itemStatus"] {
+    position: absolute;
+    bottom: -20px;
+}
+
 #emailCart [data-type="com.idc.ui.emailCart.items"] [data-type="com.idc.ui.emailCart.item"][data-status="disabled"],
 #emailCartModal [data-type="com.idc.ui.emailCart.items"] [data-type="com.idc.ui.emailCart.item"][data-status="disabled"] {
     opacity: 0.5;
