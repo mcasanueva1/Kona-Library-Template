@@ -2403,7 +2403,7 @@ com.idc.clm = {
         }
 
         //Approved_Document_vod__c for email cart and non email cart (get crmID for templates and fragments)
-        if (this.vars.emailCart.active) {
+        if (this.vars.emailCart.active) {          
           let itemsArray = [];
           this.vars.emailCart.templates
             .map((item) => {
@@ -2414,7 +2414,12 @@ com.idc.clm = {
               };
             })
             .forEach((item) => {
-              itemsArray.push(item);
+              if (item.vaultId) {
+                itemsArray.push(item);
+              } else {
+                util.log(`com.idc.clm.getDataForContextObjects: missing Vault Doc ID for template ${item.id}`, "error");
+              }
+              
             });
           this.vars.emailCart.fragments
             .map((item) => {
@@ -2425,25 +2430,38 @@ com.idc.clm = {
               };
             })
             .forEach((item) => {
-              itemsArray.push(item);
+              if (item.vaultId) {
+                itemsArray.push(item);
+              } else {
+                util.log(`com.idc.clm.getDataForContextObjects: missing Vault Doc ID for fragment ${item.id}`, "error");
+              }
+              
             });
 
           if (this.vars.interactionSummary.active) {
             this.vars.interactionSummary.nonEmailCartItems.templates.forEach((template) => {
-              itemsArray.push({
-                id: template.id,
-                vaultId: template.vaultId,
-                group: "nonEmailCartTemplates",
-              });
-
-              template.fragments.forEach((fragment) => {
+              if (template.vaultId) {
                 itemsArray.push({
-                  id: fragment.id,
-                  vaultId: fragment.vaultId,
-                  group: "nonEmailCartFragments",
-                  template: template.id,
+                  id: template.id,
+                  vaultId: template.vaultId,
+                  group: "nonEmailCartTemplates",
                 });
-              });
+
+                template.fragments.forEach((fragment) => {
+                  if (fragment.vaultId) {
+                    itemsArray.push({
+                      id: fragment.id,
+                      vaultId: fragment.vaultId,
+                      group: "nonEmailCartFragments",
+                      template: template.id,
+                    });
+                  } else {
+                    util.log(`com.idc.clm.getDataForContextObjects: missing Vault Doc ID for fragment ${fragment.id}`, "error");
+                  }
+                });
+              } else {
+                util.log(`com.idc.clm.getDataForContextObjects: missing Vault Doc ID for template ${template.id}`, "error");
+              }
             });
           }
 
@@ -3510,6 +3528,8 @@ com.idc.clm = {
 
   /*interaction summary and other stats---------------------*/
   interactionSummaryTestData: function () {
+    let util = com.idc.util;
+
     const minCalls = this.vars.interactionSummary.testModel.calls.min;
     const maxCalls = this.vars.interactionSummary.testModel.calls.max;
     const minEmails = this.vars.interactionSummary.testModel.emails.min;
@@ -3532,26 +3552,45 @@ com.idc.clm = {
     if (this.vars.options.browserMode.active) {
       let crmIdCount = 0;
       if (this.vars.emailCart.active) {
+        if (this.vars.emailCart.templates.length == 0) {
+          util.log("com.idc.clm.interactionSummaryTestData: email cart is active but no templates found", "error");
+        }
         this.vars.emailCart.templates.forEach((template) => {
-          template.crmId = "0000000000000000" + (crmIdCount + 10);
-          template.available = true;
-          crmIdCount++;
+          if (template.vaultId) {
+            template.crmId = "0000000000000000" + (crmIdCount + 10);
+            template.available = true;
+            crmIdCount++;
+          } else {
+            util.log(`com.idc.clm.interactionSummaryTestData: missing Vault Doc ID for template ${template.id}`, "error");
+          }
         });
         this.vars.emailCart.fragments.forEach((fragment) => {
-          fragment.crmId = "0000000000000000" + (crmIdCount + 10);
-          fragment.available = true;
-          crmIdCount++;
+          if (fragment.vaultId) {
+            fragment.crmId = "0000000000000000" + (crmIdCount + 10);
+            fragment.available = true;
+            crmIdCount++;
+          } else {
+            util.log(`com.idc.clm.interactionSummaryTestData: missing Vault Doc ID for fragment ${fragment.id}`, "error");
+          }
         });
       }
       this.vars.interactionSummary.nonEmailCartItems.templates.forEach((template) => {
-        template.crmId = "0000000000000000" + (crmIdCount + 10);
-        template.available = true;
-        crmIdCount++;
-        template.fragments.forEach((fragment) => {
-          fragment.crmId = "0000000000000000" + (crmIdCount + 10);
-          fragment.available = true;
+        if (template.vaultId) {
+          template.crmId = "0000000000000000" + (crmIdCount + 10);
+          template.available = true;
           crmIdCount++;
-        });
+          template.fragments.forEach((fragment) => {
+            if (fragment.vaultId) {
+              fragment.crmId = "0000000000000000" + (crmIdCount + 10);
+              fragment.available = true;
+              crmIdCount++;
+            } else {
+              util.log(`com.idc.clm.interactionSummaryTestData: missing Vault Doc ID for fragment ${fragment.id}`, "error");
+            }
+          });
+        } else {
+          util.log(`com.idc.clm.interactionSummaryTestData: missing Vault Doc ID for template ${template.id}`, "error");
+        }
       });
     }
 
