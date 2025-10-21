@@ -50,7 +50,7 @@ com.idc.clm = {
         reloadAfterAccountSelectionAlert: null,
         labels: {
           reloadAfterAccountSelectionMessage: null,
-        }
+        },
       },
       dynamicPresentation: {
         source: {
@@ -455,7 +455,7 @@ com.idc.clm = {
       mode: null,
       vaultURL: null,
       options: {
-        showItemsStatus: null
+        showItemsStatus: null,
       },
       components: {
         openButton: {
@@ -481,8 +481,8 @@ com.idc.clm = {
             sent: null,
             sentCount: null,
             opens: null,
-            openCount: null
-          }
+            openCount: null,
+          },
         },
       ],
       fragments: [
@@ -499,11 +499,11 @@ com.idc.clm = {
             sent: null,
             sentCount: null,
             opens: null,
-            openCount: null
-          }
+            openCount: null,
+          },
         },
       ],
-      labels: {}
+      labels: {},
     },
     references: {
       active: null,
@@ -957,8 +957,18 @@ com.idc.clm = {
       if (vars.options.mediaDetection.active) {
         vars.options.mediaDetection.watermark = util.readSetting(com_idc_params, "options.mediaDetection.watermark", "boolean", false);
         vars.options.mediaDetection.mediaPopup = util.readSetting(com_idc_params, "options.mediaDetection.mediaPopup", "boolean", false);
-        vars.options.mediaDetection.reloadAfterAccountSelectionAlert = util.readSetting(com_idc_params, "options.mediaDetection.reloadAfterAccountSelectionAlert", "boolean", false);
-        vars.options.mediaDetection.labels.reloadAfterAccountSelectionMessage = util.readSetting(com_idc_params, "options.mediaDetection.labels.reloadAfterAccountSelectionMessage", "string", "The slide will be reloaded to reflect the selected account");
+        vars.options.mediaDetection.reloadAfterAccountSelectionAlert = util.readSetting(
+          com_idc_params,
+          "options.mediaDetection.reloadAfterAccountSelectionAlert",
+          "boolean",
+          false
+        );
+        vars.options.mediaDetection.labels.reloadAfterAccountSelectionMessage = util.readSetting(
+          com_idc_params,
+          "options.mediaDetection.labels.reloadAfterAccountSelectionMessage",
+          "string",
+          "The slide will be reloaded to reflect the selected account"
+        );
       }
     }
 
@@ -2496,12 +2506,12 @@ com.idc.clm = {
 
         //Related CLM
         if (this.vars.relatedCLM.length > 0) {
-          for (let relatedItem of this.vars.relatedCLM) {   
+          for (let relatedItem of this.vars.relatedCLM) {
             let idsToCheck = [
               { type: "Presentation", vaultId: relatedItem.vaultExternalID.presentation, available: null },
               { type: "Key Message", vaultId: relatedItem.vaultExternalID.keyMessage, available: null },
             ];
-            for (let thisId of idsToCheck) {      
+            for (let thisId of idsToCheck) {
               await new Promise((resolve) => {
                 com.veeva.clm.queryRecord(
                   thisId.type == "Presentation" ? "Clm_Presentation_vod__c" : "Key_Message_vod__c",
@@ -2518,10 +2528,16 @@ com.idc.clm = {
                         return item.Status_vod__c == "Staged_vod";
                       });
                       if (!foundApproved && !foundStaged) {
-                        util.log(`com.idc.clm.getDataForContextObjects: related CLM ${relatedItem.id} / no approved or staged record found for ${thisId.type} ${thisId.vaultId}`, "error");
+                        util.log(
+                          `com.idc.clm.getDataForContextObjects: related CLM ${relatedItem.id} / no approved or staged record found for ${thisId.type} ${thisId.vaultId}`,
+                          "error"
+                        );
                       }
                       if (foundStaged && !foundApproved) {
-                        util.log(`com.idc.clm.getDataForContextObjects: related CLM ${relatedItem.id} / no approved (just staged) record found for ${thisId.type} ${thisId.vaultId}`, "error");
+                        util.log(
+                          `com.idc.clm.getDataForContextObjects: related CLM ${relatedItem.id} / no approved (just staged) record found for ${thisId.type} ${thisId.vaultId}`,
+                          "error"
+                        );
                       }
                       if (foundApproved || foundStaged) {
                         thisId.available = true;
@@ -2531,7 +2547,7 @@ com.idc.clm = {
                     }
                     resolve();
                   }
-                )
+                );
               });
             }
             if (idsToCheck[0].available && idsToCheck[1].available) {
@@ -4715,7 +4731,7 @@ com.idc.util = {
     } else {
       console.log(JSON.stringify(pText, null, 4));
     }
-    
+
     //in-app inspector
     if (pType && pType.toLowerCase() == "error") {
       pText = "***ERROR*** " + pText;
@@ -8095,13 +8111,13 @@ com.idc.ui = {
             let targetCLMId = com.idc.util.getElementAttribute(el, "data-target-clm");
             let relatedCLM = com.idc.clm.vars.relatedCLM.find((clm) => {
               return clm.id == targetCLMId;
-            })
+            });
             if (!relatedCLM.available) {
               el.setAttribute("data-view-state", "disabled");
             }
           }
         });
-      }
+      },
     },
     websiteLink: {
       selector: '[data-type="com.idc.ui.core.websiteLink"]',
@@ -8746,7 +8762,7 @@ com.idc.ui = {
     populateItems: function () {
       let vars = com.idc.clm.vars;
       let util = com.idc.util;
-      
+
       if (!this.elements.modal || vars.emailCart.mode == "emailButton") return;
 
       let items = vars.emailCart[vars.emailCart.mode];
@@ -8921,6 +8937,7 @@ com.idc.ui = {
       let items = vars.emailCart[vars.emailCart.mode];
       let selectedItems = this.tempState.selectedItems;
       let labels = vars.emailCart.labels;
+      let isBrowserMode = vars.options.browserMode.active;
 
       this.elements.modal.querySelectorAll(`[data-type="com.idc.ui.emailCart.items"] [data-type="com.idc.ui.emailCart.item"]`).forEach((itemElement) => {
         let itemId = itemElement.getAttribute("data-item-id");
@@ -8931,7 +8948,7 @@ com.idc.ui = {
         if (!item) return;
 
         //available; checked
-        if (item.available) {
+        if (item.available || isBrowserMode) {
           if (selectedItems.includes(itemId)) {
             itemElement.setAttribute("data-status", "checked");
           } else {
@@ -8944,20 +8961,22 @@ com.idc.ui = {
         //status
         let itemStatus = itemElement.querySelector('[data-type="com.idc.ui.emailCart.itemStatus"]');
         if (itemStatus && vars.emailCart.options.showItemsStatus) {
-          if (item.available) {
-            if (item.stats.sent > 0) {
-              if (item.stats.sent == 1) {
-                itemStatus.innerHTML = labels.sent_1_time;
+          if (item.available || isBrowserMode) {
+            if (vars.session.isAnActualCall) {
+              if (item.stats.sent > 0) {
+                if (item.stats.sent == 1) {
+                  itemStatus.innerHTML = labels.sent_1_time;
+                } else {
+                  itemStatus.innerHTML = labels.sent_n_times.replace("##count##", item.stats.sent);
+                }
+                if (item.stats.clicks > 0) {
+                  itemStatus.innerHTML += ` / ${labels.opened}`;
+                } else {
+                  itemStatus.innerHTML += ` / ${labels.not_opened}`;
+                }
               } else {
-                itemStatus.innerHTML = labels.sent_n_times.replace("##count##", item.stats.sent);
+                itemStatus.innerHTML = labels.not_sent;
               }
-              if (item.stats.clicks > 0) {
-                itemStatus.innerHTML += ` / ${labels.opened}`;
-              } else {
-                itemStatus.innerHTML += ` / ${labels.not_opened}`;
-              }
-            } else {
-              itemStatus.innerHTML = labels.not_sent;
             }
           } else {
             itemStatus.innerHTML = labels.not_available;
@@ -9400,14 +9419,24 @@ com.idc.ui = {
       let vars = com.idc.clm.vars;
 
       //media alert popup (new session only)
-      if (vars.options.mediaDetection.mediaPopup) { 
-        com.idc.util.jsonToHTML(com.idc.templates.mediaDetection.mediaPopUp, "com_idc_ui_mediaDetection_popup", document.querySelector(`[data-type="com.idc.ui.contentSize"]`), null);
+      if (vars.options.mediaDetection.mediaPopup) {
+        com.idc.util.jsonToHTML(
+          com.idc.templates.mediaDetection.mediaPopUp,
+          "com_idc_ui_mediaDetection_popup",
+          document.querySelector(`[data-type="com.idc.ui.contentSize"]`),
+          null
+        );
         com.idc.ui.core.modal.awake();
       }
 
       //watermark
       if (vars.options.mediaDetection.watermark) {
-        com.idc.util.jsonToHTML(com.idc.templates.mediaDetection.watermark, "com_idc_ui_mediaDetection_watermark", document.querySelector(`[data-type="com.idc.ui.contentSize"]`), null);
+        com.idc.util.jsonToHTML(
+          com.idc.templates.mediaDetection.watermark,
+          "com_idc_ui_mediaDetection_watermark",
+          document.querySelector(`[data-type="com.idc.ui.contentSize"]`),
+          null
+        );
       }
 
       //after selecting account alert
@@ -9416,15 +9445,15 @@ com.idc.ui = {
         //wait for 10 seconds before enablig detection interval
         setTimeout(() => {
           detectionInterval = setInterval(() => {
-              com.veeva.clm.getDataForCurrentObject("Call", "ID", (data) => {
-                if (data.success) {
-                  let newCallID = data.Call.ID; //obtained call id
-                  clearInterval(detectionInterval);
-                  if (newCallID != vars.session.callId) {
-                    window.alert(vars.options.mediaDetection.labels.reloadAfterAccountSelectionMessage);
-                    window.location.reload();
-                  }
+            com.veeva.clm.getDataForCurrentObject("Call", "ID", (data) => {
+              if (data.success) {
+                let newCallID = data.Call.ID; //obtained call id
+                clearInterval(detectionInterval);
+                if (newCallID != vars.session.callId) {
+                  window.alert(vars.options.mediaDetection.labels.reloadAfterAccountSelectionMessage);
+                  window.location.reload();
                 }
+              }
             });
           }, 1000 * 1);
         }, 1000 * 10);
@@ -9436,7 +9465,7 @@ com.idc.ui = {
       let vars = com.idc.clm.vars;
 
       let isBrowser = vars.options.browserMode.active;
-      let isBrowserSimulating = vars.options.browserMode.simulate.active
+      let isBrowserSimulating = vars.options.browserMode.simulate.active;
       let isSimulatedCall = isBrowserSimulating && vars.options.browserMode.simulate.mode == "call";
       let isNewSession = vars.session.isNewSession;
       let isAnActualCall = vars.session.isAnActualCall;
@@ -9447,13 +9476,13 @@ com.idc.ui = {
       } else {
         isCall = isAnActualCall;
       }
-      
+
       //display popup
       let popupEl = document.querySelector("#com_idc_ui_mediaDetection_popup");
       if (popupEl && vars.options.mediaDetection.active && vars.options.mediaDetection.mediaPopup && isNewSession) {
         if (isBrowser) {
           if (isBrowserSimulating && !isCall) {
-              popupEl.open();
+            popupEl.open();
           }
         } else {
           if (!isCall) {
@@ -9467,15 +9496,15 @@ com.idc.ui = {
       if (watermarkEl && vars.options.mediaDetection.active && vars.options.mediaDetection.watermark) {
         if (isBrowser) {
           if (isBrowserSimulating && !isCall) {
-              watermarkEl.setAttribute("data-view-state", "active");
+            watermarkEl.setAttribute("data-view-state", "active");
           }
         } else {
           if (!isCall) {
             watermarkEl.setAttribute("data-view-state", "active");
           }
         }
-      }   
-    }
+      }
+    },
   },
   screenSize: {
     onResize: function () {
@@ -10101,7 +10130,10 @@ com.idc.ui = {
                 subRowHeader = templates.inPerson.subRowHeader.cloneNode(true);
                 subRow = templates.inPerson.subRow.cloneNode(true);
                 if (!interaction.call.channel) {
-                  util.log(`com.idc.ui.interactionSummary.previousInteractions_Populate: unable to determine call channel for interaction ${interaction.id}`, "error");
+                  util.log(
+                    `com.idc.ui.interactionSummary.previousInteractions_Populate: unable to determine call channel for interaction ${interaction.id}`,
+                    "error"
+                  );
                 }
                 break;
             }
@@ -10923,10 +10955,9 @@ let log = com.idc.util.log;
 com.idc.clm.init();
 
 //empty functions to avoid errors if called from Veeva library
-var pageUnload = function () {}
+var pageUnload = function () {};
 if (com && com.veeva && com.veeva.clm) {
-  com.veeva.clm.createRecordsOnExit = function () {}
-  com.veeva.clm.updateRecordsOnExit = function () {}
-  com.veeva.clm.updateCurrentRecordsOnExit = function () {}
+  com.veeva.clm.createRecordsOnExit = function () {};
+  com.veeva.clm.updateRecordsOnExit = function () {};
+  com.veeva.clm.updateCurrentRecordsOnExit = function () {};
 }
-
