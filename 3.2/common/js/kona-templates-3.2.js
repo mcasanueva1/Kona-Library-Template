@@ -1526,9 +1526,6 @@ com.idc.templates = {
                                     {
                                         "data-type": "com.idc.ui.emailCart.itemStatus"
                                     },
-                                    {
-                                        "data-view-state": "hidden"
-                                    }
                                 ],
                                 "childNodes": []
                             }
