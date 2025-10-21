@@ -3697,30 +3697,33 @@ com.idc.clm = {
         let templatesArr = aeArray.filter((item) => item.group == "templates" || item.group == "nonEmailCartTemplates");
         let templateIndex = Math.floor(Math.random() * templatesArr.length);
         let template = templatesArr[templateIndex];
-        let fragments;
-        if (template.group == "templates") {
-          fragments = aeArray.filter((item) => item.group == "fragments");
-        } else {
-          fragments = aeArray.filter((item) => item.group == "nonEmailCartFragments" && item.template == template.id);
+
+        if (template) {
+          let fragments;
+          if (template.group == "templates") {
+            fragments = aeArray.filter((item) => item.group == "fragments");
+          } else {
+            fragments = aeArray.filter((item) => item.group == "nonEmailCartFragments" && item.template == template.id);
+          }
+          fragments = fragments.sort(() => 0.5 - Math.random()).slice(0, Math.floor(Math.random() * (fragments.length + 1))); //random selection of fragments
+
+          let Sent_Email_vod__c_Record = {
+            Opened_vod__c: emailOpened,
+            Email_Sent_Date_vod__c: emailDate.toISOString(),
+            Approved_Email_Template_vod__c: template.crmId,
+            ID: "0000000000000000" + (Sent_Email_vod__c_Counter + 10),
+            Click_Count_vod__c: clickCount ? clickCount : 0,
+            Last_Open_Date_vod__c: openEmailDate ? openEmailDate.toISOString() : "",
+            Last_Activity_Date_vod__c: openEmailDate ? openEmailDate.toISOString() : "",
+            Open_Count_vod__c: openCount ? openCount : 0,
+            Status_vod__c: "Delivered_vod",
+            Email_Fragments_vod__c: fragments.map((item) => item.crmId).join(","),
+          };
+
+          Sent_Email_vod__c.push(Sent_Email_vod__c_Record);
+
+          Sent_Email_vod__c_Counter++;
         }
-        fragments = fragments.sort(() => 0.5 - Math.random()).slice(0, Math.floor(Math.random() * (fragments.length + 1))); //random selection of fragments
-
-        let Sent_Email_vod__c_Record = {
-          Opened_vod__c: emailOpened,
-          Email_Sent_Date_vod__c: emailDate.toISOString(),
-          Approved_Email_Template_vod__c: template.crmId,
-          ID: "0000000000000000" + (Sent_Email_vod__c_Counter + 10),
-          Click_Count_vod__c: clickCount ? clickCount : 0,
-          Last_Open_Date_vod__c: openEmailDate ? openEmailDate.toISOString() : "",
-          Last_Activity_Date_vod__c: openEmailDate ? openEmailDate.toISOString() : "",
-          Open_Count_vod__c: openCount ? openCount : 0,
-          Status_vod__c: "Delivered_vod",
-          Email_Fragments_vod__c: fragments.map((item) => item.crmId).join(","),
-        };
-
-        Sent_Email_vod__c.push(Sent_Email_vod__c_Record);
-
-        Sent_Email_vod__c_Counter++;
       }
       Sent_Email_vod__c.forEach((record) => {
         Object.keys(record).forEach((field) => {
