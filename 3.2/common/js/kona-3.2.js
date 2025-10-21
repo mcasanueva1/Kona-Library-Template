@@ -3535,8 +3535,6 @@ com.idc.clm = {
     const minEmails = this.vars.interactionSummary.testModel.emails.min;
     const maxEmails = this.vars.interactionSummary.testModel.emails.max;
 
-    let considerEmailData = JSON.parse(this.vars.interactionSummary.visibility.tabs.emails);
-
     //account (use simulate object from config if available)
     if (this.vars.options.browserMode.simulate.objects.Account) {
       this.vars.metadata.account.name = this.vars.options.browserMode.simulate.objects.Account.Name;
@@ -3668,167 +3666,165 @@ com.idc.clm = {
     let Sent_Email_vod__c = [];
     let Sent_Email_vod__c_Counter = 0;
     let aeArray = [];
-    if (considerEmailData) {
-      {
-        this.vars.emailCart.templates
-          .map((item) => {
-            return {
-              id: item.id,
-              vaultId: item.vaultId,
-              crmId: item.crmId,
-              group: "templates",
-            };
-          })
-          .forEach((item) => {
-            aeArray.push(item);
-          });
-        this.vars.emailCart.fragments
-          .map((item) => {
-            return {
-              id: item.id,
-              vaultId: item.vaultId,
-              crmId: item.crmId,
-              group: "fragments",
-            };
-          })
-          .forEach((item) => {
-            aeArray.push(item);
-          });
-
-        this.vars.interactionSummary.nonEmailCartItems.templates.forEach((template) => {
-          aeArray.push({
-            id: template.id,
-            vaultId: template.vaultId,
-            crmId: template.crmId,
-            group: "nonEmailCartTemplates",
-          });
-
-          template.fragments.forEach((fragment) => {
-            aeArray.push({
-              id: fragment.id,
-              vaultId: fragment.vaultId,
-              crmId: fragment.crmId,
-              group: "nonEmailCartFragments",
-              template: template.id,
-            });
-          });
-        });
-      }
-
-      for (let i = 0; i < Math.floor(Math.random() * maxEmails) + minEmails; i++) {
-        let emailDate = new Date();
-        emailDate.setDate(emailDate.getDate() - Math.floor(Math.random() * 30));
-
-        let emailOpened = Math.random() < 0.7 ? 1 : 0;
-
-        let openEmailDate;
-        let openCount;
-        let clickCount;
-        if (emailOpened) {
-          openEmailDate = new Date(); //has to be after emailDate
-          openEmailDate.setDate(emailDate.getDate() + Math.floor(Math.random() * 3));
-
-          openCount = Math.floor(Math.random() * 6) + 1;
-
-          clickCount = Math.floor(Math.random() * 6);
-        }
-
-        let templatesArr = aeArray.filter((item) => item.group == "templates" || item.group == "nonEmailCartTemplates");
-        let templateIndex = Math.floor(Math.random() * templatesArr.length);
-        let template = templatesArr[templateIndex];
-
-        if (template) {
-          let fragments;
-          if (template.group == "templates") {
-            fragments = aeArray.filter((item) => item.group == "fragments");
-          } else {
-            fragments = aeArray.filter((item) => item.group == "nonEmailCartFragments" && item.template == template.id);
-          }
-          fragments = fragments.sort(() => 0.5 - Math.random()).slice(0, Math.floor(Math.random() * (fragments.length + 1))); //random selection of fragments
-
-          let Sent_Email_vod__c_Record = {
-            Opened_vod__c: emailOpened,
-            Email_Sent_Date_vod__c: emailDate.toISOString(),
-            Approved_Email_Template_vod__c: template.crmId,
-            ID: "0000000000000000" + (Sent_Email_vod__c_Counter + 10),
-            Click_Count_vod__c: clickCount ? clickCount : 0,
-            Last_Open_Date_vod__c: openEmailDate ? openEmailDate.toISOString() : "",
-            Last_Activity_Date_vod__c: openEmailDate ? openEmailDate.toISOString() : "",
-            Open_Count_vod__c: openCount ? openCount : 0,
-            Status_vod__c: "Delivered_vod",
-            Email_Fragments_vod__c: fragments.map((item) => item.crmId).join(","),
+    
+    {
+      this.vars.emailCart.templates
+        .map((item) => {
+          return {
+            id: item.id,
+            vaultId: item.vaultId,
+            crmId: item.crmId,
+            group: "templates",
           };
+        })
+        .forEach((item) => {
+          aeArray.push(item);
+        });
+      this.vars.emailCart.fragments
+        .map((item) => {
+          return {
+            id: item.id,
+            vaultId: item.vaultId,
+            crmId: item.crmId,
+            group: "fragments",
+          };
+        })
+        .forEach((item) => {
+          aeArray.push(item);
+        });
 
-          Sent_Email_vod__c.push(Sent_Email_vod__c_Record);
+      this.vars.interactionSummary.nonEmailCartItems.templates.forEach((template) => {
+        aeArray.push({
+          id: template.id,
+          vaultId: template.vaultId,
+          crmId: template.crmId,
+          group: "nonEmailCartTemplates",
+        });
 
-          Sent_Email_vod__c_Counter++;
-        }
-      }
-      Sent_Email_vod__c.forEach((record) => {
-        Object.keys(record).forEach((field) => {
-          if (this.vars.interactionSummary.fields.Sent_Email_vod__c.indexOf(field) < 0) delete record[field];
+        template.fragments.forEach((fragment) => {
+          aeArray.push({
+            id: fragment.id,
+            vaultId: fragment.vaultId,
+            crmId: fragment.crmId,
+            group: "nonEmailCartFragments",
+            template: template.id,
+          });
         });
       });
     }
+
+    for (let i = 0; i < Math.floor(Math.random() * maxEmails) + minEmails; i++) {
+      let emailDate = new Date();
+      emailDate.setDate(emailDate.getDate() - Math.floor(Math.random() * 30));
+
+      let emailOpened = Math.random() < 0.7 ? 1 : 0;
+
+      let openEmailDate;
+      let openCount;
+      let clickCount;
+      if (emailOpened) {
+        openEmailDate = new Date(); //has to be after emailDate
+        openEmailDate.setDate(emailDate.getDate() + Math.floor(Math.random() * 3));
+
+        openCount = Math.floor(Math.random() * 6) + 1;
+
+        clickCount = Math.floor(Math.random() * 6);
+      }
+
+      let templatesArr = aeArray.filter((item) => item.group == "templates" || item.group == "nonEmailCartTemplates");
+      let templateIndex = Math.floor(Math.random() * templatesArr.length);
+      let template = templatesArr[templateIndex];
+
+      if (template) {
+        let fragments;
+        if (template.group == "templates") {
+          fragments = aeArray.filter((item) => item.group == "fragments");
+        } else {
+          fragments = aeArray.filter((item) => item.group == "nonEmailCartFragments" && item.template == template.id);
+        }
+        fragments = fragments.sort(() => 0.5 - Math.random()).slice(0, Math.floor(Math.random() * (fragments.length + 1))); //random selection of fragments
+
+        let Sent_Email_vod__c_Record = {
+          Opened_vod__c: emailOpened,
+          Email_Sent_Date_vod__c: emailDate.toISOString(),
+          Approved_Email_Template_vod__c: template.crmId,
+          ID: "0000000000000000" + (Sent_Email_vod__c_Counter + 10),
+          Click_Count_vod__c: clickCount ? clickCount : 0,
+          Last_Open_Date_vod__c: openEmailDate ? openEmailDate.toISOString() : "",
+          Last_Activity_Date_vod__c: openEmailDate ? openEmailDate.toISOString() : "",
+          Open_Count_vod__c: openCount ? openCount : 0,
+          Status_vod__c: "Delivered_vod",
+          Email_Fragments_vod__c: fragments.map((item) => item.crmId).join(","),
+        };
+
+        Sent_Email_vod__c.push(Sent_Email_vod__c_Record);
+
+        Sent_Email_vod__c_Counter++;
+      }
+    }
+    Sent_Email_vod__c.forEach((record) => {
+      Object.keys(record).forEach((field) => {
+        if (this.vars.interactionSummary.fields.Sent_Email_vod__c.indexOf(field) < 0) delete record[field];
+      });
+    });
+    
     this.vars.interactionSummary.input.Sent_Email_vod__c = Sent_Email_vod__c;
 
     //Email_Activity_vod__c
     let Email_Activity_vod__c = [];
     let Email_Activity_vod__c_Counter = 0;
 
-    if (considerEmailData) {
-      Sent_Email_vod__c.forEach((sentEmail) => {
-        if (!sentEmail.Opened_vod__c) return;
+    Sent_Email_vod__c.forEach((sentEmail) => {
+      if (!sentEmail.Opened_vod__c) return;
 
-        let activitiesArr = [];
-        for (let i = 0; i < sentEmail.Open_Count_vod__c; i++) {
-          activitiesArr.push("Opened_vod");
+      let activitiesArr = [];
+      for (let i = 0; i < sentEmail.Open_Count_vod__c; i++) {
+        activitiesArr.push("Opened_vod");
+      }
+      for (let i = 0; i < sentEmail.Click_Count_vod__c; i++) {
+        activitiesArr.push("Clicked_vod");
+      }
+
+      activitiesArr.forEach((activityType) => {
+        let vaultDocID;
+        let vaultDocName;
+        let vaultDocNumber;
+        let fragmentId;
+        if (activityType == "Clicked_vod") {
+          if (!sentEmail.Email_Fragments_vod__c) return;
+          let fragmentsArr = sentEmail.Email_Fragments_vod__c.split(",");
+          let fragmentIndex = Math.floor(Math.random() * fragmentsArr.length);
+          let fragment = aeArray.find((item) => item.crmId == fragmentsArr[fragmentIndex]);
+
+          if (!fragment) return;
+
+          vaultDocID = fragment.vaultId;
+          vaultDocName = fragment.id;
+          vaultDocNumber = fragment.crmId;
+          fragmentId = fragment.crmId;
         }
-        for (let i = 0; i < sentEmail.Click_Count_vod__c; i++) {
-          activitiesArr.push("Clicked_vod");
-        }
 
-        activitiesArr.forEach((activityType) => {
-          let vaultDocID;
-          let vaultDocName;
-          let vaultDocNumber;
-          let fragmentId;
-          if (activityType == "Clicked_vod") {
-            if (!sentEmail.Email_Fragments_vod__c) return;
-            let fragmentsArr = sentEmail.Email_Fragments_vod__c.split(",");
-            let fragmentIndex = Math.floor(Math.random() * fragmentsArr.length);
-            let fragment = aeArray.find((item) => item.crmId == fragmentsArr[fragmentIndex]);
+        let Email_Activity_vod__c_Record = {
+          Activity_DateTime_vod__c: sentEmail.Last_Activity_Date_vod__c,
+          Vault_Doc_ID_vod__c: vaultDocID ? vaultDocID : "",
+          Sent_Email_vod__c: sentEmail.ID,
+          Vault_Doc_Name_vod__c: vaultDocName ? vaultDocName : "",
+          Event_type_vod__c: activityType,
+          Vault_Document_Number_vod__c: vaultDocNumber ? vaultDocNumber : "",
+          ID: "0000000000000000" + (Email_Activity_vod__c_Counter + 10),
+          Approved_Document_vod__c: fragmentId ? fragmentId : "",
+        };
 
-            if (!fragment) return;
+        Email_Activity_vod__c.push(Email_Activity_vod__c_Record);
 
-            vaultDocID = fragment.vaultId;
-            vaultDocName = fragment.id;
-            vaultDocNumber = fragment.crmId;
-            fragmentId = fragment.crmId;
-          }
-
-          let Email_Activity_vod__c_Record = {
-            Activity_DateTime_vod__c: sentEmail.Last_Activity_Date_vod__c,
-            Vault_Doc_ID_vod__c: vaultDocID ? vaultDocID : "",
-            Sent_Email_vod__c: sentEmail.ID,
-            Vault_Doc_Name_vod__c: vaultDocName ? vaultDocName : "",
-            Event_type_vod__c: activityType,
-            Vault_Document_Number_vod__c: vaultDocNumber ? vaultDocNumber : "",
-            ID: "0000000000000000" + (Email_Activity_vod__c_Counter + 10),
-            Approved_Document_vod__c: fragmentId ? fragmentId : "",
-          };
-
-          Email_Activity_vod__c.push(Email_Activity_vod__c_Record);
-
-          Email_Activity_vod__c_Counter++;
-        });
+        Email_Activity_vod__c_Counter++;
       });
-      Email_Activity_vod__c.forEach((record) => {
-        Object.keys(record).forEach((field) => {
-          if (this.vars.interactionSummary.fields.Email_Activity_vod__c.indexOf(field) < 0) delete record[field];
-        });
+    });
+    Email_Activity_vod__c.forEach((record) => {
+      Object.keys(record).forEach((field) => {
+        if (this.vars.interactionSummary.fields.Email_Activity_vod__c.indexOf(field) < 0) delete record[field];
       });
-    }
+    });
 
     this.vars.interactionSummary.input.Email_Activity_vod__c = Email_Activity_vod__c;
 
@@ -9002,7 +8998,7 @@ com.idc.ui = {
 
         //status
         let itemStatus = itemElement.querySelector('[data-type="com.idc.ui.emailCart.itemStatus"]');
-        if (itemStatus && vars.emailCart.options.showItemsStatus) {
+        if (itemStatus && vars.emailCart.options.showItemsStatus && item.available) {
           if (item.available || isBrowserMode) {
             if (vars.session.isAnActualCall) {
               if (item.stats.sent > 0) {
