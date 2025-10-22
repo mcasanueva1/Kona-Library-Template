@@ -8985,7 +8985,7 @@ com.idc.ui = {
         });
         if (!item) return;
 
-        //available; checked
+        //available (only in the iPad); checked
         if (item.available || isBrowserMode) {
           if (selectedItems.includes(itemId)) {
             itemElement.setAttribute("data-status", "checked");
