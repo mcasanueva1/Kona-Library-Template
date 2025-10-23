@@ -1,6 +1,7 @@
 "use strict";
 
-const BUILD_ID = "com.idc.clm";
+const BUILD_ID = "kona library __20251023-120957-d592bc9__";
+console.log(BUILD_ID);
 
 if (com == null) var com = {};
 if (com.idc == undefined) com.idc = {};
