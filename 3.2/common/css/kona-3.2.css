@@ -122,7 +122,7 @@ body[data-enable-btn-feedback="true"] [data-btn-response="true"]:active {
 #emailCartModal [data-type="com.idc.ui.emailCart.items"] [data-type="com.idc.ui.emailCart.item"] {
     position: relative;
     float: left;
-    top: 0;
+    top: 40px;
     left: 4px;
     margin: 22px 11px 5px 0;
 }
