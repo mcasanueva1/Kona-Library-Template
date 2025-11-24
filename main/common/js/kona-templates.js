@@ -1153,7 +1153,7 @@ com.idc.templates = {
                                 "data-sub-type": "com.idc.ui.core.tab.button",
                               },
                               {
-                                "data-instance": "persistentData",
+                                "data-instance": "sessionData",
                               },
                             ],
                             "childNodes": [
@@ -1172,7 +1172,7 @@ com.idc.templates = {
                                 "childNodes": [
                                   {
                                     "type": "#text",
-                                    "text": "Persistent data",
+                                    "text": "Session data",
                                   },
                                 ],
                               },
@@ -1249,7 +1249,7 @@ com.idc.templates = {
                                 "data-type": "com.idc.ui.core.tab.content",
                               },
                               {
-                                "data-instance": "persistentData",
+                                "data-instance": "sessionData",
                               },
                             ],
                             "childNodes": [
@@ -1593,3551 +1593,3892 @@ com.idc.templates = {
   },
   "interactionSummary": {
     "modalContent": [{
-      "type": "DIV",
-      "attributes": [
-          {
-              "data-type": "com.idc.ui.core.modal.contentArea"
-          }
-      ],
-      "childNodes": [
-          {
-              "type": "DIV",
-              "attributes": [
-                  {
-                      "data-type": "com.idc.ui.core.tab.cover"
-                  },
-                  {
-                      "data-target-id": "interactionSummaryTab"
-                  },
-                  {
-                      "data-ui-id": "precallCover"
-                  },
-                  {
-                      "data-view-state": "active"
-                  }
-              ],
-              "childNodes": [
-                  {
-                      "type": "DIV",
-                      "attributes": [
-                          {
-                              "class": "background"
-                          }
-                      ],
-                      "childNodes": [
-                          {
-                              "type": "DIV",
-                              "attributes": [
-                                  {
-                                      "class": "text"
-                                  }
-                              ],
-                              "childNodes": [
-                                  {
-                                      "type": "SPAN",
-                                      "attributes": [
-                                          {
-                                              "data-label": "interactionSummary_title1"
-                                          }
-                                      ]
-                                  },
-                                  {
-                                      "type": "BR",
-                                      "attributes": []
-                                  },
-                                  {
-                                      "type": "SPAN",
-                                      "attributes": [
-                                          {
-                                              "data-ui-id": "hcpName"
-                                          },
-                                          {
-                                              "class": "doctorName"
-                                          }
-                                      ]
-                                  },
-                                  {
-                                      "type": "SPAN",
-                                      "attributes": [
-                                          {
-                                              "data-label": "interactionSummary_title2"
-                                          }
-                                      ]
-                                  }
-                              ]
-                          }
-                      ]
-                  },
-                  {
-                      "type": "DIV",
-                      "attributes": [
-                          {
-                              "data-type": "com.idc.ui.core.tab.buttons"
-                          }
-                      ],
-                      "childNodes": [
-                          {
-                              "type": "DIV",
-                              "attributes": [
-                                  {
-                                      "data-type": "com.idc.ui.core.button"
-                                  },
-                                  {
-                                      "data-sub-type": "com.idc.ui.core.tab.button"
-                                  },
-                                  {
-                                      "data-label": "tabBtn_previousInteractions"
-                                  },
-                                  {
-                                      "data-instance": "previousInteractions"
-                                  }
-                              ],
-                              "childNodes": [
-                                  {
-                                      "type": "#text",
-                                      "text": "Previous interactions"
-                                  }
-                              ]
-                          },
-                          {
-                              "type": "DIV",
-                              "attributes": [
-                                  {
-                                      "data-type": "com.idc.ui.core.button"
-                                  },
-                                  {
-                                      "data-sub-type": "com.idc.ui.core.tab.button"
-                                  },
-                                  {
-                                      "data-label": "tabBtn_slides"
-                                  },
-                                  {
-                                      "data-instance": "slides"
-                                  }
-                              ],
-                              "childNodes": [
-                                  {
-                                      "type": "#text",
-                                      "text": "Slides"
-                                  }
-                              ]
-                          },
-                          {
-                              "type": "DIV",
-                              "attributes": [
-                                  {
-                                      "data-type": "com.idc.ui.core.button"
-                                  },
-                                  {
-                                      "data-sub-type": "com.idc.ui.core.tab.button"
-                                  },
-                                  {
-                                      "data-label": "tabBtn_emails"
-                                  },
-                                  {
-                                      "data-instance": "emails"
-                                  }
-                              ],
-                              "childNodes": [
-                                  {
-                                      "type": "#text",
-                                      "text": "Emails"
-                                  }
-                              ]
-                          }
-                      ]
-                  }
-              ]
-          },
-          {
-              "type": "DIV",
-              "attributes": [
-                  {
-                      "data-type": "com.idc.ui.backModal"
-                  },
-                  {
-                      "data-back-modal-for": "interactionSummaryTab"
-                  }
-              ]
-          },
-          {
-              "type": "DIV",
-              "attributes": [
-                  {
-                      "data-type": "com.idc.ui.core.tab"
-                  },
-                  {
-                      "id": "interactionSummaryTab"
-                  },
-                  {
-                      "data-ui-id": "interactionSummaryTab"
-                  },
-                  {
-                      "data-view-state": "hidden"
-                  }
-              ],
-              "childNodes": [
-                  {
-                      "type": "DIV",
-                      "attributes": [
-                          {
-                              "data-type": "com.idc.ui.core.tab.container"
-                          }
-                      ],
-                      "childNodes": [
-                          {
-                              "type": "DIV",
-                              "attributes": [
-                                  {
-                                      "class": "background"
-                                  }
-                              ],
-                              "childNodes": [
-                                  {
-                                      "type": "DIV",
-                                      "attributes": [
-                                          {
-                                              "class": "text"
-                                          }
-                                      ],
-                                      "childNodes": [
-                                          {
-                                              "type": "SPAN",
-                                              "attributes": [
-                                                  {
-                                                      "data-label": "interactionSummary_title1"
-                                                  }
-                                              ]
-                                          },
-                                          {
-                                              "type": "SPAN",
-                                              "attributes": [
-                                                  {
-                                                      "data-ui-id": "hcpName"
-                                                  },
-                                                  {
-                                                      "class": "doctorName"
-                                                  }
-                                              ]
-                                          },
-                                          {
-                                              "type": "SPAN",
-                                              "attributes": [
-                                                  {
-                                                      "data-label": "interactionSummary_title2"
-                                                  }
-                                              ]
-                                          }
-                                      ]
-                                  }
-                              ]
-                          },
-                          {
-                              "type": "DIV",
-                              "attributes": [
-                                  {
-                                      "data-type": "com.idc.ui.core.tab.buttons"
-                                  }
-                              ],
-                              "childNodes": [
-                                  {
-                                      "type": "DIV",
-                                      "attributes": [
-                                          {
-                                              "data-type": "com.idc.ui.core.button"
-                                          },
-                                          {
-                                              "data-sub-type": "com.idc.ui.core.tab.button"
-                                          },
-                                          {
-                                              "data-label": "tabBtn_previousInteractions"
-                                          },
-                                          {
-                                              "data-instance": "previousInteractions"
-                                          }
-                                      ]
-                                  },
-                                  {
-                                      "type": "DIV",
-                                      "attributes": [
-                                          {
-                                              "data-type": "com.idc.ui.core.button"
-                                          },
-                                          {
-                                              "data-sub-type": "com.idc.ui.core.tab.button"
-                                          },
-                                          {
-                                              "data-label": "tabBtn_slides"
-                                          },
-                                          {
-                                              "data-instance": "slides"
-                                          }
-                                      ]
-                                  },
-                                  {
-                                      "type": "DIV",
-                                      "attributes": [
-                                          {
-                                              "data-type": "com.idc.ui.core.button"
-                                          },
-                                          {
-                                              "data-sub-type": "com.idc.ui.core.tab.button"
-                                          },
-                                          {
-                                              "data-label": "tabBtn_emails"
-                                          },
-                                          {
-                                              "data-instance": "emails"
-                                          }
-                                      ]
-                                  }
-                              ]
-                          },
-                          {
-                              "type": "DIV",
-                              "attributes": [
-                                  {
-                                      "data-type": "com.idc.ui.core.tab.contents"
-                                  }
-                              ],
-                              "childNodes": [
-                                  {
-                                      "type": "DIV",
-                                      "attributes": [
-                                          {
-                                              "data-type": "com.idc.ui.core.tab.content"
-                                          },
-                                          {
-                                              "data-instance": "previousInteractions"
-                                          }
-                                      ],
-                                      "childNodes": [
-                                          {
-                                              "type": "DIV",
-                                              "attributes": [
-                                                  {
-                                                      "data-ui-id": "previousInteractions"
-                                                  }
-                                              ],
-                                              "childNodes": [
-                                                  {
-                                                      "type": "DIV",
-                                                      "attributes": [
-                                                          {
-                                                              "data-ui-id": "previousInteractions_options"
-                                                          }
-                                                      ],
-                                                      "childNodes": [
-                                                          {
-                                                              "type": "DIV",
-                                                              "attributes": [
-                                                                  {
-                                                                      "data-ui-id": "filters_wrapper"
-                                                                  }
-                                                              ],
-                                                              "childNodes": [
-                                                                  {
-                                                                      "type": "DIV",
-                                                                      "attributes": [
-                                                                          {
-                                                                              "data-ui-type": "filter"
-                                                                          },
-                                                                          {
-                                                                              "data-view": "all"
-                                                                          },
-                                                                          {
-                                                                              "data-view-state": "active"
-                                                                          },
-                                                                          {
-                                                                              "data-label": "prevInt_filter_all"
-                                                                          }
-                                                                      ]
-                                                                  },
-                                                                  {
-                                                                      "type": "DIV",
-                                                                      "attributes": [
-                                                                          {
-                                                                              "data-ui-type": "filter"
-                                                                          },
-                                                                          {
-                                                                              "data-view": "approvedEmail"
-                                                                          },
-                                                                          {
-                                                                              "data-view-state": "!active"
-                                                                          },
-                                                                          {
-                                                                              "data-label": "prevInt_filter_approvedEmail"
-                                                                          }
-                                                                      ]
-                                                                  },
-                                                                  {
-                                                                      "type": "DIV",
-                                                                      "attributes": [
-                                                                          {
-                                                                              "data-ui-type": "filter"
-                                                                          },
-                                                                          {
-                                                                              "data-view": "inPerson"
-                                                                          },
-                                                                          {
-                                                                              "data-view-state": "!active"
-                                                                          },
-                                                                          {
-                                                                              "data-label": "prevInt_filter_inPerson"
-                                                                          }
-                                                                      ]
-                                                                  },
-                                                                  {
-                                                                      "type": "DIV",
-                                                                      "attributes": [
-                                                                          {
-                                                                              "data-ui-type": "filter"
-                                                                          },
-                                                                          {
-                                                                              "data-view": "videoCall"
-                                                                          },
-                                                                          {
-                                                                              "data-view-state": "!active"
-                                                                          },
-                                                                          {
-                                                                              "data-label": "prevInt_filter_video"
-                                                                          }
-                                                                      ]
-                                                                  }
-                                                              ]
-                                                          }
-                                                      ]
-                                                  },
-                                                  {
-                                                      "type": "DIV",
-                                                      "attributes": [
-                                                          {
-                                                              "data-ui-id": "scroll"
-                                                          }
-                                                      ],
-                                                      "childNodes": [
-                                                          {
-                                                              "type": "TABLE",
-                                                              "attributes": [
-                                                                  {
-                                                                      "data-ui-id": "previousInteractionsTable"
-                                                                  }
-                                                              ],
-                                                              "childNodes": [
-                                                                  {
-                                                                      "type": "TBODY",
-                                                                      "attributes": [],
-                                                                      "childNodes": [
-                                                                          {
-                                                                              "type": "TR",
-                                                                              "attributes": [
-                                                                                  {
-                                                                                      "data-ui-type": "table-row-template"
-                                                                                  },
-                                                                                  {
-                                                                                      "data-ui-subtype": "approvedEmail"
-                                                                                  },
-                                                                                  {
-                                                                                      "data-view-state": "!active"
-                                                                                  }
-                                                                              ],
-                                                                              "childNodes": [
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-row-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "more"
-                                                                                          },
-                                                                                          {
-                                                                                              "class": "more"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-row-cell-action"
-                                                                                                  }
-                                                                                              ],
-                                                                                              "childNodes": [
-                                                                                                  {
-                                                                                                      "type": "IMG",
-                                                                                                      "attributes": [
-                                                                                                          {
-                                                                                                              "src": "../common/img/precall/iconMore.png"
-                                                                                                          },
-                                                                                                          {
-                                                                                                              "alt": "more"
-                                                                                                          },
-                                                                                                          {
-                                                                                                              "class": "iconMore"
-                                                                                                          }
-                                                                                                      ]
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-row-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "date"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-row-cell-value"
-                                                                                                  },
-                                                                                                  {
-                                                                                                      "data-ui-subtype": "day"
-                                                                                                  }
-                                                                                              ],
-                                                                                              "childNodes": [
-                                                                                                  {
-                                                                                                      "type": "#text",
-                                                                                                      "text": "__day__"
-                                                                                                  }
-                                                                                              ]
-                                                                                          },
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-row-cell-value"
-                                                                                                  },
-                                                                                                  {
-                                                                                                      "data-ui-subtype": "time"
-                                                                                                  }
-                                                                                              ],
-                                                                                              "childNodes": [
-                                                                                                  {
-                                                                                                      "type": "#text",
-                                                                                                      "text": "__time__"
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-row-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "interactionType"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-row-cell-value"
-                                                                                                  },
-                                                                                                  {
-                                                                                                      "data-label": "prevInt_value_approvedEmail"
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-row-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "contentName"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-row-cell-value"
-                                                                                                  }
-                                                                                              ],
-                                                                                              "childNodes": [
-                                                                                                  {
-                                                                                                      "type": "#text",
-                                                                                                      "text": "__template__"
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-row-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "status"
-                                                                                          },
-                                                                                          {
-                                                                                              "colspan": "2"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-row-cell-value"
-                                                                                                  },
-                                                                                                  {
-                                                                                                      "data-ui-subtype": "valueOpened"
-                                                                                                  },
-                                                                                                  {
-                                                                                                      "data-label": "prevInt_value_opened"
-                                                                                                  }
-                                                                                              ]
-                                                                                          },
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-row-cell-value"
-                                                                                                  },
-                                                                                                  {
-                                                                                                      "data-ui-subtype": "valueNotOpened"
-                                                                                                  },
-                                                                                                  {
-                                                                                                      "data-label": "prevInt_value_notOpened"
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  }
-                                                                              ]
-                                                                          },
-                                                                          {
-                                                                              "type": "TR",
-                                                                              "attributes": [
-                                                                                  {
-                                                                                      "data-ui-type": "table-subrow-template"
-                                                                                  },
-                                                                                  {
-                                                                                      "data-ui-subtype": "approvedEmail"
-                                                                                  },
-                                                                                  {
-                                                                                      "class": "header"
-                                                                                  },
-                                                                                  {
-                                                                                      "data-view-state": "!active"
-                                                                                  }
-                                                                              ],
-                                                                              "childNodes": [
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-subrow-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "more"
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-subrow-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "name"
-                                                                                          },
-                                                                                          {
-                                                                                              "colspan": "2"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-subrow-cell-value"
-                                                                                                  },
-                                                                                                  {
-                                                                                                      "data-label": "prevInt_label_fragmentName"
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-subrow-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "linksTo"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-subrow-cell-value"
-                                                                                                  },
-                                                                                                  {
-                                                                                                      "data-label": "prevInt_label_linksTo"
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-subrow-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "timesClicked"
-                                                                                          },
-                                                                                          {
-                                                                                              "colspan": "2"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-subrow-cell-value"
-                                                                                                  },
-                                                                                                  {
-                                                                                                      "data-label": "prevInt_label_timesClicked"
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  }
-                                                                              ]
-                                                                          },
-                                                                          {
-                                                                              "type": "TR",
-                                                                              "attributes": [
-                                                                                  {
-                                                                                      "data-ui-type": "table-subrow-template"
-                                                                                  },
-                                                                                  {
-                                                                                      "data-ui-subtype": "approvedEmail"
-                                                                                  },
-                                                                                  {
-                                                                                      "data-view-state": "!active"
-                                                                                  },
-                                                                                  {
-                                                                                      "class": "!last"
-                                                                                  }
-                                                                              ],
-                                                                              "childNodes": [
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-subrow-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "more"
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-subrow-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "name"
-                                                                                          },
-                                                                                          {
-                                                                                              "colspan": "2"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-subrow-cell-value"
-                                                                                                  }
-                                                                                              ],
-                                                                                              "childNodes": [
-                                                                                                  {
-                                                                                                      "type": "#text",
-                                                                                                      "text": "__fragment__"
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-subrow-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "linksTo"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-subrow-cell-value"
-                                                                                                  }
-                                                                                              ],
-                                                                                              "childNodes": [
-                                                                                                  {
-                                                                                                      "type": "#text",
-                                                                                                      "text": "__piecelink__"
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-subrow-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "timesClicked"
-                                                                                          },
-                                                                                          {
-                                                                                              "colspan": "2"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-subrow-cell-value"
-                                                                                                  }
-                                                                                              ],
-                                                                                              "childNodes": [
-                                                                                                  {
-                                                                                                      "type": "#text",
-                                                                                                      "text": "__clicks__"
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  }
-                                                                              ]
-                                                                          },
-                                                                          {
-                                                                              "type": "TR",
-                                                                              "attributes": [
-                                                                                  {
-                                                                                      "data-ui-type": "table-row-template"
-                                                                                  },
-                                                                                  {
-                                                                                      "data-ui-subtype": "inPerson"
-                                                                                  },
-                                                                                  {
-                                                                                      "data-view-state": "!active"
-                                                                                  }
-                                                                              ],
-                                                                              "childNodes": [
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-row-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "more"
-                                                                                          },
-                                                                                          {
-                                                                                              "class": "more"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-row-cell-action"
-                                                                                                  }
-                                                                                              ],
-                                                                                              "childNodes": [
-                                                                                                  {
-                                                                                                      "type": "IMG",
-                                                                                                      "attributes": [
-                                                                                                          {
-                                                                                                              "src": "../common/img/precall/iconMore.png"
-                                                                                                          },
-                                                                                                          {
-                                                                                                              "alt": "more"
-                                                                                                          },
-                                                                                                          {
-                                                                                                              "class": "iconMore"
-                                                                                                          }
-                                                                                                      ]
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-row-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "date"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-row-cell-value"
-                                                                                                  },
-                                                                                                  {
-                                                                                                      "data-ui-subtype": "day"
-                                                                                                  }
-                                                                                              ],
-                                                                                              "childNodes": [
-                                                                                                  {
-                                                                                                      "type": "#text",
-                                                                                                      "text": "__day__"
-                                                                                                  }
-                                                                                              ]
-                                                                                          },
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-row-cell-value"
-                                                                                                  },
-                                                                                                  {
-                                                                                                      "data-ui-subtype": "time"
-                                                                                                  }
-                                                                                              ],
-                                                                                              "childNodes": [
-                                                                                                  {
-                                                                                                      "type": "#text",
-                                                                                                      "text": "__time__"
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-row-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "interactionType"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-row-cell-value"
-                                                                                                  },
-                                                                                                  {
-                                                                                                      "data-ui-subtype": "valueInPerson"
-                                                                                                  },
-                                                                                                  {
-                                                                                                      "data-label": "prevInt_value_inPerson"
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-row-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "contentName"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-row-cell-value"
-                                                                                                  },
-                                                                                                  {
-                                                                                                      "data-label": "prevInt_value_IVA"
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-row-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "status"
-                                                                                          },
-                                                                                          {
-                                                                                              "colspan": "2"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-row-cell-value"
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  }
-                                                                              ]
-                                                                          },
-                                                                          {
-                                                                              "type": "TR",
-                                                                              "attributes": [
-                                                                                  {
-                                                                                      "data-ui-type": "table-subrow-template"
-                                                                                  },
-                                                                                  {
-                                                                                      "data-ui-subtype": "inPerson"
-                                                                                  },
-                                                                                  {
-                                                                                      "data-view-state": "!active"
-                                                                                  },
-                                                                                  {
-                                                                                      "class": "header"
-                                                                                  }
-                                                                              ],
-                                                                              "childNodes": [
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-subrow-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "more"
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-subrow-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "order"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-subrow-cell-value"
-                                                                                                  },
-                                                                                                  {
-                                                                                                      "data-label": "prevInt_label_displayOrder"
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-subrow-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "name"
-                                                                                          },
-                                                                                          {
-                                                                                              "colspan": "2"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-subrow-cell-value"
-                                                                                                  },
-                                                                                                  {
-                                                                                                      "data-label": "prevInt_label_slideDescription"
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-subrow-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "reaction"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-subrow-cell-value"
-                                                                                                  },
-                                                                                                  {
-                                                                                                      "data-label": "prevInt_label_reaction"
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-subrow-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "duration"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-subrow-cell-value"
-                                                                                                  },
-                                                                                                  {
-                                                                                                      "data-label": "prevInt_label_duration"
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  }
-                                                                              ]
-                                                                          },
-                                                                          {
-                                                                              "type": "TR",
-                                                                              "attributes": [
-                                                                                  {
-                                                                                      "data-ui-type": "table-subrow-template"
-                                                                                  },
-                                                                                  {
-                                                                                      "data-ui-subtype": "inPerson"
-                                                                                  },
-                                                                                  {
-                                                                                      "data-view-state": "!active"
-                                                                                  },
-                                                                                  {
-                                                                                      "class": "!last"
-                                                                                  }
-                                                                              ],
-                                                                              "childNodes": [
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-subrow-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "more"
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-subrow-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "order"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-subrow-cell-value"
-                                                                                                  }
-                                                                                              ],
-                                                                                              "childNodes": [
-                                                                                                  {
-                                                                                                      "type": "IMG",
-                                                                                                      "attributes": [
-                                                                                                          {
-                                                                                                              "src": ""
-                                                                                                          },
-                                                                                                          {
-                                                                                                              "alt": ""
-                                                                                                          },
-                                                                                                          {
-                                                                                                              "class": "slide"
-                                                                                                          }
-                                                                                                      ]
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-subrow-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "name"
-                                                                                          },
-                                                                                          {
-                                                                                              "colspan": "2"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-subrow-cell-value"
-                                                                                                  }
-                                                                                              ],
-                                                                                              "childNodes": [
-                                                                                                  {
-                                                                                                      "type": "#text",
-                                                                                                      "text": "__slidedescription__"
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-subrow-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "reaction"
-                                                                                          },
-                                                                                          {
-                                                                                              "class": "reaction !positive !neutral !negative"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-subrow-cell-value"
-                                                                                                  },
-                                                                                                  {
-                                                                                                      "class": "icon"
-                                                                                                  }
-                                                                                              ]
-                                                                                          },
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-subrow-cell-value"
-                                                                                                  },
-                                                                                                  {
-                                                                                                      "class": "text"
-                                                                                                  }
-                                                                                              ],
-                                                                                              "childNodes": [
-                                                                                                  {
-                                                                                                      "type": "#text",
-                                                                                                      "text": "__reaction__"
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-subrow-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "duration"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-subrow-cell-value"
-                                                                                                  }
-                                                                                              ],
-                                                                                              "childNodes": [
-                                                                                                  {
-                                                                                                      "type": "#text",
-                                                                                                      "text": "__duration__"
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  }
-                                                                              ]
-                                                                          },
-                                                                          {
-                                                                              "type": "TR",
-                                                                              "attributes": [
-                                                                                  {
-                                                                                      "data-ui-type": "table-row-template"
-                                                                                  },
-                                                                                  {
-                                                                                      "data-ui-subtype": "videoCall"
-                                                                                  },
-                                                                                  {
-                                                                                      "data-view-state": "!active"
-                                                                                  }
-                                                                              ],
-                                                                              "childNodes": [
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-row-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "more"
-                                                                                          },
-                                                                                          {
-                                                                                              "class": "more"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-row-cell-action"
-                                                                                                  }
-                                                                                              ],
-                                                                                              "childNodes": [
-                                                                                                  {
-                                                                                                      "type": "IMG",
-                                                                                                      "attributes": [
-                                                                                                          {
-                                                                                                              "src": "../common/img/precall/iconMore.png"
-                                                                                                          },
-                                                                                                          {
-                                                                                                              "alt": "more"
-                                                                                                          },
-                                                                                                          {
-                                                                                                              "class": "iconMore"
-                                                                                                          }
-                                                                                                      ]
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-row-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "date"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-row-cell-value"
-                                                                                                  },
-                                                                                                  {
-                                                                                                      "data-ui-subtype": "day"
-                                                                                                  }
-                                                                                              ],
-                                                                                              "childNodes": [
-                                                                                                  {
-                                                                                                      "type": "#text",
-                                                                                                      "text": "__day__"
-                                                                                                  }
-                                                                                              ]
-                                                                                          },
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-row-cell-value"
-                                                                                                  },
-                                                                                                  {
-                                                                                                      "data-ui-subtype": "time"
-                                                                                                  }
-                                                                                              ],
-                                                                                              "childNodes": [
-                                                                                                  {
-                                                                                                      "type": "#text",
-                                                                                                      "text": "__time__"
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-row-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "interactionType"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-row-cell-value"
-                                                                                                  },
-                                                                                                  {
-                                                                                                      "data-ui-subtype": "valueVideo"
-                                                                                                  },
-                                                                                                  {
-                                                                                                      "data-label": "prevInt_value_video"
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-row-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "contentName"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-row-cell-value"
-                                                                                                  },
-                                                                                                  {
-                                                                                                      "data-label": "prevInt_value_IVA"
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-row-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "status"
-                                                                                          },
-                                                                                          {
-                                                                                              "colspan": "2"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-row-cell-value"
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  }
-                                                                              ]
-                                                                          },
-                                                                          {
-                                                                              "type": "TR",
-                                                                              "attributes": [
-                                                                                  {
-                                                                                      "data-ui-type": "table-subrow-template"
-                                                                                  },
-                                                                                  {
-                                                                                      "data-ui-subtype": "videoCall"
-                                                                                  },
-                                                                                  {
-                                                                                      "data-view-state": "!active"
-                                                                                  },
-                                                                                  {
-                                                                                      "class": "header"
-                                                                                  }
-                                                                              ],
-                                                                              "childNodes": [
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-subrow-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "more"
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-subrow-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "order"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-subrow-cell-value"
-                                                                                                  },
-                                                                                                  {
-                                                                                                      "data-label": "prevInt_label_displayOrder"
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-subrow-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "name"
-                                                                                          },
-                                                                                          {
-                                                                                              "colspan": "2"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-subrow-cell-value"
-                                                                                                  },
-                                                                                                  {
-                                                                                                      "data-label": "prevInt_label_slideDescription"
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-subrow-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "reaction"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-subrow-cell-value"
-                                                                                                  },
-                                                                                                  {
-                                                                                                      "data-label": "prevInt_label_reaction"
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-subrow-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "duration"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-subrow-cell-value"
-                                                                                                  },
-                                                                                                  {
-                                                                                                      "data-label": "prevInt_label_duration"
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  }
-                                                                              ]
-                                                                          },
-                                                                          {
-                                                                              "type": "TR",
-                                                                              "attributes": [
-                                                                                  {
-                                                                                      "data-ui-type": "table-subrow-template"
-                                                                                  },
-                                                                                  {
-                                                                                      "data-ui-subtype": "videoCall"
-                                                                                  },
-                                                                                  {
-                                                                                      "data-view-state": "!active"
-                                                                                  },
-                                                                                  {
-                                                                                      "class": "!last"
-                                                                                  }
-                                                                              ],
-                                                                              "childNodes": [
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-subrow-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "more"
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-subrow-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "order"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-subrow-cell-value"
-                                                                                                  }
-                                                                                              ],
-                                                                                              "childNodes": [
-                                                                                                  {
-                                                                                                      "type": "IMG",
-                                                                                                      "attributes": [
-                                                                                                          {
-                                                                                                              "src": ""
-                                                                                                          },
-                                                                                                          {
-                                                                                                              "alt": ""
-                                                                                                          },
-                                                                                                          {
-                                                                                                              "class": "slide"
-                                                                                                          }
-                                                                                                      ]
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-subrow-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "name"
-                                                                                          },
-                                                                                          {
-                                                                                              "colspan": "2"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-subrow-cell-value"
-                                                                                                  }
-                                                                                              ],
-                                                                                              "childNodes": [
-                                                                                                  {
-                                                                                                      "type": "#text",
-                                                                                                      "text": "__slidedescription__"
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-subrow-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "reaction"
-                                                                                          },
-                                                                                          {
-                                                                                              "class": "reaction !positive !neutral !negative"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-subrow-cell-value"
-                                                                                                  },
-                                                                                                  {
-                                                                                                      "class": "icon"
-                                                                                                  }
-                                                                                              ]
-                                                                                          },
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-subrow-cell-value"
-                                                                                                  },
-                                                                                                  {
-                                                                                                      "class": "text"
-                                                                                                  }
-                                                                                              ],
-                                                                                              "childNodes": [
-                                                                                                  {
-                                                                                                      "type": "#text",
-                                                                                                      "text": "__reaction__"
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-subrow-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "duration"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-subrow-cell-value"
-                                                                                                  }
-                                                                                              ],
-                                                                                              "childNodes": [
-                                                                                                  {
-                                                                                                      "type": "#text",
-                                                                                                      "text": "__duration__"
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  }
-                                                                              ]
-                                                                          },
-                                                                          {
-                                                                              "type": "TR",
-                                                                              "attributes": [
-                                                                                  {
-                                                                                      "data-ui-type": "table-row-template"
-                                                                                  },
-                                                                                  {
-                                                                                      "data-ui-subtype": "blank"
-                                                                                  },
-                                                                                  {
-                                                                                      "data-view-state": "!active"
-                                                                                  }
-                                                                              ],
-                                                                              "childNodes": [
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-row-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "more"
-                                                                                          },
-                                                                                          {
-                                                                                              "class": "more"
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-row-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "date"
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-row-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "interactionType"
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-row-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "contentName"
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-row-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "status"
-                                                                                          },
-                                                                                          {
-                                                                                              "colspan": "2"
-                                                                                          }
-                                                                                      ]
-                                                                                  }
-                                                                              ]
-                                                                          }
-                                                                      ]
-                                                                  }
-                                                              ]
-                                                          }
-                                                      ]
-                                                  }
-                                              ]
-                                          }
-                                      ]
-                                  },
-                                  {
-                                      "type": "DIV",
-                                      "attributes": [
-                                          {
-                                              "data-type": "com.idc.ui.core.tab.content"
-                                          },
-                                          {
-                                              "data-instance": "slides"
-                                          }
-                                      ],
-                                      "childNodes": [
-                                          {
-                                              "type": "DIV",
-                                              "attributes": [
-                                                  {
-                                                      "data-ui-id": "slides"
-                                                  }
-                                              ],
-                                              "childNodes": [
-                                                  {
-                                                      "type": "DIV",
-                                                      "attributes": [
-                                                          {
-                                                              "data-ui-id": "slides_options"
-                                                          }
-                                                      ],
-                                                      "childNodes": [
-                                                          {
-                                                              "type": "DIV",
-                                                              "attributes": [
-                                                                  {
-                                                                      "data-ui-id": "filters_wrapper"
-                                                                  }
-                                                              ],
-                                                              "childNodes": [
-                                                                  {
-                                                                      "type": "DIV",
-                                                                      "attributes": [
-                                                                          {
-                                                                              "data-ui-type": "filter"
-                                                                          },
-                                                                          {
-                                                                              "data-view": "all"
-                                                                          },
-                                                                          {
-                                                                              "data-view-state": "active"
-                                                                          },
-                                                                          {
-                                                                              "data-label": "slides_filter_all"
-                                                                          }
-                                                                      ]
-                                                                  },
-                                                                  {
-                                                                      "type": "DIV",
-                                                                      "attributes": [
-                                                                          {
-                                                                              "data-ui-type": "filter"
-                                                                          },
-                                                                          {
-                                                                              "data-view": "discussed"
-                                                                          },
-                                                                          {
-                                                                              "data-view-state": "!active"
-                                                                          },
-                                                                          {
-                                                                              "data-label": "slides_filter_discussed"
-                                                                          }
-                                                                      ]
-                                                                  },
-                                                                  {
-                                                                      "type": "DIV",
-                                                                      "attributes": [
-                                                                          {
-                                                                              "data-ui-type": "filter"
-                                                                          },
-                                                                          {
-                                                                              "data-view": "notDiscussed"
-                                                                          },
-                                                                          {
-                                                                              "data-view-state": "!active"
-                                                                          },
-                                                                          {
-                                                                              "data-label": "slides_filter_notDiscussed"
-                                                                          }
-                                                                      ]
-                                                                  },
-                                                                  {
-                                                                      "type": "DIV",
-                                                                      "attributes": [
-                                                                          {
-                                                                              "data-ui-type": "filter"
-                                                                          },
-                                                                          {
-                                                                              "data-view": "recommended"
-                                                                          },
-                                                                          {
-                                                                              "data-view-state": "hidden"
-                                                                          },
-                                                                          {
-                                                                              "data-label": "slides_filter_recommended"
-                                                                          }
-                                                                      ]
-                                                                  }
-                                                              ]
-                                                          },
-                                                          {
-                                                              "type": "DIV",
-                                                              "attributes": [
-                                                                  {
-                                                                      "data-ui-id": "sort_wrapper"
-                                                                  }
-                                                              ],
-                                                              "childNodes": [
-                                                                  {
-                                                                      "type": "DIV",
-                                                                      "attributes": [
-                                                                          {
-                                                                              "data-type": "com.idc.ui.core.button"
-                                                                          },
-                                                                          {
-                                                                              "data-sub-type": "com.idc.ui.core.modal.dualButton"
-                                                                          },
-                                                                          {
-                                                                              "data-target-id": "interactionSummary_slidesSort"
-                                                                          },
-                                                                          {
-                                                                              "id": "interactionSummary_slidesSort_open"
-                                                                          },
-                                                                          {
-                                                                              "data-ui-id": "slides_sort_modal_open"
-                                                                          },
-                                                                          {
-                                                                              "data-view-state": "disabled"
-                                                                          }
-                                                                      ],
-                                                                      "childNodes": [
-                                                                          {
-                                                                              "type": "SPAN",
-                                                                              "attributes": [
-                                                                                  {
-                                                                                      "data-sort": "default"
-                                                                                  },
-                                                                                  {
-                                                                                      "data-view-state": "active"
-                                                                                  },
-                                                                                  {
-                                                                                      "data-label": "slides_sort_default"
-                                                                                  }
-                                                                              ]
-                                                                          },
-                                                                          {
-                                                                              "type": "SPAN",
-                                                                              "attributes": [
-                                                                                  {
-                                                                                      "data-sort": "mostRecentlyDiscussed"
-                                                                                  },
-                                                                                  {
-                                                                                      "data-view-state": "!active"
-                                                                                  },
-                                                                                  {
-                                                                                      "data-label": "slides_sort_mostRecentlyDiscussed"
-                                                                                  }
-                                                                              ]
-                                                                          },
-                                                                          {
-                                                                              "type": "SPAN",
-                                                                              "attributes": [
-                                                                                  {
-                                                                                      "data-sort": "moreTimeSpentOn"
-                                                                                  },
-                                                                                  {
-                                                                                      "data-view-state": "!active"
-                                                                                  },
-                                                                                  {
-                                                                                      "data-label": "slides_sort_moreTimeSpentOn"
-                                                                                  }
-                                                                              ]
-                                                                          }
-                                                                      ]
-                                                                  }
-                                                              ]
-                                                          },
-                                                          {
-                                                              "type": "DIV",
-                                                              "attributes": [
-                                                                  {
-                                                                      "data-ui-id": "launchNextBestContent"
-                                                                  },
-                                                                  {
-                                                                      "data-view-state": "hidden"
-                                                                  },
-                                                                  {
-                                                                      "data-label": "slides_launch_nextBestContent"
-                                                                  }
-                                                              ]
-                                                          }
-                                                      ]
-                                                  },
-                                                  {
-                                                      "type": "DIV",
-                                                      "attributes": [
-                                                          {
-                                                              "data-type": "com.idc.ui.backModal"
-                                                          },
-                                                          {
-                                                              "back-modal-for": "interactionSummary_slidesSort"
-                                                          },
-                                                          {
-                                                              "class": "transparentBackground"
-                                                          }
-                                                      ]
-                                                  },
-                                                  {
-                                                      "type": "DIV",
-                                                      "attributes": [
-                                                          {
-                                                              "data-type": "com.idc.ui.core.modal.modalObject"
-                                                          },
-                                                          {
-                                                              "data-options": "backModalStyle=transparentBackground"
-                                                          },
-                                                          {
-                                                              "id": "interactionSummary_slidesSort"
-                                                          },
-                                                          {
-                                                              "data-ui-id": "slides_sort_modal"
-                                                          }
-                                                      ],
-                                                      "childNodes": [
-                                                          {
-                                                              "type": "DIV",
-                                                              "attributes": [
-                                                                  {
-                                                                      "data-type": "com.idc.ui.core.modal.contentArea"
-                                                                  }
-                                                              ],
-                                                              "childNodes": [
-                                                                  {
-                                                                      "type": "DIV",
-                                                                      "attributes": [
-                                                                          {
-                                                                              "data-type": "sortOption"
-                                                                          },
-                                                                          {
-                                                                              "data-sort": "default"
-                                                                          },
-                                                                          {
-                                                                              "data-label": "slides_sort_default"
-                                                                          }
-                                                                      ]
-                                                                  },
-                                                                  {
-                                                                      "type": "DIV",
-                                                                      "attributes": [
-                                                                          {
-                                                                              "data-type": "sortOption"
-                                                                          },
-                                                                          {
-                                                                              "data-sort": "mostRecentlyDiscussed"
-                                                                          },
-                                                                          {
-                                                                              "data-label": "slides_sort_mostRecentlyDiscussed"
-                                                                          }
-                                                                      ]
-                                                                  },
-                                                                  {
-                                                                      "type": "DIV",
-                                                                      "attributes": [
-                                                                          {
-                                                                              "data-type": "sortOption"
-                                                                          },
-                                                                          {
-                                                                              "data-sort": "moreTimeSpentOn"
-                                                                          },
-                                                                          {
-                                                                              "data-label": "slides_sort_moreTimeSpentOn"
-                                                                          }
-                                                                      ]
-                                                                  }
-                                                              ]
-                                                          }
-                                                      ]
-                                                  },
-                                                  {
-                                                      "type": "DIV",
-                                                      "attributes": [
-                                                          {
-                                                              "data-ui-id": "scroll"
-                                                          }
-                                                      ],
-                                                      "childNodes": [
-                                                          {
-                                                              "type": "DIV",
-                                                              "attributes": [
-                                                                  {
-                                                                      "data-ui-id": "slides_contents"
-                                                                  }
-                                                              ],
-                                                              "childNodes": [
-                                                                  {
-                                                                      "type": "DIV",
-                                                                      "attributes": [
-                                                                          {
-                                                                              "data-type": "slides_content_template"
-                                                                          }
-                                                                      ],
-                                                                      "childNodes": [
-                                                                          {
-                                                                              "type": "DIV",
-                                                                              "attributes": [
-                                                                                  {
-                                                                                      "data-type": "slides_content_thumbnail"
-                                                                                  }
-                                                                              ],
-                                                                              "childNodes": [
-                                                                                  {
-                                                                                      "type": "IMG",
-                                                                                      "attributes": []
-                                                                                  }
-                                                                              ]
-                                                                          },
-                                                                          {
-                                                                              "type": "DIV",
-                                                                              "attributes": [
-                                                                                  {
-                                                                                      "data-type": "slides_content_name"
-                                                                                  }
-                                                                              ],
-                                                                              "childNodes": [
-                                                                                  {
-                                                                                      "type": "SPAN",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "value"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "#text",
-                                                                                              "text": "__name__"
-                                                                                          }
-                                                                                      ]
-                                                                                  }
-                                                                              ]
-                                                                          },
-                                                                          {
-                                                                              "type": "DIV",
-                                                                              "attributes": [
-                                                                                  {
-                                                                                      "data-type": "slides_content_lastViewDate"
-                                                                                  }
-                                                                              ],
-                                                                              "childNodes": [
-                                                                                  {
-                                                                                      "type": "SPAN",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "title"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-label": "slides_label_lastView"
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "SPAN",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "value"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "#text",
-                                                                                              "text": "__date and time__"
-                                                                                          }
-                                                                                      ]
-                                                                                  }
-                                                                              ]
-                                                                          },
-                                                                          {
-                                                                              "type": "DIV",
-                                                                              "attributes": [
-                                                                                  {
-                                                                                      "data-type": "slides_content_reaction"
-                                                                                  }
-                                                                              ],
-                                                                              "childNodes": [
-                                                                                  {
-                                                                                      "type": "SPAN",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "title"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-label": "slides_label_reaction"
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "SPAN",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "value"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "#text",
-                                                                                              "text": "__reaction__"
-                                                                                          }
-                                                                                      ]
-                                                                                  }
-                                                                              ]
-                                                                          },
-                                                                          {
-                                                                              "type": "DIV",
-                                                                              "attributes": [
-                                                                                  {
-                                                                                      "data-type": "slides_content_duration"
-                                                                                  }
-                                                                              ],
-                                                                              "childNodes": [
-                                                                                  {
-                                                                                      "type": "SPAN",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "title"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-label": "slides_label_duration"
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "SPAN",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "value"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "#text",
-                                                                                              "text": "__duration__"
-                                                                                          }
-                                                                                      ]
-                                                                                  }
-                                                                              ]
-                                                                          },
-                                                                          {
-                                                                              "type": "DIV",
-                                                                              "attributes": [
-                                                                                  {
-                                                                                      "data-type": "slides_content_totalViews"
-                                                                                  }
-                                                                              ],
-                                                                              "childNodes": [
-                                                                                  {
-                                                                                      "type": "SPAN",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "title"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-label": "slides_label_totalViews"
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "SPAN",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "value"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "#text",
-                                                                                              "text": "__total views__"
-                                                                                          }
-                                                                                      ]
-                                                                                  }
-                                                                              ]
-                                                                          }
-                                                                      ]
-                                                                  }
-                                                              ]
-                                                          }
-                                                      ]
-                                                  }
-                                              ]
-                                          }
-                                      ]
-                                  },
-                                  {
-                                      "type": "DIV",
-                                      "attributes": [
-                                          {
-                                              "data-type": "com.idc.ui.core.tab.content"
-                                          },
-                                          {
-                                              "data-instance": "emails"
-                                          }
-                                      ],
-                                      "childNodes": [
-                                          {
-                                              "type": "DIV",
-                                              "attributes": [
-                                                  {
-                                                      "data-ui-id": "emails"
-                                                  }
-                                              ],
-                                              "childNodes": [
-                                                  {
-                                                      "type": "DIV",
-                                                      "attributes": [
-                                                          {
-                                                              "data-ui-id": "emails_options"
-                                                          }
-                                                      ],
-                                                      "childNodes": [
-                                                          {
-                                                              "type": "DIV",
-                                                              "attributes": [
-                                                                  {
-                                                                      "data-ui-id": "sort_wrapper"
-                                                                  }
-                                                              ],
-                                                              "childNodes": [
-                                                                  {
-                                                                      "type": "DIV",
-                                                                      "attributes": [
-                                                                          {
-                                                                              "data-type": "com.idc.ui.core.button"
-                                                                          },
-                                                                          {
-                                                                              "data-sub-type": "com.idc.ui.core.modal.dualButton"
-                                                                          },
-                                                                          {
-                                                                              "data-target-id": "interactionSummary_emailsSort"
-                                                                          },
-                                                                          {
-                                                                              "id": "interactionSummary_emailsSort_open"
-                                                                          },
-                                                                          {
-                                                                              "data-ui-id": "emails_sort_modal_open"
-                                                                          }
-                                                                      ],
-                                                                      "childNodes": [
-                                                                          {
-                                                                              "type": "SPAN",
-                                                                              "attributes": [
-                                                                                  {
-                                                                                      "data-sort": "default"
-                                                                                  },
-                                                                                  {
-                                                                                      "data-view-state": "active"
-                                                                                  },
-                                                                                  {
-                                                                                      "data-label": "emails_sort_default"
-                                                                                  }
-                                                                              ]
-                                                                          },
-                                                                          {
-                                                                              "type": "SPAN",
-                                                                              "attributes": [
-                                                                                  {
-                                                                                      "data-sort": "mostRecentlySent"
-                                                                                  },
-                                                                                  {
-                                                                                      "data-view-state": "!active"
-                                                                                  },
-                                                                                  {
-                                                                                      "data-label": "emails_sort_mostRecentlySent"
-                                                                                  }
-                                                                              ]
-                                                                          },
-                                                                          {
-                                                                              "type": "SPAN",
-                                                                              "attributes": [
-                                                                                  {
-                                                                                      "data-sort": "moreOpens"
-                                                                                  },
-                                                                                  {
-                                                                                      "data-view-state": "!active"
-                                                                                  },
-                                                                                  {
-                                                                                      "data-label": "emails_sort_moreOpens"
-                                                                                  }
-                                                                              ]
-                                                                          },
-                                                                          {
-                                                                              "type": "SPAN",
-                                                                              "attributes": [
-                                                                                  {
-                                                                                      "data-sort": "moreClicks"
-                                                                                  },
-                                                                                  {
-                                                                                      "data-view-state": "!active"
-                                                                                  },
-                                                                                  {
-                                                                                      "data-label": "emails_sort_moreClicks"
-                                                                                  }
-                                                                              ]
-                                                                          }
-                                                                      ]
-                                                                  }
-                                                              ]
-                                                          }
-                                                      ]
-                                                  },
-                                                  {
-                                                      "type": "DIV",
-                                                      "attributes": [
-                                                          {
-                                                              "data-type": "com.idc.ui.backModal"
-                                                          },
-                                                          {
-                                                              "back-modal-for": "interactionSummary_emailsSort"
-                                                          },
-                                                          {
-                                                              "class": "transparentBackground"
-                                                          }
-                                                      ]
-                                                  },
-                                                  {
-                                                      "type": "DIV",
-                                                      "attributes": [
-                                                          {
-                                                              "data-type": "com.idc.ui.core.modal.modalObject"
-                                                          },
-                                                          {
-                                                              "data-options": "backModalStyle=transparentBackground"
-                                                          },
-                                                          {
-                                                              "id": "interactionSummary_emailsSort"
-                                                          },
-                                                          {
-                                                              "data-ui-id": "emails_sort_modal"
-                                                          }
-                                                      ],
-                                                      "childNodes": [
-                                                          {
-                                                              "type": "DIV",
-                                                              "attributes": [
-                                                                  {
-                                                                      "data-type": "com.idc.ui.core.modal.contentArea"
-                                                                  }
-                                                              ],
-                                                              "childNodes": [
-                                                                  {
-                                                                      "type": "DIV",
-                                                                      "attributes": [
-                                                                          {
-                                                                              "data-type": "sortOption"
-                                                                          },
-                                                                          {
-                                                                              "data-sort": "default"
-                                                                          },
-                                                                          {
-                                                                              "data-label": "emails_sort_default"
-                                                                          }
-                                                                      ]
-                                                                  },
-                                                                  {
-                                                                      "type": "DIV",
-                                                                      "attributes": [
-                                                                          {
-                                                                              "data-type": "sortOption"
-                                                                          },
-                                                                          {
-                                                                              "data-sort": "mostRecentlySent"
-                                                                          },
-                                                                          {
-                                                                              "data-label": "emails_sort_mostRecentlySent"
-                                                                          }
-                                                                      ]
-                                                                  },
-                                                                  {
-                                                                      "type": "DIV",
-                                                                      "attributes": [
-                                                                          {
-                                                                              "data-type": "sortOption"
-                                                                          },
-                                                                          {
-                                                                              "data-sort": "moreOpens"
-                                                                          },
-                                                                          {
-                                                                              "data-label": "emails_sort_moreOpens"
-                                                                          }
-                                                                      ]
-                                                                  },
-                                                                  {
-                                                                      "type": "DIV",
-                                                                      "attributes": [
-                                                                          {
-                                                                              "data-type": "sortOption"
-                                                                          },
-                                                                          {
-                                                                              "data-sort": "moreClicks"
-                                                                          },
-                                                                          {
-                                                                              "data-label": "emails_sort_moreClicks"
-                                                                          }
-                                                                      ]
-                                                                  }
-                                                              ]
-                                                          }
-                                                      ]
-                                                  },
-                                                  {
-                                                      "type": "DIV",
-                                                      "attributes": [
-                                                          {
-                                                              "data-ui-id": "scroll"
-                                                          }
-                                                      ],
-                                                      "childNodes": [
-                                                          {
-                                                              "type": "TABLE",
-                                                              "attributes": [
-                                                                  {
-                                                                      "data-ui-id": "emailsTable"
-                                                                  },
-                                                                  {
-                                                                      "data-ui-type": "table"
-                                                                  }
-                                                              ],
-                                                              "childNodes": [
-                                                                  {
-                                                                      "type": "THEAD",
-                                                                      "attributes": [],
-                                                                      "childNodes": [
-                                                                          {
-                                                                              "type": "TR",
-                                                                              "attributes": [
-                                                                                  {
-                                                                                      "data-ui-type": "table-header-row"
-                                                                                  }
-                                                                              ],
-                                                                              "childNodes": [
-                                                                                  {
-                                                                                      "type": "TH",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-header-column"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "email"
-                                                                                          },
-                                                                                          {
-                                                                                              "rowspan": "2"
-                                                                                          },
-                                                                                          {
-                                                                                              "colspan": "2"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-label": "emails_label_expandAll"
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TH",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-header-column"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "lastDate"
-                                                                                          },
-                                                                                          {
-                                                                                              "colspan": "3"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-label": "emails_label_lastTime"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-row-cell-value"
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TH",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-header-column"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "allDates"
-                                                                                          },
-                                                                                          {
-                                                                                              "colspan": "3"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-label": "emails_label_allTimes"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-row-cell-value"
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  }
-                                                                              ]
-                                                                          },
-                                                                          {
-                                                                              "type": "TR",
-                                                                              "attributes": [
-                                                                                  {
-                                                                                      "data-ui-type": "table-header-row"
-                                                                                  }
-                                                                              ],
-                                                                              "childNodes": [
-                                                                                  {
-                                                                                      "type": "TH",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-header-column"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "lastTimeSent_date"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-row-cell-value"
-                                                                                                  },
-                                                                                                  {
-                                                                                                      "data-label": "emails_label_date"
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TH",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-header-column"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "lastTimeSent_open"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-row-cell-value"
-                                                                                                  },
-                                                                                                  {
-                                                                                                      "data-label": "emails_label_opened"
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TH",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-header-column"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "lastTimeSent_click"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-row-cell-value"
-                                                                                                  },
-                                                                                                  {
-                                                                                                      "data-label": "emails_label_clicked"
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TH",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-header-column"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "allTimes_sent"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-row-cell-value"
-                                                                                                  },
-                                                                                                  {
-                                                                                                      "data-label": "emails_label_sent"
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TH",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-header-column"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "allTimes_open"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-row-cell-value"
-                                                                                                  },
-                                                                                                  {
-                                                                                                      "data-label": "emails_label_opened"
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TH",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-header-column"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "allTimes_click"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-row-cell-value"
-                                                                                                  },
-                                                                                                  {
-                                                                                                      "data-label": "emails_label_clicked"
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  }
-                                                                              ]
-                                                                          }
-                                                                      ]
-                                                                  },
-                                                                  {
-                                                                      "type": "TBODY",
-                                                                      "attributes": [],
-                                                                      "childNodes": [
-                                                                          {
-                                                                              "type": "TR",
-                                                                              "attributes": [
-                                                                                  {
-                                                                                      "data-ui-type": "table-row-template"
-                                                                                  },
-                                                                                  {
-                                                                                      "data-ui-subtype": "approvedEmail"
-                                                                                  },
-                                                                                  {
-                                                                                      "data-view-state": "!active"
-                                                                                  }
-                                                                              ],
-                                                                              "childNodes": [
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-row-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "more"
-                                                                                          },
-                                                                                          {
-                                                                                              "class": "more"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-row-cell-action"
-                                                                                                  }
-                                                                                              ],
-                                                                                              "childNodes": [
-                                                                                                  {
-                                                                                                      "type": "IMG",
-                                                                                                      "attributes": [
-                                                                                                          {
-                                                                                                              "src": "../common/img/precall/iconMore.png"
-                                                                                                          },
-                                                                                                          {
-                                                                                                              "alt": "more"
-                                                                                                          },
-                                                                                                          {
-                                                                                                              "class": "iconMore"
-                                                                                                          }
-                                                                                                      ]
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-row-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "email"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-row-cell-value"
-                                                                                                  },
-                                                                                                  {
-                                                                                                      "data-ui-subtype": "thumbnail"
-                                                                                                  }
-                                                                                              ],
-                                                                                              "childNodes": [
-                                                                                                  {
-                                                                                                      "type": "IMG",
-                                                                                                      "attributes": [
-                                                                                                          {
-                                                                                                              "class": "ae"
-                                                                                                          }
-                                                                                                      ]
-                                                                                                  }
-                                                                                              ]
-                                                                                          },
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-row-cell-value"
-                                                                                                  },
-                                                                                                  {
-                                                                                                      "data-ui-subtype": "name"
-                                                                                                  }
-                                                                                              ],
-                                                                                              "childNodes": [
-                                                                                                  {
-                                                                                                      "type": "#text",
-                                                                                                      "text": "__template name__"
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-row-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "lastTimeSent_date"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-row-cell-value"
-                                                                                                  },
-                                                                                                  {
-                                                                                                      "data-ui-subtype": "day"
-                                                                                                  }
-                                                                                              ],
-                                                                                              "childNodes": [
-                                                                                                  {
-                                                                                                      "type": "#text",
-                                                                                                      "text": "__date__"
-                                                                                                  }
-                                                                                              ]
-                                                                                          },
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-row-cell-value"
-                                                                                                  },
-                                                                                                  {
-                                                                                                      "data-ui-subtype": "time"
-                                                                                                  }
-                                                                                              ],
-                                                                                              "childNodes": [
-                                                                                                  {
-                                                                                                      "type": "#text",
-                                                                                                      "text": "__time__"
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-row-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "lastTimeSent_open"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-row-cell-value"
-                                                                                                  },
-                                                                                                  {
-                                                                                                      "data-ui-subtype": "valueYes"
-                                                                                                  },
-                                                                                                  {
-                                                                                                      "data-label": "emails_value_yes"
-                                                                                                  }
-                                                                                              ]
-                                                                                          },
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-row-cell-value"
-                                                                                                  },
-                                                                                                  {
-                                                                                                      "data-ui-subtype": "valueNo"
-                                                                                                  },
-                                                                                                  {
-                                                                                                      "data-label": "emails_value_no"
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-row-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "lastTimeSent_click"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-row-cell-value"
-                                                                                                  }
-                                                                                              ],
-                                                                                              "childNodes": [
-                                                                                                  {
-                                                                                                      "type": "#text",
-                                                                                                      "text": "__click__"
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-row-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "allTimes_sent"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-row-cell-value"
-                                                                                                  }
-                                                                                              ],
-                                                                                              "childNodes": [
-                                                                                                  {
-                                                                                                      "type": "#text",
-                                                                                                      "text": "__sent__"
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-row-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "allTimes_open"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-row-cell-value"
-                                                                                                  }
-                                                                                              ],
-                                                                                              "childNodes": [
-                                                                                                  {
-                                                                                                      "type": "#text",
-                                                                                                      "text": "__open__"
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-row-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "allTimes_click"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-row-cell-value"
-                                                                                                  }
-                                                                                              ],
-                                                                                              "childNodes": [
-                                                                                                  {
-                                                                                                      "type": "#text",
-                                                                                                      "text": "__clicks__"
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  }
-                                                                              ]
-                                                                          },
-                                                                          {
-                                                                              "type": "TR",
-                                                                              "attributes": [
-                                                                                  {
-                                                                                      "data-ui-type": "table-subrow-template"
-                                                                                  },
-                                                                                  {
-                                                                                      "data-ui-subtype": "approvedEmail"
-                                                                                  },
-                                                                                  {
-                                                                                      "data-view-state": "!active"
-                                                                                  },
-                                                                                  {
-                                                                                      "class": "!last"
-                                                                                  }
-                                                                              ],
-                                                                              "childNodes": [
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-subrow-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "more"
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-subrow-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "email"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-subrow-cell-label"
-                                                                                                  },
-                                                                                                  {
-                                                                                                      "data-ui-subtype": "fragmentLabel"
-                                                                                                  },
-                                                                                                  {
-                                                                                                      "data-label": "emails_value_fragment"
-                                                                                                  }
-                                                                                              ]
-                                                                                          },
-                                                                                          {
-                                                                                              "type": "BR",
-                                                                                              "attributes": []
-                                                                                          },
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-subrow-cell-value"
-                                                                                                  }
-                                                                                              ],
-                                                                                              "childNodes": [
-                                                                                                  {
-                                                                                                      "type": "#text",
-                                                                                                      "text": "__name__"
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-subrow-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "lastTimeSent_date"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-subrow-cell-value"
-                                                                                                  },
-                                                                                                  {
-                                                                                                      "data-ui-subtype": "day"
-                                                                                                  }
-                                                                                              ],
-                                                                                              "childNodes": [
-                                                                                                  {
-                                                                                                      "type": "#text",
-                                                                                                      "text": "__date__"
-                                                                                                  }
-                                                                                              ]
-                                                                                          },
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-subrow-cell-value"
-                                                                                                  },
-                                                                                                  {
-                                                                                                      "data-ui-subtype": "time"
-                                                                                                  }
-                                                                                              ],
-                                                                                              "childNodes": [
-                                                                                                  {
-                                                                                                      "type": "#text",
-                                                                                                      "text": "__time__"
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-subrow-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "lastTimeSent_open"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-subrow-cell-value"
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-subrow-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "lastTimeSent_click"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-subrow-cell-value"
-                                                                                                  }
-                                                                                              ],
-                                                                                              "childNodes": [
-                                                                                                  {
-                                                                                                      "type": "#text",
-                                                                                                      "text": "__click__"
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-subrow-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "allTimes_sent"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-subrow-cell-value"
-                                                                                                  }
-                                                                                              ],
-                                                                                              "childNodes": [
-                                                                                                  {
-                                                                                                      "type": "#text",
-                                                                                                      "text": "__sent__"
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-subrow-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "allTimes_open"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-subrow-cell-value"
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-subrow-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "allTimes_click"
-                                                                                          }
-                                                                                      ],
-                                                                                      "childNodes": [
-                                                                                          {
-                                                                                              "type": "SPAN",
-                                                                                              "attributes": [
-                                                                                                  {
-                                                                                                      "data-ui-type": "table-subrow-cell-value"
-                                                                                                  }
-                                                                                              ],
-                                                                                              "childNodes": [
-                                                                                                  {
-                                                                                                      "type": "#text",
-                                                                                                      "text": "__clicks__"
-                                                                                                  }
-                                                                                              ]
-                                                                                          }
-                                                                                      ]
-                                                                                  }
-                                                                              ]
-                                                                          },
-                                                                          {
-                                                                              "type": "TR",
-                                                                              "attributes": [
-                                                                                  {
-                                                                                      "data-ui-type": "table-row-template"
-                                                                                  },
-                                                                                  {
-                                                                                      "data-ui-subtype": "blank"
-                                                                                  },
-                                                                                  {
-                                                                                      "data-view-state": "!active"
-                                                                                  }
-                                                                              ],
-                                                                              "childNodes": [
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-row-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "more"
-                                                                                          },
-                                                                                          {
-                                                                                              "class": "more"
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-row-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "email"
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-row-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "lastTimeSent_date"
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-row-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "lastTimeSent_open"
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-row-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "lastTimeSent_click"
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-row-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "allTimes_sent"
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-row-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "allTimes_open"
-                                                                                          }
-                                                                                      ]
-                                                                                  },
-                                                                                  {
-                                                                                      "type": "TD",
-                                                                                      "attributes": [
-                                                                                          {
-                                                                                              "data-ui-type": "table-row-cell"
-                                                                                          },
-                                                                                          {
-                                                                                              "data-column-id": "allTimes_click"
-                                                                                          }
-                                                                                      ]
-                                                                                  }
-                                                                              ]
-                                                                          }
-                                                                      ]
-                                                                  }
-                                                              ]
-                                                          }
-                                                      ]
-                                                  }
-                                              ]
-                                          }
-                                      ]
-                                  }
-                              ]
-                          }
-                      ]
-                  }
-              ]
-          }
-      ]
-    }]
+            "type": "DIV",
+            "attributes": [
+                {
+                    "data-type": "com.idc.ui.core.modal.contentArea"
+                },
+                {
+                    "id": "preCallModalContent"
+                }
+            ],
+            "childNodes": [
+                {
+                    "type": "DIV",
+                    "attributes": [
+                        {
+                            "data-type": "com.idc.ui.core.tab.cover"
+                        },
+                        {
+                            "data-target-id": "interactionSummaryTab"
+                        },
+                        {
+                            "data-ui-id": "precallCover"
+                        },
+                        {
+                            "data-view-state": "active"
+                        }
+                    ],
+                    "childNodes": [
+                        {
+                            "type": "DIV",
+                            "attributes": [
+                                {
+                                    "class": "background"
+                                }
+                            ],
+                            "childNodes": [
+                                {
+                                    "type": "DIV",
+                                    "attributes": [
+                                        {
+                                            "class": "text"
+                                        }
+                                    ],
+                                    "childNodes": [
+                                        {
+                                            "type": "SPAN",
+                                            "attributes": [
+                                                {
+                                                    "data-label": "interactionSummary_title1"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "type": "BR",
+                                            "attributes": []
+                                        },
+                                        {
+                                            "type": "SPAN",
+                                            "attributes": [
+                                                {
+                                                    "data-ui-id": "hcpName"
+                                                },
+                                                {
+                                                    "class": "doctorName"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "type": "SPAN",
+                                            "attributes": [
+                                                {
+                                                    "data-label": "interactionSummary_title2"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "type": "DIV",
+                            "attributes": [
+                                {
+                                    "data-type": "com.idc.ui.core.tab.buttons"
+                                }
+                            ],
+                            "childNodes": [
+                                {
+                                    "type": "DIV",
+                                    "attributes": [
+                                        {
+                                            "data-type": "com.idc.ui.core.button"
+                                        },
+                                        {
+                                            "data-sub-type": "com.idc.ui.core.tab.button"
+                                        },
+                                        {
+                                            "data-instance": "previousInteractions"
+                                        }
+                                    ],
+                                    "childNodes": [
+                                        {
+                                            "type": "DIV",
+                                            "attributes": [
+                                                {
+                                                    "data-ui-id": "tabBtn_previousInteractions_label"
+                                                },
+                                                {
+                                                    "data-label": "tabBtn_previousInteractions"
+                                                }
+                                            ],
+                                            "childNodes": [
+                                                {
+                                                    "type": "#text",
+                                                    "text": "Previous interactions"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "type": "DIV",
+                                            "attributes": [
+                                                {
+                                                    "data-ui-id": "tabBtn_previousInteractions_summary"
+                                                },
+                                                {
+                                                    "class": ""
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "DIV",
+                                    "attributes": [
+                                        {
+                                            "data-type": "com.idc.ui.core.button"
+                                        },
+                                        {
+                                            "data-sub-type": "com.idc.ui.core.tab.button"
+                                        },
+                                        {
+                                            "data-instance": "slides"
+                                        }
+                                    ],
+                                    "childNodes": [
+                                        {
+                                            "type": "DIV",
+                                            "attributes": [
+                                                {
+                                                    "data-ui-id": "tabBtn_slides_label"
+                                                },
+                                                {
+                                                    "data-label": "tabBtn_slides"
+                                                }
+                                            ],
+                                            "childNodes": [
+                                                {
+                                                    "type": "#text",
+                                                    "text": "Slides"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "type": "DIV",
+                                            "attributes": [
+                                                {
+                                                    "data-ui-id": "tabBtn_slides_summary"
+                                                },
+                                                {
+                                                    "class": ""
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "type": "DIV",
+                                            "attributes": [
+                                                {
+                                                    "data-ui-id": "tabBtn_slides_nextBestContent"
+                                                },
+                                                {
+                                                    "class": ""
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "DIV",
+                                    "attributes": [
+                                        {
+                                            "data-type": "com.idc.ui.core.button"
+                                        },
+                                        {
+                                            "data-sub-type": "com.idc.ui.core.tab.button"
+                                        },
+                                        {
+                                            "data-instance": "emails"
+                                        }
+                                    ],
+                                    "childNodes": [
+                                        {
+                                            "type": "DIV",
+                                            "attributes": [
+                                                {
+                                                    "data-ui-id": "tabBtn_emails_label"
+                                                },
+                                                {
+                                                    "data-label": "tabBtn_emails"
+                                                }
+                                            ],
+                                            "childNodes": [
+                                                {
+                                                    "type": "#text",
+                                                    "text": "Emails"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "type": "DIV",
+                                            "attributes": [
+                                                {
+                                                    "data-ui-id": "tabBtn_emails_summary"
+                                                },
+                                                {
+                                                    "class": ""
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "DIV",
+                                    "attributes": [
+                                        {
+                                            "data-type": "com.idc.ui.core.button"
+                                        },
+                                        {
+                                            "data-sub-type": "com.idc.ui.core.tab.button"
+                                        },
+                                        {
+                                            "data-instance": "relatedCLM"
+                                        }
+                                    ],
+                                    "childNodes": [
+                                        {
+                                            "type": "DIV",
+                                            "attributes": [
+                                                {
+                                                    "data-ui-id": "tabBtn_relatedCLM_label"
+                                                },
+                                                {
+                                                    "data-label": "tabBtn_relatedCLM"
+                                                }
+                                            ],
+                                            "childNodes": [
+                                                {
+                                                    "type": "#text",
+                                                    "text": "Quick links"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "type": "DIV",
+                                            "attributes": [
+                                                {
+                                                    "data-ui-id": "tabBtn_relatedCLM_summary"
+                                                },
+                                                {
+                                                    "class": ""
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "DIV",
+                    "attributes": [
+                        {
+                            "data-type": "com.idc.ui.backModal"
+                        },
+                        {
+                            "data-back-modal-for": "interactionSummaryTab"
+                        }
+                    ]
+                },
+                {
+                    "type": "DIV",
+                    "attributes": [
+                        {
+                            "data-type": "com.idc.ui.backModal"
+                        },
+                        {
+                            "data-back-modal-for": "interactionSummaryTab"
+                        }
+                    ]
+                },
+                {
+                    "type": "DIV",
+                    "attributes": [
+                        {
+                            "data-type": "com.idc.ui.core.tab"
+                        },
+                        {
+                            "id": "interactionSummaryTab"
+                        },
+                        {
+                            "data-ui-id": "interactionSummaryTab"
+                        },
+                        {
+                            "data-view-state": "hidden"
+                        }
+                    ],
+                    "childNodes": [
+                        {
+                            "type": "DIV",
+                            "attributes": [
+                                {
+                                    "data-type": "com.idc.ui.core.tab.container"
+                                }
+                            ],
+                            "childNodes": [
+                                {
+                                    "type": "DIV",
+                                    "attributes": [
+                                        {
+                                            "class": "background"
+                                        }
+                                    ],
+                                    "childNodes": [
+                                        {
+                                            "type": "DIV",
+                                            "attributes": [
+                                                {
+                                                    "class": "text"
+                                                }
+                                            ],
+                                            "childNodes": [
+                                                {
+                                                    "type": "SPAN",
+                                                    "attributes": [
+                                                        {
+                                                            "data-label": "interactionSummary_title1"
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "type": "SPAN",
+                                                    "attributes": [
+                                                        {
+                                                            "data-ui-id": "hcpName"
+                                                        },
+                                                        {
+                                                            "class": "doctorName"
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "type": "SPAN",
+                                                    "attributes": [
+                                                        {
+                                                            "data-label": "interactionSummary_title2"
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "DIV",
+                                    "attributes": [
+                                        {
+                                            "data-type": "com.idc.ui.core.tab.buttons"
+                                        }
+                                    ],
+                                    "childNodes": [
+                                        {
+                                            "type": "DIV",
+                                            "attributes": [
+                                                {
+                                                    "data-type": "com.idc.ui.core.button"
+                                                },
+                                                {
+                                                    "data-sub-type": "com.idc.ui.core.tab.button"
+                                                },
+                                                {
+                                                    "data-label": "tabBtn_previousInteractions"
+                                                },
+                                                {
+                                                    "data-instance": "previousInteractions"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "type": "DIV",
+                                            "attributes": [
+                                                {
+                                                    "data-type": "com.idc.ui.core.button"
+                                                },
+                                                {
+                                                    "data-sub-type": "com.idc.ui.core.tab.button"
+                                                },
+                                                {
+                                                    "data-label": "tabBtn_slides"
+                                                },
+                                                {
+                                                    "data-instance": "slides"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "type": "DIV",
+                                            "attributes": [
+                                                {
+                                                    "data-type": "com.idc.ui.core.button"
+                                                },
+                                                {
+                                                    "data-sub-type": "com.idc.ui.core.tab.button"
+                                                },
+                                                {
+                                                    "data-label": "tabBtn_emails"
+                                                },
+                                                {
+                                                    "data-instance": "emails"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "type": "DIV",
+                                            "attributes": [
+                                                {
+                                                    "data-type": "com.idc.ui.core.button"
+                                                },
+                                                {
+                                                    "data-sub-type": "com.idc.ui.core.tab.button"
+                                                },
+                                                {
+                                                    "data-label": "tabBtn_relatedCLM"
+                                                },
+                                                {
+                                                    "data-instance": "relatedCLM"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "DIV",
+                                    "attributes": [
+                                        {
+                                            "data-type": "com.idc.ui.core.tab.contents"
+                                        }
+                                    ],
+                                    "childNodes": [
+                                        {
+                                            "type": "DIV",
+                                            "attributes": [
+                                                {
+                                                    "data-type": "com.idc.ui.core.tab.content"
+                                                },
+                                                {
+                                                    "data-instance": "previousInteractions"
+                                                }
+                                            ],
+                                            "childNodes": [
+                                                {
+                                                    "type": "DIV",
+                                                    "attributes": [
+                                                        {
+                                                            "data-ui-id": "previousInteractions"
+                                                        }
+                                                    ],
+                                                    "childNodes": [
+                                                        {
+                                                            "type": "DIV",
+                                                            "attributes": [
+                                                                {
+                                                                    "data-ui-id": "previousInteractions_options"
+                                                                }
+                                                            ],
+                                                            "childNodes": [
+                                                                {
+                                                                    "type": "DIV",
+                                                                    "attributes": [
+                                                                        {
+                                                                            "data-ui-id": "filters_wrapper"
+                                                                        }
+                                                                    ],
+                                                                    "childNodes": [
+                                                                        {
+                                                                            "type": "DIV",
+                                                                            "attributes": [
+                                                                                {
+                                                                                    "data-ui-type": "filter"
+                                                                                },
+                                                                                {
+                                                                                    "data-view": "all"
+                                                                                },
+                                                                                {
+                                                                                    "data-view-state": "active"
+                                                                                },
+                                                                                {
+                                                                                    "data-label": "prevInt_filter_all"
+                                                                                }
+                                                                            ]
+                                                                        },
+                                                                        {
+                                                                            "type": "DIV",
+                                                                            "attributes": [
+                                                                                {
+                                                                                    "data-ui-type": "filter"
+                                                                                },
+                                                                                {
+                                                                                    "data-view": "approvedEmail"
+                                                                                },
+                                                                                {
+                                                                                    "data-view-state": "!active"
+                                                                                },
+                                                                                {
+                                                                                    "data-label": "prevInt_filter_approvedEmail"
+                                                                                }
+                                                                            ]
+                                                                        },
+                                                                        {
+                                                                            "type": "DIV",
+                                                                            "attributes": [
+                                                                                {
+                                                                                    "data-ui-type": "filter"
+                                                                                },
+                                                                                {
+                                                                                    "data-view": "inPerson"
+                                                                                },
+                                                                                {
+                                                                                    "data-view-state": "!active"
+                                                                                },
+                                                                                {
+                                                                                    "data-label": "prevInt_filter_inPerson"
+                                                                                }
+                                                                            ]
+                                                                        },
+                                                                        {
+                                                                            "type": "DIV",
+                                                                            "attributes": [
+                                                                                {
+                                                                                    "data-ui-type": "filter"
+                                                                                },
+                                                                                {
+                                                                                    "data-view": "videoCall"
+                                                                                },
+                                                                                {
+                                                                                    "data-view-state": "!active"
+                                                                                },
+                                                                                {
+                                                                                    "data-label": "prevInt_filter_video"
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "type": "DIV",
+                                                            "attributes": [
+                                                                {
+                                                                    "data-ui-id": "scroll"
+                                                                }
+                                                            ],
+                                                            "childNodes": [
+                                                                {
+                                                                    "type": "TABLE",
+                                                                    "attributes": [
+                                                                        {
+                                                                            "data-ui-id": "previousInteractionsTable"
+                                                                        }
+                                                                    ],
+                                                                    "childNodes": [
+                                                                        {
+                                                                            "type": "TBODY",
+                                                                            "attributes": [],
+                                                                            "childNodes": [
+                                                                                {
+                                                                                    "type": "TR",
+                                                                                    "attributes": [
+                                                                                        {
+                                                                                            "data-ui-type": "table-row-template"
+                                                                                        },
+                                                                                        {
+                                                                                            "data-ui-subtype": "approvedEmail"
+                                                                                        },
+                                                                                        {
+                                                                                            "data-view-state": "!active"
+                                                                                        }
+                                                                                    ],
+                                                                                    "childNodes": [
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-row-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "more"
+                                                                                                },
+                                                                                                {
+                                                                                                    "class": "more"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-row-cell-action"
+                                                                                                        }
+                                                                                                    ],
+                                                                                                    "childNodes": [
+                                                                                                        {
+                                                                                                            "type": "IMG",
+                                                                                                            "attributes": [
+                                                                                                                {
+                                                                                                                    "src": "../common/img/precall/iconMore.png"
+                                                                                                                },
+                                                                                                                {
+                                                                                                                    "alt": "more"
+                                                                                                                },
+                                                                                                                {
+                                                                                                                    "class": "iconMore"
+                                                                                                                }
+                                                                                                            ]
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-row-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "date"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-row-cell-value"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "data-ui-subtype": "day"
+                                                                                                        }
+                                                                                                    ],
+                                                                                                    "childNodes": [
+                                                                                                        {
+                                                                                                            "type": "#text",
+                                                                                                            "text": "__day__"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                },
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-row-cell-value"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "data-ui-subtype": "time"
+                                                                                                        }
+                                                                                                    ],
+                                                                                                    "childNodes": [
+                                                                                                        {
+                                                                                                            "type": "#text",
+                                                                                                            "text": "__time__"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-row-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "interactionType"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-row-cell-value"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "data-label": "prevInt_value_approvedEmail"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-row-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "contentName"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-row-cell-value"
+                                                                                                        }
+                                                                                                    ],
+                                                                                                    "childNodes": [
+                                                                                                        {
+                                                                                                            "type": "#text",
+                                                                                                            "text": "__template__"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-row-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "status"
+                                                                                                },
+                                                                                                {
+                                                                                                    "colspan": "2"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-row-cell-value"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "data-ui-subtype": "valueOpened"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "data-label": "prevInt_value_opened"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                },
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-row-cell-value"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "data-ui-subtype": "valueNotOpened"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "data-label": "prevInt_value_notOpened"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        }
+                                                                                    ]
+                                                                                },
+                                                                                {
+                                                                                    "type": "TR",
+                                                                                    "attributes": [
+                                                                                        {
+                                                                                            "data-ui-type": "table-subrow-template"
+                                                                                        },
+                                                                                        {
+                                                                                            "data-ui-subtype": "approvedEmail"
+                                                                                        },
+                                                                                        {
+                                                                                            "class": "header"
+                                                                                        },
+                                                                                        {
+                                                                                            "data-view-state": "!active"
+                                                                                        }
+                                                                                    ],
+                                                                                    "childNodes": [
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-subrow-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "more"
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-subrow-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "name"
+                                                                                                },
+                                                                                                {
+                                                                                                    "colspan": "2"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-subrow-cell-value"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "data-label": "prevInt_label_fragmentName"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-subrow-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "linksTo"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-subrow-cell-value"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "data-label": "prevInt_label_linksTo"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-subrow-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "timesClicked"
+                                                                                                },
+                                                                                                {
+                                                                                                    "colspan": "2"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-subrow-cell-value"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "data-label": "prevInt_label_timesClicked"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        }
+                                                                                    ]
+                                                                                },
+                                                                                {
+                                                                                    "type": "TR",
+                                                                                    "attributes": [
+                                                                                        {
+                                                                                            "data-ui-type": "table-subrow-template"
+                                                                                        },
+                                                                                        {
+                                                                                            "data-ui-subtype": "approvedEmail"
+                                                                                        },
+                                                                                        {
+                                                                                            "data-view-state": "!active"
+                                                                                        },
+                                                                                        {
+                                                                                            "class": "!last"
+                                                                                        }
+                                                                                    ],
+                                                                                    "childNodes": [
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-subrow-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "more"
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-subrow-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "name"
+                                                                                                },
+                                                                                                {
+                                                                                                    "colspan": "2"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-subrow-cell-value"
+                                                                                                        }
+                                                                                                    ],
+                                                                                                    "childNodes": [
+                                                                                                        {
+                                                                                                            "type": "#text",
+                                                                                                            "text": "__fragment__"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-subrow-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "linksTo"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-subrow-cell-value"
+                                                                                                        }
+                                                                                                    ],
+                                                                                                    "childNodes": [
+                                                                                                        {
+                                                                                                            "type": "#text",
+                                                                                                            "text": "__piecelink__"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-subrow-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "timesClicked"
+                                                                                                },
+                                                                                                {
+                                                                                                    "colspan": "2"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-subrow-cell-value"
+                                                                                                        }
+                                                                                                    ],
+                                                                                                    "childNodes": [
+                                                                                                        {
+                                                                                                            "type": "#text",
+                                                                                                            "text": "__clicks__"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        }
+                                                                                    ]
+                                                                                },
+                                                                                {
+                                                                                    "type": "TR",
+                                                                                    "attributes": [
+                                                                                        {
+                                                                                            "data-ui-type": "table-row-template"
+                                                                                        },
+                                                                                        {
+                                                                                            "data-ui-subtype": "inPerson"
+                                                                                        },
+                                                                                        {
+                                                                                            "data-view-state": "!active"
+                                                                                        }
+                                                                                    ],
+                                                                                    "childNodes": [
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-row-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "more"
+                                                                                                },
+                                                                                                {
+                                                                                                    "class": "more"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-row-cell-action"
+                                                                                                        }
+                                                                                                    ],
+                                                                                                    "childNodes": [
+                                                                                                        {
+                                                                                                            "type": "IMG",
+                                                                                                            "attributes": [
+                                                                                                                {
+                                                                                                                    "src": "../common/img/precall/iconMore.png"
+                                                                                                                },
+                                                                                                                {
+                                                                                                                    "alt": "more"
+                                                                                                                },
+                                                                                                                {
+                                                                                                                    "class": "iconMore"
+                                                                                                                }
+                                                                                                            ]
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-row-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "date"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-row-cell-value"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "data-ui-subtype": "day"
+                                                                                                        }
+                                                                                                    ],
+                                                                                                    "childNodes": [
+                                                                                                        {
+                                                                                                            "type": "#text",
+                                                                                                            "text": "__day__"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                },
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-row-cell-value"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "data-ui-subtype": "time"
+                                                                                                        }
+                                                                                                    ],
+                                                                                                    "childNodes": [
+                                                                                                        {
+                                                                                                            "type": "#text",
+                                                                                                            "text": "__time__"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-row-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "interactionType"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-row-cell-value"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "data-ui-subtype": "valueInPerson"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "data-label": "prevInt_value_inPerson"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-row-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "contentName"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-row-cell-value"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "data-label": "prevInt_value_IVA"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-row-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "status"
+                                                                                                },
+                                                                                                {
+                                                                                                    "colspan": "2"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-row-cell-value"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "data-ui-subtype": "valueSaved"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "data-label": "prevInt_value_saved"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                },
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-row-cell-value"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "data-ui-subtype": "valuePlanned"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "data-label": "prevInt_value_planned"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                },
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-row-cell-value"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "data-ui-subtype": "valueSubmitted"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "data-label": "prevInt_value_submitted"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        }
+                                                                                    ]
+                                                                                },
+                                                                                {
+                                                                                    "type": "TR",
+                                                                                    "attributes": [
+                                                                                        {
+                                                                                            "data-ui-type": "table-subrow-template"
+                                                                                        },
+                                                                                        {
+                                                                                            "data-ui-subtype": "inPerson"
+                                                                                        },
+                                                                                        {
+                                                                                            "data-view-state": "!active"
+                                                                                        },
+                                                                                        {
+                                                                                            "class": "header"
+                                                                                        }
+                                                                                    ],
+                                                                                    "childNodes": [
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-subrow-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "more"
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-subrow-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "order"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-subrow-cell-value"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "data-label": "prevInt_label_displayOrder"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-subrow-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "name"
+                                                                                                },
+                                                                                                {
+                                                                                                    "colspan": "2"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-subrow-cell-value"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "data-label": "prevInt_label_slideDescription"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-subrow-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "reaction"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-subrow-cell-value"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "data-label": "prevInt_label_reaction"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-subrow-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "duration"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-subrow-cell-value"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "data-label": "prevInt_label_duration"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        }
+                                                                                    ]
+                                                                                },
+                                                                                {
+                                                                                    "type": "TR",
+                                                                                    "attributes": [
+                                                                                        {
+                                                                                            "data-ui-type": "table-subrow-template"
+                                                                                        },
+                                                                                        {
+                                                                                            "data-ui-subtype": "inPerson"
+                                                                                        },
+                                                                                        {
+                                                                                            "data-view-state": "!active"
+                                                                                        },
+                                                                                        {
+                                                                                            "class": "!last"
+                                                                                        }
+                                                                                    ],
+                                                                                    "childNodes": [
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-subrow-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "more"
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-subrow-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "order"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-subrow-cell-value"
+                                                                                                        }
+                                                                                                    ],
+                                                                                                    "childNodes": [
+                                                                                                        {
+                                                                                                            "type": "IMG",
+                                                                                                            "attributes": [
+                                                                                                                {
+                                                                                                                    "src": ""
+                                                                                                                },
+                                                                                                                {
+                                                                                                                    "alt": ""
+                                                                                                                },
+                                                                                                                {
+                                                                                                                    "class": "slide"
+                                                                                                                }
+                                                                                                            ]
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-subrow-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "name"
+                                                                                                },
+                                                                                                {
+                                                                                                    "colspan": "2"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-subrow-cell-value"
+                                                                                                        }
+                                                                                                    ],
+                                                                                                    "childNodes": [
+                                                                                                        {
+                                                                                                            "type": "#text",
+                                                                                                            "text": "__slidedescription__"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-subrow-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "reaction"
+                                                                                                },
+                                                                                                {
+                                                                                                    "class": "reaction !positive !neutral !negative"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-subrow-cell-value"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "class": "icon"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                },
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-subrow-cell-value"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "class": "text"
+                                                                                                        }
+                                                                                                    ],
+                                                                                                    "childNodes": [
+                                                                                                        {
+                                                                                                            "type": "#text",
+                                                                                                            "text": "__reaction__"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-subrow-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "duration"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-subrow-cell-value"
+                                                                                                        }
+                                                                                                    ],
+                                                                                                    "childNodes": [
+                                                                                                        {
+                                                                                                            "type": "#text",
+                                                                                                            "text": "__duration__"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        }
+                                                                                    ]
+                                                                                },
+                                                                                {
+                                                                                    "type": "TR",
+                                                                                    "attributes": [
+                                                                                        {
+                                                                                            "data-ui-type": "table-row-template"
+                                                                                        },
+                                                                                        {
+                                                                                            "data-ui-subtype": "videoCall"
+                                                                                        },
+                                                                                        {
+                                                                                            "data-view-state": "!active"
+                                                                                        }
+                                                                                    ],
+                                                                                    "childNodes": [
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-row-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "more"
+                                                                                                },
+                                                                                                {
+                                                                                                    "class": "more"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-row-cell-action"
+                                                                                                        }
+                                                                                                    ],
+                                                                                                    "childNodes": [
+                                                                                                        {
+                                                                                                            "type": "IMG",
+                                                                                                            "attributes": [
+                                                                                                                {
+                                                                                                                    "src": "../common/img/precall/iconMore.png"
+                                                                                                                },
+                                                                                                                {
+                                                                                                                    "alt": "more"
+                                                                                                                },
+                                                                                                                {
+                                                                                                                    "class": "iconMore"
+                                                                                                                }
+                                                                                                            ]
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-row-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "date"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-row-cell-value"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "data-ui-subtype": "day"
+                                                                                                        }
+                                                                                                    ],
+                                                                                                    "childNodes": [
+                                                                                                        {
+                                                                                                            "type": "#text",
+                                                                                                            "text": "__day__"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                },
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-row-cell-value"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "data-ui-subtype": "time"
+                                                                                                        }
+                                                                                                    ],
+                                                                                                    "childNodes": [
+                                                                                                        {
+                                                                                                            "type": "#text",
+                                                                                                            "text": "__time__"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-row-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "interactionType"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-row-cell-value"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "data-ui-subtype": "valueVideo"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "data-label": "prevInt_value_video"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-row-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "contentName"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-row-cell-value"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "data-label": "prevInt_value_IVA"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-row-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "status"
+                                                                                                },
+                                                                                                {
+                                                                                                    "colspan": "2"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-row-cell-value"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "data-ui-subtype": "valueSaved"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "data-label": "prevInt_value_saved"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                },
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-row-cell-value"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "data-ui-subtype": "valuePlanned"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "data-label": "prevInt_value_planned"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                },
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-row-cell-value"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "data-ui-subtype": "valueSubmitted"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "data-label": "prevInt_value_submitted"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        }
+                                                                                    ]
+                                                                                },
+                                                                                {
+                                                                                    "type": "TR",
+                                                                                    "attributes": [
+                                                                                        {
+                                                                                            "data-ui-type": "table-subrow-template"
+                                                                                        },
+                                                                                        {
+                                                                                            "data-ui-subtype": "videoCall"
+                                                                                        },
+                                                                                        {
+                                                                                            "data-view-state": "!active"
+                                                                                        },
+                                                                                        {
+                                                                                            "class": "header"
+                                                                                        }
+                                                                                    ],
+                                                                                    "childNodes": [
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-subrow-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "more"
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-subrow-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "order"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-subrow-cell-value"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "data-label": "prevInt_label_displayOrder"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-subrow-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "name"
+                                                                                                },
+                                                                                                {
+                                                                                                    "colspan": "2"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-subrow-cell-value"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "data-label": "prevInt_label_slideDescription"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-subrow-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "reaction"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-subrow-cell-value"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "data-label": "prevInt_label_reaction"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-subrow-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "duration"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-subrow-cell-value"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "data-label": "prevInt_label_duration"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        }
+                                                                                    ]
+                                                                                },
+                                                                                {
+                                                                                    "type": "TR",
+                                                                                    "attributes": [
+                                                                                        {
+                                                                                            "data-ui-type": "table-subrow-template"
+                                                                                        },
+                                                                                        {
+                                                                                            "data-ui-subtype": "videoCall"
+                                                                                        },
+                                                                                        {
+                                                                                            "data-view-state": "!active"
+                                                                                        },
+                                                                                        {
+                                                                                            "class": "!last"
+                                                                                        }
+                                                                                    ],
+                                                                                    "childNodes": [
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-subrow-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "more"
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-subrow-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "order"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-subrow-cell-value"
+                                                                                                        }
+                                                                                                    ],
+                                                                                                    "childNodes": [
+                                                                                                        {
+                                                                                                            "type": "IMG",
+                                                                                                            "attributes": [
+                                                                                                                {
+                                                                                                                    "src": ""
+                                                                                                                },
+                                                                                                                {
+                                                                                                                    "alt": ""
+                                                                                                                },
+                                                                                                                {
+                                                                                                                    "class": "slide"
+                                                                                                                }
+                                                                                                            ]
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-subrow-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "name"
+                                                                                                },
+                                                                                                {
+                                                                                                    "colspan": "2"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-subrow-cell-value"
+                                                                                                        }
+                                                                                                    ],
+                                                                                                    "childNodes": [
+                                                                                                        {
+                                                                                                            "type": "#text",
+                                                                                                            "text": "__slidedescription__"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-subrow-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "reaction"
+                                                                                                },
+                                                                                                {
+                                                                                                    "class": "reaction !positive !neutral !negative"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-subrow-cell-value"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "class": "icon"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                },
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-subrow-cell-value"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "class": "text"
+                                                                                                        }
+                                                                                                    ],
+                                                                                                    "childNodes": [
+                                                                                                        {
+                                                                                                            "type": "#text",
+                                                                                                            "text": "__reaction__"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-subrow-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "duration"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-subrow-cell-value"
+                                                                                                        }
+                                                                                                    ],
+                                                                                                    "childNodes": [
+                                                                                                        {
+                                                                                                            "type": "#text",
+                                                                                                            "text": "__duration__"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        }
+                                                                                    ]
+                                                                                },
+                                                                                {
+                                                                                    "type": "TR",
+                                                                                    "attributes": [
+                                                                                        {
+                                                                                            "data-ui-type": "table-row-template"
+                                                                                        },
+                                                                                        {
+                                                                                            "data-ui-subtype": "blank"
+                                                                                        },
+                                                                                        {
+                                                                                            "data-view-state": "!active"
+                                                                                        }
+                                                                                    ],
+                                                                                    "childNodes": [
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-row-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "more"
+                                                                                                },
+                                                                                                {
+                                                                                                    "class": "more"
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-row-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "date"
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-row-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "interactionType"
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-row-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "contentName"
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-row-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "status"
+                                                                                                },
+                                                                                                {
+                                                                                                    "colspan": "2"
+                                                                                                }
+                                                                                            ]
+                                                                                        }
+                                                                                    ]
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "type": "DIV",
+                                            "attributes": [
+                                                {
+                                                    "data-type": "com.idc.ui.core.tab.content"
+                                                },
+                                                {
+                                                    "data-instance": "slides"
+                                                }
+                                            ],
+                                            "childNodes": [
+                                                {
+                                                    "type": "DIV",
+                                                    "attributes": [
+                                                        {
+                                                            "data-ui-id": "slides"
+                                                        }
+                                                    ],
+                                                    "childNodes": [
+                                                        {
+                                                            "type": "DIV",
+                                                            "attributes": [
+                                                                {
+                                                                    "data-ui-id": "slides_options"
+                                                                }
+                                                            ],
+                                                            "childNodes": [
+                                                                {
+                                                                    "type": "DIV",
+                                                                    "attributes": [
+                                                                        {
+                                                                            "data-ui-id": "filters_wrapper"
+                                                                        }
+                                                                    ],
+                                                                    "childNodes": [
+                                                                        {
+                                                                            "type": "DIV",
+                                                                            "attributes": [
+                                                                                {
+                                                                                    "data-ui-type": "filter"
+                                                                                },
+                                                                                {
+                                                                                    "data-view": "all"
+                                                                                },
+                                                                                {
+                                                                                    "data-view-state": "active"
+                                                                                },
+                                                                                {
+                                                                                    "data-label": "slides_filter_all"
+                                                                                }
+                                                                            ]
+                                                                        },
+                                                                        {
+                                                                            "type": "DIV",
+                                                                            "attributes": [
+                                                                                {
+                                                                                    "data-ui-type": "filter"
+                                                                                },
+                                                                                {
+                                                                                    "data-view": "discussed"
+                                                                                },
+                                                                                {
+                                                                                    "data-view-state": "!active"
+                                                                                },
+                                                                                {
+                                                                                    "data-label": "slides_filter_discussed"
+                                                                                }
+                                                                            ]
+                                                                        },
+                                                                        {
+                                                                            "type": "DIV",
+                                                                            "attributes": [
+                                                                                {
+                                                                                    "data-ui-type": "filter"
+                                                                                },
+                                                                                {
+                                                                                    "data-view": "notDiscussed"
+                                                                                },
+                                                                                {
+                                                                                    "data-view-state": "!active"
+                                                                                },
+                                                                                {
+                                                                                    "data-label": "slides_filter_notDiscussed"
+                                                                                }
+                                                                            ]
+                                                                        },
+                                                                        {
+                                                                            "type": "DIV",
+                                                                            "attributes": [
+                                                                                {
+                                                                                    "data-ui-type": "filter"
+                                                                                },
+                                                                                {
+                                                                                    "data-view": "recommended"
+                                                                                },
+                                                                                {
+                                                                                    "data-view-state": "hidden"
+                                                                                },
+                                                                                {
+                                                                                    "data-label": "slides_filter_recommended"
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "type": "DIV",
+                                                                    "attributes": [
+                                                                        {
+                                                                            "data-ui-id": "launchNextBestContent"
+                                                                        },
+                                                                        {
+                                                                            "data-view-state": "hidden"
+                                                                        },
+                                                                        {
+                                                                            "data-label": "slides_launch_nextBestContent"
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "type": "DIV",
+                                                                    "attributes": [
+                                                                        {
+                                                                            "data-ui-id": "sort_wrapper"
+                                                                        }
+                                                                    ],
+                                                                    "childNodes": [
+                                                                        {
+                                                                            "type": "SELECT",
+                                                                            "attributes": [
+                                                                                {
+                                                                                    "id": "interactionSummary_slidesSort"
+                                                                                },
+                                                                                {
+                                                                                    "data-ui-id": "slides_sort_select"
+                                                                                },
+                                                                                {
+                                                                                    "disabled": ""
+                                                                                }
+                                                                            ],
+                                                                            "childNodes": [
+                                                                                {
+                                                                                    "type": "OPTION",
+                                                                                    "attributes": [
+                                                                                        {
+                                                                                            "value": "default"
+                                                                                        },
+                                                                                        {
+                                                                                            "selected": ""
+                                                                                        },
+                                                                                        {
+                                                                                            "data-label": "slides_sort_default"
+                                                                                        }
+                                                                                    ],
+                                                                                    "childNodes": [
+                                                                                        {
+                                                                                            "type": "#text",
+                                                                                            "text": "slides_sort_default"
+                                                                                        }
+                                                                                    ]
+                                                                                },
+                                                                                {
+                                                                                    "type": "OPTION",
+                                                                                    "attributes": [
+                                                                                        {
+                                                                                            "value": "mostRecentlyDiscussed"
+                                                                                        },
+                                                                                        {
+                                                                                            "data-label": "slides_sort_mostRecentlyDiscussed"
+                                                                                        }
+                                                                                    ],
+                                                                                    "childNodes": [
+                                                                                        {
+                                                                                            "type": "#text",
+                                                                                            "text": "slides_sort_mostRecentlyDiscussed"
+                                                                                        }
+                                                                                    ]
+                                                                                },
+                                                                                {
+                                                                                    "type": "OPTION",
+                                                                                    "attributes": [
+                                                                                        {
+                                                                                            "value": "moreTimeSpentOn"
+                                                                                        },
+                                                                                        {
+                                                                                            "data-label": "slides_sort_moreTimeSpentOn"
+                                                                                        }
+                                                                                    ],
+                                                                                    "childNodes": [
+                                                                                        {
+                                                                                            "type": "#text",
+                                                                                            "text": "slides_sort_moreTimeSpentOn"
+                                                                                        }
+                                                                                    ]
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "type": "DIV",
+                                                            "attributes": [
+                                                                {
+                                                                    "data-ui-id": "scroll"
+                                                                }
+                                                            ],
+                                                            "childNodes": [
+                                                                {
+                                                                    "type": "DIV",
+                                                                    "attributes": [
+                                                                        {
+                                                                            "data-ui-id": "slides_contents"
+                                                                        }
+                                                                    ],
+                                                                    "childNodes": [
+                                                                        {
+                                                                            "type": "DIV",
+                                                                            "attributes": [
+                                                                                {
+                                                                                    "data-type": "slides_content_template"
+                                                                                }
+                                                                            ],
+                                                                            "childNodes": [
+                                                                                {
+                                                                                    "type": "DIV",
+                                                                                    "attributes": [
+                                                                                        {
+                                                                                            "data-type": "slides_content_thumbnail"
+                                                                                        }
+                                                                                    ],
+                                                                                    "childNodes": [
+                                                                                        {
+                                                                                            "type": "IMG",
+                                                                                            "attributes": []
+                                                                                        }
+                                                                                    ]
+                                                                                },
+                                                                                {
+                                                                                    "type": "DIV",
+                                                                                    "attributes": [
+                                                                                        {
+                                                                                            "data-type": "slides_content_name"
+                                                                                        }
+                                                                                    ],
+                                                                                    "childNodes": [
+                                                                                        {
+                                                                                            "type": "SPAN",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "value"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "#text",
+                                                                                                    "text": "__name__"
+                                                                                                }
+                                                                                            ]
+                                                                                        }
+                                                                                    ]
+                                                                                },
+                                                                                {
+                                                                                    "type": "DIV",
+                                                                                    "attributes": [
+                                                                                        {
+                                                                                            "data-type": "slides_content_lastViewDate"
+                                                                                        }
+                                                                                    ],
+                                                                                    "childNodes": [
+                                                                                        {
+                                                                                            "type": "SPAN",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "title"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-label": "slides_label_lastView"
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "SPAN",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "value"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "#text",
+                                                                                                    "text": "__date and time__"
+                                                                                                }
+                                                                                            ]
+                                                                                        }
+                                                                                    ]
+                                                                                },
+                                                                                {
+                                                                                    "type": "DIV",
+                                                                                    "attributes": [
+                                                                                        {
+                                                                                            "data-type": "slides_content_reaction"
+                                                                                        }
+                                                                                    ],
+                                                                                    "childNodes": [
+                                                                                        {
+                                                                                            "type": "SPAN",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "title"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-label": "slides_label_reaction"
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "SPAN",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "value"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "#text",
+                                                                                                    "text": "__reaction__"
+                                                                                                }
+                                                                                            ]
+                                                                                        }
+                                                                                    ]
+                                                                                },
+                                                                                {
+                                                                                    "type": "DIV",
+                                                                                    "attributes": [
+                                                                                        {
+                                                                                            "data-type": "slides_content_duration"
+                                                                                        }
+                                                                                    ],
+                                                                                    "childNodes": [
+                                                                                        {
+                                                                                            "type": "SPAN",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "title"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-label": "slides_label_duration"
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "SPAN",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "value"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "#text",
+                                                                                                    "text": "__duration__"
+                                                                                                }
+                                                                                            ]
+                                                                                        }
+                                                                                    ]
+                                                                                },
+                                                                                {
+                                                                                    "type": "DIV",
+                                                                                    "attributes": [
+                                                                                        {
+                                                                                            "data-type": "slides_content_totalViews"
+                                                                                        }
+                                                                                    ],
+                                                                                    "childNodes": [
+                                                                                        {
+                                                                                            "type": "SPAN",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "title"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-label": "slides_label_totalViews"
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "SPAN",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "value"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "#text",
+                                                                                                    "text": "__total views__"
+                                                                                                }
+                                                                                            ]
+                                                                                        }
+                                                                                    ]
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "type": "DIV",
+                                            "attributes": [
+                                                {
+                                                    "data-type": "com.idc.ui.core.tab.content"
+                                                },
+                                                {
+                                                    "data-instance": "emails"
+                                                }
+                                            ],
+                                            "childNodes": [
+                                                {
+                                                    "type": "DIV",
+                                                    "attributes": [
+                                                        {
+                                                            "data-ui-id": "emails"
+                                                        }
+                                                    ],
+                                                    "childNodes": [
+                                                        {
+                                                            "type": "DIV",
+                                                            "attributes": [
+                                                                {
+                                                                    "data-ui-id": "emails_options"
+                                                                }
+                                                            ],
+                                                            "childNodes": [
+                                                                {
+                                                                    "type": "DIV",
+                                                                    "attributes": [
+                                                                        {
+                                                                            "data-ui-id": "sort_wrapper"
+                                                                        }
+                                                                    ],
+                                                                    "childNodes": [
+                                                                        {
+                                                                            "type": "SELECT",
+                                                                            "attributes": [
+                                                                                {
+                                                                                    "id": "interactionSummary_emailsSort"
+                                                                                },
+                                                                                {
+                                                                                    "data-ui-id": "emails_sort_select"
+                                                                                },
+                                                                                {
+                                                                                    "disabled": ""
+                                                                                }
+                                                                            ],
+                                                                            "childNodes": [
+                                                                                {
+                                                                                    "type": "OPTION",
+                                                                                    "attributes": [
+                                                                                        {
+                                                                                            "value": "default"
+                                                                                        },
+                                                                                        {
+                                                                                            "selected": ""
+                                                                                        },
+                                                                                        {
+                                                                                            "data-label": "emails_sort_default"
+                                                                                        }
+                                                                                    ],
+                                                                                    "childNodes": [
+                                                                                        {
+                                                                                            "type": "#text",
+                                                                                            "text": "emails_sort_default"
+                                                                                        }
+                                                                                    ]
+                                                                                },
+                                                                                {
+                                                                                    "type": "OPTION",
+                                                                                    "attributes": [
+                                                                                        {
+                                                                                            "value": "mostRecentlySent"
+                                                                                        },
+                                                                                        {
+                                                                                            "data-label": "emails_sort_mostRecentlySent"
+                                                                                        }
+                                                                                    ],
+                                                                                    "childNodes": [
+                                                                                        {
+                                                                                            "type": "#text",
+                                                                                            "text": "emails_sort_mostRecentlySent"
+                                                                                        }
+                                                                                    ]
+                                                                                },
+                                                                                {
+                                                                                    "type": "OPTION",
+                                                                                    "attributes": [
+                                                                                        {
+                                                                                            "value": "moreOpens"
+                                                                                        },
+                                                                                        {
+                                                                                            "data-label": "emails_sort_moreOpens"
+                                                                                        }
+                                                                                    ],
+                                                                                    "childNodes": [
+                                                                                        {
+                                                                                            "type": "#text",
+                                                                                            "text": "emails_sort_moreOpens"
+                                                                                        }
+                                                                                    ]
+                                                                                },
+                                                                                {
+                                                                                    "type": "OPTION",
+                                                                                    "attributes": [
+                                                                                        {
+                                                                                            "value": "moreClicks"
+                                                                                        },
+                                                                                        {
+                                                                                            "data-label": "emails_sort_moreClicks"
+                                                                                        }
+                                                                                    ],
+                                                                                    "childNodes": [
+                                                                                        {
+                                                                                            "type": "#text",
+                                                                                            "text": "emails_sort_moreClicks"
+                                                                                        }
+                                                                                    ]
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "type": "DIV",
+                                                            "attributes": [
+                                                                {
+                                                                    "data-ui-id": "scroll"
+                                                                }
+                                                            ],
+                                                            "childNodes": [
+                                                                {
+                                                                    "type": "TABLE",
+                                                                    "attributes": [
+                                                                        {
+                                                                            "data-ui-id": "emailsTable"
+                                                                        },
+                                                                        {
+                                                                            "data-ui-type": "table"
+                                                                        }
+                                                                    ],
+                                                                    "childNodes": [
+                                                                        {
+                                                                            "type": "THEAD",
+                                                                            "attributes": [],
+                                                                            "childNodes": [
+                                                                                {
+                                                                                    "type": "TR",
+                                                                                    "attributes": [
+                                                                                        {
+                                                                                            "data-ui-type": "table-header-row"
+                                                                                        }
+                                                                                    ],
+                                                                                    "childNodes": [
+                                                                                        {
+                                                                                            "type": "TH",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-header-column"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "email"
+                                                                                                },
+                                                                                                {
+                                                                                                    "rowspan": "2"
+                                                                                                },
+                                                                                                {
+                                                                                                    "colspan": "2"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-label": "emails_label_expandAll"
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TH",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-header-column"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "lastDate"
+                                                                                                },
+                                                                                                {
+                                                                                                    "colspan": "3"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-label": "emails_label_lastTime"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-row-cell-value"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TH",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-header-column"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "allDates"
+                                                                                                },
+                                                                                                {
+                                                                                                    "colspan": "3"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-label": "emails_label_allTimes"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-row-cell-value"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        }
+                                                                                    ]
+                                                                                },
+                                                                                {
+                                                                                    "type": "TR",
+                                                                                    "attributes": [
+                                                                                        {
+                                                                                            "data-ui-type": "table-header-row"
+                                                                                        }
+                                                                                    ],
+                                                                                    "childNodes": [
+                                                                                        {
+                                                                                            "type": "TH",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-header-column"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "lastTimeSent_date"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-row-cell-value"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "data-label": "emails_label_date"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TH",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-header-column"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "lastTimeSent_open"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-row-cell-value"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "data-label": "emails_label_opened"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TH",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-header-column"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "lastTimeSent_click"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-row-cell-value"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "data-label": "emails_label_clicked"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TH",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-header-column"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "allTimes_sent"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-row-cell-value"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "data-label": "emails_label_sent"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TH",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-header-column"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "allTimes_open"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-row-cell-value"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "data-label": "emails_label_opened"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TH",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-header-column"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "allTimes_click"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-row-cell-value"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "data-label": "emails_label_clicked"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        }
+                                                                                    ]
+                                                                                }
+                                                                            ]
+                                                                        },
+                                                                        {
+                                                                            "type": "TBODY",
+                                                                            "attributes": [],
+                                                                            "childNodes": [
+                                                                                {
+                                                                                    "type": "TR",
+                                                                                    "attributes": [
+                                                                                        {
+                                                                                            "data-ui-type": "table-row-template"
+                                                                                        },
+                                                                                        {
+                                                                                            "data-ui-subtype": "approvedEmail"
+                                                                                        },
+                                                                                        {
+                                                                                            "data-view-state": "!active"
+                                                                                        }
+                                                                                    ],
+                                                                                    "childNodes": [
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-row-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "more"
+                                                                                                },
+                                                                                                {
+                                                                                                    "class": "more"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-row-cell-action"
+                                                                                                        }
+                                                                                                    ],
+                                                                                                    "childNodes": [
+                                                                                                        {
+                                                                                                            "type": "IMG",
+                                                                                                            "attributes": [
+                                                                                                                {
+                                                                                                                    "src": "../common/img/precall/iconMore.png"
+                                                                                                                },
+                                                                                                                {
+                                                                                                                    "alt": "more"
+                                                                                                                },
+                                                                                                                {
+                                                                                                                    "class": "iconMore"
+                                                                                                                }
+                                                                                                            ]
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-row-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "email"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-row-cell-value"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "data-ui-subtype": "thumbnail"
+                                                                                                        }
+                                                                                                    ],
+                                                                                                    "childNodes": [
+                                                                                                        {
+                                                                                                            "type": "IMG",
+                                                                                                            "attributes": [
+                                                                                                                {
+                                                                                                                    "class": "ae"
+                                                                                                                }
+                                                                                                            ]
+                                                                                                        }
+                                                                                                    ]
+                                                                                                },
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-row-cell-value"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "data-ui-subtype": "name"
+                                                                                                        }
+                                                                                                    ],
+                                                                                                    "childNodes": [
+                                                                                                        {
+                                                                                                            "type": "#text",
+                                                                                                            "text": "__template name__"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-row-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "lastTimeSent_date"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-row-cell-value"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "data-ui-subtype": "day"
+                                                                                                        }
+                                                                                                    ],
+                                                                                                    "childNodes": [
+                                                                                                        {
+                                                                                                            "type": "#text",
+                                                                                                            "text": "__date__"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                },
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-row-cell-value"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "data-ui-subtype": "time"
+                                                                                                        }
+                                                                                                    ],
+                                                                                                    "childNodes": [
+                                                                                                        {
+                                                                                                            "type": "#text",
+                                                                                                            "text": "__time__"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-row-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "lastTimeSent_open"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-row-cell-value"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "data-ui-subtype": "valueYes"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "data-label": "emails_value_yes"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                },
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-row-cell-value"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "data-ui-subtype": "valueNo"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "data-label": "emails_value_no"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-row-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "lastTimeSent_click"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-row-cell-value"
+                                                                                                        }
+                                                                                                    ],
+                                                                                                    "childNodes": [
+                                                                                                        {
+                                                                                                            "type": "#text",
+                                                                                                            "text": "__click__"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-row-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "allTimes_sent"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-row-cell-value"
+                                                                                                        }
+                                                                                                    ],
+                                                                                                    "childNodes": [
+                                                                                                        {
+                                                                                                            "type": "#text",
+                                                                                                            "text": "__sent__"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-row-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "allTimes_open"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-row-cell-value"
+                                                                                                        }
+                                                                                                    ],
+                                                                                                    "childNodes": [
+                                                                                                        {
+                                                                                                            "type": "#text",
+                                                                                                            "text": "__open__"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-row-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "allTimes_click"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-row-cell-value"
+                                                                                                        }
+                                                                                                    ],
+                                                                                                    "childNodes": [
+                                                                                                        {
+                                                                                                            "type": "#text",
+                                                                                                            "text": "__clicks__"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        }
+                                                                                    ]
+                                                                                },
+                                                                                {
+                                                                                    "type": "TR",
+                                                                                    "attributes": [
+                                                                                        {
+                                                                                            "data-ui-type": "table-subrow-template"
+                                                                                        },
+                                                                                        {
+                                                                                            "data-ui-subtype": "approvedEmail"
+                                                                                        },
+                                                                                        {
+                                                                                            "data-view-state": "!active"
+                                                                                        },
+                                                                                        {
+                                                                                            "class": "!last"
+                                                                                        }
+                                                                                    ],
+                                                                                    "childNodes": [
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-subrow-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "more"
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-subrow-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "email"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-subrow-cell-label"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "data-ui-subtype": "fragmentLabel"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "data-label": "emails_value_fragment"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                },
+                                                                                                {
+                                                                                                    "type": "BR",
+                                                                                                    "attributes": []
+                                                                                                },
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-subrow-cell-value"
+                                                                                                        }
+                                                                                                    ],
+                                                                                                    "childNodes": [
+                                                                                                        {
+                                                                                                            "type": "#text",
+                                                                                                            "text": "__name__"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-subrow-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "lastTimeSent_date"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-subrow-cell-value"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "data-ui-subtype": "day"
+                                                                                                        }
+                                                                                                    ],
+                                                                                                    "childNodes": [
+                                                                                                        {
+                                                                                                            "type": "#text",
+                                                                                                            "text": "__date__"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                },
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-subrow-cell-value"
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "data-ui-subtype": "time"
+                                                                                                        }
+                                                                                                    ],
+                                                                                                    "childNodes": [
+                                                                                                        {
+                                                                                                            "type": "#text",
+                                                                                                            "text": "__time__"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-subrow-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "lastTimeSent_open"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-subrow-cell-value"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-subrow-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "lastTimeSent_click"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-subrow-cell-value"
+                                                                                                        }
+                                                                                                    ],
+                                                                                                    "childNodes": [
+                                                                                                        {
+                                                                                                            "type": "#text",
+                                                                                                            "text": "__click__"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-subrow-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "allTimes_sent"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-subrow-cell-value"
+                                                                                                        }
+                                                                                                    ],
+                                                                                                    "childNodes": [
+                                                                                                        {
+                                                                                                            "type": "#text",
+                                                                                                            "text": "__sent__"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-subrow-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "allTimes_open"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-subrow-cell-value"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-subrow-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "allTimes_click"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "SPAN",
+                                                                                                    "attributes": [
+                                                                                                        {
+                                                                                                            "data-ui-type": "table-subrow-cell-value"
+                                                                                                        }
+                                                                                                    ],
+                                                                                                    "childNodes": [
+                                                                                                        {
+                                                                                                            "type": "#text",
+                                                                                                            "text": "__clicks__"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        }
+                                                                                    ]
+                                                                                },
+                                                                                {
+                                                                                    "type": "TR",
+                                                                                    "attributes": [
+                                                                                        {
+                                                                                            "data-ui-type": "table-row-template"
+                                                                                        },
+                                                                                        {
+                                                                                            "data-ui-subtype": "blank"
+                                                                                        },
+                                                                                        {
+                                                                                            "data-view-state": "!active"
+                                                                                        }
+                                                                                    ],
+                                                                                    "childNodes": [
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-row-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "more"
+                                                                                                },
+                                                                                                {
+                                                                                                    "class": "more"
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-row-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "email"
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-row-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "lastTimeSent_date"
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-row-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "lastTimeSent_open"
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-row-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "lastTimeSent_click"
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-row-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "allTimes_sent"
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-row-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "allTimes_open"
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "TD",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "table-row-cell"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-column-id": "allTimes_click"
+                                                                                                }
+                                                                                            ]
+                                                                                        }
+                                                                                    ]
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "type": "DIV",
+                                            "attributes": [
+                                                {
+                                                    "data-type": "com.idc.ui.core.tab.content"
+                                                },
+                                                {
+                                                    "data-instance": "relatedCLM"
+                                                }
+                                            ],
+                                            "childNodes": [
+                                                {
+                                                    "type": "DIV",
+                                                    "attributes": [
+                                                        {
+                                                            "data-ui-id": "relatedCLM"
+                                                        }
+                                                    ],
+                                                    "childNodes": [
+                                                        {
+                                                            "type": "DIV",
+                                                            "attributes": [
+                                                                {
+                                                                    "data-ui-id": "relatedCLM_options"
+                                                                }
+                                                            ],
+                                                            "childNodes": [
+                                                                {
+                                                                    "type": "DIV",
+                                                                    "attributes": [
+                                                                        {
+                                                                            "data-ui-id": "filters_wrapper"
+                                                                        }
+                                                                    ],
+                                                                    "childNodes": [
+                                                                        {
+                                                                            "type": "DIV",
+                                                                            "attributes": [
+                                                                                {
+                                                                                    "data-ui-type": "filter"
+                                                                                },
+                                                                                {
+                                                                                    "data-view": "all"
+                                                                                },
+                                                                                {
+                                                                                    "data-view-state": "active"
+                                                                                },
+                                                                                {
+                                                                                    "data-label": "relatedCLM_filter_all"
+                                                                                }
+                                                                            ]
+                                                                        },
+                                                                        {
+                                                                            "type": "DIV",
+                                                                            "attributes": [
+                                                                                {
+                                                                                    "data-ui-type": "filter"
+                                                                                },
+                                                                                {
+                                                                                    "data-view": "discussed"
+                                                                                },
+                                                                                {
+                                                                                    "data-view-state": "!active"
+                                                                                },
+                                                                                {
+                                                                                    "data-label": "relatedCLM_filter_discussed"
+                                                                                }
+                                                                            ]
+                                                                        },
+                                                                        {
+                                                                            "type": "DIV",
+                                                                            "attributes": [
+                                                                                {
+                                                                                    "data-ui-type": "filter"
+                                                                                },
+                                                                                {
+                                                                                    "data-view": "notDiscussed"
+                                                                                },
+                                                                                {
+                                                                                    "data-view-state": "!active"
+                                                                                },
+                                                                                {
+                                                                                    "data-label": "relatedCLM_filter_notDiscussed"
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "type": "DIV",
+                                                                    "attributes": [
+                                                                        {
+                                                                            "data-ui-id": "sort_wrapper"
+                                                                        }
+                                                                    ],
+                                                                    "childNodes": [
+                                                                        {
+                                                                            "type": "SELECT",
+                                                                            "attributes": [
+                                                                                {
+                                                                                    "id": "interactionSummary_relatedCLMSort"
+                                                                                },
+                                                                                {
+                                                                                    "data-ui-id": "relatedCLM_sort_select"
+                                                                                },
+                                                                                {
+                                                                                    "disabled": ""
+                                                                                }
+                                                                            ],
+                                                                            "childNodes": [
+                                                                                {
+                                                                                    "type": "OPTION",
+                                                                                    "attributes": [
+                                                                                        {
+                                                                                            "value": "default"
+                                                                                        },
+                                                                                        {
+                                                                                            "selected": ""
+                                                                                        },
+                                                                                        {
+                                                                                            "data-label": "relatedCLM_sort_default"
+                                                                                        }
+                                                                                    ],
+                                                                                    "childNodes": [
+                                                                                        {
+                                                                                            "type": "#text",
+                                                                                            "text": "relatedCLM_sort_default"
+                                                                                        }
+                                                                                    ]
+                                                                                },
+                                                                                {
+                                                                                    "type": "OPTION",
+                                                                                    "attributes": [
+                                                                                        {
+                                                                                            "value": "mostRecentlyDiscussed"
+                                                                                        },
+                                                                                        {
+                                                                                            "data-label": "relatedCLM_sort_mostRecentlyDiscussed"
+                                                                                        }
+                                                                                    ],
+                                                                                    "childNodes": [
+                                                                                        {
+                                                                                            "type": "#text",
+                                                                                            "text": "relatedCLM_sort_mostRecentlyDiscussed"
+                                                                                        }
+                                                                                    ]
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "type": "DIV",
+                                                            "attributes": [
+                                                                {
+                                                                    "data-ui-id": "scroll"
+                                                                }
+                                                            ],
+                                                            "childNodes": [
+                                                                {
+                                                                    "type": "DIV",
+                                                                    "attributes": [
+                                                                        {
+                                                                            "data-ui-id": "relatedCLM_contents"
+                                                                        }
+                                                                    ],
+                                                                    "childNodes": [
+                                                                        {
+                                                                            "type": "DIV",
+                                                                            "attributes": [
+                                                                                {
+                                                                                    "data-type": "relatedCLM_content_template"
+                                                                                }
+                                                                            ],
+                                                                            "childNodes": [
+                                                                                {
+                                                                                    "type": "DIV",
+                                                                                    "attributes": [
+                                                                                        {
+                                                                                            "data-type": "relatedCLM_content_thumbnail"
+                                                                                        }
+                                                                                    ],
+                                                                                    "childNodes": [
+                                                                                        {
+                                                                                            "type": "IMG",
+                                                                                            "attributes": []
+                                                                                        }
+                                                                                    ]
+                                                                                },
+                                                                                {
+                                                                                    "type": "DIV",
+                                                                                    "attributes": [
+                                                                                        {
+                                                                                            "data-type": "relatedCLM_content_name"
+                                                                                        }
+                                                                                    ],
+                                                                                    "childNodes": [
+                                                                                        {
+                                                                                            "type": "SPAN",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "value"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "#text",
+                                                                                                    "text": "__name__"
+                                                                                                }
+                                                                                            ]
+                                                                                        }
+                                                                                    ]
+                                                                                },
+                                                                                {
+                                                                                    "type": "DIV",
+                                                                                    "attributes": [
+                                                                                        {
+                                                                                            "data-type": "relatedCLM_content_lastViewDate"
+                                                                                        }
+                                                                                    ],
+                                                                                    "childNodes": [
+                                                                                        {
+                                                                                            "type": "SPAN",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "title"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-label": "relatedCLM_label_lastView"
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "SPAN",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "value"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "#text",
+                                                                                                    "text": "__date and time__"
+                                                                                                }
+                                                                                            ]
+                                                                                        }
+                                                                                    ]
+                                                                                },
+                                                                                {
+                                                                                    "type": "DIV",
+                                                                                    "attributes": [
+                                                                                        {
+                                                                                            "data-type": "relatedCLM_content_totalViews"
+                                                                                        }
+                                                                                    ],
+                                                                                    "childNodes": [
+                                                                                        {
+                                                                                            "type": "SPAN",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "title"
+                                                                                                },
+                                                                                                {
+                                                                                                    "data-label": "relatedCLM_label_totalViews"
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        {
+                                                                                            "type": "SPAN",
+                                                                                            "attributes": [
+                                                                                                {
+                                                                                                    "data-ui-type": "value"
+                                                                                                }
+                                                                                            ],
+                                                                                            "childNodes": [
+                                                                                                {
+                                                                                                    "type": "#text",
+                                                                                                    "text": "__total views__"
+                                                                                                }
+                                                                                            ]
+                                                                                        }
+                                                                                    ]
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
   }
 };

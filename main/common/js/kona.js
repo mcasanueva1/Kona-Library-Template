@@ -1,9 +1,7 @@
 "use strict";
 
-const BUILD_ID = "kona library __20251023-124713-780606c__";
+const BUILD_ID = "kona library __20251124-110115-d9148f1__";
 console.log(BUILD_ID);
-
-//pepe4
 
 if (com == null) var com = {};
 if (com.idc == undefined) com.idc = {};
@@ -13,7 +11,7 @@ com.idc.clm = {
     project: {
       name: null,
       version: null,
-      persistentDataKey: null,
+      sessionDataKey: null,
       sessionDataKey: null,
     },
     session: {
@@ -548,12 +546,16 @@ com.idc.clm = {
     },
     interactionSummary: {
       active: null,
-      minRows: {
-        previousInteractions: null,
-        emails: null,
+      options: {
+        minRows: {
+          previousInteractions: null,
+          emails: null,
+        },
+        groupViewsForSameSlide: null,
+        considerSavedCalls: null,
+        considerCallsWithOtherPresentations: null,
+        considerEmailsWithOtherTemplates: null,
       },
-      groupViewsForSameSlide: null,
-      considerDraftCalls: null,
       testModel: {
         calls: {
           min: null,
@@ -583,16 +585,18 @@ com.idc.clm = {
       },
       labels: {},
       visibility: {
+        coverSummary: null,
         tabs: {
           previousInteractions: null,
           slides: null,
           emails: null,
+          relatedCLM: null,
         },
         fields: {
           previousInteractions: {
+            status: null,
             pres_reaction: null,
             pres_duration: null,
-            email_opened: null,
             email_timesClicked: null,
           },
           slides: {
@@ -608,6 +612,11 @@ com.idc.clm = {
             allTimesSent_sent: null,
             allTimesSent_open: null,
             allTimesSent_click: null,
+          },
+          relatedCLM: {
+            lastView: null,
+            duration: null,
+            totalViews: null,
           },
         },
       },
@@ -681,12 +690,15 @@ com.idc.clm = {
             },
             call: {
               channel: null, //face-to-face or remote
+              status: null, //Saved_vod, Submitted_vod, Planned_vod
+              presentations: [],
               slides: [
                 {
                   id: null,
                   title: null,
                   reaction: null, //positive, neutral, negative
                   duration: null, //seconds
+                  notThisIVASlideFlag: null, //used to indicate that the slide does not belong to this IVA
                 },
               ],
             },
@@ -699,6 +711,8 @@ com.idc.clm = {
             status: null, //discussed / not discussed
             mostRecentCall: {
               date: null, //date
+              time: null, //time
+              time_AMPM: null,
               reaction: null, //positive, neutral, negative
               duration: null, //seconds
             },
@@ -775,6 +789,36 @@ com.idc.clm = {
             ],
           },
         ],
+        relatedCLM: [
+          {
+            id: null,
+            name: null,
+            status: null, //discussed / not discussed
+            thumb: null,
+            zipFiles: [
+              {
+                name: null,
+                zip: null,
+                mostRecentCall: {
+                  date: null, //date
+                  reaction: null, //positive, neutral, negative
+                  duration: null, //seconds
+                },
+                overall: {
+                  timesDisplayed: null,
+                  allCallDates: [],
+                },
+              },
+            ],
+            mostRecentCall: {
+              date: null, //date
+            },
+            overall: {
+              timesDisplayed: null,
+              allCallDates: [],
+            },
+          },
+        ],
       },
     },
     relatedCLM: [
@@ -807,7 +851,7 @@ com.idc.clm = {
       ],
     },
   },
-  persistentDataTemplate: {
+  sessionDataTemplate: {
     session: {
       navigationHistory: [],
       selectedCallflow: null,
@@ -815,6 +859,25 @@ com.idc.clm = {
       selectedStandaloneGroup: null,
     },
     commonHTML: {},
+    metadata: {
+      call: {
+        cached: null,
+        account: {},
+      },
+      media: {
+        cached: null,
+        presentation: {},
+        keyMessage: {},
+      },
+    },
+    approvedDocuments: {
+      cached: null,
+      items: [],
+    },
+    relatedCLM: {
+      cached: null,
+      items: [],
+    },
     complexLinks: {
       fromSlide: null,
       toSlide: null,
@@ -826,11 +889,15 @@ com.idc.clm = {
       },
     },
     backFromStandalone: [{ slideId: null, elements: [{ id: null, properties: [{ name: null, type: null, value: null }] }] }],
+    interactionSummary: {
+      cached: null,
+      output: {},
+    },
   },
   init: async function () {
-    //instantiate vars and persistentData objects
+    //instantiate vars and sessionData objects
     this.vars = JSON.parse(JSON.stringify(this.varsTemplate));
-    this.persistentData = JSON.parse(JSON.stringify(this.persistentDataTemplate));
+    this.sessionData = JSON.parse(JSON.stringify(this.sessionDataTemplate));
 
     //config read settings
     this.readSettings();
@@ -847,12 +914,12 @@ com.idc.clm = {
     //obtain/generate session identifier
     await this.setSessionIdentifier();
 
-    //load or reset persistent data
-    this.definePersistentDataKey();
+    //load or reset session data
+    this.defineSessionDataKey();
     if (this.vars.session.isNewSession) {
-      await this.resetPersistentData();
+      await this.resetSessionData();
     } else {
-      await this.loadPersistentData();
+      await this.loadSessionData();
     }
 
     //set slides sequence and current slide
@@ -1801,17 +1868,33 @@ com.idc.clm = {
     if (com_idc_params.interactionSummary) {
       vars.interactionSummary.active = util.readSetting(com_idc_params, "interactionSummary.active", "boolean", false);
 
-      //min rows for previous interactions
-      vars.interactionSummary.minRows.previousInteractions = util.readSetting(com_idc_params, "interactionSummary.minRows.previousInteractions", "number", 1);
-
-      //min rows for emails
-      vars.interactionSummary.minRows.emails = util.readSetting(com_idc_params, "interactionSummary.minRows.emails", "number", 1);
-
-      //group views for same slide
-      vars.interactionSummary.groupViewsForSameSlide = util.readSetting(com_idc_params, "interactionSummary.groupViewsForSameSlide", "boolean", null);
-
-      //consider draft calls (no need for Status_vod__c == "Approved_vod")
-      vars.interactionSummary.considerDraftCalls = util.readSetting(com_idc_params, "interactionSummary.considerDraftCalls", "boolean", false);
+      //options
+      vars.interactionSummary.options.minRows.previousInteractions = util.readSetting(
+        com_idc_params,
+        "interactionSummary.options.minRows.previousInteractions",
+        "number",
+        1
+      );
+      vars.interactionSummary.options.minRows.emails = util.readSetting(com_idc_params, "interactionSummary.options.minRows.emails", "number", 1);
+      vars.interactionSummary.options.groupViewsForSameSlide = util.readSetting(
+        com_idc_params,
+        "interactionSummary.options.groupViewsForSameSlide",
+        "boolean",
+        false
+      );
+      vars.interactionSummary.options.considerSavedCalls = util.readSetting(com_idc_params, "interactionSummary.options.considerSavedCalls", "boolean", false);
+      vars.interactionSummary.options.considerCallsWithOtherPresentations = util.readSetting(
+        com_idc_params,
+        "interactionSummary.options.considerCallsWithOtherPresentations",
+        "boolean",
+        false
+      );
+      vars.interactionSummary.options.considerEmailsWithOtherTemplates = util.readSetting(
+        com_idc_params,
+        "interactionSummary.options.considerEmailsWithOtherTemplates",
+        "boolean",
+        false
+      );
 
       //components
       vars.interactionSummary.components.openButton.id = util.readSetting(com_idc_params, "interactionSummary.components.openButton.id", "string", null);
@@ -2071,8 +2154,8 @@ com.idc.clm = {
         }
 
         //standalone modal group
-        if (this.persistentData.session.selectedStandaloneGroup) {
-          let groupId = this.persistentData.session.selectedStandaloneGroup;
+        if (this.sessionData.session.selectedStandaloneGroup) {
+          let groupId = this.sessionData.session.selectedStandaloneGroup;
           if (groupId && this.validateStandaloneGroup(groupId, this.vars.options.htmlSlideId)) {
             this.activateStandaloneGroup(groupId);
           } else {
@@ -2169,7 +2252,7 @@ com.idc.clm = {
       //properties of a standalone slide ****************************************************************************
 
       //last visited non-standalone / non-pdf slide
-      this.persistentData.session.navigationHistory.every((slideId) => {
+      this.sessionData.session.navigationHistory.every((slideId) => {
         if (slideId != navVars.currentSlide.id) {
           if (!this.findSlide(slideId).standaloneModal.isStandalone && !this.findSlide(slideId).pdf.isPDF) {
             if (!navVars.lastSlide) navVars.lastSlide = JSON.parse(JSON.stringify(this.varsTemplate.navigation.lastSlide));
@@ -2185,7 +2268,7 @@ com.idc.clm = {
       });
 
       //actual last slide
-      this.persistentData.session.navigationHistory.every((slideId) => {
+      this.sessionData.session.navigationHistory.every((slideId) => {
         if (slideId != navVars.currentSlide.id) {
           if (!navVars.lastSlide) navVars.lastSlide = JSON.parse(JSON.stringify(this.varsTemplate.navigation.lastSlide));
           navVars.lastSlide.actual.id = slideId;
@@ -2219,7 +2302,7 @@ com.idc.clm = {
           util.log("com.idc.clm.addSlideToNavHistory()");
 
           let addSlide = true;
-          let navHis = this.persistentData.session.navigationHistory;
+          let navHis = this.sessionData.session.navigationHistory;
 
           //do not add if current slide = most recent slide in history
           if (navHis.length > 0) {
@@ -2228,7 +2311,7 @@ com.idc.clm = {
 
           if (addSlide) {
             navHis.unshift(slideId);
-            await this.updatePersistentData();
+            await this.updateSessionData();
           }
         }
       })();
@@ -2237,8 +2320,15 @@ com.idc.clm = {
   },
   getDataForContextObjects: function () {
     let util = com.idc.util;
+    let vars = com.idc.clm.vars;
+    let sessionData = this.sessionData;
 
-    let unableToRetrieveCRMIdFlag = false; //for email templates and fragments
+    let detailedLog = false; //used for debugging, will log more details
+
+    let forceDisabledCache = false; //used for developing/debugging, will disable cache even if available
+    if (forceDisabledCache) {
+      sessionData.interactionSummary.cached = false;
+    }
 
     return new Promise((resolve) => {
       (async () => {
@@ -2250,495 +2340,958 @@ com.idc.clm = {
 
         util.log("com.idc.clm.getDataForContextObjects()");
 
-        //Account (ID, name, salutation)
-        if (this.vars.session.isAnActualCall) {
-          //id
-          await new Promise((resolve) => {
-            com.veeva.clm.getDataForCurrentObject("Account", "ID", (data) => {
-              if (data.success) {
-                this.vars.metadata.account.id = data.Account.ID;
-                resolve();
-              }
-            });
-          });
-          //account name
-          await new Promise((resolve) => {
-            com.veeva.clm.getDataForCurrentObject("Account", "Name", (data) => {
-              if (data.success) {
-                this.vars.metadata.account.name = data.Account.Name;
-                resolve();
-              }
-            });
-          });
-          //salutation
-          await new Promise((resolve) => {
-            com.veeva.clm.getDataForCurrentObject("Account", "Salutation", (data) => {
-              if (data.success) {
-                this.vars.metadata.account.salutation = data.Account.Salutation;
-                resolve();
-              }
-            });
-          });
+        /*get call-related metadata (account) ------------------------------------------------------------*/
+        {
+          //Account (ID, name, salutation)
+          if (this.vars.session.isAnActualCall) {
+            if (sessionData.metadata.call.cached && !forceDisabledCache) {
+              this.vars.metadata.account = JSON.parse(JSON.stringify(sessionData.metadata.call.account));
+
+              if (detailedLog) util.log("com.idc.clm.getDataForContextObjects() >> using cached account data");
+            } else {
+              //id
+              await new Promise((resolve) => {
+                com.veeva.clm.getDataForCurrentObject("Account", "ID", (data) => {
+                  if (data.success) {
+                    this.vars.metadata.account.id = data.Account.ID;
+                    resolve();
+                  }
+                });
+              });
+              //account name
+              await new Promise((resolve) => {
+                com.veeva.clm.getDataForCurrentObject("Account", "Name", (data) => {
+                  if (data.success) {
+                    this.vars.metadata.account.name = data.Account.Name;
+                    resolve();
+                  }
+                });
+              });
+              //salutation
+              await new Promise((resolve) => {
+                com.veeva.clm.getDataForCurrentObject("Account", "Salutation", (data) => {
+                  if (data.success) {
+                    this.vars.metadata.account.salutation = data.Account.Salutation;
+                    resolve();
+                  }
+                });
+              });
+
+              if (detailedLog) util.log("com.idc.clm.getDataForContextObjects() >> read account");
+
+              //store in session data
+              sessionData.metadata.call.account = JSON.parse(JSON.stringify(this.vars.metadata.account));
+              sessionData.metadata.call.cached = true;
+              await this.updateSessionData();
+            }
+          }
         }
 
-        //Presentation (ID, name, status, version)
+        /*get media-related metadata (presentation, key message) -----------------------------------------*/
         {
-          //ID
-          await new Promise((resolve) => {
-            com.veeva.clm.getDataForCurrentObject("Presentation", "ID", (data) => {
-              if (data.success) {
-                this.vars.metadata.presentation.id = data.Presentation.ID;
-                resolve();
-              }
-            });
-          });
-          //Name
-          await new Promise((resolve) => {
-            com.veeva.clm.getDataForCurrentObject("Presentation", "Name", (data) => {
-              if (data.success) {
-                this.vars.metadata.presentation.name = data.Presentation.Name;
-                resolve();
-              }
-            });
-          });
-          //Status
-          await new Promise((resolve) => {
-            com.veeva.clm.getDataForCurrentObject("Presentation", "Status_vod__c", (data) => {
-              if (data.success) {
-                this.vars.metadata.presentation.status = data.Presentation.Status_vod__c;
-                resolve();
-              }
-            });
-          });
-          //Vault Doc ID
-          await new Promise((resolve) => {
-            com.veeva.clm.getDataForCurrentObject("Presentation", "Vault_Doc_ID_vod__c", (data) => {
-              if (data.success) {
-                this.vars.metadata.presentation.vaultDocID = data.Presentation.Vault_Doc_ID_vod__c;
-                resolve();
-              }
-            });
-          });
-          //Version
-          await new Promise((resolve) => {
-            com.veeva.clm.getDataForCurrentObject("Presentation", "Version_vod__c", (data) => {
-              if (data.success) {
-                this.vars.metadata.presentation.version = data.Presentation.Version_vod__c;
-                resolve();
-              }
-            });
-          });
+          if (sessionData.metadata.media.cached && !forceDisabledCache) {
+            this.vars.metadata.presentation = JSON.parse(JSON.stringify(sessionData.metadata.media.presentation));
+            if (detailedLog) util.log("com.idc.clm.getDataForContextObjects() >> using cached presentation data");
+
+            this.vars.metadata.keyMessage = JSON.parse(JSON.stringify(sessionData.metadata.media.keyMessage));
+            if (detailedLog) util.log("com.idc.clm.getDataForContextObjects() >> using cached key message data");
+          } else {
+            //Presentation (ID, name, status, version)
+            {
+              //ID
+              await new Promise((resolve) => {
+                com.veeva.clm.getDataForCurrentObject("Presentation", "ID", (data) => {
+                  if (data.success) {
+                    this.vars.metadata.presentation.id = data.Presentation.ID;
+                    resolve();
+                  }
+                });
+              });
+              //Name
+              await new Promise((resolve) => {
+                com.veeva.clm.getDataForCurrentObject("Presentation", "Name", (data) => {
+                  if (data.success) {
+                    this.vars.metadata.presentation.name = data.Presentation.Name;
+                    resolve();
+                  }
+                });
+              });
+              //Status
+              await new Promise((resolve) => {
+                com.veeva.clm.getDataForCurrentObject("Presentation", "Status_vod__c", (data) => {
+                  if (data.success) {
+                    this.vars.metadata.presentation.status = data.Presentation.Status_vod__c;
+                    resolve();
+                  }
+                });
+              });
+              //Vault Doc ID
+              await new Promise((resolve) => {
+                com.veeva.clm.getDataForCurrentObject("Presentation", "Vault_Doc_ID_vod__c", (data) => {
+                  if (data.success) {
+                    this.vars.metadata.presentation.vaultDocID = data.Presentation.Vault_Doc_ID_vod__c;
+                    resolve();
+                  }
+                });
+              });
+              //Version
+              await new Promise((resolve) => {
+                com.veeva.clm.getDataForCurrentObject("Presentation", "Version_vod__c", (data) => {
+                  if (data.success) {
+                    this.vars.metadata.presentation.version = data.Presentation.Version_vod__c;
+                    resolve();
+                  }
+                });
+              });
+
+              if (detailedLog) util.log("com.idc.clm.getDataForContextObjects() >> read presentation");
+            }
+
+            //Key_Message_vod__c (ID, file name, disable actions and ios resolution)
+            {
+              //ID
+              await new Promise((resolve) => {
+                com.veeva.clm.getDataForCurrentObject("KeyMessage", "ID", (data) => {
+                  if (data.success) {
+                    this.vars.metadata.keyMessage.id = data.KeyMessage.ID;
+                    resolve();
+                  }
+                });
+              });
+              //key message media file name
+              await new Promise((resolve) => {
+                com.veeva.clm.getDataForCurrentObject("KeyMessage", "Media_File_Name_vod__c", (data) => {
+                  if (data.success) {
+                    this.vars.metadata.keyMessage.mediaFileName = data.KeyMessage.Media_File_Name_vod__c;
+                    resolve();
+                  }
+                });
+              });
+              //key message disable actions
+              await new Promise((resolve) => {
+                com.veeva.clm.getDataForCurrentObject("KeyMessage", "Disable_Actions_vod__c", (data) => {
+                  if (data.success) {
+                    this.vars.metadata.keyMessage.disableActions = data.KeyMessage.Disable_Actions_vod__c;
+                    resolve();
+                  }
+                });
+              });
+              //key message iOS resolution
+              await new Promise((resolve) => {
+                com.veeva.clm.getDataForCurrentObject("KeyMessage", "iOS_Resolution_vod__c", (data) => {
+                  if (data.success) {
+                    this.vars.metadata.keyMessage.iOSResolution = data.KeyMessage.iOS_Resolution_vod__c;
+                    resolve();
+                  }
+                });
+              });
+              //key message Vault Doc ID
+              await new Promise((resolve) => {
+                com.veeva.clm.getDataForCurrentObject("KeyMessage", "Vault_Doc_ID_vod__c", (data) => {
+                  if (data.success) {
+                    this.vars.metadata.keyMessage.vaultDocID = data.KeyMessage.Vault_Doc_ID_vod__c;
+                    resolve();
+                  }
+                });
+              });
+              //key message status
+              await new Promise((resolve) => {
+                com.veeva.clm.getDataForCurrentObject("KeyMessage", "Status_vod__c", (data) => {
+                  if (data.success) {
+                    this.vars.metadata.keyMessage.status = data.KeyMessage.Status_vod__c;
+                    resolve();
+                  }
+                });
+              });
+              //key message slide version
+              await new Promise((resolve) => {
+                com.veeva.clm.getDataForCurrentObject("KeyMessage", "Slide_Version_vod__c", (data) => {
+                  if (data.success) {
+                    this.vars.metadata.keyMessage.slideVersion = data.KeyMessage.Slide_Version_vod__c;
+                    resolve();
+                  }
+                });
+              });
+
+              if (detailedLog) util.log("com.idc.clm.getDataForContextObjects() >> read key message");
+            }
+            sessionData.metadata.media.presentation = JSON.parse(JSON.stringify(this.vars.metadata.presentation));
+            sessionData.metadata.media.keyMessage = JSON.parse(JSON.stringify(this.vars.metadata.keyMessage));
+            sessionData.metadata.media.cached = true;
+            await this.updateSessionData();
+          }
 
           util.log(
             `This presentation: ${this.vars.metadata.presentation.vaultDocID} (${this.vars.metadata.presentation.version}) - ${this.vars.metadata.presentation.status}`
           );
-        }
-
-        //Key_Message_vod__c (ID, file name, disable actions and ios resolution)
-        {
-          //ID
-          await new Promise((resolve) => {
-            com.veeva.clm.getDataForCurrentObject("KeyMessage", "ID", (data) => {
-              if (data.success) {
-                this.vars.metadata.keyMessage.id = data.KeyMessage.ID;
-                resolve();
-              }
-            });
-          });
-          //key message media file name
-          await new Promise((resolve) => {
-            com.veeva.clm.getDataForCurrentObject("KeyMessage", "Media_File_Name_vod__c", (data) => {
-              if (data.success) {
-                this.vars.metadata.keyMessage.mediaFileName = data.KeyMessage.Media_File_Name_vod__c;
-                resolve();
-              }
-            });
-          });
-          //key message disable actions
-          await new Promise((resolve) => {
-            com.veeva.clm.getDataForCurrentObject("KeyMessage", "Disable_Actions_vod__c", (data) => {
-              if (data.success) {
-                this.vars.metadata.keyMessage.disableActions = data.KeyMessage.Disable_Actions_vod__c;
-                resolve();
-              }
-            });
-          });
-          //key message iOS resolution
-          await new Promise((resolve) => {
-            com.veeva.clm.getDataForCurrentObject("KeyMessage", "iOS_Resolution_vod__c", (data) => {
-              if (data.success) {
-                this.vars.metadata.keyMessage.iOSResolution = data.KeyMessage.iOS_Resolution_vod__c;
-                resolve();
-              }
-            });
-          });
-          //key message Vault Doc ID
-          await new Promise((resolve) => {
-            com.veeva.clm.getDataForCurrentObject("KeyMessage", "Vault_Doc_ID_vod__c", (data) => {
-              if (data.success) {
-                this.vars.metadata.keyMessage.vaultDocID = data.KeyMessage.Vault_Doc_ID_vod__c;
-                resolve();
-              }
-            });
-          });
-          //key message status
-          await new Promise((resolve) => {
-            com.veeva.clm.getDataForCurrentObject("KeyMessage", "Status_vod__c", (data) => {
-              if (data.success) {
-                this.vars.metadata.keyMessage.status = data.KeyMessage.Status_vod__c;
-                resolve();
-              }
-            });
-          });
-          //key message slide version
-          await new Promise((resolve) => {
-            com.veeva.clm.getDataForCurrentObject("KeyMessage", "Slide_Version_vod__c", (data) => {
-              if (data.success) {
-                this.vars.metadata.keyMessage.slideVersion = data.KeyMessage.Slide_Version_vod__c;
-                resolve();
-              }
-            });
-          });
-
           util.log(
             `This key message: ${this.vars.metadata.keyMessage.vaultDocID} (${this.vars.metadata.keyMessage.slideVersion}) - ${this.vars.metadata.keyMessage.status}`
           );
         }
 
-        //Approved_Document_vod__c for email cart and non email cart (get crmID for templates and fragments)
-        if (this.vars.emailCart.active) {          
-          let itemsArray = [];
-          this.vars.emailCart.templates
-            .map((item) => {
-              return {
-                id: item.id,
-                vaultId: item.vaultId,
-                group: "templates",
-              };
-            })
-            .forEach((item) => {
-              if (item.vaultId) {
-                itemsArray.push(item);
-              } else {
-                util.log(`com.idc.clm.getDataForContextObjects: missing Vault Doc ID for template ${item.id}`, "error");
-              }
-              
-            });
-          this.vars.emailCart.fragments
-            .map((item) => {
-              return {
-                id: item.id,
-                vaultId: item.vaultId,
-                group: "fragments",
-              };
-            })
-            .forEach((item) => {
-              if (item.vaultId) {
-                itemsArray.push(item);
-              } else {
-                util.log(`com.idc.clm.getDataForContextObjects: missing Vault Doc ID for fragment ${item.id}`, "error");
-              }
-              
-            });
+        /*get CRM IDs for approved email documents -------------------------------------------------------*/
+        {
+          //Approved_Document_vod__c for email cart and non email cart (get crmID for templates and fragments)
+          if (this.vars.emailCart.active) {
+            //array of items: emailCart templates and fragments / non emailCart (interactionSummary) templates and fragments
+            let itemsArray = []; //{ id: "", vaultId: "", group: "", __this: {}}
 
-          if (this.vars.interactionSummary.active) {
-            this.vars.interactionSummary.nonEmailCartItems.templates.forEach((template) => {
-              if (template.vaultId) {
-                itemsArray.push({
-                  id: template.id,
-                  vaultId: template.vaultId,
-                  group: "nonEmailCartTemplates",
+            //map email cart templates and fragments
+            {
+              this.vars.emailCart.templates
+                .map((item) => {
+                  return {
+                    id: item.id,
+                    vaultId: item.vaultId,
+                    group: "templates",
+                    __this: item, //reference to original item
+                  };
+                })
+                .forEach((item) => {
+                  if (item.vaultId) {
+                    itemsArray.push(item);
+                  } else {
+                    util.log(`com.idc.clm.getDataForContextObjects: missing Vault Doc ID for emailCart template ${item.id}`, "error");
+                  }
+                });
+              this.vars.emailCart.fragments
+                .map((item) => {
+                  return {
+                    id: item.id,
+                    vaultId: item.vaultId,
+                    group: "fragments",
+                    __this: item, //reference to original item
+                  };
+                })
+                .forEach((item) => {
+                  if (item.vaultId) {
+                    itemsArray.push(item);
+                  } else {
+                    util.log(`com.idc.clm.getDataForContextObjects: missing Vault Doc ID for emailCart fragment ${item.id}`, "error");
+                  }
                 });
 
-                template.fragments.forEach((fragment) => {
-                  if (fragment.vaultId) {
+              //map interaction summary non email cart templates and fragments
+              if (this.vars.interactionSummary.active) {
+                this.vars.interactionSummary.nonEmailCartItems.templates.forEach((template) => {
+                  if (template.vaultId) {
                     itemsArray.push({
-                      id: fragment.id,
-                      vaultId: fragment.vaultId,
-                      group: "nonEmailCartFragments",
-                      template: template.id,
+                      id: template.id,
+                      vaultId: template.vaultId,
+                      group: "nonEmailCartTemplates",
+                      __this: template, //reference to original item
+                    });
+
+                    template.fragments.forEach((fragment) => {
+                      if (fragment.vaultId) {
+                        itemsArray.push({
+                          id: fragment.id,
+                          vaultId: fragment.vaultId,
+                          group: "nonEmailCartFragments",
+                          template: template.id,
+                          __this: fragment, //reference to original item
+                        });
+                      } else {
+                        util.log(`com.idc.clm.getDataForContextObjects: missing Vault Doc ID for interactionSummary fragment ${fragment.id}`, "error");
+                      }
                     });
                   } else {
-                    util.log(`com.idc.clm.getDataForContextObjects: missing Vault Doc ID for fragment ${fragment.id}`, "error");
+                    util.log(`com.idc.clm.getDataForContextObjects: missing Vault Doc ID for interactionSummary template ${template.id}`, "error");
                   }
                 });
-              } else {
-                util.log(`com.idc.clm.getDataForContextObjects: missing Vault Doc ID for template ${template.id}`, "error");
               }
-            });
-          }
+            }
 
-          for (let item of itemsArray) {
-            await new Promise((resolve) => {
-              com.veeva.clm.getApprovedDocument(this.vars.emailCart.vaultURL, item.vaultId, (data) => {
-                if (data.success && data.Approved_Document_vod__c) {
-                  if (item.group == "templates" || item.group == "fragments") {
-                    //email cart templates or fragments
-                    let thisItem = this.vars.emailCart[item.group].find((element) => {
-                      return element.id == item.id;
-                    });
-                    if (thisItem) {
-                      thisItem.crmId = data.Approved_Document_vod__c.ID;
-                      thisItem.available = true;
-                    }
-                  } else {
-                    //interaction summary templates or fragments
-                    switch (item.group) {
-                      case "nonEmailCartTemplates":
-                        {
-                          let thisItem = this.vars.interactionSummary.nonEmailCartItems.templates.find((element) => {
-                            return element.id == item.id;
-                          });
-                          if (thisItem) {
-                            thisItem.crmId = data.Approved_Document_vod__c.ID;
-                            thisItem.available = true;
-                          }
-                        }
-                        break;
-                      case "nonEmailCartFragments":
-                        {
-                          let thisItem = this.vars.interactionSummary.nonEmailCartItems.templates
-                            .find((element) => {
-                              return element.id == item.template;
-                            })
-                            .fragments.find((element) => {
-                              return element.id == item.id;
-                            });
-                          if (thisItem) {
-                            thisItem.crmId = data.Approved_Document_vod__c.ID;
-                          }
-                        }
-                        break;
-                    }
-                  }
-                } else {
-                  util.log(
-                    `com.idc.clm.getDataForContextObjects: could not retrieve CRM ID for ${item.id} (${item.group}): ${item.vaultId} + ${this.vars.emailCart.vaultURL}`,
-                    "error"
-                  );
-                  util.log(data.message);
-                  unableToRetrieveCRMIdFlag = true;
+            //getApprovedDocument for each item
+            if (sessionData.approvedDocuments.cached && !forceDisabledCache) {
+              for (let item of itemsArray) {
+                //look for item in session data
+                let sessionItem = sessionData.approvedDocuments.items.find((sessionItem) => {
+                  return sessionItem.group == item.group && sessionItem.id == item.id;
+                });
+                //assign crmId and available flag from session data
+                if (sessionItem) {
+                  item.__this.crmId = sessionItem.crmId; //set crmId
+                  item.__this.available = true; //set available flag
                 }
-                resolve();
-              });
-            });
+              }
+              if (detailedLog) util.log("com.idc.clm.getDataForContextObjects() >> using cached crmID data");
+            } else {
+              let needToUpdateSessionData = false;
+              for (let item of itemsArray) {
+                await new Promise((resolve) => {
+                  com.veeva.clm.getApprovedDocument(this.vars.emailCart.vaultURL, item.vaultId, (data) => {
+                    if (data.success && data.Approved_Document_vod__c) {
+                      let thisItem = item.__this; //reference to original item
+                      thisItem.crmId = data.Approved_Document_vod__c.ID; //set crmId
+                      thisItem.available = true; //set available flag
+
+                      needToUpdateSessionData = true;
+                      sessionData.approvedDocuments.items.push({
+                        group: item.group,
+                        id: item.id,
+                        vaultId: item.vaultId,
+                        crmId: data.Approved_Document_vod__c.ID,
+                      }); //store in session data
+                    } else {
+                      util.log(
+                        `com.idc.clm.getDataForContextObjects: could not retrieve CRM ID for ${item.id} (${item.group}): ${item.vaultId} + ${this.vars.emailCart.vaultURL}`,
+                        "error"
+                      );
+                      util.log(data.message);
+                    }
+                    resolve();
+                  });
+                });
+              }
+              if (needToUpdateSessionData) {
+                sessionData.approvedDocuments.cached = true;
+                await this.updateSessionData();
+              }
+              if (detailedLog) util.log("com.idc.clm.getDataForContextObjects() >> read crmIDs");
+            }
           }
         }
 
-        //Related CLM
+        /*check if related CLM links are available -------------------------------------------------------*/
         if (this.vars.relatedCLM.length > 0) {
-          for (let relatedItem of this.vars.relatedCLM) {
-            let idsToCheck = [
-              { type: "Presentation", vaultId: relatedItem.vaultExternalID.presentation, available: null },
-              { type: "Key Message", vaultId: relatedItem.vaultExternalID.keyMessage, available: null },
-            ];
-            for (let thisId of idsToCheck) {
-              await new Promise((resolve) => {
+          if (sessionData.relatedCLM.cached && !forceDisabledCache) {
+            for (let relatedItem of this.vars.relatedCLM) {
+              //look for item in session data
+              let sessionItem = sessionData.relatedCLM.items.find((sessionItem) => {
+                return sessionItem.id == relatedItem.id;
+              });
+              //assign available flag from session data
+              if (sessionItem) {
+                relatedItem.available = sessionItem.available;
+              } else {
+                util.log(`com.idc.clm.getDataForContextObjects: related CLM / no approved or staged records found for ${relatedItem.id}`, "error");
+              }
+            }
+            if (detailedLog) util.log("com.idc.clm.getDataForContextObjects() >> using cached related CLM data");
+          } else {
+            let needToUpdateSessionData = false;
+            for (let relatedItem of this.vars.relatedCLM) {
+              let idsToCheck = [
+                { type: "Presentation", vaultId: relatedItem.vaultExternalID.presentation, available: null },
+                { type: "Key Message", vaultId: relatedItem.vaultExternalID.keyMessage, available: null },
+              ];
+              for (let thisId of idsToCheck) {
+                await new Promise((resolve) => {
+                  com.veeva.clm.queryRecord(
+                    thisId.type == "Presentation" ? "Clm_Presentation_vod__c" : "Key_Message_vod__c",
+                    ["ID", "Name", "Status_vod__c"],
+                    `Vault_External_Id_vod__c = "${thisId.vaultId}"`,
+                    [],
+                    null,
+                    (data) => {
+                      if (data.success) {
+                        let foundApproved = data[thisId.type == "Presentation" ? "Clm_Presentation_vod__c" : "Key_Message_vod__c"].find((item) => {
+                          return item.Status_vod__c == "Approved_vod";
+                        });
+                        let foundStaged = data[thisId.type == "Presentation" ? "Clm_Presentation_vod__c" : "Key_Message_vod__c"].find((item) => {
+                          return item.Status_vod__c == "Staged_vod";
+                        });
+                        if (!foundApproved && !foundStaged) {
+                          util.log(
+                            `com.idc.clm.getDataForContextObjects: related CLM ${relatedItem.id} / no approved or staged record found for ${thisId.type} ${thisId.vaultId}`,
+                            "error"
+                          );
+                        }
+                        if (foundStaged && !foundApproved) {
+                          util.log(
+                            `com.idc.clm.getDataForContextObjects: related CLM ${relatedItem.id} / no approved (just staged) record found for ${thisId.type} ${thisId.vaultId}`,
+                            "error"
+                          );
+                        }
+                        if (foundApproved || foundStaged) {
+                          //partial: mark presentation or key message as available
+                          thisId.available = true;
+                        }
+                      } else {
+                        util.log(`com.idc.clm.getDataForContextObjects: failed to retrieve ${thisId.type} ${thisId.vaultId}: ${data.message}`, "error");
+                      }
+                      resolve();
+                    }
+                  );
+                });
+              }
+              if (idsToCheck[0].available && idsToCheck[1].available) {
+                //mark related item as available (both presentation and key message are available)
+                relatedItem.available = true;
+
+                //store in session data
+                sessionData.relatedCLM.items.push({
+                  id: relatedItem.id,
+                  available: true,
+                });
+
+                //flag to update session data
+                needToUpdateSessionData = true;
+              }
+            }
+            if (needToUpdateSessionData) {
+              sessionData.relatedCLM.cached = true;
+              await this.updateSessionData();
+              if (detailedLog) util.log("com.idc.clm.getDataForContextObjects() >> read related CLM");
+            }
+          }
+        }
+
+        /*obtain interaction summary data (call mode only) ------------------------------------------------*/
+        if (this.vars.interactionSummary.active && this.vars.session.isAnActualCall) {
+          if (sessionData.interactionSummary.cached && !forceDisabledCache) {
+            if (detailedLog) com.idc.util.log("com.idc.clm.getDataForContextObjects() >> using cached interaction summary data");
+          } else {
+            //obtain Key Messages IDs of current presentation
+            await new Promise((resolve) => {
+              let whereClause = this.vars.slides
+                .map((slide) => {
+                  return `Media_File_Name_vod__c = "${slide.player.zipName}" OR`;
+                })
+                .join(" ");
+              whereClause = whereClause.slice(0, -3); //remove last OR
+
+              com.veeva.clm.queryRecord("Key_Message_vod__c", ["ID", "Media_File_Name_vod__c"], whereClause, [], null, (data) => {
+                if (data.success) {
+                  //assign data.Key_Message_vod__c to each slide
+                  this.vars.slides.forEach((slide) => {
+                    let keyMessageRecord = data.Key_Message_vod__c.find((keyMessage) => {
+                      return keyMessage.Media_File_Name_vod__c == slide.player.zipName;
+                    });
+                    if (keyMessageRecord) {
+                      slide.player.keyMessageID = keyMessageRecord.ID;
+                    }
+                  });
+                  resolve();
+                } else {
+                  util.log(`com.idc.clm.getDataForContextObjects: failed to retrieve Key_Message_vod__c IDs ${data.message}`, "error");
+                  resolve();
+                }
+              });
+            });
+
+            //obtain Key Messages IDs and zips of relatedCLM
+            if (this.vars.relatedCLM.length > 0) {
+              for (let relatedItem of this.vars.relatedCLM) {
+                if (relatedItem.available) {
+                  let thisCLMPresentation_ID = await new Promise((resolve) => {
+                    com.veeva.clm.queryRecord(
+                      "Clm_Presentation_vod__c",
+                      ["ID"],
+                      `Vault_External_Id_vod__c = "${relatedItem.vaultExternalID.presentation}"`,
+                      [],
+                      null,
+                      (data) => {
+                        if (data.success && data.Clm_Presentation_vod__c.length > 0) {
+                          resolve(data.Clm_Presentation_vod__c[0].ID);
+                        } else {
+                          util.log(
+                            `com.idc.clm.getDataForContextObjects: failed to retrieve Presentation_vod__c for relatedCLM ${relatedItem.id}, vaultDocId ${relatedItem.vaultExternalID.presentation}`,
+                            "error"
+                          );
+                        }
+                        resolve();
+                      }
+                    );
+                  });
+
+                  if (thisCLMPresentation_ID) {
+                    let thisCLMPresentation_Slides = await new Promise((resolve) => {
+                      com.veeva.clm.queryRecord(
+                        "Clm_Presentation_Slide_vod__c",
+                        ["ID", "Key_Message_vod__c"],
+                        `Clm_Presentation_vod__c = "${thisCLMPresentation_ID}"`,
+                        ["Display_Order_vod__c ASC"],
+                        null,
+                        (data) => {
+                          if (data.success && data.Clm_Presentation_Slide_vod__c.length > 0) {
+                            resolve(data.Clm_Presentation_Slide_vod__c);
+                          } else {
+                            util.log(
+                              `com.idc.clm.getDataForContextObjects: failed to retrieve Clm_Presentation_Slide_vod__c for relatedCLM ${relatedItem.id}, vaultDocId ${relatedItem.vaultExternalID.presentation}`,
+                              "error"
+                            );
+                          }
+                          resolve();
+                        }
+                      );
+                    });
+
+                    if (thisCLMPresentation_Slides && thisCLMPresentation_Slides.length > 0) {
+                      let thisCLMPresentation_KeyMessages = await new Promise((resolve) => {
+                        let whereClause = thisCLMPresentation_Slides
+                          .map((slide) => {
+                            return `ID = "${slide.Key_Message_vod__c}" OR`;
+                          })
+                          .join(" ");
+                        whereClause = whereClause.slice(0, -3); //remove last OR
+                        com.veeva.clm.queryRecord("Key_Message_vod__c", ["ID", "Media_File_Name_vod__c"], whereClause, [], null, (data) => {
+                          if (data.success && data.Key_Message_vod__c.length > 0) {
+                            resolve(data.Key_Message_vod__c);
+                          } else {
+                            util.log(
+                              `com.idc.clm.getDataForContextObjects: failed to retrieve Key_Message_vod__c for relatedCLM ${relatedItem.id}, vaultDocId ${relatedItem.vaultExternalID.presentation}`,
+                              "error"
+                            );
+                          }
+                          resolve();
+                        });
+                      });
+                      relatedItem.zipFiles = thisCLMPresentation_KeyMessages;
+                    }
+                  }
+                }
+              }
+            }
+
+            //build KeyMessages matrix: zip name, crmID, presentation name of each key message in this presentation and related CLM
+            let keyMessagesMatrix = [];
+            {
+              //this presentation slides >> add to array
+              this.vars.slides
+                .filter((slide) => {
+                  return slide.player.keyMessageID;
+                })
+                .forEach((slide) => {
+                  keyMessagesMatrix.push({
+                    Presentation: vars.interactionSummary.labels.thisPresentation,
+                    ID: slide.player.keyMessageID,
+                    Media_File_Name_vod__c: slide.player.zipName,
+                    ThisPresentation: true,
+                  });
+                });
+
+              //related CLM slides >> add to array
+              if (this.vars.relatedCLM.length > 0) {
+                this.vars.relatedCLM
+                  .filter((relatedItem) => {
+                    return relatedItem.available && relatedItem.zipFiles;
+                  })
+                  .forEach((relatedItem) => {
+                    relatedItem.zipFiles.forEach((zipFile) => {
+                      keyMessagesMatrix.push({
+                        Presentation: relatedItem.name,
+                        ID: zipFile.ID,
+                        Media_File_Name_vod__c: zipFile.Media_File_Name_vod__c,
+                        RelartedCLM: true,
+                      });
+                    });
+                  });
+              }
+            }
+
+            //Key_Message_vod__c and Call_Key_Message_vod__c for current slides and related CLM (if needed)
+            let callKeyMessageRecords = [];
+            {
+              //where clause
+              let whereClause;
+              {
+                //build where clause for key message IDs
+                let keyMessagesWhereClause = keyMessagesMatrix
+                  .map((item) => {
+                    return `Key_Message_vod__c = "${item.ID}" OR`;
+                  })
+                  .join(" ");
+                keyMessagesWhereClause = keyMessagesWhereClause.slice(0, -3); //remove last OR
+
+                //where clause
+                if (this.vars.interactionSummary.options.considerCallsWithOtherPresentations) {
+                  whereClause = `Account_vod__c = "${this.vars.metadata.account.id}"`;
+                } else {
+                  whereClause = `Account_vod__c = "${this.vars.metadata.account.id}" AND (${keyMessagesWhereClause})`;
+                }
+              }
+
+              //query Call2_Key_Message_vod__c records
+              callKeyMessageRecords = await new Promise((resolve) => {
                 com.veeva.clm.queryRecord(
-                  thisId.type == "Presentation" ? "Clm_Presentation_vod__c" : "Key_Message_vod__c",
-                  ["ID", "Name", "Status_vod__c"],
-                  `Vault_External_Id_vod__c = "${thisId.vaultId}"`,
+                  "Call2_Key_Message_vod__c",
+                  this.vars.interactionSummary.fields.Call2_Key_Message_vod__c,
+                  whereClause,
                   [],
                   null,
                   (data) => {
                     if (data.success) {
-                      let foundApproved = data[thisId.type == "Presentation" ? "Clm_Presentation_vod__c" : "Key_Message_vod__c"].find((item) => {
-                        return item.Status_vod__c == "Approved_vod";
-                      });
-                      let foundStaged = data[thisId.type == "Presentation" ? "Clm_Presentation_vod__c" : "Key_Message_vod__c"].find((item) => {
-                        return item.Status_vod__c == "Staged_vod";
-                      });
-                      if (!foundApproved && !foundStaged) {
-                        util.log(
-                          `com.idc.clm.getDataForContextObjects: related CLM ${relatedItem.id} / no approved or staged record found for ${thisId.type} ${thisId.vaultId}`,
-                          "error"
-                        );
-                      }
-                      if (foundStaged && !foundApproved) {
-                        util.log(
-                          `com.idc.clm.getDataForContextObjects: related CLM ${relatedItem.id} / no approved (just staged) record found for ${thisId.type} ${thisId.vaultId}`,
-                          "error"
-                        );
-                      }
-                      if (foundApproved || foundStaged) {
-                        thisId.available = true;
-                      }
+                      resolve(data.Call2_Key_Message_vod__c);
                     } else {
-                      util.log(`com.idc.clm.getDataForContextObjects: failed to retrieve ${thisId.type} ${thisId.vaultId}: ${data.message}`, "error");
+                      util.log(`com.idc.clm.getDataForContextObjects: failed to retrieve Call2_Key_Message_vod__c records ${data.message}`, "error");
+                      resolve([]);
                     }
-                    resolve();
                   }
                 );
               });
-            }
-            if (idsToCheck[0].available && idsToCheck[1].available) {
-              relatedItem.available = true;
-            }
-          }
-        }
 
-        //Call2_Key_Message_vod__c for current slides
-        if (this.vars.interactionSummary.active && this.vars.session.isAnActualCall) {
-          let keyMessageIDsAndZipNames = await new Promise((resolve) => {
-            com.veeva.clm.queryRecord("Key_Message_vod__c", ["ID", "Media_File_Name_vod__c"], null, [], null, (data) => {
-              if (data.success) {
-                resolve(data.Key_Message_vod__c);
-              } else {
-                util.log(`com.idc.clm.getDataForContextObjects: failed to retrieve Key_Message_vod__c IDs ${data.message}`, "error");
-                resolve([]);
+              //add keyMessage attributes to callKeyMessageRecords
+              if (callKeyMessageRecords) {
+                callKeyMessageRecords.forEach((callKeyMessage) => {
+                  let keyMessagesMatrixRecord = keyMessagesMatrix.find((keyMessage) => {
+                    return keyMessage.ID == callKeyMessage.Key_Message_vod__c;
+                  });
+                  let mediaFileName = keyMessagesMatrixRecord ? keyMessagesMatrixRecord.Media_File_Name_vod__c : null;
+
+                  callKeyMessage.Key_Message_vod__c = {
+                    id: callKeyMessage.Key_Message_vod__c,
+                    Key_Message_Name_vod__c: callKeyMessage.Key_Message_Name_vod__c,
+                    Media_File_Name_vod__c: mediaFileName,
+                    presentation: keyMessagesMatrixRecord ? keyMessagesMatrixRecord.Presentation : callKeyMessage.Clm_Presentation_Name_vod__c,
+                    thisPresentation: keyMessagesMatrixRecord ? keyMessagesMatrixRecord.ThisPresentation : false,
+                  };
+                });
               }
-            });
-          });
-          keyMessageIDsAndZipNames = keyMessageIDsAndZipNames.filter((keyMessage) => {
-            return this.vars.slides.find((slide) => slide.player.zipName == keyMessage.Media_File_Name_vod__c);
-          });
 
-          let callKeyMessageRecords;
-          if (keyMessageIDsAndZipNames && this.vars.metadata.account.id) {
-            callKeyMessageRecords = await new Promise((resolve) => {
-              let zipNamesWhereClause = keyMessageIDsAndZipNames
-                .map((keyMessage) => {
-                  return `Key_Message_vod__c = "${keyMessage.ID}" OR`;
-                })
-                .join(" ")
-                .slice(0, -3);
+              //add to interaction summary input
+              if (callKeyMessageRecords) {
+                this.vars.interactionSummary.input.Call2_Key_Message_vod__c = callKeyMessageRecords;
+              }
+            }
 
-              let whereClause = `Account_vod__c = "${this.vars.metadata.account.id}" AND (${zipNamesWhereClause})`;
+            //Call2_vod__c records
+            let callRecords = [];
+            {
+              if (this.vars.interactionSummary.input.Call2_Key_Message_vod__c.length > 0) {
+                //where clause
+                let whereClause;
+                {
+                  //unique call IDs from call key message records
+                  let uniqueCallIds = [
+                    ...new Set(this.vars.interactionSummary.input.Call2_Key_Message_vod__c.map((callKeyMessage) => callKeyMessage.Call2_vod__c)),
+                  ];
+                  //where clause for call IDs
+                  let callIDsWhereClause = uniqueCallIds
+                    .map((callId) => {
+                      return `ID = "${callId}" OR`;
+                    })
+                    .join(" ")
+                    .slice(0, -3); //remove last OR
 
-              com.veeva.clm.queryRecord(
-                "Call2_Key_Message_vod__c",
-                this.vars.interactionSummary.fields.Call2_Key_Message_vod__c,
-                whereClause,
-                [],
-                null,
-                (data) => {
-                  if (data.success) {
-                    resolve(data.Call2_Key_Message_vod__c);
+                  //status where clause
+                  let statusWhereClause = `Status_vod__c = "Submitted_vod" OR Status_vod__c = "Planned_vod"`;
+                  if (this.vars.interactionSummary.options.considerSavedCalls) {
+                    statusWhereClause += ` OR Status_vod__c = "Saved_vod"`;
+                  }
+
+                  //final where clause
+                  if (this.vars.interactionSummary.options.considerCallsWithOtherPresentations) {
+                    whereClause = `Account_vod__c = "${this.vars.metadata.account.id}" AND (${statusWhereClause})`;
                   } else {
-                    util.log(`com.idc.clm.getDataForContextObjects: failed to retrieve Call2_Key_Message_vod__c records ${data.message}`, "error");
-                    resolve([]);
+                    whereClause = `Account_vod__c = "${this.vars.metadata.account.id}" AND (${callIDsWhereClause}) AND (${statusWhereClause})`;
                   }
                 }
-              );
-            });
-          }
 
-          //add media file name to callKeyMessageRecords
-          if (callKeyMessageRecords) {
-            callKeyMessageRecords.forEach((callKeyMessage) => {
-              callKeyMessage.Key_Message_vod__c = {
-                Media_File_Name_vod__c: keyMessageIDsAndZipNames.find((keyMessage) => {
-                  return keyMessage.ID == callKeyMessage.Key_Message_vod__c;
-                }).Media_File_Name_vod__c,
-              };
-            });
-          }
+                //query Call2_vod__c records
+                callRecords = await new Promise((resolve) => {
+                  com.veeva.clm.queryRecord("Call2_vod__c", this.vars.interactionSummary.fields.Call2_vod__c, whereClause, [], null, (data) => {
+                    if (data.success) {
+                      resolve(data.Call2_vod__c);
+                    } else {
+                      util.log(`com.idc.clm.getDataForContextObjects: failed to retrieve Call2_vod__c records ${data.message}`, "error");
+                      resolve([]);
+                    }
+                  });
+                });
 
-          if (callKeyMessageRecords) {
-            this.vars.interactionSummary.input.Call2_Key_Message_vod__c = callKeyMessageRecords;
-          }
-        }
+                //add presentations to retrieved callRecords
+                callRecords.forEach((callRecord) => {
+                  callKeyMessageRecords
+                    .filter((callKeyMessage) => {
+                      return callKeyMessage.Call2_vod__c == callRecord.ID;
+                    })
+                    .forEach((callKeyMessage) => {
+                      let presentationName, thisPresentation;
 
-        //Call2_vod__c for Call key messages records
-        if (this.vars.interactionSummary.active && this.vars.session.isAnActualCall) {
-          let callRecords;
-          if (this.vars.interactionSummary.input.Call2_Key_Message_vod__c.length > 0 && this.vars.metadata.account.id) {
-            callRecords = await new Promise((resolve) => {
-              let whereClause = this.vars.interactionSummary.input.Call2_Key_Message_vod__c.map((callKeyMessage) => {
-                return `ID = "${callKeyMessage.Call2_vod__c}" OR`;
-              })
-                .join(" ")
-                .slice(0, -3);
+                      //find presentation from keyMessagesMatrix
+                      let keyMessagesMatrixRecord = keyMessagesMatrix.find((keyMessage) => {
+                        return keyMessage.ID == callKeyMessage.Key_Message_vod__c.id;
+                      });
 
-              if (this.vars.interactionSummary.considerDraftCalls) {
-                whereClause = `Account_vod__c = "${this.vars.metadata.account.id}" AND (${whereClause})`;
-              } else {
-                whereClause = `Status_vod__c = "Submitted_vod" AND Account_vod__c = "${this.vars.metadata.account.id}" AND (${whereClause})`;
+                      if (keyMessagesMatrixRecord) {
+                        //use presentation from matrix
+                        presentationName = keyMessagesMatrixRecord.Presentation;
+                        thisPresentation = keyMessagesMatrixRecord.ThisPresentation;
+                      } else {
+                        //use callKeyMessage presentation if not found in matrix (should not happen)
+                        presentationName = callKeyMessage.Clm_Presentation_Name_vod__c;
+                      }
+
+                      //initialize Presentations array if not present
+                      if (!callRecord.Presentations) {
+                        callRecord.Presentations = [];
+                      }
+
+                      //add presentation to callRecord if not already present
+                      if (
+                        !callRecord.Presentations.find((presentation) => {
+                          return presentation.name == presentationName;
+                        })
+                      ) {
+                        callRecord.Presentations.push({
+                          name: presentationName,
+                          thisPresentation: thisPresentation,
+                        });
+                      }
+                    });
+                });
+
+                if (callRecords) {
+                  this.vars.interactionSummary.input.Call2_vod__c = callRecords;
+                }
+              }
+            }
+
+            //Sent_Email_vod__c records
+            if (this.vars.emailCart.active) {
+              let sentEmailRecords;
+              //query records
+              if (this.vars.emailCart.templates && this.vars.metadata.account.id) {
+                sentEmailRecords = await new Promise((resolve) => {
+                  //filter by template
+                  let allTemplates = this.vars.emailCart.templates.concat(this.vars.interactionSummary.nonEmailCartItems.templates);
+                  let allTemplatesWhereClause;
+
+                  //bypass this filtering if considerEmailsWithOtherTemplates is true
+                  if (vars.interactionSummary.options.considerEmailsWithOtherTemplates) {
+                    allTemplatesWhereClause = null;
+                  } else {
+                    //resolve [] if no templates have crmId
+                    if (
+                      allTemplates.filter((template) => {
+                        return template.crmId;
+                      }).length == 0
+                    ) {
+                      util.log(`com.idc.clm.getDataForContextObjects: no templates with crmId`, "error");
+                      resolve([]);
+                      return;
+                    }
+
+                    //set all templates where clause
+                    allTemplatesWhereClause = allTemplates
+                      .filter((template) => {
+                        return template.crmId;
+                      })
+                      .map((template) => {
+                        return `Approved_Email_Template_vod__c = "${template.crmId}" OR`;
+                      })
+                      .join(" ")
+                      .slice(0, -3);
+                  }
+
+                  //where
+                  let whereClause = `(Status_vod__c = "Sent_vod" OR Status_vod__c = "Delivered_vod") AND Account_vod__c = "${this.vars.metadata.account.id}"`;
+                  if (allTemplatesWhereClause) {
+                    whereClause += ` AND (${allTemplatesWhereClause})`;
+                  }
+
+                  //query Sent_Email_vod__c records
+                  com.veeva.clm.queryRecord("Sent_Email_vod__c", this.vars.interactionSummary.fields.Sent_Email_vod__c, whereClause, [], null, (data) => {
+                    if (data.success) {
+                      resolve(data.Sent_Email_vod__c);
+                    } else {
+                      util.log(`com.idc.clm.getDataForContextObjects: failed to retrieve Sent_Email_vod__c records ${data.message}`, "error");
+                      resolve([]);
+                    }
+                  });
+                });
               }
 
-              com.veeva.clm.queryRecord("Call2_vod__c", this.vars.interactionSummary.fields.Call2_vod__c, whereClause, [], null, (data) => {
-                if (data.success) {
-                  resolve(data.Call2_vod__c);
-                } else {
-                  util.log(`com.idc.clm.getDataForContextObjects: failed to retrieve Call2_vod__c records ${data.message}`, "error");
-                  resolve([]);
+              //add to interaction summary input
+              if (sentEmailRecords) {
+                this.vars.interactionSummary.input.Sent_Email_vod__c = sentEmailRecords;
+              }
+
+              //add templates and fragments to nonEmailCartTemplates (if considerEmailsWithOtherTemplates is true)
+              if (sentEmailRecords && vars.interactionSummary.options.considerEmailsWithOtherTemplates) {
+                let record = {
+                  id: null,
+                  title: null,
+                  thumb: null,
+                  vaultId: null,
+                  crmId: null,
                 }
-              });
-            });
-          }
-          if (callRecords) {
-            this.vars.interactionSummary.input.Call2_vod__c = callRecords;
-          }
-        }
 
-        //Sent_Email_vod__c for account and templates
-        if (this.vars.interactionSummary.active && this.vars.session.isAnActualCall && this.vars.emailCart.active && !unableToRetrieveCRMIdFlag) {
-          let sentEmailRecords;
-          if (this.vars.emailCart.templates && this.vars.metadata.account.id) {
-            sentEmailRecords = await new Promise((resolve) => {
-              let allTemplates = this.vars.emailCart.templates.concat(this.vars.interactionSummary.nonEmailCartItems.templates);
+                sentEmailRecords.forEach((sentEmail) => {
+                  let templateIndex = vars.interactionSummary.nonEmailCartItems.templates.findIndex((template) => {
+                    return template.crmId == sentEmail.Approved_Email_Template_vod__c;
+                  });
+                  if (templateIndex < 0) {
+                    templateIndex = vars.emailCart.templates.findIndex((template) => {
+                      return template.crmId == sentEmail.Approved_Email_Template_vod__c;
+                    });
+                  }
 
-              let whereClause = allTemplates
-                .filter((template) => {
-                  return template.crmId;
-                })
-                .map((template) => {
-                  return `Approved_Email_Template_vod__c = "${template.crmId}" OR`;
-                })
-                .join(" ")
-                .slice(0, -3);
+                  //add to nonEmailCartItems if not already present
+                  if (templateIndex < 0) {
+                    let newTemplate = JSON.parse(JSON.stringify(record));
+                    newTemplate.added = true;
+                    newTemplate.available = true;
+                    newTemplate.id = `nonEmailCartTemplate_${sentEmail.Approved_Email_Template_vod__c}`;
+                    newTemplate.crmId = sentEmail.Approved_Email_Template_vod__c;
+                    newTemplate.thumb = "";
+                    newTemplate.title = "";
+                    newTemplate.vaultId = "";
+                    newTemplate.fragments = [];
 
-              whereClause = `(Status_vod__c = "Sent_vod" OR Status_vod__c = "Delivered_vod") AND Account_vod__c = "${this.vars.metadata.account.id}" AND (${whereClause})`;
+                    this.vars.interactionSummary.nonEmailCartItems.templates.push(newTemplate);
 
-              com.veeva.clm.queryRecord("Sent_Email_vod__c", this.vars.interactionSummary.fields.Sent_Email_vod__c, whereClause, [], null, (data) => {
-                if (data.success) {
-                  resolve(data.Sent_Email_vod__c);
-                } else {
-                  util.log(`com.idc.clm.getDataForContextObjects: failed to retrieve Sent_Email_vod__c records ${data.message}`, "error");
-                  resolve([]);
+                    templateIndex = this.vars.interactionSummary.nonEmailCartItems.templates.length - 1;
+                  }
+
+                  //check for fragments 
+                  //note: email fragments not sent will not be considered for templates queried here
+                  if (sentEmail.Email_Fragments_vod__c && sentEmail.Email_Fragments_vod__c.length > 0) {
+                    let thisTemplate = this.vars.interactionSummary.nonEmailCartItems.templates[templateIndex];
+                    let emailFragmentsArr = sentEmail.Email_Fragments_vod__c.split(",");
+                    emailFragmentsArr.forEach((fragmentCRMID) => {
+                      if (thisTemplate.fragments.findIndex((fragment) => fragment.crmId == fragmentCRMID) < 0) {
+                        let newFragment = JSON.parse(JSON.stringify(record));
+                        newFragment.added = true;
+                        newFragment.available = true;
+                        newFragment.id = `nonEmailCartFragment_${fragmentCRMID}`;
+                        newFragment.crmId = fragmentCRMID;
+                        newFragment.thumb = "";
+                        newFragment.title = "";
+
+                        thisTemplate.fragments.push(newFragment);
+                      }
+                    });
+                  }
+                });
+                
+
+                //look for title for templates and fragments title
+                let allCRMIDs = [];
+                this.vars.interactionSummary.nonEmailCartItems.templates.forEach((template) => {
+                  allCRMIDs.push(template.crmId);
+                  template.fragments.forEach((fragment) => {
+                    allCRMIDs.push(fragment.crmId);
+                  });
+                });
+
+                let whereClause = allCRMIDs
+                  .map((crmId) => {
+                    return `ID = "${crmId}" OR`;
+                  }).join(" ");
+                whereClause = whereClause.slice(0, -3); //remove last OR
+
+                let documentRecords = await new Promise((resolve) => {
+                  com.veeva.clm.queryRecord(
+                    "Approved_Document_vod__c",
+                    ["ID", "Document_Description_vod__c", "Name", "Vault_Document_Id_vod__c"],
+                    whereClause,
+                    [],
+                    null,
+                    (data) => {
+                      if (data.success) {
+                        resolve(data.Approved_Document_vod__c);
+                      } else {
+                        util.log(`com.idc.clm.getDataForContextObjects: failed to retrieve Approved_Document_vod__c records ${data.message}`, "error");
+                        resolve([]);
+                      }
+                    }
+                  );
+                });
+
+                //assign titles and Vault IDs
+                this.vars.interactionSummary.nonEmailCartItems.templates.forEach((template) => {
+
+                  if (!template.added) return; //skip original templates
+
+                  let documentRecord = documentRecords.find((doc) => {
+                    return doc.ID == template.crmId;
+                  });
+                  if (documentRecord) {
+                    if (documentRecord.Document_Description_vod__c && documentRecord.Document_Description_vod__c != "") {
+                      template.title = documentRecord.Document_Description_vod__c;
+                    } else {
+                      template.title = documentRecord.Name;
+                    }
+                    template.vaultId = documentRecord.Vault_Document_Id_vod__c;
+                    template.title += ` (${template.vaultId.toString()})`;
+                  }
+                  template.fragments.forEach((fragment) => {
+                    let documentRecord = documentRecords.find((doc) => {
+                      return doc.ID == fragment.crmId;
+                    });
+                    if (documentRecord) {
+                      if (documentRecord.Document_Description_vod__c && documentRecord.Document_Description_vod__c != "") {
+                        fragment.title = documentRecord.Document_Description_vod__c;
+                      } else {
+                        fragment.title = documentRecord.Name;
+                      }
+                      fragment.vaultId = documentRecord.Vault_Document_Id_vod__c;
+                      fragment.title += ` (${fragment.vaultId.toString()})`;
+                    }
+                  });
+                });
+
+                //remove templates and fragments with same vaultId (keep first found)
+                let uniqueTemplates = [];
+                this.vars.interactionSummary.nonEmailCartItems.templates.forEach((template) => {
+                  let templateIndex = uniqueTemplates.findIndex((uniqueTemplate) => {
+                    return uniqueTemplate.vaultId == template.vaultId;
+                  });
+                  if (templateIndex < 0) {
+                    //check fragments
+                    let uniqueFragments = [];
+                    template.fragments.forEach((fragment) => {
+                      let fragmentIndex = uniqueFragments.findIndex((uniqueFragment) => {
+                        return uniqueFragment.vaultId == fragment.vaultId;
+                      });
+                      if (fragmentIndex < 0) {
+                        uniqueFragments.push(fragment);
+                      }
+                    });
+                    template.fragments = uniqueFragments;
+                    uniqueTemplates.push(template);
+                  }
+                });
+                this.vars.interactionSummary.nonEmailCartItems.templates = uniqueTemplates;
+              }
+            }
+
+            //Email_Activity_vod__c records
+            if (this.vars.emailCart.active) {
+              let emailActivityRecords;
+              if (this.vars.interactionSummary.input.Sent_Email_vod__c) {
+                emailActivityRecords = await new Promise((resolve) => {
+                  let whereClause = this.vars.interactionSummary.input.Sent_Email_vod__c.map((sentEmail) => {
+                    return `Sent_Email_vod__c = "${sentEmail.ID}" OR`;
+                  })
+                    .join(" ")
+                    .slice(0, -3);
+
+                  com.veeva.clm.queryRecord(
+                    "Email_Activity_vod__c",
+                    this.vars.interactionSummary.fields.Email_Activity_vod__c,
+                    whereClause,
+                    [],
+                    null,
+                    (data) => {
+                      if (data.success) {
+                        resolve(data.Email_Activity_vod__c);
+                      } else {
+                        util.log(`com.idc.clm.getDataForContextObjects: failed to retrieve Email_Activity_vod__c records ${data.message}`, "error");
+                        resolve([]);
+                      }
+                    }
+                  );
+                });
+              }
+
+              if (emailActivityRecords) {
+                this.vars.interactionSummary.input.Email_Activity_vod__c = emailActivityRecords;
+              }
+            }
+
+            //Next best content CLM
+            if (this.vars.interactionSummary.nextBestContent.clm.active) {
+              let sourceFnc = this.vars.interactionSummary.nextBestContent.clm.source.call;
+              if (sourceFnc !== "undefined" && sourceFnc !== "" && typeof window[sourceFnc] === "function") {
+                let nextBestContentCLM = await window[sourceFnc]();
+                if (Array.isArray(nextBestContentCLM) && nextBestContentCLM.length > 0) {
+                  this.vars.interactionSummary.input.Next_Best_Content_CLM = nextBestContentCLM;
                 }
-              });
-            });
-          }
-          if (sentEmailRecords) {
-            this.vars.interactionSummary.input.Sent_Email_vod__c = sentEmailRecords;
-          }
-        }
-
-        //Email_Activity_vod__c for sent emails
-        if (this.vars.interactionSummary.active && this.vars.session.isAnActualCall && this.vars.emailCart.active) {
-          let emailActivityRecords;
-          if (this.vars.interactionSummary.input.Sent_Email_vod__c) {
-            emailActivityRecords = await new Promise((resolve) => {
-              let whereClause = this.vars.interactionSummary.input.Sent_Email_vod__c.map((sentEmail) => {
-                return `Sent_Email_vod__c = "${sentEmail.ID}" OR`;
-              })
-                .join(" ")
-                .slice(0, -3);
-
-              com.veeva.clm.queryRecord("Email_Activity_vod__c", this.vars.interactionSummary.fields.Email_Activity_vod__c, whereClause, [], null, (data) => {
-                if (data.success) {
-                  resolve(data.Email_Activity_vod__c);
-                } else {
-                  util.log(`com.idc.clm.getDataForContextObjects: failed to retrieve Email_Activity_vod__c records ${data.message}`, "error");
-                  resolve([]);
-                }
-              });
-            });
-          }
-
-          if (emailActivityRecords) {
-            this.vars.interactionSummary.input.Email_Activity_vod__c = emailActivityRecords;
-          }
-        }
-
-        //Next best content CLM
-        if (this.vars.interactionSummary.active && this.vars.session.isAnActualCall && this.vars.interactionSummary.nextBestContent.clm.active) {
-          let sourceFnc = this.vars.interactionSummary.nextBestContent.clm.source.call;
-          if (sourceFnc !== "undefined" && sourceFnc !== "" && typeof window[sourceFnc] === "function") {
-            let nextBestContentCLM = await window[sourceFnc]();
-            if (Array.isArray(nextBestContentCLM) && nextBestContentCLM.length > 0) {
-              this.vars.interactionSummary.input.Next_Best_Content_CLM = nextBestContentCLM;
+              }
             }
           }
         }
@@ -2793,50 +3346,48 @@ com.idc.clm = {
     document.querySelector("body").setAttribute("data-is-standalone-modal-slide", this.vars.navigation.currentSlide.isStandalone);
 
     //is standalone modal group active
-    document.querySelector("body").setAttribute("data-active-standalone-group", this.persistentData.session.selectedStandaloneGroup);
+    document.querySelector("body").setAttribute("data-active-standalone-group", this.sessionData.session.selectedStandaloneGroup);
   },
 
-  /*persistent data ---------------------------------------*/
-  definePersistentDataKey: function () {
-    this.vars.project.persistentDataKey = `com_idc_data_persistentData__${(this.vars.project.name + this.vars.project.version)
-      .replace(/\s+/g, "")
-      .toLowerCase()}`;
+  /*session data ---------------------------------------*/
+  defineSessionDataKey: function () {
+    this.vars.project.sessionDataKey = `com_idc_data_sessionData__${(this.vars.project.name + this.vars.project.version).replace(/\s+/g, "").toLowerCase()}`;
   },
-  loadPersistentData: function () {
-    com.idc.util.log("com.idc.clm.loadPersistentData()");
+  loadSessionData: function () {
+    com.idc.util.log("com.idc.clm.loadSessionData()");
 
     return new Promise((resolve) => {
-      //ToDo: use field as alternative to window.localStorage
-      let retrievedData = window.localStorage.getItem(this.vars.project.persistentDataKey);
+      //ToDo: use field as alternative to window.sessionStorage
+      let retrievedData = window.sessionStorage.getItem(this.vars.project.sessionDataKey);
       let jsonData = {};
       try {
         jsonData = JSON.parse(retrievedData);
       } catch (err) {
-        com.idc.util.log(`com.idc.loadPersistentData: ${err}`, "error");
+        com.idc.util.log(`com.idc.loadSessionData: ${err}`, "error");
       }
 
       //compare main structure of retreived data vs project template
-      if (jsonData != null && Object.keys(jsonData).toString() == Object.keys(this.persistentData).toString()) {
-        this.persistentData = jsonData;
+      if (jsonData != null && Object.keys(jsonData).toString() == Object.keys(this.sessionData).toString()) {
+        this.sessionData = jsonData;
       }
 
       resolve();
     });
   },
-  updatePersistentData: function () {
+  updateSessionData: function () {
     return new Promise((resolve) => {
-      //ToDo: use field as alternative to window.localStorage
-      window.localStorage.setItem(this.vars.project.persistentDataKey, JSON.stringify(this.persistentData));
+      //ToDo: use field as alternative to window.sessionStorage
+      window.sessionStorage.setItem(this.vars.project.sessionDataKey, JSON.stringify(this.sessionData));
       resolve();
     });
   },
-  resetPersistentData: function () {
+  resetSessionData: function () {
     return new Promise((resolve) => {
-      //ToDo: use field as alternative to window.localStorage
+      //ToDo: use field as alternative to window.sessionStorage
 
-      window.localStorage.removeItem(this.vars.project.persistentDataKey);
+      window.sessionStorage.removeItem(this.vars.project.sessionDataKey);
 
-      this.persistentData = JSON.parse(JSON.stringify(this.persistentDataTemplate));
+      this.sessionData = JSON.parse(JSON.stringify(this.sessionDataTemplate));
 
       resolve();
     });
@@ -2926,7 +3477,7 @@ com.idc.clm = {
   },
   isBackFromStandAloneSlide: function () {
     let isBackFromStandAlone = false;
-    let navHis = this.persistentData.session.navigationHistory;
+    let navHis = this.sessionData.session.navigationHistory;
     let currentSlideId = this.vars.navigation.currentSlide.id;
     if (navHis.length > 2) {
       isBackFromStandAlone = navHis[0] == currentSlideId && navHis[2] == currentSlideId && this.findSlide(navHis[1]).standaloneModal.isStandalone;
@@ -2935,10 +3486,10 @@ com.idc.clm = {
   },
   handleSwipeNavigation: function (pSwipe) {
     let vars = com.idc.clm.vars;
-    let persistentData = com.idc.clm.persistentData;
+    let sessionData = com.idc.clm.sessionData;
     let isDynamicPresentation = vars.navigation.dynamicPresentation.active;
     let isStandalone = vars.navigation.currentSlide.isStandalone;
-    let isStandaloneGroupActive = persistentData.session.selectedStandaloneGroup;
+    let isStandaloneGroupActive = sessionData.session.selectedStandaloneGroup;
     let isAModalBeingDisplayed = com.idc.util.getElementAttribute(document.querySelector("body"), "data-modal-state") == "active";
     let treatStandaloneModalsAsMainSlides = vars.navigation.dynamicPresentation.treatStandaloneModalsAsMainSlides;
 
@@ -3330,10 +3881,10 @@ com.idc.clm = {
         }
 
         //identify selected callflow (could be stored as a session variable, or passed as a function or text parameter)
-        //check if persistent session data contains a callflow selection
-        if (this.persistentData.session.selectedCallflow) {
-          if (this.vars.options.dynamicPresentation.source.callflows.flows.find((callflow) => callflow.name == this.persistentData.session.selectedCallflow)) {
-            selectedCallflow = this.persistentData.session.selectedCallflow;
+        //check if session data contains a callflow selection
+        if (this.sessionData.session.selectedCallflow) {
+          if (this.vars.options.dynamicPresentation.source.callflows.flows.find((callflow) => callflow.name == this.sessionData.session.selectedCallflow)) {
+            selectedCallflow = this.sessionData.session.selectedCallflow;
           }
         } else {
           //check if defaultCallflowParam is a function and returns a valid callflow name
@@ -3431,9 +3982,9 @@ com.idc.clm = {
     }
 
     if (slidesSequence.length > 0) {
-      //set persistent callflow selection (for the session)
-      this.persistentData.session.selectedCallflow = selectedCallflow;
-      this.updatePersistentData();
+      //set session callflow selection (for the session)
+      this.sessionData.session.selectedCallflow = selectedCallflow;
+      this.updateSessionData();
 
       //set slides sequence
       this.setDynamicSlidesSequence({
@@ -3461,9 +4012,9 @@ com.idc.clm = {
     }
   },
   unSetCallflow: function () {
-    //clear persistent callflow selection (for the session)
-    this.persistentData.session.selectedCallflow = null;
-    this.updatePersistentData();
+    //clear session callflow selection (for the session)
+    this.sessionData.session.selectedCallflow = null;
+    this.updateSessionData();
 
     //set standard slides sequence
     this.setStandardSlidesSequence();
@@ -3519,19 +4070,20 @@ com.idc.clm = {
     return groupIsValid;
   },
   activateStandaloneGroup: function (group) {
-    this.persistentData.session.selectedStandaloneGroup = group;
-    this.updatePersistentData();
+    this.sessionData.session.selectedStandaloneGroup = group;
+    this.updateSessionData();
     this.setBodyVars();
   },
   deActivateStandaloneGroup: function () {
-    this.persistentData.session.selectedStandaloneGroup = null;
-    this.updatePersistentData();
+    this.sessionData.session.selectedStandaloneGroup = null;
+    this.updateSessionData();
     this.setBodyVars();
   },
 
   /*interaction summary and other stats---------------------*/
   interactionSummaryTestData: function () {
     let util = com.idc.util;
+    let vars = this.vars;
 
     const minCalls = this.vars.interactionSummary.testModel.calls.min;
     const maxCalls = this.vars.interactionSummary.testModel.calls.max;
@@ -3550,7 +4102,7 @@ com.idc.clm = {
     }
 
     //Approved_Document_vod__c crmId (browserMode only)
-    if (this.vars.options.browserMode.active) {
+    if (this.vars.options.browserMode.active && this.vars.emailCart.active) {
       let crmIdCount = 0;
       if (this.vars.emailCart.active) {
         if (this.vars.emailCart.templates.length == 0) {
@@ -3590,272 +4142,381 @@ com.idc.clm = {
             }
           });
         } else {
+
           util.log(`com.idc.clm.interactionSummaryTestData: missing Vault Doc ID for template ${template.id}`, "error");
         }
       });
     }
 
+    //Pseudo key messages matrix
+    let pseudoKeyMessagesMatrix = [];
+    {
+      //this presentation slides
+      this.vars.slides.forEach((slide) => {
+        let consecutiveNumber = pseudoKeyMessagesMatrix.length + 2;
+        let idString = "00000000000000000".substring(0, 17 - consecutiveNumber.toString().length) + consecutiveNumber;
+
+        pseudoKeyMessagesMatrix.push({
+          Presentation: vars.interactionSummary.labels.thisPresentation,
+          ID: idString,
+          Media_File_Name_vod__c: vars.interactionSummary.labels.thisPresentation.replaceAll(" ", "") + "_" + slide.id + ".zip",
+          ThisPresentation: true,
+          slideIdInConfig: slide.id,
+        });
+      });
+      //related CLM slides
+      if (vars.relatedCLM.available) {
+        vars.relatedCLM.forEach((clm) => {
+          let numberOfSlides = Math.floor(Math.random() * 5) + 1; //1 to 5 slides
+          for (let i = 0; i < numberOfSlides; i++) {
+            let consecutiveNumber = pseudoKeyMessagesMatrix.length + 2;
+            let idString = "00000000000000000".substring(0, 17 - consecutiveNumber.toString().length) + consecutiveNumber;
+            pseudoKeyMessagesMatrix.push({
+              Presentation: clm.name,
+              ID: idString,
+              Media_File_Name_vod__c: clm.name.replaceAll(" ", "") + "_Slide" + (i + 1) + ".zip",
+              ThisPresentation: false,
+            });
+          }
+        });
+      }
+    }
+
     //Call2_vod__c
     let Call2_vod__c = [];
-    for (let i = 0; i < Math.floor(Math.random() * maxCalls) + minCalls; i++) {
-      let callDate = new Date();
-      callDate.setDate(callDate.getDate() - Math.floor(Math.random() * 30));
+    {
+      //generate records
+      for (let i = 0; i < Math.floor(Math.random() * maxCalls) + minCalls; i++) {
+        let random = Math.random();
 
-      let callChannel = Math.random() < 0.5 ? "Video_vod" : "Face_to_face_vod";
+        //date
+        let callDate = new Date();
+        callDate.setDate(callDate.getDate() - Math.floor(Math.random() * 30));
 
-      let Call2_vod__c_Record = {
-        ID: "00000000000000000" + i,
-        Call_Channel_vod__c: callChannel,
-        Call_Datetime_vod__c: callDate.toISOString(),
-        Status_vod__c: "Submitted_vod",
-      };
+        //channel
+        let callChannel = Math.random() < 0.5 ? "Video_vod" : "Face_to_face_vod";
 
-      Call2_vod__c.push(Call2_vod__c_Record);
-    }
-    Call2_vod__c.forEach((record) => {
-      Object.keys(record).forEach((field) => {
-        if (this.vars.interactionSummary.fields.Call2_vod__c.indexOf(field) < 0) {
-          delete record[field];
+        //status
+        let statusForThisCall;
+        if (this.vars.interactionSummary.options.considerSavedCalls) {
+          statusForThisCall = random < 0.5 ? "Submitted_vod" : random < 0.9 ? "Planned_vod" : "Saved_vod";
+        } else {
+          statusForThisCall = random < 0.7 ? "Submitted_vod" : "Planned_vod";
         }
+
+        //presentations for this call
+        let presentionsCountForThisCall = random < 0.8 ? 1 : random < 0.95 ? 2 : 3;
+        let presentationsForThisCall = [];
+        while (presentationsForThisCall.length < presentionsCountForThisCall) {
+          let presentation = pseudoKeyMessagesMatrix[Math.floor(Math.random() * pseudoKeyMessagesMatrix.length)];
+          if (presentationsForThisCall.findIndex((item) => item.name == presentation.Presentation) < 0) {
+            presentationsForThisCall.push({
+              name: presentation.Presentation,
+              thisPresentation: presentation.ThisPresentation,
+            });
+          }
+        }
+
+        let Call2_vod__c_Record = {
+          ID: "00000000000000000" + i,
+          Call_Channel_vod__c: callChannel,
+          Call_Datetime_vod__c: callDate.toISOString(),
+          Status_vod__c: statusForThisCall,
+          Presentations: presentationsForThisCall,
+        };
+
+        Call2_vod__c.push(Call2_vod__c_Record);
+      }
+      //remove fields not set in config
+      Call2_vod__c.forEach((record) => {
+        Object.keys(record).forEach((field) => {
+          if (field == "Presentations") return; //keep Presentations
+          if (this.vars.interactionSummary.fields.Call2_vod__c.indexOf(field) < 0) {
+            delete record[field];
+          }
+        });
       });
-    });
-    this.vars.interactionSummary.input.Call2_vod__c = Call2_vod__c;
+      //set in vars
+      this.vars.interactionSummary.input.Call2_vod__c = Call2_vod__c;
+    }
 
     //Call2_Key_Message_vod__c
     let Call2_Key_Message_vod__c = [];
-    let Call2_Key_Message_vod__c_Counter = 0;
-    Call2_vod__c.forEach((call) => {
-      let displayOrderCounter = 0;
-      let secondsCounter = 0;
-
-      this.vars.slides.forEach((slide) => {
-        if (Math.random() < 0.3) return;
-
-        let reaction = ["Positive", "Neutral", "Negative", "", "", ""][Math.floor(Math.random() * 6)];
-
-        let startTime = new Date(call.Call_Datetime_vod__c);
-        secondsCounter += Math.floor(Math.random() * 30) + 1;
-        startTime.setSeconds(startTime.getSeconds() + secondsCounter);
-
-        let Call2_Key_Message_vod__c_Record = {
-          Display_Order_vod__c: displayOrderCounter + 1,
-          Reaction_vod__c: reaction,
-          Key_Message_vod__c: {
-            Media_File_Name_vod__c: slide.browser.folder + ".zip",
-            testModel: {
-              slideId: slide.id,
-            },
-          },
-          Duration_vod__c: Math.floor(Math.random() * 30) + 1,
-          Call2_vod__c: call.ID,
-          ID: "0000000000000000" + (Call2_Key_Message_vod__c_Counter + 10),
-          Start_Time_vod__c: startTime.toISOString(),
-        };
-
-        Call2_Key_Message_vod__c.push(Call2_Key_Message_vod__c_Record);
-
-        Call2_Key_Message_vod__c_Counter++;
-        displayOrderCounter++;
-      });
-    });
-    Call2_Key_Message_vod__c.forEach((record) => {
-      Object.keys(record).forEach((field) => {
-        if (this.vars.interactionSummary.fields.Call2_Key_Message_vod__c.indexOf(field) < 0) delete record[field];
-      });
-    });
-    this.vars.interactionSummary.input.Call2_Key_Message_vod__c = Call2_Key_Message_vod__c;
-
-    //Sent_Email_vod__c
-    let Sent_Email_vod__c = [];
-    let Sent_Email_vod__c_Counter = 0;
-    let aeArray = [];
-    
     {
-      this.vars.emailCart.templates
-        .map((item) => {
-          return {
-            id: item.id,
-            vaultId: item.vaultId,
-            crmId: item.crmId,
-            group: "templates",
-          };
-        })
-        .forEach((item) => {
-          aeArray.push(item);
-        });
-      this.vars.emailCart.fragments
-        .map((item) => {
-          return {
-            id: item.id,
-            vaultId: item.vaultId,
-            crmId: item.crmId,
-            group: "fragments",
-          };
-        })
-        .forEach((item) => {
-          aeArray.push(item);
-        });
+      let Call2_Key_Message_vod__c_Counter = 0;
+      //generate records
+      Call2_vod__c.forEach((call) => {
+        let displayOrderCounter = 0;
+        let secondsCounter = 0;
 
-      this.vars.interactionSummary.nonEmailCartItems.templates.forEach((template) => {
-        aeArray.push({
-          id: template.id,
-          vaultId: template.vaultId,
-          crmId: template.crmId,
-          group: "nonEmailCartTemplates",
-        });
+        call.Presentations.forEach((callPresentation) => {
+          //get slides for this presentation
+          let slidesUsed = pseudoKeyMessagesMatrix
+            .filter((item) => {
+              return item.Presentation == callPresentation.name;
+            })
+            .filter(() => Math.random() < 0.7); //use a random selection of slides
 
-        template.fragments.forEach((fragment) => {
-          aeArray.push({
-            id: fragment.id,
-            vaultId: fragment.vaultId,
-            crmId: fragment.crmId,
-            group: "nonEmailCartFragments",
-            template: template.id,
+          //for each slide
+          slidesUsed.forEach((slide) => {
+            //reaction
+            let reaction = ["Positive", "Neutral", "Negative", "", "", ""][Math.floor(Math.random() * 6)];
+
+            //start time
+            let startTime = new Date(call.Call_Datetime_vod__c);
+            secondsCounter += Math.floor(Math.random() * 30) + 1;
+            startTime.setSeconds(startTime.getSeconds() + secondsCounter);
+
+            let Call2_Key_Message_vod__c_Record = {
+              ID: "0000000000000000" + (Call2_Key_Message_vod__c_Counter + 10),
+              Call2_vod__c: call.ID,
+              Call_Date_vod__c: call.Call_Datetime_vod__c,
+              Start_Time_vod__c: startTime.toISOString(),
+              Key_Message_vod__c: slide.ID,
+              Duration_vod__c: Math.floor(Math.random() * 30) + 3,
+              Reaction_vod__c: reaction,
+              Display_Order_vod__c: displayOrderCounter + 1,
+              Key_Message_Name_vod__c: slide.Media_File_Name_vod__c.replace(".zip", ""),
+              Clm_Presentation_Name_vod__c: callPresentation.name,
+              Key_Message_vod__c: {
+                Key_Message_Name_vod__c: slide.Media_File_Name_vod__c.replace(".zip", ""),
+                Media_File_Name_vod__c: slide.Media_File_Name_vod__c,
+                id: slide.ID,
+                presentation: slide.Presentation,
+                thisPresentation: slide.ThisPresentation,
+                testModel: {
+                  slideId: null,
+                },
+              },
+            };
+
+            //set slide id in config for this presentation, used in test model
+            if (slide.ThisPresentation) {
+              Call2_Key_Message_vod__c_Record.Key_Message_vod__c.testModel.slideId = slide.slideIdInConfig;
+            }
+
+            //add record
+            Call2_Key_Message_vod__c.push(Call2_Key_Message_vod__c_Record);
+
+            Call2_Key_Message_vod__c_Counter++;
+            displayOrderCounter++;
           });
         });
       });
-    }
-
-    for (let i = 0; i < Math.floor(Math.random() * maxEmails) + minEmails; i++) {
-      let emailDate = new Date();
-      emailDate.setDate(emailDate.getDate() - Math.floor(Math.random() * 30));
-
-      let emailOpened = Math.random() < 0.7 ? 1 : 0;
-
-      let openEmailDate;
-      let openCount;
-      let clickCount;
-      if (emailOpened) {
-        openEmailDate = new Date(); //has to be after emailDate
-        openEmailDate.setDate(emailDate.getDate() + Math.floor(Math.random() * 3));
-
-        openCount = Math.floor(Math.random() * 6) + 1;
-
-        clickCount = Math.floor(Math.random() * 6);
-      }
-
-      let templatesArr = aeArray.filter((item) => item.group == "templates" || item.group == "nonEmailCartTemplates");
-      let templateIndex = Math.floor(Math.random() * templatesArr.length);
-      let template = templatesArr[templateIndex];
-
-      if (template) {
-        let fragments;
-        if (template.group == "templates") {
-          fragments = aeArray.filter((item) => item.group == "fragments");
-        } else {
-          fragments = aeArray.filter((item) => item.group == "nonEmailCartFragments" && item.template == template.id);
-        }
-        fragments = fragments.sort(() => 0.5 - Math.random()).slice(0, Math.floor(Math.random() * (fragments.length + 1))); //random selection of fragments
-
-        let Sent_Email_vod__c_Record = {
-          Opened_vod__c: emailOpened,
-          Email_Sent_Date_vod__c: emailDate.toISOString(),
-          Approved_Email_Template_vod__c: template.crmId,
-          ID: "0000000000000000" + (Sent_Email_vod__c_Counter + 10),
-          Click_Count_vod__c: clickCount ? clickCount : 0,
-          Last_Open_Date_vod__c: openEmailDate ? openEmailDate.toISOString() : "",
-          Last_Activity_Date_vod__c: openEmailDate ? openEmailDate.toISOString() : "",
-          Open_Count_vod__c: openCount ? openCount : 0,
-          Status_vod__c: "Delivered_vod",
-          Email_Fragments_vod__c: fragments.map((item) => item.crmId).join(","),
-        };
-
-        Sent_Email_vod__c.push(Sent_Email_vod__c_Record);
-
-        Sent_Email_vod__c_Counter++;
-      }
-    }
-    Sent_Email_vod__c.forEach((record) => {
-      Object.keys(record).forEach((field) => {
-        if (this.vars.interactionSummary.fields.Sent_Email_vod__c.indexOf(field) < 0) delete record[field];
+      Call2_Key_Message_vod__c.forEach((record) => {
+        Object.keys(record).forEach((field) => {
+          if (this.vars.interactionSummary.fields.Call2_Key_Message_vod__c.indexOf(field) < 0) delete record[field];
+        });
       });
-    });
-    
-    this.vars.interactionSummary.input.Sent_Email_vod__c = Sent_Email_vod__c;
+      this.vars.interactionSummary.input.Call2_Key_Message_vod__c = Call2_Key_Message_vod__c;
+    }
+
+    //Sent_Email_vod__c
+    let Sent_Email_vod__c = [];
+    let aeArray = [];
+    {
+      let Sent_Email_vod__c_Counter = 0;
+      {
+        this.vars.emailCart.templates
+          .map((item) => {
+            return {
+              id: item.id,
+              vaultId: item.vaultId,
+              crmId: item.crmId,
+              group: "templates",
+            };
+          })
+          .forEach((item) => {
+            aeArray.push(item);
+          });
+        this.vars.emailCart.fragments
+          .map((item) => {
+            return {
+              id: item.id,
+              vaultId: item.vaultId,
+              crmId: item.crmId,
+              group: "fragments",
+            };
+          })
+          .forEach((item) => {
+            aeArray.push(item);
+          });
+
+        this.vars.interactionSummary.nonEmailCartItems.templates.forEach((template) => {
+          aeArray.push({
+            id: template.id,
+            vaultId: template.vaultId,
+            crmId: template.crmId,
+            group: "nonEmailCartTemplates",
+          });
+
+          template.fragments.forEach((fragment) => {
+            aeArray.push({
+              id: fragment.id,
+              vaultId: fragment.vaultId,
+              crmId: fragment.crmId,
+              group: "nonEmailCartFragments",
+              template: template.id,
+            });
+          });
+        });
+      }
+
+      for (let i = 0; i < Math.floor(Math.random() * maxEmails) + minEmails; i++) {
+        let emailDate = new Date();
+        emailDate.setDate(emailDate.getDate() - Math.floor(Math.random() * 30));
+
+        let emailOpened = Math.random() < 0.7 ? 1 : 0;
+
+        let openEmailDate;
+        let openCount;
+        let clickCount;
+        if (emailOpened) {
+          openEmailDate = new Date(); //has to be after emailDate
+          openEmailDate.setDate(emailDate.getDate() + Math.floor(Math.random() * 3));
+
+          openCount = Math.floor(Math.random() * 6) + 1;
+
+          clickCount = Math.floor(Math.random() * 6);
+        }
+
+        let templatesArr = aeArray.filter((item) => item.group == "templates" || item.group == "nonEmailCartTemplates");
+        let templateIndex = Math.floor(Math.random() * templatesArr.length);
+        let template = templatesArr[templateIndex];
+
+        if (template) {
+          let fragments;
+          if (template.group == "templates") {
+            fragments = aeArray.filter((item) => item.group == "fragments");
+          } else {
+            fragments = aeArray.filter((item) => item.group == "nonEmailCartFragments" && item.template == template.id);
+          }
+          fragments = fragments.sort(() => 0.5 - Math.random()).slice(0, Math.floor(Math.random() * (fragments.length + 1))); //random selection of fragments
+
+          let Sent_Email_vod__c_Record = {
+            Opened_vod__c: emailOpened,
+            Email_Sent_Date_vod__c: emailDate.toISOString(),
+            Approved_Email_Template_vod__c: template.crmId,
+            ID: "0000000000000000" + (Sent_Email_vod__c_Counter + 10),
+            Click_Count_vod__c: clickCount ? clickCount : 0,
+            Last_Open_Date_vod__c: openEmailDate ? openEmailDate.toISOString() : "",
+            Last_Activity_Date_vod__c: openEmailDate ? openEmailDate.toISOString() : "",
+            Open_Count_vod__c: openCount ? openCount : 0,
+            Status_vod__c: "Delivered_vod",
+            Email_Fragments_vod__c: fragments.map((item) => item.crmId).join(","),
+          };
+
+          Sent_Email_vod__c.push(Sent_Email_vod__c_Record);
+
+          Sent_Email_vod__c_Counter++;
+        }
+      }
+      Sent_Email_vod__c.forEach((record) => {
+        Object.keys(record).forEach((field) => {
+          if (this.vars.interactionSummary.fields.Sent_Email_vod__c.indexOf(field) < 0) delete record[field];
+        });
+      });
+
+      this.vars.interactionSummary.input.Sent_Email_vod__c = Sent_Email_vod__c;
+    }
 
     //Email_Activity_vod__c
     let Email_Activity_vod__c = [];
-    let Email_Activity_vod__c_Counter = 0;
+    {
+      let Email_Activity_vod__c_Counter = 0;
 
-    Sent_Email_vod__c.forEach((sentEmail) => {
-      if (!sentEmail.Opened_vod__c) return;
+      Sent_Email_vod__c.forEach((sentEmail) => {
+        if (!sentEmail.Opened_vod__c) return;
 
-      let activitiesArr = [];
-      for (let i = 0; i < sentEmail.Open_Count_vod__c; i++) {
-        activitiesArr.push("Opened_vod");
-      }
-      for (let i = 0; i < sentEmail.Click_Count_vod__c; i++) {
-        activitiesArr.push("Clicked_vod");
-      }
-
-      activitiesArr.forEach((activityType) => {
-        let vaultDocID;
-        let vaultDocName;
-        let vaultDocNumber;
-        let fragmentId;
-        if (activityType == "Clicked_vod") {
-          if (!sentEmail.Email_Fragments_vod__c) return;
-          let fragmentsArr = sentEmail.Email_Fragments_vod__c.split(",");
-          let fragmentIndex = Math.floor(Math.random() * fragmentsArr.length);
-          let fragment = aeArray.find((item) => item.crmId == fragmentsArr[fragmentIndex]);
-
-          if (!fragment) return;
-
-          vaultDocID = fragment.vaultId;
-          vaultDocName = fragment.id;
-          vaultDocNumber = fragment.crmId;
-          fragmentId = fragment.crmId;
+        let activitiesArr = [];
+        for (let i = 0; i < sentEmail.Open_Count_vod__c; i++) {
+          activitiesArr.push("Opened_vod");
+        }
+        for (let i = 0; i < sentEmail.Click_Count_vod__c; i++) {
+          activitiesArr.push("Clicked_vod");
         }
 
-        let Email_Activity_vod__c_Record = {
-          Activity_DateTime_vod__c: sentEmail.Last_Activity_Date_vod__c,
-          Vault_Doc_ID_vod__c: vaultDocID ? vaultDocID : "",
-          Sent_Email_vod__c: sentEmail.ID,
-          Vault_Doc_Name_vod__c: vaultDocName ? vaultDocName : "",
-          Event_type_vod__c: activityType,
-          Vault_Document_Number_vod__c: vaultDocNumber ? vaultDocNumber : "",
-          ID: "0000000000000000" + (Email_Activity_vod__c_Counter + 10),
-          Approved_Document_vod__c: fragmentId ? fragmentId : "",
-        };
+        activitiesArr.forEach((activityType) => {
+          let vaultDocID;
+          let vaultDocName;
+          let vaultDocNumber;
+          let fragmentId;
+          if (activityType == "Clicked_vod") {
+            if (!sentEmail.Email_Fragments_vod__c) return;
+            let fragmentsArr = sentEmail.Email_Fragments_vod__c.split(",");
+            let fragmentIndex = Math.floor(Math.random() * fragmentsArr.length);
+            let fragment = aeArray.find((item) => item.crmId == fragmentsArr[fragmentIndex]);
 
-        Email_Activity_vod__c.push(Email_Activity_vod__c_Record);
+            if (!fragment) return;
 
-        Email_Activity_vod__c_Counter++;
+            vaultDocID = fragment.vaultId;
+            vaultDocName = fragment.id;
+            vaultDocNumber = fragment.crmId;
+            fragmentId = fragment.crmId;
+          }
+
+          let Email_Activity_vod__c_Record = {
+            Activity_DateTime_vod__c: sentEmail.Last_Activity_Date_vod__c,
+            Vault_Doc_ID_vod__c: vaultDocID ? vaultDocID : "",
+            Sent_Email_vod__c: sentEmail.ID,
+            Vault_Doc_Name_vod__c: vaultDocName ? vaultDocName : "",
+            Event_type_vod__c: activityType,
+            Vault_Document_Number_vod__c: vaultDocNumber ? vaultDocNumber : "",
+            ID: "0000000000000000" + (Email_Activity_vod__c_Counter + 10),
+            Approved_Document_vod__c: fragmentId ? fragmentId : "",
+          };
+
+          Email_Activity_vod__c.push(Email_Activity_vod__c_Record);
+
+          Email_Activity_vod__c_Counter++;
+        });
       });
-    });
-    Email_Activity_vod__c.forEach((record) => {
-      Object.keys(record).forEach((field) => {
-        if (this.vars.interactionSummary.fields.Email_Activity_vod__c.indexOf(field) < 0) delete record[field];
+      Email_Activity_vod__c.forEach((record) => {
+        Object.keys(record).forEach((field) => {
+          if (this.vars.interactionSummary.fields.Email_Activity_vod__c.indexOf(field) < 0) delete record[field];
+        });
       });
-    });
 
-    this.vars.interactionSummary.input.Email_Activity_vod__c = Email_Activity_vod__c;
+      this.vars.interactionSummary.input.Email_Activity_vod__c = Email_Activity_vod__c;
+    }
 
     //Next Best Content CLM
-    let sourceFnc = this.vars.interactionSummary.nextBestContent.clm.source.browser;
-    if (sourceFnc !== "undefined" && sourceFnc !== "" && typeof window[sourceFnc] === "function") {
-      let nextBestContentCLM = window[sourceFnc]();
-      if (Array.isArray(nextBestContentCLM) && nextBestContentCLM.length > 0) {
-        this.vars.interactionSummary.input.Next_Best_Content_CLM = nextBestContentCLM;
+    {
+      let sourceFnc = this.vars.interactionSummary.nextBestContent.clm.source.browser;
+      if (sourceFnc !== "undefined" && sourceFnc !== "" && typeof window[sourceFnc] === "function") {
+        let nextBestContentCLM = window[sourceFnc]();
+        if (Array.isArray(nextBestContentCLM) && nextBestContentCLM.length > 0) {
+          this.vars.interactionSummary.input.Next_Best_Content_CLM = nextBestContentCLM;
+        }
       }
     }
   },
   interactionSummaryModel: function () {
     let vars = this.vars;
+    let sessionData = this.sessionData;
 
     //test data: browser mode and simulated call
     if (vars.options.browserMode.active) {
       this.interactionSummaryTestData();
     }
 
+    //used cached data
+    if (sessionData.interactionSummary.cached) {
+      vars.interactionSummary.output = JSON.parse(JSON.stringify(sessionData.interactionSummary.output));
+      return;
+    }
+
+    //output template
+    let output = JSON.parse(JSON.stringify(vars.interactionSummary.output));
+
     //account --------------------------------------------
-    vars.interactionSummary.output.account.id = vars.metadata.account.id;
-    vars.interactionSummary.output.account.name = vars.metadata.account.name;
-    vars.interactionSummary.output.account.salutation = vars.metadata.account.salutation;
+    output.account.id = vars.metadata.account.id;
+    output.account.name = vars.metadata.account.name;
+    output.account.salutation = vars.metadata.account.salutation;
 
     //timeline -------------------------------------------
     {
-      const timeLineTemplate = vars.interactionSummary.output.timeline.splice(0)[0];
+      const timeLineTemplate = output.timeline.splice(0)[0];
 
       //call records to add CLM views to timeline
       vars.interactionSummary.input.Call2_vod__c.forEach((call) => {
@@ -3870,6 +4531,8 @@ com.idc.clm = {
         record.id = call.ID;
         record.type = "call";
         record.call.channel = call.Call_Channel_vod__c;
+        record.call.status = call.Status_vod__c;
+        record.call.presentations = call.Presentations;
 
         //set date
         let tmpDate = call.Call_Datetime_vod__c;
@@ -3906,11 +4569,17 @@ com.idc.clm = {
               slide = vars.slides.find((slide) => slide.player.zipName == callKeyMessage.Key_Message_vod__c.Media_File_Name_vod__c);
             }
 
-            if (!slide) return;
-
             //populate slide record
-            slideRecord.id = slide.id;
-            slideRecord.title = slide.description;
+            if (slide) {
+              slideRecord.id = slide.id;
+              slideRecord.title = slide.description;
+            } else {
+              //if not this IVA slide, use values from key message record
+              slideRecord.doesNotBelongToThisIVA = true;
+              slideRecord.id = callKeyMessage.Key_Message_vod__c.id;
+              slideRecord.title = callKeyMessage.Key_Message_vod__c.Key_Message_Name_vod__c;
+            }
+
             slideRecord.displayOrder = callKeyMessage.Display_Order_vod__c;
             slideRecord.duration = Math.round(callKeyMessage.Duration_vod__c);
             slideRecord.reaction = callKeyMessage.Reaction_vod__c;
@@ -3920,7 +4589,7 @@ com.idc.clm = {
           });
 
         //for consecutive views of same slide, keep one record, add up time, keep last reaction
-        if (vars.interactionSummary.groupViewsForSameSlide) {
+        if (vars.interactionSummary.options.groupViewsForSameSlide) {
           let newSlidesArr = [];
           let prevSlideId = null;
           for (let i = 0; i < record.call.slides.length; i++) {
@@ -3939,7 +4608,7 @@ com.idc.clm = {
         }
 
         //add to timeline
-        vars.interactionSummary.output.timeline.push(record);
+        output.timeline.push(record);
       });
 
       //email records
@@ -4036,18 +4705,18 @@ com.idc.clm = {
         }
 
         //add to timeline
-        vars.interactionSummary.output.timeline.push(record);
+        output.timeline.push(record);
       });
 
       //sort timeline by date
-      vars.interactionSummary.output.timeline.sort((a, b) => {
+      output.timeline.sort((a, b) => {
         return new Date(b.datetime) - new Date(a.datetime);
       });
     }
 
     //slides ---------------------------------------------
     {
-      const slideTemplate = vars.interactionSummary.output.slides.splice(0)[0];
+      const slideTemplate = output.slides.splice(0)[0];
 
       vars.slides.forEach((slide) => {
         let record = JSON.parse(JSON.stringify(slideTemplate));
@@ -4118,13 +4787,13 @@ com.idc.clm = {
         record.overall.callDates = callKeyMessageRecords.map((callKeyMessage) => callKeyMessage.Start_Time_vod__c);
 
         //add to array
-        vars.interactionSummary.output.slides.push(record);
+        output.slides.push(record);
       });
 
       //next best content
       if (vars.interactionSummary.nextBestContent.clm.active) {
         vars.interactionSummary.input.Next_Best_Content_CLM.forEach((item) => {
-          let slideIndex = vars.interactionSummary.output.slides.findIndex(function (slide) {
+          let slideIndex = output.slides.findIndex(function (slide) {
             if (item.zipName) {
               let tmpSlide = vars.slides.find((s) => s.player.zipName == item.zipName);
               if (tmpSlide) {
@@ -4137,9 +4806,9 @@ com.idc.clm = {
             }
           });
           if (slideIndex >= 0) {
-            vars.interactionSummary.output.slides[slideIndex].nextBestContent.recommended = true;
+            output.slides[slideIndex].nextBestContent.recommended = true;
             if (Number.isInteger(item.order)) {
-              vars.interactionSummary.output.slides[slideIndex].nextBestContent.order = item.order;
+              output.slides[slideIndex].nextBestContent.order = item.order;
             }
           }
         });
@@ -4148,7 +4817,7 @@ com.idc.clm = {
 
     //emails ---------------------------------------------
     {
-      const emailTemplate = vars.interactionSummary.output.emails.splice(0)[0];
+      const emailTemplate = output.emails.splice(0)[0];
 
       //email cart items
       vars.emailCart.templates.forEach((template) => {
@@ -4185,7 +4854,7 @@ com.idc.clm = {
         }
 
         //add to array
-        vars.interactionSummary.output.emails.push(record);
+        output.emails.push(record);
       });
 
       //non-email cart items
@@ -4216,11 +4885,11 @@ com.idc.clm = {
         }
 
         //add to array
-        vars.interactionSummary.output.emails.push(record);
+        output.emails.push(record);
       });
 
       //activity
-      vars.interactionSummary.output.emails.forEach((email) => {
+      output.emails.forEach((email) => {
         //sent emails for this template
         let sentEmails = vars.interactionSummary.input.Sent_Email_vod__c.sort(
           (a, b) => new Date(b.Email_Sent_Date_vod__c) - new Date(a.Email_Sent_Date_vod__c)
@@ -4427,7 +5096,7 @@ com.idc.clm = {
       });
 
       //open rate, click rate
-      vars.interactionSummary.output.emails.forEach((email) => {
+      output.emails.forEach((email) => {
         email.overall.openRate = email.overall.opens > 0 ? email.overall.opens / email.overall.sent : 0;
         email.overall.clickRate = email.overall.clicks > 0 ? email.overall.clicks / email.overall.sent : 0;
 
@@ -4437,7 +5106,120 @@ com.idc.clm = {
       });
     }
 
-    vars.interactionSummary.output.ready = true;
+    //relatedCLM -----------------------------------------
+    {
+      const relatedCLMTemplate = output.relatedCLM.splice(0)[0];
+      const zipFileTemplate = relatedCLMTemplate.zipFiles.splice(0)[0];
+
+      //create records for each presentation
+      vars.relatedCLM.forEach((relatedCLM) => {
+        let newRecord = JSON.parse(JSON.stringify(relatedCLMTemplate));
+        newRecord.id = relatedCLM.id;
+        newRecord.name = relatedCLM.name;
+        newRecord.thumb = relatedCLM.thumb;
+        newRecord.overall.timesDisplayed = 0;
+        output.relatedCLM.push(newRecord);
+      });
+
+      //populate data from calls and call key message records
+      vars.interactionSummary.input.Call2_vod__c.forEach((call) => {
+        let presentations = call.Presentations || [];
+        presentations.forEach((presentation) => {
+          //skip this presentation
+          if (presentation.thisPresentation) return;
+
+          //find or create record for this presentation
+          let recordIndex = output.relatedCLM.findIndex((item) => item.name == presentation.name);
+          if (recordIndex < 0) return; //presentation not in related CLM list
+
+          let record = output.relatedCLM[recordIndex];
+
+          //search call key message records for this presentation
+          let callKeyMessageRecords = vars.interactionSummary.input.Call2_Key_Message_vod__c.filter(function (callKeyMessage) {
+            return callKeyMessage.Call2_vod__c == call.ID && callKeyMessage.Key_Message_vod__c.presentation == presentation.name;
+          }); //only call key message records for this call and presentation
+
+          callKeyMessageRecords.forEach((callKeyMessage) => {
+            //zip file record for this key message
+            let zipFileIndex = record.zipFiles.findIndex((zipFile) => zipFile.name == callKeyMessage.Key_Message_vod__c.Media_File_Name_vod__c);
+            if (zipFileIndex < 0) {
+              let newZipFileRecord = JSON.parse(JSON.stringify(zipFileTemplate));
+              newZipFileRecord.name = callKeyMessage.Key_Message_vod__c.Key_Message_Name_vod__c;
+              newZipFileRecord.zip = callKeyMessage.Key_Message_vod__c.Media_File_Name_vod__c;
+              newZipFileRecord.overall.timesDisplayed = 0;
+              record.zipFiles.push(newZipFileRecord);
+              zipFileIndex = record.zipFiles.length - 1;
+            }
+
+            let zipFileRecord = record.zipFiles[zipFileIndex];
+
+            //most recent call date
+            if (!zipFileRecord.mostRecentCall.date || new Date(callKeyMessage.Start_Time_vod__c) > new Date(zipFileRecord.mostRecentCall.date)) {
+              zipFileRecord.mostRecentCall.date = callKeyMessage.Start_Time_vod__c;
+              zipFileRecord.mostRecentCall.duration = Math.round(callKeyMessage.Duration_vod__c);
+              zipFileRecord.mostRecentCall.reaction = callKeyMessage.Reaction_vod__c;
+            }
+
+            //overall
+            zipFileRecord.overall.timesDisplayed++;
+            if (zipFileRecord.overall.allCallDates.indexOf(callKeyMessage.Start_Time_vod__c) < 0) {
+              zipFileRecord.overall.allCallDates.push(callKeyMessage.Start_Time_vod__c);
+            }
+          });
+
+          //most recent call date for presentation
+          if (!record.mostRecentCall.date || new Date(call.Call_Datetime_vod__c) > new Date(record.mostRecentCall.date)) {
+
+            let tmpDate = call.Call_Datetime_vod__c;
+            let recordDate, recordTime, recordAMPM;
+            if (tmpDate) {
+              if (tmpDate.indexOf("T") > 0) {
+                recordDate = tmpDate.split("T")[0];
+                let tmpHour = parseInt(tmpDate.split("T")[1].split(":")[0]);
+                if (tmpHour > 12) {
+                  recordTime = tmpHour - 12 + ":" + tmpDate.split("T")[1].split(":").slice(1, 2).join(":");
+                } else {
+                  recordTime = tmpHour + ":" + tmpDate.split("T")[1].split(":").slice(1, 2).join(":");
+                }
+                recordAMPM = tmpHour >= 12 ? "PM" : "AM";
+              }
+            }
+            record.mostRecentCall.date = recordDate;
+            record.mostRecentCall.time = recordTime;
+            record.mostRecentCall.time_AMPM = recordAMPM;
+          }
+
+          //overall for presentation
+          record.overall.timesDisplayed++;
+          if (record.overall.allCallDates.indexOf(call.Call_Datetime_vod__c) < 0) {
+            record.overall.allCallDates.push(call.Call_Datetime_vod__c);
+          }
+        });
+      });
+
+      //flag discussed/not discussed
+      output.relatedCLM.forEach((relatedCLM) => {
+        if (relatedCLM.overall.timesDisplayed > 0) {
+          relatedCLM.status = "discussed";
+        } else {
+          relatedCLM.status = "notDiscussed";
+        }
+      });
+    }
+
+    //set ready
+    output.ready = true;
+
+    //set output in vars
+    vars.interactionSummary.output = output;
+
+    //cache in session data
+    sessionData.interactionSummary.output = output;
+    sessionData.interactionSummary.cached = true;
+    this.updateSessionData();
+
+    //log
+    com.idc.util.log("com.idc.clm.interactionSummaryModel()");
   },
   emailCartStats: function () {
     //dependent on interaction summary model
@@ -4451,7 +5233,7 @@ com.idc.clm = {
       }
 
       //fragments stats
-      if (vars.emailCart.fragments.length == 0 || vars.emailCart.templates.length > 1) return;
+      if (!templateInInteractionSummary || vars.emailCart.fragments.length == 0 || vars.emailCart.templates.length > 1) return;
       vars.emailCart.fragments.forEach((fragment) => {
         let fragmentInInteractionSummary = templateInInteractionSummary.fragments.find((f) => f.crmId == fragment.crmId);
         if (fragmentInInteractionSummary) {
@@ -4595,11 +5377,11 @@ com.idc.clm = {
     if (!this.vars.navigation.currentSlide.isStandalone) {
       //set arrows visibility (depending on slide position)
       com.idc.ui.core.navigationArrows.setArrowsVisibility();
-      //restore or reset persistent properties if back from standalone modal
+      //restore or reset session properties if back from standalone modal
       if (this.isBackFromStandAloneSlide()) {
-        com.idc.ui.common.backFromStandalone.restorePersistentStylesAndClasses();
+        com.idc.ui.common.backFromStandalone.restoreSessionStylesAndClasses();
       } else {
-        com.idc.ui.common.backFromStandalone.resetPersistentPropertiesStylesAndClasses();
+        com.idc.ui.common.backFromStandalone.resetSessionPropertiesStylesAndClasses();
       }
     } else {
       //open standalone modal
@@ -4657,24 +5439,24 @@ com.idc.clm = {
     }
 
     //complex links >> set element if necessary
-    if (this.persistentData.complexLinks.element.id) {
+    if (this.sessionData.complexLinks.element.id) {
       //is the "from slide" the previous slide or 1 before the previous slide?
-      let fromSlide = this.persistentData.complexLinks.fromSlide;
-      let navigationHistory = this.persistentData.session.navigationHistory;
+      let fromSlide = this.sessionData.complexLinks.fromSlide;
+      let navigationHistory = this.sessionData.session.navigationHistory;
       let isPrevSlide = navigationHistory.length > 1 && navigationHistory[1] == fromSlide;
       let isPrevSlideMinus1 = navigationHistory.length > 2 && navigationHistory[2] == fromSlide;
       if (isPrevSlide || isPrevSlideMinus1) {
         //is the current slide the target slide?
-        if (this.persistentData.complexLinks.toSlide == this.vars.navigation.currentSlide.id) {
+        if (this.sessionData.complexLinks.toSlide == this.vars.navigation.currentSlide.id) {
           com.idc.ui.common.setComplexLinkElement();
           //clear data
-          this.persistentData.complexLinks = JSON.parse(JSON.stringify(this.persistentDataTemplate.complexLinks));
-          this.updatePersistentData();
+          this.sessionData.complexLinks = JSON.parse(JSON.stringify(this.sessionDataTemplate.complexLinks));
+          this.updateSessionData();
         }
       } else {
         //clear data
-        this.persistentData.complexLinks = JSON.parse(JSON.stringify(this.persistentDataTemplate.complexLinks));
-        this.updatePersistentData();
+        this.sessionData.complexLinks = JSON.parse(JSON.stringify(this.sessionDataTemplate.complexLinks));
+        this.updateSessionData();
       }
     }
 
@@ -4698,10 +5480,10 @@ com.idc.clm = {
 
   /*email -------------------------------------------------*/
   loadEmailCart: function () {
-    let selectedEmailCartItems = this.persistentData.session.selectedEmailCartItems;
+    let selectedEmailCartItems = this.sessionData.session.selectedEmailCartItems;
 
     if (selectedEmailCartItems.length > 0) {
-      this.updateEmailCart(this.persistentData.session.selectedEmailCartItems);
+      this.updateEmailCart(this.sessionData.session.selectedEmailCartItems);
     }
   },
   updateEmailCart: function (selectedItems) {
@@ -4716,9 +5498,9 @@ com.idc.clm = {
       }
     });
 
-    //set persistent data
-    this.persistentData.session.selectedEmailCartItems = selectedItems;
-    this.updatePersistentData();
+    //set session data
+    this.sessionData.session.selectedEmailCartItems = selectedItems;
+    this.updateSessionData();
   },
   launchApprovedEmail: function (selectedOnly) {
     let vars = com.idc.clm.vars;
@@ -5239,7 +6021,7 @@ com.idc.ui = {
 
             //restore saved state if returned from standalone pop-up
             if (com.idc.clm.isBackFromStandAloneSlide()) {
-              let activeInstances = com.idc.ui.common.backFromStandalone.getPersistentProperty(
+              let activeInstances = com.idc.ui.common.backFromStandalone.getSessionProperty(
                 com.idc.clm.vars.navigation.currentSlide.id,
                 el.id,
                 "activeInstances"
@@ -5335,7 +6117,7 @@ com.idc.ui = {
             }
           });
 
-          com.idc.ui.common.backFromStandalone.setPersistentProperty(
+          com.idc.ui.common.backFromStandalone.setSessionProperty(
             com.idc.clm.vars.navigation.currentSlide.id,
             this.id,
             "activeInstances",
@@ -5505,7 +6287,7 @@ com.idc.ui = {
 
             el.addEventListener("click", (evt) => {
               let vars = com.idc.clm.vars;
-              let persistentData = com.idc.clm.persistentData;
+              let sessionData = com.idc.clm.sessionData;
               //do not proceed if non-working-link or disabled
               if (el.getAttribute("data-non-working-link") || el.getAttribute("data-view-state") == "disabled") return;
 
@@ -5543,7 +6325,7 @@ com.idc.ui = {
                 }
               }
 
-              //complex link >> update persistent data
+              //complex link >> update session data
               if (el.params.elId) {
                 //account for abbreviated links in target Id
                 if (targetId && targetId.endsWith("..")) {
@@ -5553,13 +6335,13 @@ com.idc.ui = {
                   }
                 }
 
-                persistentData.complexLinks.fromSlide = vars.navigation.currentSlide.id;
-                persistentData.complexLinks.toSlide = targetId;
-                persistentData.complexLinks.originatorType = "link";
-                persistentData.complexLinks.element.type = el.params.elType;
-                persistentData.complexLinks.element.id = el.params.elId;
-                persistentData.complexLinks.element.instance = el.params.elInstance;
-                com.idc.clm.updatePersistentData();
+                sessionData.complexLinks.fromSlide = vars.navigation.currentSlide.id;
+                sessionData.complexLinks.toSlide = targetId;
+                sessionData.complexLinks.originatorType = "link";
+                sessionData.complexLinks.element.type = el.params.elType;
+                sessionData.complexLinks.element.id = el.params.elId;
+                sessionData.complexLinks.element.instance = el.params.elInstance;
+                com.idc.clm.updateSessionData();
               }
 
               //goto slide
@@ -6132,10 +6914,17 @@ com.idc.ui = {
         //data-view-state active
         switch (this.type) {
           case "dropDown":
-            TweenMax.to(this, 0.5, {
-              top: 0,
-              ease: Quad.easeInOut,
-              onComplete: function () {},
+            this.animate(
+              {
+                top: ["", "0px"],
+              },
+              {
+                duration: 500,
+                easing: "ease-in-out",
+                fill: "forwards",
+              }
+            ).finished.then(() => {
+              // onComplete equivalent
             });
             this.setAttribute("data-view-state", "active");
             break;
@@ -6146,7 +6935,7 @@ com.idc.ui = {
       },
       close: function () {
         let vars = com.idc.clm.vars;
-        let persistentData = com.idc.clm.persistentData;
+        let sessionData = com.idc.clm.sessionData;
 
         //standalone or standard functionality
         if (!this.isStandalone) {
@@ -6228,7 +7017,7 @@ com.idc.ui = {
             }
           }
 
-          //set destination slide with complex link (and update persistent data)
+          //set destination slide with complex link (and update session data)
           if (this.params.elId) {
             //account for abbreviated links in destinationSlide
             if (destinationSlide && destinationSlide.endsWith("..")) {
@@ -6238,13 +7027,13 @@ com.idc.ui = {
               }
             }
 
-            persistentData.complexLinks.fromSlide = vars.navigation.currentSlide.id;
-            persistentData.complexLinks.toSlide = destinationSlide;
-            persistentData.complexLinks.originatorType = "modal";
-            persistentData.complexLinks.element.type = this.params.elType;
-            persistentData.complexLinks.element.id = this.params.elId;
-            persistentData.complexLinks.element.instance = this.params.elInstance;
-            com.idc.clm.updatePersistentData();
+            sessionData.complexLinks.fromSlide = vars.navigation.currentSlide.id;
+            sessionData.complexLinks.toSlide = destinationSlide;
+            sessionData.complexLinks.originatorType = "modal";
+            sessionData.complexLinks.element.type = this.params.elType;
+            sessionData.complexLinks.element.id = this.params.elId;
+            sessionData.complexLinks.element.instance = this.params.elInstance;
+            com.idc.clm.updateSessionData();
           }
 
           //redirect
@@ -6256,17 +7045,22 @@ com.idc.ui = {
         switch (this.type) {
           case "dropDown":
             const el = this;
-            TweenMax.to(this, 0.5, {
-              top: el.viewState.initialTop,
-              ease: Quad.easeInOut,
-              onComplete: function () {
-                //hide back modal
-                el.components.backModal.element.style.display = "none";
-                //clear z-index
-                el.style.zIndex = com.idc.ui.core.modal.activeModalsStack.length;
-                //data-view-state inactive
-                el.removeAttribute("data-view-state");
+            el.animate(
+              {
+                top: [el.style.top || getComputedStyle(el).top, el.viewState.initialTop + "px"],
               },
+              {
+                duration: 500,
+                easing: "ease-in-out",
+                fill: "forwards",
+              }
+            ).finished.then(() => {
+              //hide back modal
+              el.components.backModal.element.style.display = "none";
+              //clear z-index
+              el.style.zIndex = com.idc.ui.core.modal.activeModalsStack.length;
+              //data-view-state inactive
+              el.removeAttribute("data-view-state");
             });
             break;
           default:
@@ -6320,7 +7114,7 @@ com.idc.ui = {
       },
       standaloneModalGroups: {
         standalonelBelongsToActiveGroup: function () {
-          let persistentData = com.idc.clm.persistentData;
+          let sessionData = com.idc.clm.sessionData;
           let vars = com.idc.clm.vars;
           let slideId = vars.navigation.currentSlide.id;
 
@@ -6329,7 +7123,7 @@ com.idc.ui = {
 
           let belongsToActiveGroup = false;
 
-          let activeGroupId = persistentData.session.selectedStandaloneGroup;
+          let activeGroupId = sessionData.session.selectedStandaloneGroup;
           if (!activeGroupId) return false;
 
           let activeGroup = vars.standaloneModalGroups.groups.find((group) => group.id == activeGroupId);
@@ -6342,16 +7136,16 @@ com.idc.ui = {
           return belongsToActiveGroup;
         },
         positionInActiveGroup: function () {
-          let persistentData = com.idc.clm.persistentData;
+          let sessionData = com.idc.clm.sessionData;
           let vars = com.idc.clm.vars;
-          let activeGroupId = persistentData.session.selectedStandaloneGroup;
+          let activeGroupId = sessionData.session.selectedStandaloneGroup;
           let activeGroup = vars.standaloneModalGroups.groups.find((group) => group.id == activeGroupId);
           let slideId = vars.navigation.currentSlide.id;
 
           return { order: activeGroup.slides.indexOf(slideId), total: activeGroup.slides.length };
         },
         setArrowsAndSwipe: function (pElement) {
-          let group = com.idc.clm.vars.standaloneModalGroups.groups.find((group) => group.id == com.idc.clm.persistentData.session.selectedStandaloneGroup);
+          let group = com.idc.clm.vars.standaloneModalGroups.groups.find((group) => group.id == com.idc.clm.sessionData.session.selectedStandaloneGroup);
           if (!group) return;
 
           let position = this.positionInActiveGroup();
@@ -6375,9 +7169,8 @@ com.idc.ui = {
 
           if (position.order < position.total - 1) {
             //next slide
-            let nextSlide = com.idc.clm.vars.standaloneModalGroups.groups.find(
-              (group) => group.id == com.idc.clm.persistentData.session.selectedStandaloneGroup
-            ).slides[position.order + 1];
+            let nextSlide = com.idc.clm.vars.standaloneModalGroups.groups.find((group) => group.id == com.idc.clm.sessionData.session.selectedStandaloneGroup)
+              .slides[position.order + 1];
 
             //arrow visibility and link
             let nextArrow = pElement.components.nextArrow;
@@ -6393,7 +7186,7 @@ com.idc.ui = {
           }
         },
         setGroupElementsVisibility: function (pElement) {
-          let group = com.idc.clm.vars.standaloneModalGroups.groups.find((group) => group.id == com.idc.clm.persistentData.session.selectedStandaloneGroup);
+          let group = com.idc.clm.vars.standaloneModalGroups.groups.find((group) => group.id == com.idc.clm.sessionData.session.selectedStandaloneGroup);
           let indexVisibility;
           let paginatorVisibility;
           if (!group) {
@@ -6432,7 +7225,7 @@ com.idc.ui = {
           }
         },
         populateGroupSlides: function (pIndexModalId, pActiveGroupId, pEnableLinkFunctionality) {
-          let persistentData = com.idc.clm.persistentData;
+          let sessionData = com.idc.clm.sessionData;
           let vars = com.idc.clm.vars;
           let util = com.idc.util;
 
@@ -6455,7 +7248,7 @@ com.idc.ui = {
           if (pActiveGroupId) {
             activeGroupId = pActiveGroupId;
           } else {
-            activeGroupId = persistentData.session.selectedStandaloneGroup;
+            activeGroupId = sessionData.session.selectedStandaloneGroup;
           }
 
           let enableLinkFunctionality;
@@ -6504,7 +7297,7 @@ com.idc.ui = {
           let vars = com.idc.clm.vars;
 
           //eval group and param
-          let group = com.idc.clm.vars.standaloneModalGroups.groups.find((group) => group.id == com.idc.clm.persistentData.session.selectedStandaloneGroup);
+          let group = com.idc.clm.vars.standaloneModalGroups.groups.find((group) => group.id == com.idc.clm.sessionData.session.selectedStandaloneGroup);
           if (!group || !group.mandatorySequence) return;
 
           //eval order and total >> need to prevent close?
@@ -6692,7 +7485,7 @@ com.idc.ui = {
 
             //restore saved state if returned from standalone pop-up
             if (com.idc.clm.isBackFromStandAloneSlide()) {
-              let activeInstance = com.idc.ui.common.backFromStandalone.getPersistentProperty(
+              let activeInstance = com.idc.ui.common.backFromStandalone.getSessionProperty(
                 com.idc.clm.vars.navigation.currentSlide.id,
                 el.id,
                 "activeInstance"
@@ -7358,15 +8151,15 @@ com.idc.ui = {
             //restore saved state if returned from standalone pop-up
             if (
               com.idc.clm.isBackFromStandAloneSlide() &&
-              com.idc.ui.common.backFromStandalone.getPersistentProperty(com.idc.clm.vars.navigation.currentSlide.id, el.id, "activeInstance") !== null &&
-              com.idc.ui.common.backFromStandalone.getPersistentProperty(com.idc.clm.vars.navigation.currentSlide.id, el.id, "activeInstance").value !== null
+              com.idc.ui.common.backFromStandalone.getSessionProperty(com.idc.clm.vars.navigation.currentSlide.id, el.id, "activeInstance") !== null &&
+              com.idc.ui.common.backFromStandalone.getSessionProperty(com.idc.clm.vars.navigation.currentSlide.id, el.id, "activeInstance").value !== null
             ) {
               //show instances
               el.components.container.element.setAttribute("data-view-state", "active");
 
               //set instance
               el.setInstance(
-                com.idc.ui.common.backFromStandalone.getPersistentProperty(com.idc.clm.vars.navigation.currentSlide.id, el.id, "activeInstance").value
+                com.idc.ui.common.backFromStandalone.getSessionProperty(com.idc.clm.vars.navigation.currentSlide.id, el.id, "activeInstance").value
               );
             } else {
               //not back from standalone slide: reset to defaults
@@ -7513,7 +8306,7 @@ com.idc.ui = {
             activeInstanceName = this.components.instances[activeInstanceIndex].name;
           }
 
-          com.idc.ui.common.backFromStandalone.setPersistentProperty(
+          com.idc.ui.common.backFromStandalone.setSessionProperty(
             com.idc.clm.vars.navigation.currentSlide.id,
             this.id,
             "activeInstance",
@@ -8302,8 +9095,8 @@ com.idc.ui = {
             el.resetToDefaults();
           });
 
-          //reset back from standalone persistent properties
-          this.backFromStandalone.resetPersistentPropertiesStylesAndClasses(el.id);
+          //reset back from standalone session properties
+          this.backFromStandalone.resetSessionPropertiesStylesAndClasses(el.id);
         });
     },
     readElementOptions: function (pEl, pOptionsSchema, pAbbreviations) {
@@ -8361,8 +9154,8 @@ com.idc.ui = {
       return returnObj;
     },
     backFromStandalone: {
-      setPersistentProperty: function (pSlideId, pElementId, pPropertyName, pPropertyType, pPropertyValue) {
-        let backFromStandalone = com.idc.clm.persistentData.backFromStandalone;
+      setSessionProperty: function (pSlideId, pElementId, pPropertyName, pPropertyType, pPropertyValue) {
+        let backFromStandalone = com.idc.clm.sessionData.backFromStandalone;
 
         //add slide
         let slideIndex = backFromStandalone.findIndex((slide) => {
@@ -8401,11 +9194,11 @@ com.idc.ui = {
           };
         }
 
-        //update persistent data
-        com.idc.clm.updatePersistentData();
+        //update session data
+        com.idc.clm.updateSessionData();
       },
-      getPersistentProperty: function (pSlideId, pElementId, pPropertyName) {
-        let backFromStandalone = com.idc.clm.persistentData.backFromStandalone;
+      getSessionProperty: function (pSlideId, pElementId, pPropertyName) {
+        let backFromStandalone = com.idc.clm.sessionData.backFromStandalone;
 
         let slideIndex = backFromStandalone.findIndex((slide) => {
           return slide.slideId == pSlideId;
@@ -8430,8 +9223,8 @@ com.idc.ui = {
 
         return backFromStandalone[slideIndex].elements[elementIndex].properties[propertyIndex];
       },
-      setPersistentStylesAndClasses: function (pElementId) {
-        let backFromStandalone = com.idc.clm.persistentData.backFromStandalone;
+      setSessionStylesAndClasses: function (pElementId) {
+        let backFromStandalone = com.idc.clm.sessionData.backFromStandalone;
         const element = document.getElementById(pElementId);
         if (element) {
           //delete previous properties
@@ -8461,7 +9254,7 @@ com.idc.ui = {
               if (styleItem.length == 2) {
                 const styleName = styleItem[0].trim();
                 const styleValue = styleItem[1].trim();
-                this.setPersistentProperty(com.idc.clm.vars.navigation.currentSlide.id, pElementId, styleName, "style", styleValue);
+                this.setSessionProperty(com.idc.clm.vars.navigation.currentSlide.id, pElementId, styleName, "style", styleValue);
               }
             }
           }
@@ -8478,14 +9271,14 @@ com.idc.ui = {
             }
             for (let i = 0; i < classesArr.length; i++) {
               const className = classesArr[i].trim();
-              this.setPersistentProperty(com.idc.clm.vars.navigation.currentSlide.id, pElementId, className, "class", className);
+              this.setSessionProperty(com.idc.clm.vars.navigation.currentSlide.id, pElementId, className, "class", className);
             }
           }
         }
       },
-      restorePersistentStylesAndClasses: function () {
+      restoreSessionStylesAndClasses: function () {
         const slideId = com.idc.clm.vars.navigation.currentSlide.id;
-        const backFromStandalone = com.idc.clm.persistentData.backFromStandalone;
+        const backFromStandalone = com.idc.clm.sessionData.backFromStandalone;
         for (let i = 0; i < backFromStandalone.length; i++) {
           if (backFromStandalone[i].slideId == slideId) {
             const elements = backFromStandalone[i].elements;
@@ -8506,8 +9299,8 @@ com.idc.ui = {
           }
         }
       },
-      resetPersistentPropertiesStylesAndClasses: function (pElementId) {
-        let backFromStandalone = com.idc.clm.persistentData.backFromStandalone;
+      resetSessionPropertiesStylesAndClasses: function (pElementId) {
+        let backFromStandalone = com.idc.clm.sessionData.backFromStandalone;
         if (!pElementId) {
           backFromStandalone = [];
         } else {
@@ -8522,7 +9315,7 @@ com.idc.ui = {
             }
           }
         }
-        com.idc.clm.updatePersistentData();
+        com.idc.clm.updateSessionData();
       },
     },
     swipeListener: function (pEl, pDeviceType, pHandler) {
@@ -8627,23 +9420,23 @@ com.idc.ui = {
     setComplexLinkElement: function () {
       let slideId = com.idc.clm.vars.navigation.currentSlide.id;
 
-      if (slideId != com.idc.clm.persistentData.complexLinks.toSlide) return;
+      if (slideId != com.idc.clm.sessionData.complexLinks.toSlide) return;
 
-      let element = document.querySelector(`#${com.idc.clm.persistentData.complexLinks.element.id}`);
+      let element = document.querySelector(`#${com.idc.clm.sessionData.complexLinks.element.id}`);
       if (!element) return;
 
       let instance;
 
-      switch (com.idc.clm.persistentData.complexLinks.element.type) {
+      switch (com.idc.clm.sessionData.complexLinks.element.type) {
         case "accordion":
-          instance = com.idc.clm.persistentData.complexLinks.element.instance;
+          instance = com.idc.clm.sessionData.complexLinks.element.instance;
           if (instance) {
             element.setInstance(instance, true);
           }
           break;
         case "tab":
         case "multi":
-          instance = com.idc.clm.persistentData.complexLinks.element.instance;
+          instance = com.idc.clm.sessionData.complexLinks.element.instance;
           if (instance) {
             element.setInstance(instance);
           }
@@ -8941,7 +9734,7 @@ com.idc.ui = {
 
       //email button
       if (this.elements.emailButton) {
-        emailButton.addEventListener("click", (event) => {
+        this.elements.emailButton.addEventListener("click", (event) => {
           if (event.currentTarget.getAttribute("data-state") == "active") {
             com.idc.clm.launchApprovedEmail(false); //all fragments
           }
@@ -9088,9 +9881,9 @@ com.idc.ui = {
       //email button
       if (this.elements.emailButton) {
         if ((inACall || browserMode) && itemsHaveCrmId) {
-          emailButton.setAttribute("data-state", "active");
+          this.elements.emailButton.setAttribute("data-state", "active");
         } else {
-          emailButton.setAttribute("data-state", "disabled");
+          this.elements.emailButton.setAttribute("data-state", "disabled");
         }
       }
     },
@@ -9195,10 +9988,10 @@ com.idc.ui = {
           }, 500);
         }
       }).then(() => {
-        //dropdown.beforeOpen: load vars and persistent data functions
+        //dropdown.beforeOpen: load vars and session data functions
         this.dropDown.element.overwriteParameterFunction("beforeOpen", () => {
           com.idc.ui.inspector.refreshVars();
-          com.idc.ui.inspector.refreshPersistentData();
+          com.idc.ui.inspector.refreshSessionData();
         });
       });
 
@@ -9229,9 +10022,9 @@ com.idc.ui = {
             com.idc.ui.inspector.refreshVars();
           });
 
-          //tab persistentData .beforeOpen: load persistent data function
-          this.tab.element.overwriteParameterFunction("persistentData", "beforeOpen", () => {
-            com.idc.ui.inspector.refreshPersistentData();
+          //tab sessionData .beforeOpen: load session data function
+          this.tab.element.overwriteParameterFunction("sessionData", "beforeOpen", () => {
+            com.idc.ui.inspector.refreshSessionData();
           });
         });
       });
@@ -9254,8 +10047,8 @@ com.idc.ui = {
               case "vars":
                 textArea = this.dropDown.element.querySelector('[data-type="com.idc.ui.core.tab.content"][data-instance="vars"] textarea');
                 break;
-              case "persistentData":
-                textArea = this.dropDown.element.querySelector('[data-type="com.idc.ui.core.tab.content"][data-instance="persistentData"] textarea');
+              case "sessionData":
+                textArea = this.dropDown.element.querySelector('[data-type="com.idc.ui.core.tab.content"][data-instance="sessionData"] textarea');
                 break;
             }
 
@@ -9349,7 +10142,6 @@ com.idc.ui = {
       params.commonHTML = vars.commonHTML;
       params.slides = vars.slides;
       params.standaloneModalGroups = vars.standaloneModalGroups;
-      params.emailCart = vars.emailCart;
       params.references = vars.references;
 
       let treeData = params;
@@ -9380,7 +10172,6 @@ com.idc.ui = {
       delete vars.commonHTML;
       delete vars.slides;
       delete vars.standaloneModalGroups;
-      delete vars.emailCart;
       delete vars.references;
 
       let treeData = vars;
@@ -9404,11 +10195,11 @@ com.idc.ui = {
         textAreaContainer.innerHTML = JSON.stringify(treeData, null, 4);
       }
     },
-    refreshPersistentData: function () {
-      let treeData = com.idc.clm.persistentData;
+    refreshSessionData: function () {
+      let treeData = com.idc.clm.sessionData;
 
       //render
-      const textAreaContainer = this.dropDown.element.querySelector('[data-type="com.idc.ui.core.tab.content"][data-instance="persistentData"]');
+      const textAreaContainer = this.dropDown.element.querySelector('[data-type="com.idc.ui.core.tab.content"][data-instance="sessionData"]');
       textAreaContainer.innerHTML = "";
 
       //text area
@@ -9655,13 +10446,15 @@ com.idc.ui = {
         },
         slides: {
           filters: null,
-          modal: null,
-          openButton: null,
+          sortSelect: null,
           launchButton: null,
         },
         emails: {
-          modal: null,
-          openButton: null,
+          sortSelect: null,
+        },
+        relatedCLM: {
+          filters: null,
+          sortSelect: null,
         },
       },
     },
@@ -9676,6 +10469,10 @@ com.idc.ui = {
       emails: {
         sort: "default",
         allExpanded: false,
+      },
+      relatedCLM: {
+        filter: "all",
+        sort: "default",
       },
     },
     init: function () {
@@ -9695,27 +10492,28 @@ com.idc.ui = {
       }
       if (vars.interactionSummary.components.tab.id) {
         this.elements.tab = this.elements.modal.querySelector(`#${vars.interactionSummary.components.tab.id}`);
-
         let cover = this.elements.modal.querySelector(`[data-type="com.idc.ui.core.tab.cover"][data-target-id="${vars.interactionSummary.components.tab.id}"]`);
         if (cover) {
           this.elements.cover = cover;
         }
 
         if (this.elements.tab) {
-          //previous interactions filters
+          //previous interactions: filters
           this.elements.selectors.previousInteractions.filters = this.elements.tab.querySelector(
             `[data-ui-id="previousInteractions"] [data-ui-id="filters_wrapper"]`
           );
-          //slides filters
+          //slides: filters
           this.elements.selectors.slides.filters = this.elements.tab.querySelector(`[data-ui-id="slides"] [data-ui-id="filters_wrapper"]`);
-          //slides sort
-          this.elements.selectors.slides.modal = this.elements.tab.querySelector(`[data-ui-id="slides"] [data-ui-id="slides_sort_modal"]`);
-          this.elements.selectors.slides.openButton = this.elements.tab.querySelector(`[data-ui-id="slides"] [data-ui-id="slides_sort_modal_open"]`);
-          //slides launch callflow
+          //slides: sort
+          this.elements.selectors.slides.sortSelect = this.elements.tab.querySelector(`[data-ui-id="slides"] [data-ui-id="slides_sort_select"]`);
+          //slides: next best content launch callflow
           this.elements.selectors.slides.launchButton = this.elements.tab.querySelector(`[data-ui-id="slides"] [data-ui-id="launchNextBestContent"]`);
-          //emails sort
-          this.elements.selectors.emails.modal = this.elements.tab.querySelector(`[data-ui-id="emails"] [data-ui-id="emails_sort_modal"]`);
-          this.elements.selectors.emails.openButton = this.elements.tab.querySelector(`[data-ui-id="emails"] [data-ui-id="emails_sort_modal_open"]`);
+          //emails: sort
+          this.elements.selectors.emails.sortSelect = this.elements.tab.querySelector(`[data-ui-id="emails"] [data-ui-id="emails_sort_select"]`);
+          //relatedCLM: filters
+          this.elements.selectors.relatedCLM.filters = this.elements.tab.querySelector(`[data-ui-id="relatedCLM"] [data-ui-id="filters_wrapper"]`);
+          //relatedCLM: sort
+          this.elements.selectors.relatedCLM.sortSelect = this.elements.tab.querySelector(`[data-ui-id="relatedCLM"] [data-ui-id="relatedCLM_sort_select"]`);
         }
       }
 
@@ -9728,6 +10526,9 @@ com.idc.ui = {
       //account name
       this.accountName_Populate();
 
+      //cover
+      this.cover_populate();
+
       //previous interactions
       this.previousInteractions_Populate();
 
@@ -9736,6 +10537,9 @@ com.idc.ui = {
 
       //emails
       this.emails_Populate();
+
+      //related CLM
+      this.relatedCLM_Populate();
 
       //tabs visibility
       this.setTabsVisibility();
@@ -9855,14 +10659,17 @@ com.idc.ui = {
             switch (view) {
               case "all":
               case "notDiscussed":
-                this.elements.selectors.slides.openButton.setAttribute("data-view-state", "disabled");
+                this.elements.selectors.slides.sortSelect.disabled = true;
+                this.elements.selectors.slides.sortSelect.selectedIndex = 0;
                 this.options.slides.sort = "default";
                 break;
               case "recommended":
-                this.elements.selectors.slides.openButton.setAttribute("data-view-state", "hidden");
+                this.elements.selectors.slides.sortSelect.disabled = true;
+                this.elements.selectors.slides.sortSelect.selectedIndex = 0;
+                this.options.slides.sort = "default";
                 break;
               case "discussed":
-                this.elements.selectors.slides.openButton.setAttribute("data-view-state", "active");
+                this.elements.selectors.slides.sortSelect.disabled = false;
                 break;
             }
 
@@ -9905,109 +10712,81 @@ com.idc.ui = {
         });
       }
 
-      //slides order
-      if (this.elements.selectors.slides.modal) {
-        let hiddenSlideSortOptionsCount = 0;
-        this.elements.selectors.slides.modal.querySelectorAll(`[data-ui-id="slides_sort_modal"] [data-type="sortOption"]`).forEach((option) => {
-          let sort = option.getAttribute("data-sort");
-
-          //hide option if not available as per fields availability/visibility
+      //slides sort
+      if (this.elements.selectors.slides.sortSelect) {
+        //remove option if not available as per fields availability/visibility
+        Array.from(this.elements.selectors.slides.sortSelect.options).forEach((option) => {
+          let sort = option.getAttribute("value");
           switch (sort) {
             case "default":
               break;
             case "mostRecentlyDiscussed":
               if (!vars.interactionSummary.visibility.fields.slides.lastView) {
-                option.setAttribute("data-view-state", "hidden");
-                hiddenSlideSortOptionsCount++;
+                option.remove();
+                return;
               }
               break;
             case "moreTimeSpentOn":
               if (!vars.interactionSummary.visibility.fields.slides.duration) {
-                option.setAttribute("data-view-state", "hidden");
-                hiddenSlideSortOptionsCount++;
+                option.remove();
+                return;
               }
               break;
           }
-
-          //set event
-          option.addEventListener("click", (event) => {
-            this.options.slides.sort = sort;
-            this.slides_Populate();
-            this.elements.selectors.slides.modal.close();
-
-            //show active
-            this.elements.selectors.slides.openButton.querySelectorAll("SPAN").forEach((span) => {
-              if (span.getAttribute("data-sort") == sort) {
-                span.setAttribute("data-view-state", "active");
-              } else {
-                span.removeAttribute("data-view-state");
-              }
-            });
-          });
         });
 
-        //disable button if necessary
-        if (
-          hiddenSlideSortOptionsCount ==
-          this.elements.selectors.slides.modal.querySelectorAll(`[data-ui-id="slides_sort_modal"] [data-type="sortOption"]`).length - 1
-        ) {
-          this.elements.selectors.slides.openButton.setAttribute("data-view-state", "hidden");
+        //set event
+        this.elements.selectors.slides.sortSelect.addEventListener("change", (event) => {
+          this.options.slides.sort = event.target.value;
+          this.slides_Populate();
+        });
+
+        //disable select if necessary
+        if (this.elements.selectors.slides.sortSelect.querySelectorAll("OPTION").length <= 1) {
+          this.elements.selectors.slides.sortSelect.disabled = true;
+        } else {
+          this.elements.selectors.slides.sortSelect.disabled = false;
         }
       }
 
       //emails order
-      if (this.elements.selectors.emails.modal) {
-        let hiddenEmailSortOptionsCount = 0;
-        this.elements.selectors.emails.modal.querySelectorAll(`[data-ui-id="emails_sort_modal"] [data-type="sortOption"]`).forEach((option) => {
-          let sort = option.getAttribute("data-sort");
+      if (this.elements.selectors.emails.sortSelect) {
+        Array.from(this.elements.selectors.emails.sortSelect.options).forEach((option) => {
+          let sort = option.getAttribute("value");
 
-          //hide option if not available as per fields availability/visibility
+          //remove option if not available as per fields availability/visibility
           switch (sort) {
             case "default":
               break;
             case "mostRecentlySent":
               if (!vars.interactionSummary.visibility.fields.emails.lastTimeSent_date) {
-                option.setAttribute("data-view-state", "hidden");
-                hiddenEmailSortOptionsCount++;
+                option.remove();
               }
               break;
             case "moreOpens":
               if (!vars.interactionSummary.visibility.fields.emails.allTimesSent_open) {
-                option.setAttribute("data-view-state", "hidden");
-                hiddenEmailSortOptionsCount++;
+                option.remove();
               }
               break;
             case "moreClicks":
               if (!vars.interactionSummary.visibility.fields.emails.allTimesSent_click) {
-                option.setAttribute("data-view-state", "hidden");
-                hiddenEmailSortOptionsCount++;
+                option.remove();
               }
               break;
           }
-
-          //set event
-          option.addEventListener("click", (event) => {
-            this.options.emails.sort = sort;
-            this.emails_Populate();
-            this.elements.selectors.emails.modal.close();
-
-            //show active
-            this.elements.selectors.emails.openButton.querySelectorAll("SPAN").forEach((span) => {
-              if (span.getAttribute("data-sort") == sort) {
-                span.setAttribute("data-view-state", "active");
-              } else {
-                span.removeAttribute("data-view-state");
-              }
-            });
-          });
         });
 
-        //disable button if necessary
-        if (
-          hiddenEmailSortOptionsCount ==
-          this.elements.selectors.emails.modal.querySelectorAll(`[data-ui-id="emails_sort_modal"] [data-type="sortOption"]`).length - 1
-        ) {
-          this.elements.selectors.emails.openButton.setAttribute("data-view-state", "hidden");
+        //set event
+        this.elements.selectors.emails.sortSelect.addEventListener("change", (event) => {
+          this.options.emails.sort = event.target.value;
+          this.emails_Populate();
+        });
+
+        //disable select if necessary
+        if (this.elements.selectors.emails.sortSelect.querySelectorAll("OPTION").length <= 1) {
+          this.elements.selectors.emails.sortSelect.disabled = true;
+        } else {
+          this.elements.selectors.emails.sortSelect.disabled = false;
         }
       }
 
@@ -10017,8 +10796,103 @@ com.idc.ui = {
           this.emails_ExpandAll(this.elements.tab.querySelector(`[data-ui-id="emailsTable"]`));
         });
       }
+
+      //relatedCLM filter
+      if (this.elements.selectors.relatedCLM.filters) {
+        this.elements.selectors.relatedCLM.filters.querySelectorAll(`[data-ui-id="relatedCLM"] [data-ui-type="filter"]`).forEach((option) => {
+          let vars = com.idc.clm.vars;
+          let view = option.getAttribute("data-view");
+
+          //check if are there any records for the selected view
+          let recordsCount = vars.interactionSummary.output.relatedCLM.filter((relatedCLM) => {
+            switch (view) {
+              case "all":
+                return true;
+              case "discussed":
+                return relatedCLM.status == "discussed";
+              case "notDiscussed":
+                return relatedCLM.status == "notDiscussed";
+            }
+          }).length;
+
+          if (recordsCount == 0) {
+            if (option.getAttribute("data-view-state") != "hidden") {
+              option.setAttribute("data-view-state", "disabled");
+            }
+          } else {
+            if (option.getAttribute("data-view-state") == "hidden") {
+              option.removeAttribute("data-view-state");
+            }
+          }
+
+          //set event
+          option.addEventListener("click", (event) => {
+            //do not proceed if no records
+            if (option.getAttribute("data-view-state") == "disabled") return;
+
+            //enable/disable sort button; reset sort if necessary
+            switch (view) {
+              case "all":
+              case "notDiscussed":
+                this.elements.selectors.relatedCLM.sortSelect.disabled = true;
+                this.elements.selectors.relatedCLM.sortSelect.selectedIndex = 0;
+                this.options.relatedCLM.sort = "default";
+                break;
+              case "discussed":
+                this.elements.selectors.relatedCLM.sortSelect.disabled = false;
+                break;
+            }
+
+            //populate
+            this.options.relatedCLM.filter = view;
+            this.relatedCLM_Populate();
+
+            //set active
+            this.elements.selectors.relatedCLM.filters.querySelectorAll(`[data-ui-id="relatedCLM"] [data-ui-type="filter"]`).forEach((opt) => {
+              if (opt.getAttribute("data-view") == view) {
+                opt.setAttribute("data-view-state", "active");
+              } else {
+                if (opt.getAttribute("data-view-state") == "active") {
+                  opt.removeAttribute("data-view-state");
+                }
+              }
+            });
+          });
+        });
+      }
+
+      //relatedCLM sort
+      if (this.elements.selectors.relatedCLM.sortSelect) {
+        //remove option if not available as per fields availability/visibility
+        Array.from(this.elements.selectors.relatedCLM.sortSelect.options).forEach((option) => {
+          let sort = option.getAttribute("value");
+          switch (sort) {
+            case "default":
+              break;
+            case "mostRecentlyDiscussed":
+              if (!vars.interactionSummary.visibility.fields.relatedCLM.lastView) {
+                option.remove();
+                return;
+              }
+              break;
+          }
+        });
+
+        //set event
+        this.elements.selectors.relatedCLM.sortSelect.addEventListener("change", (event) => {
+          this.options.relatedCLM.sort = event.target.value;
+          this.relatedCLM_Populate();
+        });
+
+        //disable select if necessary
+        if (this.elements.selectors.relatedCLM.sortSelect.querySelectorAll("OPTION").length <= 1) {
+          this.elements.selectors.relatedCLM.sortSelect.disabled = true;
+        } else {
+          this.elements.selectors.relatedCLM.sortSelect.disabled = false;
+        }
+      }
     },
-    setTabsVisibility: function (pVisibility) {
+    setTabsVisibility: function () {
       let vars = com.idc.clm.vars;
       let visibility = vars.interactionSummary.visibility;
       let tab = this.elements.tab;
@@ -10035,11 +10909,127 @@ com.idc.ui = {
       if (!visibility.tabs.emails) {
         tab.setInstanceVisibility("emails", "hidden");
       }
+      if (!visibility.tabs.relatedCLM) {
+        tab.setInstanceVisibility("relatedCLM", "hidden");
+      }
+    },
+    cover_populate: function () {
+      let vars = com.idc.clm.vars;
+      
+      if (!this.elements.cover) return;
+      if (!vars.interactionSummary.visibility.coverSummary) return;
+
+      function formatDate(dateString) {
+          let dateArr = dateString.split("-");
+          let formattedDate = new Date(dateArr[0], dateArr[1] - 1, dateArr[2]); //format Month, Day, Year
+          return formattedDate.toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+          });
+      }
+
+      //previous interactions
+      let previousInteractionsSpan = this.elements.cover.querySelector('[data-ui-id="tabBtn_previousInteractions_summary"]');
+      if (previousInteractionsSpan) {
+        let interactionsCount = vars.interactionSummary.output.timeline.length;
+        if (interactionsCount == 0) {
+          previousInteractionsSpan.innerHTML = vars.interactionSummary.labels.summary_Interactions_noData;
+        } else {
+          let mostRecentDate = vars.interactionSummary.output.timeline[0].date;
+          if (interactionsCount == 1) {
+            previousInteractionsSpan.innerHTML = vars.interactionSummary.labels.summary_Interactions_oneInteration.replace("||date||", formatDate(mostRecentDate));
+          } else {
+            previousInteractionsSpan.innerHTML = vars.interactionSummary.labels.summary_Interactions_multipleInterations.replace("||date||", formatDate(mostRecentDate));
+          }
+        }
+      }
+
+      //slides
+      let slidesSpan = this.elements.cover.querySelector('[data-ui-id="tabBtn_slides_summary"]');
+      if (slidesSpan) {
+          let tmpArr = vars.interactionSummary.output.slides
+          .filter((slide) => slide.status == "discussed")
+          .sort((a, b) => {
+            return new Date(b.mostRecentCall.date) - new Date(a.mostRecentCall.date);
+          });
+        let slidesCount = tmpArr.length;
+        if (slidesCount == 0) {
+          slidesSpan.innerHTML = vars.interactionSummary.labels.summary_Slides_noData;
+        } else {
+          let mostRecentDate = tmpArr[0].mostRecentCall.date;
+          if (slidesCount == 1) {
+            slidesSpan.innerHTML = vars.interactionSummary.labels.summary_Slides_oneSlide.replace("||date||", formatDate(mostRecentDate));
+          } else {
+            slidesSpan.innerHTML = vars.interactionSummary.labels.summary_Slides_multipleSlides.replace("||date||", formatDate(mostRecentDate));
+          }
+        }
+        //next best content
+        if (vars.interactionSummary.nextBestContent.clm.active) {
+          let nbcSpan = this.elements.cover.querySelector('[data-ui-id="tabBtn_slides_nextBestContent"]');
+          if (nbcSpan) {
+            nbcSpan.innerHTML = vars.interactionSummary.labels.summary_Slides_nextBestContent;
+          }
+        }
+      }
+
+      //emails
+      let emailsSpan = this.elements.cover.querySelector('[data-ui-id="tabBtn_emails_summary"]');
+      if (emailsSpan) {
+        let tmpArr = vars.interactionSummary.output.emails.filter((email) => email.status == "sent").sort((a, b) => {
+          return new Date(b.mostRecentSent.date) - new Date(a.mostRecentSent.date);
+        });
+        let emailsCount = tmpArr.length;
+        if (emailsCount == 0) {
+          emailsSpan.innerHTML = vars.interactionSummary.labels.summary_Emails_noData;
+        } else {
+          let mostRecentDate = tmpArr[0].mostRecentSent.date;
+          let mostRecentStatus = tmpArr[0].mostRecentSent.opens > 0 ? vars.interactionSummary.labels.summary_Email_status_opened : vars.interactionSummary.labels.summary_Email_status_notOpened;
+          if (emailsCount == 1) {
+            emailsSpan.innerHTML = vars.interactionSummary.labels.summary_Email_oneEmail
+              .replace("||date||", formatDate(mostRecentDate))
+              .replace("||status||", mostRecentStatus);
+          } else {
+            emailsSpan.innerHTML = vars.interactionSummary.labels.summary_Email_multipleEmails
+              .replace("||date||", formatDate(mostRecentDate))
+              .replace("||status||", mostRecentStatus);
+          }
+        }
+      }
+
+      //related CLM
+      let relatedCLMSpan = this.elements.cover.querySelector('[data-ui-id="tabBtn_relatedCLM_summary"]');
+      if (relatedCLMSpan) {
+        let tmpArr = vars.interactionSummary.output.relatedCLM
+          .filter((relatedCLM) => relatedCLM.status == "discussed")
+          .sort((a, b) => {
+            return new Date(b.mostRecentCall.date) - new Date(a.mostRecentCall.date);
+          });
+        let relatedCLMCount = tmpArr.length;
+        if (relatedCLMCount == 0) {
+          relatedCLMSpan.innerHTML = vars.interactionSummary.labels.summary_RelatedCLM_noData;
+        } else {
+          let mostRecentDate = tmpArr[0].mostRecentCall.date;
+          let mostRecentMaterial = tmpArr[0].name;
+          if (mostRecentMaterial.length > 20) {
+            mostRecentMaterial = mostRecentMaterial.substring(0, 17) + "..";
+          }
+          if (relatedCLMCount == 1) {
+            relatedCLMSpan.innerHTML = vars.interactionSummary.labels.summary_RelatedCLM_oneView
+            .replace("||date||", formatDate(mostRecentDate))
+            .replace("||material||", mostRecentMaterial);
+          } else {
+            relatedCLMSpan.innerHTML = vars.interactionSummary.labels.summary_RelatedCLM_multipleViews
+            .replace("||date||", formatDate(mostRecentDate))
+            .replace("||material||", mostRecentMaterial);
+          }
+        }
+      }
     },
     previousInteractions_Populate: function () {
       let vars = com.idc.clm.vars;
       let fieldsVisibility = vars.interactionSummary.visibility.fields.previousInteractions;
-      const minInteractions = vars.interactionSummary.minRows.previousInteractions;
+      const minInteractions = vars.interactionSummary.options.minRows.previousInteractions;
       let util = com.idc.util;
       let rowClassBool = true;
       let subRowClassBool = true;
@@ -10079,10 +11069,10 @@ com.idc.ui = {
 
       //fields visibility: header attributes and labels
       {
-        //row field: email status
-        if (!fieldsVisibility.email_opened) {
+        //row field: email or call status
+        if (!fieldsVisibility.status) {
           //flag
-          container.setAttribute("data-email_opened-hidden", true);
+          container.setAttribute("data-status-hidden", true);
         }
 
         //subrow field: fragment times clicked
@@ -10170,12 +11160,6 @@ com.idc.ui = {
                 row = templates.inPerson.row.cloneNode(true);
                 subRowHeader = templates.inPerson.subRowHeader.cloneNode(true);
                 subRow = templates.inPerson.subRow.cloneNode(true);
-                if (!interaction.call.channel) {
-                  util.log(
-                    `com.idc.ui.interactionSummary.previousInteractions_Populate: unable to determine call channel for interaction ${interaction.id}`,
-                    "error"
-                  );
-                }
                 break;
             }
             break;
@@ -10207,7 +11191,7 @@ com.idc.ui = {
             month: "short",
             day: "numeric",
             year: "numeric",
-          });
+          }) + "&nbsp;";
 
           row.querySelector('[data-ui-subtype="time"]').innerHTML = interaction.time + " - " + interaction.time_AMPM;
 
@@ -10216,7 +11200,7 @@ com.idc.ui = {
               //field: contentName
               row.querySelector('[data-column-id="contentName"] [data-ui-type="table-row-cell-value"]').innerHTML = interaction.email.title;
               //field: status
-              if (fieldsVisibility.email_opened) {
+              if (fieldsVisibility.status) {
                 if (interaction.email.opens > 0) {
                   row.querySelector('[data-column-id="status"] [data-ui-type="table-row-cell-value"][data-ui-subtype="valueNotOpened"]').remove();
                 } else {
@@ -10228,6 +11212,35 @@ com.idc.ui = {
               }
               break;
             case "call":
+              //field: contentName
+              let contentName = "";
+              if (interaction.call.presentations && interaction.call.presentations.length > 0) {
+                contentName = interaction.call.presentations
+                  .map((pres) => {
+                    return pres.name;
+                  })
+                  .join(", ");
+              }
+              row.querySelector('[data-column-id="contentName"] [data-ui-type="table-row-cell-value"]').innerHTML = contentName;
+              //field: status
+              switch (interaction.call.status) {
+                case "Saved_vod":
+                  row.querySelector('[data-column-id="status"] [data-ui-type="table-row-cell-value"][data-ui-subtype="valuePlanned"]').remove();
+                  row.querySelector('[data-column-id="status"] [data-ui-type="table-row-cell-value"][data-ui-subtype="valueSubmitted"]').remove();
+                  break;
+                case "Planned_vod":
+                  row.querySelector('[data-column-id="status"] [data-ui-type="table-row-cell-value"][data-ui-subtype="valueSaved"]').remove();
+                  row.querySelector('[data-column-id="status"] [data-ui-type="table-row-cell-value"][data-ui-subtype="valueSubmitted"]').remove();
+                  break;
+                case "Submitted_vod":
+                  row.querySelector('[data-column-id="status"] [data-ui-type="table-row-cell-value"][data-ui-subtype="valueSaved"]').remove();
+                  row.querySelector('[data-column-id="status"] [data-ui-type="table-row-cell-value"][data-ui-subtype="valuePlanned"]').remove();
+                  break;
+                default:
+                  row.querySelector('[data-column-id="status"] [data-ui-type="table-row-cell-value"][data-ui-subtype="valueSaved"]').remove();
+                  row.querySelector('[data-column-id="status"] [data-ui-type="table-row-cell-value"][data-ui-subtype="valuePlanned"]').remove();
+                  row.querySelector('[data-column-id="status"] [data-ui-type="table-row-cell-value"][data-ui-subtype="valueSubmitted"]').remove();
+              }
               break;
           }
 
@@ -10235,6 +11248,11 @@ com.idc.ui = {
           let needToHidePlusIcon = false;
           if (interaction.type == "email") {
             if (interaction.email.fragments.length == 0) {
+              needToHidePlusIcon = true;
+            }
+          }
+          if (interaction.type == "call") {
+            if (interaction.call.slides.length == 0) {
               needToHidePlusIcon = true;
             }
           }
@@ -10269,7 +11287,11 @@ com.idc.ui = {
                 subRowClone.querySelector('[data-column-id="name"] [data-ui-type="table-subrow-cell-value"]').innerHTML = fragment.title;
 
                 //field: links to
-                subRowClone.querySelector('[data-column-id="linksTo"] [data-ui-type="table-subrow-cell-value"]').innerHTML = fragment.linksTo;
+                if (fragment.linksTo && fragment.linksTo != "") {
+                  subRowClone.querySelector('[data-column-id="linksTo"] [data-ui-type="table-subrow-cell-value"]').innerHTML = fragment.linksTo;
+                } else {
+                  subRowClone.querySelector('[data-column-id="linksTo"] [data-ui-type="table-subrow-cell-value"]').innerHTML = "";
+                }
 
                 //field: clicks
                 if (fieldsVisibility.email_timesClicked) {
@@ -10297,9 +11319,13 @@ com.idc.ui = {
                 //field: name
                 subRowClone.querySelector('[data-column-id="name"] [data-ui-type="table-subrow-cell-value"]').innerHTML = slide.title;
                 //field: thumb
-                subRowClone
-                  .querySelector('[data-column-id="order"] [data-ui-type="table-subrow-cell-value"] img')
-                  .setAttribute("src", util.getSharedResourcesPath() + `img/thumbnails/${slide.id}.png`);
+                if (!slide.doesNotBelongToThisIVA) {
+                  subRowClone
+                    .querySelector('[data-column-id="order"] [data-ui-type="table-subrow-cell-value"] img')
+                    .setAttribute("src", util.getSharedResourcesPath() + `img/thumbnails/${slide.id}.png`);
+                } else {
+                  subRowClone.querySelector('[data-column-id="order"] [data-ui-type="table-subrow-cell-value"] img').remove();
+                }
                 //field: reaction
                 if (fieldsVisibility.pres_reaction) {
                   if (slide.reaction) {
@@ -10415,7 +11441,7 @@ com.idc.ui = {
         slide.remove();
       });
 
-      //filtered slides
+      //filter slides
       let filteredSlides;
       switch (this.options.slides.filter) {
         case "all":
@@ -10438,7 +11464,7 @@ com.idc.ui = {
           break;
       }
 
-      //sort
+      //sort slides
       if (this.options.slides.filter == "recommended") {
         //sort for recommended slides comes as param
         filteredSlides.sort((a, b) => {
@@ -10449,8 +11475,8 @@ com.idc.ui = {
         switch (this.options.slides.sort) {
           case "default":
             filteredSlides.sort((a, b) => {
-              let indexOfA = vars.interactionSummary.output.slides.indexOf(a);
-              let indexOfB = vars.interactionSummary.output.slides.indexOf(b);
+              let indexOfA = vars.slides.findIndex((slide) => slide.id === a.id);
+              let indexOfB = vars.slides.findIndex((slide) => slide.id === b.id);
               return indexOfA - indexOfB;
             });
             break;
@@ -10585,8 +11611,7 @@ com.idc.ui = {
     emails_Populate: function () {
       let vars = com.idc.clm.vars;
       let fieldsVisibility = vars.interactionSummary.visibility.fields.emails;
-      let util = com.idc.util;
-      const minEmails = vars.interactionSummary.minRows.emails;
+      const minEmails = vars.interactionSummary.options.minRows.emails;
       let rowClassBool = true;
       let subRowClassBool = true;
 
@@ -10668,15 +11693,36 @@ com.idc.ui = {
       switch (this.options.emails.sort) {
         case "default":
           filteredEmails.sort((a, b) => {
-            let indexOfA = vars.interactionSummary.output.emails.indexOf(a);
-            let indexOfB = vars.interactionSummary.output.emails.indexOf(b);
+            let indexOfA, indexOfB;
+
+            //email cart goes first
+            if (a.isEmailCart) {
+              return -1;
+            }
+
+            //all other templates in the order they were added to config nonEmailCartItems.templates
+            indexOfA = vars.interactionSummary.nonEmailCartItems.templates.findIndex((template) => template.id === a.id);
+            indexOfB = vars.interactionSummary.nonEmailCartItems.templates.findIndex((template) => template.id === b.id);
             return indexOfA - indexOfB;
           });
           //fragments
           filteredEmails.forEach((email) => {
             email.fragments.sort((a, b) => {
-              let indexOfA = email.fragments.indexOf(a);
-              let indexOfB = email.fragments.indexOf(b);
+              let indexOfA, indexOfB;
+
+              if (email.isEmailCart) {
+                if (vars.emailCart.fragments) {
+                  indexOfA = vars.emailCart.fragments.findIndex((fragment) => fragment.id === a.id);
+                  indexOfB = vars.emailCart.fragments.findIndex((fragment) => fragment.id === b.id);
+                }
+              } else {
+                let nonEmailCartTemplate = vars.interactionSummary.nonEmailCartItems.templates.find((template) => template.id === email.id);
+                if (nonEmailCartTemplate && nonEmailCartTemplate.fragments) {
+                  indexOfA = nonEmailCartTemplate.fragments.findIndex((fragment) => fragment.id === a.id);
+                  indexOfB = nonEmailCartTemplate.fragments.findIndex((fragment) => fragment.id === b.id);
+                }
+              }
+
               return indexOfA - indexOfB;
             });
           });
@@ -10737,7 +11783,11 @@ com.idc.ui = {
         rowClassBool = !rowClassBool;
 
         //row contents
-        row.querySelector('[data-ui-subtype="thumbnail"] img').src = com.idc.util.getSharedResourcesPath() + `img/emailCart/thumbs/${email.thumbnail}`;
+        if (email.thumbnail && email.thumbnail != "") {
+          row.querySelector('[data-ui-subtype="thumbnail"] img').src = com.idc.util.getSharedResourcesPath() + `img/emailCart/thumbs/${email.thumbnail}`;
+        } else {
+          row.querySelector('[data-ui-subtype="thumbnail"] img').style.display = "none";
+        }
         row.querySelector('[data-ui-subtype="name"]').innerHTML = email.title;
 
         if (email.mostRecentSent.date) {
@@ -10749,7 +11799,7 @@ com.idc.ui = {
               month: "short",
               day: "numeric",
               year: "numeric",
-            });
+            }) + "&nbsp;";
             row.querySelector('[data-ui-subtype="time"]').innerHTML = email.mostRecentSent.time + " - " + email.mostRecentSent.time_AMPM;
           } else {
             row.querySelector('[data-ui-subtype="day"]').innerHTML = "";
@@ -10987,6 +12037,126 @@ com.idc.ui = {
 
       //set flag
       this.options.emails.expandAll = true;
+    },
+    relatedCLM_Populate: function () {
+      let vars = com.idc.clm.vars;
+      let fieldsVisibility = vars.interactionSummary.visibility.fields.relatedCLM;
+
+      if (!this.elements.tab) return;
+
+      let container = this.elements.tab.querySelector('[data-ui-id="relatedCLM_contents"]');
+      let template = container.querySelector('[data-type="relatedCLM_content_template"]');
+
+      //remove previous
+      container.querySelectorAll('[data-type="relatedCLM_content"]').forEach((relatedCLM) => {
+        relatedCLM.remove();
+      });
+
+      //filter relatedCLM
+      let filteredRelatedCLM;
+      switch (this.options.relatedCLM.filter) {
+        case "all":
+          filteredRelatedCLM = vars.interactionSummary.output.relatedCLM;
+          break;
+        case "discussed":
+          filteredRelatedCLM = vars.interactionSummary.output.relatedCLM.filter((relatedCLM) => {
+            return relatedCLM.status == "discussed";
+          });
+          break;
+        case "notDiscussed":
+          filteredRelatedCLM = vars.interactionSummary.output.relatedCLM.filter((relatedCLM) => {
+            return relatedCLM.status == "notDiscussed";
+          });
+          break;
+      }
+
+      //sort relatedCLM
+      switch (this.options.relatedCLM.sort) {
+        case "default":
+          filteredRelatedCLM.sort((a, b) => {
+            let indexOfA = vars.relatedCLM.findIndex((relatedCLM) => relatedCLM.id === a.id);
+            let indexOfB = vars.relatedCLM.findIndex((relatedCLM) => relatedCLM.id === b.id);
+            return indexOfA - indexOfB;
+          });
+          break;
+        case "mostRecentlyDiscussed":
+          filteredRelatedCLM.sort((a, b) => {
+            let dateA = new Date(a.mostRecentCall.date);
+            let dateB = new Date(b.mostRecentCall.date);
+            return dateB - dateA;
+          });
+          break;
+      }
+
+      //populate
+      filteredRelatedCLM.forEach((relatedCLM) => {
+        let relatedCLMClone = template.cloneNode(true);
+
+        relatedCLMClone.setAttribute("data-type", "relatedCLM_content");
+
+        //relatedCLM id
+        relatedCLMClone.setAttribute("data-relatedCLM-id", relatedCLM.id);
+
+        //filter related class
+        relatedCLMClone.classList.add(this.options.relatedCLM.filter);
+
+        //flags
+        let hiddenRowsCount = 0;
+        if (!fieldsVisibility.lastView) {
+          hiddenRowsCount++;
+        }
+        if (!fieldsVisibility.totalViews) {
+          hiddenRowsCount++;
+        }
+        relatedCLMClone.setAttribute("data-hidden-rows-count", hiddenRowsCount);
+
+        //thumb
+        relatedCLMClone
+          .querySelector('[data-type="relatedCLM_content_thumbnail"] img')
+          .setAttribute("src", com.idc.util.getSharedResourcesPath() + `img/relatedCLM/${relatedCLM.thumb}`);
+
+        //name
+        relatedCLMClone.querySelector('[data-type="relatedCLM_content_name"] [data-ui-type="value"]').innerHTML = relatedCLM.name;
+
+        if (relatedCLM.status == "discussed") {
+          //last view
+          if (fieldsVisibility.lastView) {
+            let dateArr = relatedCLM.mostRecentCall.date.split("-");
+            let tempDate = new Date(dateArr[0], dateArr[1] - 1, dateArr[2]); //format Month, Day, Year
+
+            let formattedDate = tempDate.toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+              year: "numeric",
+            });
+            relatedCLMClone.querySelector('[data-type="relatedCLM_content_lastViewDate"] [data-ui-type="value"]').innerHTML =
+              formattedDate + " - " + relatedCLM.mostRecentCall.time + " " + relatedCLM.mostRecentCall.time_AMPM;
+          } else {
+            relatedCLMClone.querySelector('[data-type="relatedCLM_content_lastViewDate"]').remove();
+          }
+
+          //total views
+          if (fieldsVisibility.totalViews) {
+            relatedCLMClone.querySelector('[data-type="relatedCLM_content_totalViews"] [data-ui-type="value"]').innerHTML = relatedCLM.overall.timesDisplayed;
+          } else {
+            relatedCLMClone.querySelector('[data-type="relatedCLM_content_totalViews"]').remove();
+          }
+        } else {
+          if (fieldsVisibility.lastView) {
+            relatedCLMClone.querySelector('[data-type="relatedCLM_content_lastViewDate"] [data-ui-type="value"]').innerHTML = " -- ";
+          } else {
+            relatedCLMClone.querySelector('[data-type="relatedCLM_content_lastViewDate"]').remove();
+          }
+          if (fieldsVisibility.totalViews) {
+            relatedCLMClone.querySelector('[data-type="relatedCLM_content_totalViews"] [data-ui-type="value"]').innerHTML = " -- ";
+          } else {
+            relatedCLMClone.querySelector('[data-type="relatedCLM_content_totalViews"]').remove();
+          }
+        }
+
+        //add to container
+        container.appendChild(relatedCLMClone);
+      });
     },
   },
 };
