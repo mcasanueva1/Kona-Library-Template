@@ -385,12 +385,16 @@ let com_idc_params = {
   },
   "interactionSummary": {
     "active": false,
-    "minRows": {
-      "previousInteractions": 8,
-      "emails": 7,
+    "options": {
+      "minRows": {
+        "previousInteractions": 8,
+        "emails": 7
+      },
+      "groupViewsForSameSlide": true,
+      "considerSavedCalls": false,
+      "considerCallsWithOtherPresentations": false,
+      "considerEmailsWithOtherTemplates": false,
     },
-    "groupViewsForSameSlide": true,
-    "considerDaftCalls": false,
     "testModel": {
       "calls": {
         "min": 1,
@@ -421,13 +425,15 @@ let com_idc_params = {
       ],
       "Call2_Key_Message_vod__c": [
         "ID",
-        "Call2_vod__c", 
+        "Call2_vod__c",
         "Call_Date_vod__c",
         "Start_Time_vod__c",
-        "Key_Message_vod__c", 
-        "Duration_vod__c", 
-        "Reaction_vod__c", 
-        "Display_Order_vod__c"
+        "Key_Message_vod__c",
+        "Duration_vod__c",
+        "Reaction_vod__c",
+        "Display_Order_vod__c",
+        "Key_Message_Name_vod__c",
+        "Clm_Presentation_Name_vod__c"
       ],
       "Sent_Email_vod__c": [    
         "ID",
@@ -457,11 +463,28 @@ let com_idc_params = {
       "templates": [],
     },
     "labels": {
+      "thisPresentation": "Kona Dev",
       "interactionSummary_title1": "What has been going on with ",
-      "interactionSummary_title2": " account",
+      "interactionSummary_title2": "",
+      "summary_Interactions_noData": "<strong>No previous interactions</strong> with this IVA or related materials/RTEs",
+      "summary_Interactions_oneInteration": "<strong>One interaction (||date||)</strong> recorded with this IVA or related materials/RTEs",
+      "summary_Interactions_multipleInterations": "<strong>Multiple interactions</strong> recorded with this IVA or related materials/RTEs, most recently on ||date||",
+      "summary_Slides_noData": "<strong>No activity data</strong> recorded for this IVA",
+      "summary_Slides_oneSlide": "<strong>One slide</strong> has been discussed on ||date||",
+      "summary_Slides_multipleSlides": "<strong>Several slides</strong> been discussed, most recently on ||date||",
+      "summary_Slides_nextBestContent": "Next Best Content is available for the next call",
+      "summary_Email_noData": "<strong>No emails were sent</strong> from this IVA",
+      "summary_Email_oneEmail": "<strong>One email sent</strong> on ||date|| (||status||)",
+      "summary_Email_multipleEmails": "<strong>Multiple emails sent</strong>, most recently on ||date|| (||status||)",
+      "summary_Email_status_opened": "opened",
+      "summary_Email_status_notOpened": "not opened",
+      "summary_RelatedCLM_noData": "<strong>No activity data</strong> recorded for materials linking from this IVA",
+      "summary_RelatedCLM_oneView": "<strong>One related material (||material||)</strong> was discussed on ||date||",
+      "summary_RelatedCLM_multipleViews": "<strong>Multiple related materials</strong> were discussed, most recently on ||date|| (||material||)",
       "tabBtn_previousInteractions": "Previous Interactions",
       "tabBtn_slides": "Slides",
       "tabBtn_emails": "Emails",
+      "tabBtn_relatedCLM": "Quick Links",
       "prevInt_filter_all": "All",
       "prevInt_filter_approvedEmail": "Approved Email",
       "prevInt_filter_inPerson": "In Person",
@@ -469,13 +492,16 @@ let com_idc_params = {
       "prevInt_value_inPerson": "In Person",
       "prevInt_value_video": "Video Call",
       "prevInt_value_approvedEmail": "Approved Email",
+      "prevInt_value_saved": "Saved",
+      "prevInt_value_submitted": "Submitted",
+      "prevInt_value_planned": "Planned",      
       "prevInt_value_opened": "Opened",
       "prevInt_value_notOpened": "Not Opened",
       "prevInt_label_fragmentName": "Fragment Name",
       "prevInt_label_linksTo": "Links To",
       "prevInt_label_timesClicked": "Times Clicked",
       "prevInt_value_IVA": "IVA",
-      "prevInt_label_displayOrder": "Display Order",
+      "prevInt_label_displayOrder": "Display",
       "prevInt_label_slideDescription": "Slide Description",
       "prevInt_label_reaction": "Reaction",
       "prevInt_label_duration": "Duration",
@@ -508,18 +534,27 @@ let com_idc_params = {
       "emails_value_no": "No",
       "emails_value_sent": "Sent",
       "emails_value_notSent": "Not Sent",
+      "relatedCLM_filter_all": "All",
+      "relatedCLM_filter_discussed": "Discussed",
+      "relatedCLM_filter_notDiscussed": "Not Discussed",
+      "relatedCLM_sort_default": "Sort",
+      "relatedCLM_sort_mostRecentlyDiscussed": "Most Recently Discussed",
+      "relatedCLM_label_lastView": "Last View",
+      "relatedCLM_label_totalViews": "Total Views",
     },
     "visibility": {
+      "coverSummary": false,
       "tabs": {
         "previousInteractions": true,
         "slides": true,
-        "emails": false,
+        "emails": true,
+        "relatedCLM": false,
       },
       "fields": {
         "previousInteractions": {
+          "status": true,
           "pres_reaction": true,
           "pres_duration": true,
-          "email_opened": true,
           "email_timesClicked": true
         },
         "slides": {
@@ -535,7 +570,11 @@ let com_idc_params = {
           "allTimesSent_sent": true,
           "allTimesSent_open": true,
           "allTimesSent_click": true
-        }
+        },
+        "relatedCLM": {
+          "lastView": true,
+          "totalViews": true
+        },
       }
     },
     "nextBestContent": {
