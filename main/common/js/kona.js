@@ -1,6 +1,6 @@
 "use strict";
 
-const BUILD_ID = "kona library __20251124-110115-d9148f1__";
+const BUILD_ID = "kona library __20251127-121120-a3c9ec1__";
 console.log(BUILD_ID);
 
 if (com == null) var com = {};
@@ -11,7 +11,6 @@ com.idc.clm = {
     project: {
       name: null,
       version: null,
-      sessionDataKey: null,
       sessionDataKey: null,
     },
     session: {
@@ -4089,7 +4088,7 @@ com.idc.clm = {
     const maxCalls = this.vars.interactionSummary.testModel.calls.max;
     const minEmails = this.vars.interactionSummary.testModel.emails.min;
     const maxEmails = this.vars.interactionSummary.testModel.emails.max;
-
+    
     //account (use simulate object from config if available)
     if (this.vars.options.browserMode.simulate.objects.Account) {
       this.vars.metadata.account.name = this.vars.options.browserMode.simulate.objects.Account.Name;
@@ -4206,8 +4205,11 @@ com.idc.clm = {
 
         //presentations for this call
         let presentionsCountForThisCall = random < 0.8 ? 1 : random < 0.95 ? 2 : 3;
+        
         let presentationsForThisCall = [];
-        while (presentationsForThisCall.length < presentionsCountForThisCall) {
+        let attempts = 0;
+        while (presentationsForThisCall.length < presentionsCountForThisCall && attempts < 20) {
+          attempts++;
           let presentation = pseudoKeyMessagesMatrix[Math.floor(Math.random() * pseudoKeyMessagesMatrix.length)];
           if (presentationsForThisCall.findIndex((item) => item.name == presentation.Presentation) < 0) {
             presentationsForThisCall.push({
