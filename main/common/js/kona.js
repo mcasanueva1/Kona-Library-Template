@@ -1,6 +1,6 @@
 "use strict";
 
-const BUILD_ID = "kona library __20251127-121120-a3c9ec1__";
+const BUILD_ID = "kona library __20251211-114634-ef5bca5__";
 console.log(BUILD_ID);
 
 if (com == null) var com = {};
@@ -10479,6 +10479,7 @@ com.idc.ui = {
     },
     init: function () {
       let vars = com.idc.clm.vars;
+      let visibility = vars.interactionSummary.visibility;
       let util = com.idc.util;
 
       //elements
@@ -10529,19 +10530,29 @@ com.idc.ui = {
       this.accountName_Populate();
 
       //cover
-      this.cover_populate();
-
+      if (visibility.coverSummary) {
+        this.cover_populate();
+      }
+      
       //previous interactions
-      this.previousInteractions_Populate();
+      if (visibility.tabs.previousInteractions) {
+        this.previousInteractions_Populate();
+      }
 
       //slides
-      this.slides_Populate();
+      if (visibility.tabs.slides) {
+        this.slides_Populate();
+      }
 
       //emails
-      this.emails_Populate();
+      if (visibility.tabs.emails) {
+        this.emails_Populate();
+      }
 
       //related CLM
-      this.relatedCLM_Populate();
+      if (visibility.tabs.relatedCLM) {
+        this.relatedCLM_Populate();
+      }
 
       //tabs visibility
       this.setTabsVisibility();
@@ -10919,7 +10930,6 @@ com.idc.ui = {
       let vars = com.idc.clm.vars;
       
       if (!this.elements.cover) return;
-      if (!vars.interactionSummary.visibility.coverSummary) return;
 
       function formatDate(dateString) {
           let dateArr = dateString.split("-");
