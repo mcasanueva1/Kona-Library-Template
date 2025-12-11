@@ -1,6 +1,6 @@
 "use strict";
 
-const BUILD_ID = "kona library __20251211-114634-ef5bca5__";
+const BUILD_ID = "kona library __20251211-121424-5f7686d__";
 console.log(BUILD_ID);
 
 if (com == null) var com = {};
@@ -8941,6 +8941,11 @@ com.idc.ui = {
         }
       },
       updateItemsState() {
+        let isBrowserMode = com.idc.clm.vars.options.browserMode.active;
+        let isSimulating = com.idc.clm.vars.options.browserMode.simulate.active;
+
+        if (isBrowserMode && !isSimulating) return; //do not flag for browser mode unless simulating
+
         this.collection.forEach((el_id) => {
           let el = document.querySelector(`#${el_id}`);
           if (el) {
