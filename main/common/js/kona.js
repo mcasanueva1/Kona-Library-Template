@@ -1,6 +1,6 @@
 "use strict";
 
-const BUILD_ID = "kona library __20251212-093203-121f06a__";
+const BUILD_ID = "kona library __20251216-200507-b2225d9__";
 console.log(BUILD_ID);
 
 if (com == null) var com = {};
@@ -2744,14 +2744,7 @@ com.idc.clm = {
           } else {
             //obtain Key Messages IDs of current presentation
             await new Promise((resolve) => {
-              let whereClause = this.vars.slides
-                .map((slide) => {
-                  return `Media_File_Name_vod__c = "${slide.player.zipName}" OR`;
-                })
-                .join(" ");
-              whereClause = whereClause.slice(0, -3); //remove last OR
-
-              com.veeva.clm.queryRecord("Key_Message_vod__c", ["ID", "Media_File_Name_vod__c"], whereClause, [], null, (data) => {
+              com.veeva.clm.queryRecord("Key_Message_vod__c", ["ID", "Media_File_Name_vod__c"], null, [], null, (data) => {
                 if (data.success) {
                   //assign data.Key_Message_vod__c to each slide
                   this.vars.slides.forEach((slide) => {
@@ -2861,8 +2854,8 @@ com.idc.clm = {
                   });
                 });
 
-              //related CLM slides >> add to array
-              if (this.vars.relatedCLM.length > 0) {
+              //related CLM slides >> add to array (only if related CLM tab is visible)
+              if (this.vars.relatedCLM.length > 0 && this.vars.interactionSummary.visibility.tabs.relatedCLM) {
                 this.vars.relatedCLM
                   .filter((relatedItem) => {
                     return relatedItem.available && relatedItem.zipFiles;
@@ -4163,8 +4156,8 @@ com.idc.clm = {
           slideIdInConfig: slide.id,
         });
       });
-      //related CLM slides
-      if (vars.relatedCLM.available) {
+      //related CLM slides (only if relatedCLM tab is visible)
+      if (vars.relatedCLM.available && vars.interactionSummary.visibility.tabs.relatedCLM) {
         vars.relatedCLM.forEach((clm) => {
           let numberOfSlides = Math.floor(Math.random() * 5) + 1; //1 to 5 slides
           for (let i = 0; i < numberOfSlides; i++) {
