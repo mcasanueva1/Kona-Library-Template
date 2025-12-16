@@ -463,7 +463,7 @@ let com_idc_params = {
       "templates": [],
     },
     "labels": {
-      "thisPresentation": "Kona Dev",
+      "thisPresentation": "This Presentation",
       "interactionSummary_title1": "What has been going on with ",
       "interactionSummary_title2": "",
       "summary_Interactions_noData": "<strong>No previous interactions</strong> with this IVA or related materials/RTEs",
