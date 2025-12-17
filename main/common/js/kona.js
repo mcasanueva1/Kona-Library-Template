@@ -1,6 +1,6 @@
 "use strict";
 
-const BUILD_ID = "kona library __20251216-200507-b2225d9__";
+const BUILD_ID = "kona library __20251216-203430-5bb3bf7__";
 console.log(BUILD_ID);
 
 if (com == null) var com = {};
@@ -2764,7 +2764,7 @@ com.idc.clm = {
             });
 
             //obtain Key Messages IDs and zips of relatedCLM
-            if (this.vars.relatedCLM.length > 0) {
+            if (this.vars.relatedCLM.length > 0 && this.vars.interactionSummary.visibility.tabs.relatedCLM) {
               for (let relatedItem of this.vars.relatedCLM) {
                 if (relatedItem.available) {
                   let thisCLMPresentation_ID = await new Promise((resolve) => {
@@ -2837,7 +2837,7 @@ com.idc.clm = {
               }
             }
 
-            //build KeyMessages matrix: zip name, crmID, presentation name of each key message in this presentation and related CLM
+            //build KeyMessages matrix: zip name, crmID, presentation name of each key message in this presentation and (if necessary) related CLM
             let keyMessagesMatrix = [];
             {
               //this presentation slides >> add to array
@@ -3032,7 +3032,7 @@ com.idc.clm = {
             }
 
             //Sent_Email_vod__c records
-            if (this.vars.emailCart.active) {
+            if (this.vars.emailCart.active && this.vars.interactionSummary.visibility.tabs.emails) {
               let sentEmailRecords;
               //query records
               if (this.vars.emailCart.templates && this.vars.metadata.account.id) {
@@ -3242,7 +3242,7 @@ com.idc.clm = {
             }
 
             //Email_Activity_vod__c records
-            if (this.vars.emailCart.active) {
+            if (this.vars.emailCart.active && this.vars.interactionSummary.visibility.tabs.emails) {
               let emailActivityRecords;
               if (this.vars.interactionSummary.input.Sent_Email_vod__c) {
                 emailActivityRecords = await new Promise((resolve) => {
@@ -4157,7 +4157,7 @@ com.idc.clm = {
         });
       });
       //related CLM slides (only if relatedCLM tab is visible)
-      if (vars.relatedCLM.available && vars.interactionSummary.visibility.tabs.relatedCLM) {
+      if (vars.interactionSummary.visibility.tabs.relatedCLM) {     
         vars.relatedCLM.forEach((clm) => {
           let numberOfSlides = Math.floor(Math.random() * 5) + 1; //1 to 5 slides
           for (let i = 0; i < numberOfSlides; i++) {
@@ -4309,7 +4309,7 @@ com.idc.clm = {
     //Sent_Email_vod__c
     let Sent_Email_vod__c = [];
     let aeArray = [];
-    {
+    if (this.vars.interactionSummary.visibility.tabs.emails) {
       let Sent_Email_vod__c_Counter = 0;
       {
         this.vars.emailCart.templates
@@ -4476,7 +4476,7 @@ com.idc.clm = {
     }
 
     //Next Best Content CLM
-    {
+    if (this.vars.interactionSummary.visibility.tabs.emails) {
       let sourceFnc = this.vars.interactionSummary.nextBestContent.clm.source.browser;
       if (sourceFnc !== "undefined" && sourceFnc !== "" && typeof window[sourceFnc] === "function") {
         let nextBestContentCLM = window[sourceFnc]();
