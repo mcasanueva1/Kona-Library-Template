@@ -1,6 +1,6 @@
 "use strict";
 
-const BUILD_ID = "kona library __20251216-203430-5bb3bf7__";
+const BUILD_ID = "kona library __20260130-122042-3c0a7ae__";
 console.log(BUILD_ID);
 
 if (com == null) var com = {};
@@ -194,6 +194,11 @@ com.idc.clm = {
         visual: false,
       },
       adjustImagesPath: null, //null, common, slide
+      permanentRedirect: {
+        active: false,
+        presentation: null,
+        keyMessage: null
+      }
     },
     commonHTML: {
       active: null,
@@ -901,6 +906,11 @@ com.idc.clm = {
     //config read settings
     this.readSettings();
 
+    //permanent redirect
+    if (this.vars.options.permanentRedirect.active) {
+      this.permanentRedirect();
+    }
+
     //common html
     if (this.vars.options.htmlSlideId == "Common") {
       this.saveCommonHTMLandRedirect();
@@ -1011,6 +1021,11 @@ com.idc.clm = {
     }
 
     vars.options.adjustImagesPath = util.readSetting(com_idc_params, "options.adjustImagesPath", "string", null);
+
+    //permanent redirect
+    vars.options.permanentRedirect.active = util.readSetting(com_idc_params, "options.permanentRedirect.active", "boolean", false);
+    vars.options.permanentRedirect.presentation = util.readSetting(com_idc_params, "options.permanentRedirect.presentation", "string", null);
+    vars.options.permanentRedirect.keyMessage = util.readSetting(com_idc_params, "options.permanentRedirect.keyMessage", "string", null);
 
     //common html
     vars.commonHTML.active = util.readSetting(com_idc_params, "commonHTML.active", "boolean", true);
@@ -3554,6 +3569,18 @@ com.idc.clm = {
 
     if (!vars.options.browserMode.active) {
       com.veeva.clm.gotoSlideV2(relatedCLM.vaultExternalID.keyMessage, relatedCLM.vaultExternalID.presentation);
+    }
+  },
+  permanentRedirect: function () {
+    let vars = com.idc.clm.vars;
+
+    let presentation = vars.options.permanentRedirect.presentation;
+    let keyMessage = vars.options.permanentRedirect.keyMessage;
+
+    console.log("Permanent redirect:", presentation, keyMessage);
+
+    if (!vars.options.browserMode.active) {
+      com.veeva.clm.gotoSlideV2(keyMessage, presentation);
     }
   },
 
