@@ -136,7 +136,12 @@ let com_idc_params = {
       "sound": false,
       "visual": true
     },
-    "adjustImagesPath": "common"
+    "adjustImagesPath": "common",
+    "permanentRedirect": {
+      "active": false,
+      "presentation": null,
+      "keyMessage": null
+    }
   },
   "commonHTML": {
     "active": true,
