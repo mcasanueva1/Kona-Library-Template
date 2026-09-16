@@ -1187,21 +1187,21 @@ let com_idc_params = {
       }
     },
     "relatedCLMV2": {
-        "id": "",
-        "type": "",
-        "name": "",
-        "thumb": "",
-        "vaultExternalID": {
-          "presentation": "",
-          "keyMessage": ""
-        },
-        "localPath": "",
-        "pages": {
-          "totalPages": 0,
-          "fileNameSeed": "",
-          "fileExtension": ""
-        }
+      "id": "",
+      "type": "",
+      "name": "",
+      "thumb": "",
+      "vaultExternalID": {
+        "presentation": "",
+        "keyMessage": ""
       },
+      "localPath": "",
+      "pages": {
+        "totalPages": 0,
+        "fileNameSeed": "",
+        "fileExtension": ""
+      }
+    },
     "website": {
       "id": "",
       "url": ""
