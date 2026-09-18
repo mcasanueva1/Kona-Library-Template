@@ -1,6 +1,6 @@
 "use strict";
 
-const BUILD_ID = "kona library __20260916-194925-pa5zv1n__";
+const BUILD_ID = "kona library __20260918-185031-ymdzlfx__";
 console.log("%cBuild:", "color:#888", BUILD_ID);
 
 (function (global) {
@@ -617,7 +617,7 @@ const ui = {
           //only if the element has an ID defined in the HTML
           let activeInstances = [];
           this.components.instances.forEach((instance) => {
-            if (instance.viewState === "om") {
+            if (instance.viewState === "on") {
               activeInstances.push(instance.name);
             }
           });
@@ -633,7 +633,7 @@ const ui = {
       },
       getActiveInstance: function () {
         const activeInstanceIndex = this.components.instances.findIndex((instance) => {
-          return instance.viewState === "om";
+          return instance.viewState === "on";
         });
         if (activeInstanceIndex >= 0) {
           return this.components.instances[activeInstanceIndex];
@@ -652,9 +652,9 @@ const ui = {
       openAll: function () {
         if (!this.params.oneByOne) {
           this.components.instances.forEach((instance) => {
-            instance.button.element.setAttribute("data-view-state", "om");
-            instance.content.element.setAttribute("data-view-state", "om");
-            instance.viewState = "om";
+            instance.button.element.setAttribute("data-view-state", "on");
+            instance.content.element.setAttribute("data-view-state", "on");
+            instance.viewState = "on";
           });
         }
       },
@@ -3807,6 +3807,7 @@ const ui = {
         let backFromStandalone = clm.sessionData.backFromStandalone;
         if (!pElementId) {
           backFromStandalone = [];
+          clm.sessionData.backFromStandalone = backFromStandalone;
         } else {
           for (let i = 0; i < backFromStandalone.length; i++) {
             if (backFromStandalone[i].slideId == clm.vars.navigation.currentSlide.id) {
@@ -15297,10 +15298,6 @@ const customFlows = {
       const modalRoot = document.getElementById('customFlowsMaker');
       if (!modalRoot) {
         util.log('customFlows.ui.init(): #customFlowsMaker not found - ensure common HTML is refreshed', 'error');
-        // Define empty afterOpen to prevent errors
-        window["customFlowsAfterOpen"] = () => {
-          util.log('customFlowsAfterOpen called but customFlows not properly initialized', 'error');
-        };
         return;
       }
 
@@ -15410,14 +15407,18 @@ const customFlows = {
       this.bindEvents();
 
       // After open function
+
+      //afterOpen=customFlowsAfterOpen;afterClose=customFlowsAfterClose
       window["customFlowsAfterOpen"] = () => {
         this.afterOpen();
       };
+      modalRoot.overwriteParameterFunction('afterOpen', window["customFlowsAfterOpen"]);
 
       // After close function
       window["customFlowsAfterClose"] = () => {
         customFlows.afterClose();
       };
+      modalRoot.overwriteParameterFunction('afterClose', window["customFlowsAfterClose"]);
     },
 
     bindEvents: function() {
@@ -26552,8 +26553,8 @@ const clm = {
         let dynamicPresVars = this.vars.dynamicPresentation;
         if (dynamicPresVars.source.contentTargeting.active) {
           activeDynamicPresentationModes.push({
-            name: "contentTargetting",
-            precedence: dynamicPresVars.precedence.indexOf("contentTargetting"),
+            name: "contentTargeting",
+            precedence: dynamicPresVars.precedence.indexOf("contentTargeting"),
             slidesSequence: await this.contentTargeting(),
           });
         }
@@ -28775,6 +28776,7 @@ const clm = {
   global.com.idc.pdfViewer = pdfViewer;
   global.com.idc.relatedCLMV2 = relatedCLMV2;
   global.com.idc.rteBuilder = rteBuilder;
+  global.com.idc.messenger = messenger;
   global.log = util.log;
 
   // --- DOM READY AUTO INIT ---
