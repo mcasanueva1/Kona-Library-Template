@@ -7485,6 +7485,9 @@ com.idc.templates = {
             "attributes": [
                 {
                     "data-type": "com.idc.ui.core.modal.contentArea"
+                },
+                {
+                    "id": "customFlowsMakerModalContent"
                 }
             ],
             "childNodes": [
@@ -10923,6 +10926,9 @@ com.idc.templates = {
             "attributes": [
                 {
                     "data-type": "com.idc.ui.core.modal.contentArea"
+                },
+                {
+                    "id": "relatedCLMV2ModalContent"
                 }
             ],
             "childNodes": [
@@ -11301,6 +11307,9 @@ com.idc.templates = {
             "attributes": [
                 {
                     "data-type": "com.idc.ui.core.modal.contentArea"
+                },
+                                {
+                    "id": "rteBuilderModalContent"
                 }
             ],
             "childNodes": [
