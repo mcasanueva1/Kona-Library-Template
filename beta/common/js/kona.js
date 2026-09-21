@@ -1,6 +1,6 @@
 "use strict";
 
-const BUILD_ID = "kona library __20260919-144544-yeftm8h__";
+const BUILD_ID = "kona library __20260921-184140-sm6hphe__";
 console.log("%cBuild:", "color:#888", BUILD_ID);
 
 (function (global) {
@@ -2019,6 +2019,11 @@ const ui = {
         //data attributes
         this.setAttribute("data-any-active-instance", this.viewState.activeInstance ? "true" : "false");
         this.setAttribute("data-active-instance", this.viewState.activeInstance ? this.viewState.activeInstance : "none");
+
+        //save state (so it can be restored when returning from a standalone pop-up; see awake())
+        if (clm.vars.navigation.currentSlide && clm.vars.navigation.currentSlide.id) {
+          ui.common.backFromStandalone.setSessionProperty(clm.vars.navigation.currentSlide.id, this.id, "activeInstance", "viewState", this.viewState.activeInstance);
+        }
 
         //set buttons state
         this.setButtonsState();
@@ -4606,7 +4611,22 @@ const smartNext = {
 
     // Priority 1: Apply activeFlow broadcast from another presentation
     if (typeof messenger !== "undefined" && messenger.api && messenger.api.receiveBroadcast) {
-      const broadcastPayload = messenger.api.receiveBroadcast("activeFlow");
+      let broadcastPayload = messenger.api.receiveBroadcast("activeFlow");
+
+      // Stale broadcast: the flow was created by THIS presentation but no longer exists here (deleted or
+      // re-created during the session). Broadcasts survive reloads in sessionStorage and would otherwise
+      // keep re-launching the deleted flow ahead of the account's assigned flows. Flows owned by other
+      // presentations are not in this store and are kept.
+      if (broadcastPayload && broadcastPayload.id && broadcastPayload.ownerPresentation) {
+        const thisPresVaultId = clm.vars.project && clm.vars.project.vaultExternalID
+          ? clm.vars.project.vaultExternalID.presentation : null;
+        const localFlows = clm.persistentData && clm.persistentData.customFlows ? clm.persistentData.customFlows.flows || {} : {};
+        if (thisPresVaultId && broadcastPayload.ownerPresentation === thisPresVaultId && !localFlows[broadcastPayload.id]) {
+          util.log("smartNext.init: Ignoring activeFlow broadcast for deleted flow " + broadcastPayload.id, "info");
+          broadcastPayload = null;
+        }
+      }
+
       if (broadcastPayload && Array.isArray(broadcastPayload.sequence) && broadcastPayload.sequence.length > 0) {
         // Apply currentIndex and visitedIndices directly from the broadcast payload.
         clm.sessionData.ai.smartNext.currentIndex =
@@ -4976,7 +4996,7 @@ const smartNext = {
       const els = smartNext.ui.elements;
       const barSource = els.activeBar || els.bar;
       const barOpts   = els.activeBarOpts || {};
-      const cfgPos    = clm.vars.ai.config.smartNextFlowPosition;
+      const cfgPos    = (clm.vars.ai && clm.vars.ai.config && clm.vars.ai.config.smartNextFlowPosition) || null;
 
       // Resolve contentSizeDiv rect once for container-relative coordinate conversion.
       // All auto-calc and close-button positions must be in container coordinates
@@ -5074,6 +5094,7 @@ const smartNext = {
         const hasCustomFlows = typeof customFlows !== "undefined" && customFlows.api;
         const itemKey  = hasCustomFlows ? customFlows.api.getItemKey(flowItem)  : (flowItem.keyMessage || String(index));
         const meta     = hasCustomFlows ? customFlows.api.getItemMeta(flowItem) : { title: flowItem.title || flowItem.keyMessage || '' };
+        const displayTitle = meta.variantLabel ? meta.title + ' · ' + meta.variantLabel : meta.title;
         const thumbSrc = hasCustomFlows ? customFlows.api.getItemThumb(flowItem) : '';
 
         // Check if item was visited via direct navigation (only for items from this presentation)
@@ -5106,7 +5127,7 @@ const smartNext = {
           thumbnail.setAttribute("data-type", "com.idc.smartNext.flow.item.thumbnail");
           const img = document.createElement("img");
           img.src = thumbSrc;
-          img.alt = meta.title;
+          img.alt = displayTitle;
           thumbnail.appendChild(img);
           el.appendChild(thumbnail);
         }
@@ -5117,7 +5138,7 @@ const smartNext = {
 
         const titleEl = document.createElement("div");
         titleEl.setAttribute("data-type", "com.idc.smartNext.flow.item.title");
-        titleEl.textContent = meta.title;
+        titleEl.textContent = displayTitle;
 
         const descriptionEl = document.createElement("div");
         descriptionEl.setAttribute("data-type", "com.idc.smartNext.flow.item.description");
@@ -5185,6 +5206,14 @@ const smartNext = {
   helpers: {
     navigateToFlowItem: function (item) {
       if (!item) return;
+
+      // Hand the item's variant (if any) to the target slide: clm.setBodyVars() turns it into
+      // <body data-variant="..."> on load, which the slide's multi/tab resolves via selectorAttribute.
+      if (!clm.sessionData.customFlows) clm.sessionData.customFlows = {}; // session stored before this key existed
+      clm.sessionData.customFlows.activeVariant = item.variant
+        ? { keyMessage: item.keyMessage, variant: item.variant }
+        : null;
+      storage.sessionData.update();
 
       const currentPresVaultId = clm.vars.project && clm.vars.project.vaultExternalID
         ? clm.vars.project.vaultExternalID.presentation : null;
@@ -15128,6 +15157,7 @@ const customFlows = {
     viewMode: 'grid', // 'grid' | 'list'
     sortColumn: 'updated',     // Current sort column: 'name' | 'slides' | 'updated'
     sortDirection: 'desc',     // Current sort direction: 'asc' | 'desc'
+    lastViolations: [],        // Violations from the last validation run (markers are re-drawn from these after each render)
     preview: {
       isOpen: false,
       currentIndex: 0,
@@ -15138,38 +15168,6 @@ const customFlows = {
 
   /* HELPERS ---------------------------------------------*/
   helpers: {
-    // Get all flow items (slides and indicators) excluding templates
-    getAllFlowItems: function() {
-      const list = customFlows.ui.elements.selectedSlidesList;
-      if (!list) return [];
-      
-      return Array.from(list.children).filter(item => 
-        !item.hasAttribute('data-template') &&
-        (item.getAttribute('data-type') === customFlows.constants.ITEM_TYPES.SLIDE || 
-         item.getAttribute('data-type') === customFlows.constants.ITEM_TYPES.INDICATOR)
-      );
-    },
-
-    // Find the lowest position of indicators matching a slide ID
-    findLowestIndicatorPosition: function(slideId) {
-      const allItems = this.getAllFlowItems();
-      let lowestPosition = null;
-      let slideCount = 0;
-
-      allItems.forEach((item) => {
-        if (item.getAttribute('data-type') === customFlows.constants.ITEM_TYPES.INDICATOR &&
-            item.getAttribute('data-slide-id') === slideId) {
-          if (lowestPosition === null || slideCount < lowestPosition) {
-            lowestPosition = slideCount;
-          }
-        } else if (item.getAttribute('data-type') === customFlows.constants.ITEM_TYPES.SLIDE) {
-          slideCount++;
-        }
-      });
-
-      return lowestPosition;
-    },
-
     // Wrap fn so repeated calls within delayMs of each other only invoke fn once, after the last call.
     debounce: function(fn, delayMs) {
       let timer = null;
@@ -15190,9 +15188,9 @@ const customFlows = {
 
     // Helper to clear validation errors and remove all missing slide indicators
     clearValidationUI: function() {
+      customFlows.state.lastViolations = [];
       customFlows.ui.hideValidationError();
-      const indicators = customFlows.ui.elements.selectedSlidesList.querySelectorAll('[data-type="' + customFlows.constants.ITEM_TYPES.INDICATOR + '"]:not([data-template="true"])');
-      indicators.forEach(indicator => indicator.remove());
+      customFlows.api.renderViolationMarkers([]);
     },
     
     /**
@@ -15234,6 +15232,9 @@ const customFlows = {
       
       for (let i = 0; i < currentItems.length; i++) {
         if (customFlows.api.getItemKey(currentItems[i]) !== customFlows.api.getItemKey(savedItems[i])) {
+          return true;
+        }
+        if ((currentItems[i].variant || null) !== (savedItems[i].variant || null)) {
           return true;
         }
       }
@@ -15296,6 +15297,309 @@ const customFlows = {
     }
   },
 
+  /* RULE ENGINE -----------------------------------------
+     Pure functions over arrays of slide ids and normalized rules.
+     No DOM, no editor state — safe to call from the console:
+       customFlows.engine.getRules()
+  ------------------------------------------------------*/
+  engine: {
+    RULE_TYPES: ['requiresBefore', 'requiresWith', 'mustFollow', 'mustPrecede', 'notBetween'],
+    MAX_GROUP_DEPTH: 5,
+
+    _rules: null, // normalized rule cache (derived from config, built once)
+
+    /**
+     * Normalized rules from config (cached). Shape of each rule:
+     * { id, slideId, type, slides: [expanded slide ids], slidesRef: [config entries], message, legacy }
+     */
+    getRules: function() {
+      if (!this._rules) {
+        this._rules = this.buildRules(clm.vars.customFlowsMaker);
+      }
+      return this._rules;
+    },
+
+    /**
+     * Build the normalized rule list from a customFlowsMaker config block:
+     * typed `rules` + translated legacy `precedenceRules`, with groups expanded.
+     */
+    buildRules: function(cfg) {
+      cfg = cfg || {};
+      const groups = cfg.groups || {};
+      const raw = (cfg.rules || []).slice();
+
+      (cfg.precedenceRules || []).forEach((legacy, i) => {
+        this.translateLegacyRule(legacy, i).forEach(r => raw.push(r));
+      });
+
+      const rules = raw
+        .map((r, i) => this.normalizeRule(r, i, groups))
+        .filter(r => r !== null);
+
+      this.detectRequiresBeforeCycles(rules).forEach(cycle => {
+        util.log('customFlows.engine: requiresBefore cycle detected: ' + cycle.join(' -> '), 'warn');
+      });
+
+      return rules;
+    },
+
+    normalizeRule: function(r, i, groups) {
+      if (!r || !r.slideId || this.RULE_TYPES.indexOf(r.type) === -1) {
+        util.log('customFlows.engine: invalid rule #' + i + ' (needs slideId and a known type)', 'warn');
+        return null;
+      }
+      const id = r.id || (r.type + ':' + r.slideId + ':' + i);
+      const known = customFlows.api.getAllSlides().map(s => s.id);
+      const slides = this.expandSlides(r.slides, groups, r.slideId);
+
+      if (known.length) {
+        if (known.indexOf(r.slideId) === -1) {
+          util.log('customFlows.engine: rule ' + id + ' targets unknown slide ' + r.slideId, 'warn');
+        }
+        slides.filter(s => known.indexOf(s) === -1).forEach(s => {
+          util.log('customFlows.engine: rule ' + id + ' references unknown slide ' + s, 'warn');
+        });
+      }
+
+      return {
+        id: id,
+        slideId: r.slideId,
+        type: r.type,
+        slides: slides,
+        slidesRef: r.slides || [],
+        message: r.message || null,
+        legacy: !!r.legacy
+      };
+    },
+
+    // Expand group names (nested allowed), drop the rule's own slide, dedupe. Group names win over slide ids.
+    expandSlides: function(list, groups, excludeId) {
+      const out = [];
+      const visit = (entry, depth) => {
+        if (depth > this.MAX_GROUP_DEPTH) return;
+        if (Object.prototype.hasOwnProperty.call(groups, entry)) {
+          (groups[entry] || []).forEach(x => visit(x, depth + 1));
+          return;
+        }
+        if (entry !== excludeId && out.indexOf(entry) === -1) out.push(entry);
+      };
+      (list || []).forEach(entry => visit(entry, 0));
+      return out;
+    },
+
+    /**
+     * Legacy precedenceRules → typed rules.
+     *   P mustBeBefore [d…]  ⇒  one "d requiresBefore [P]" per dependent (exceptions and "*" expanded)
+     *   P mustBeAfter  [a…]  ⇒  "P mustFollow [a…]" (order-only, as the old engine never reported these as missing)
+     * All rules from one legacy entry share the id "legacy-N" so the evaluator can collapse them.
+     */
+    translateLegacyRule: function(legacy, i) {
+      const out = [];
+      if (!legacy || !legacy.slideId) return out;
+
+      const id = 'legacy-' + (i + 1);
+      const allIds = customFlows.api.getAllSlides().map(s => s.id);
+      const exceptions = legacy.exceptions || [];
+      const expand = list => (list.indexOf('*') !== -1 ? allIds : list)
+        .filter(s => s !== legacy.slideId && exceptions.indexOf(s) === -1);
+
+      expand(legacy.mustBeBefore || []).forEach(dependent => {
+        out.push({ id: id, legacy: true, slideId: dependent, type: 'requiresBefore', slides: [legacy.slideId], message: legacy.description || null });
+      });
+
+      const after = expand(legacy.mustBeAfter || []);
+      if (after.length) {
+        out.push({ id: id, legacy: true, slideId: legacy.slideId, type: 'mustFollow', slides: after, message: legacy.description || null });
+      }
+
+      return out;
+    },
+
+    // Cycles in the "P requires S before it" graph make Fix All unable to converge; report them at load.
+    detectRequiresBeforeCycles: function(rules) {
+      const edges = {};
+      rules.filter(r => r.type === 'requiresBefore').forEach(r => {
+        edges[r.slideId] = (edges[r.slideId] || []).concat(r.slides);
+      });
+
+      const GREY = 1, BLACK = 2;
+      const color = {};
+      const path = [];
+      const cycles = [];
+
+      const visit = node => {
+        color[node] = GREY;
+        path.push(node);
+        (edges[node] || []).forEach(next => {
+          if (color[next] === GREY) {
+            cycles.push(path.slice(path.indexOf(next)).concat(next));
+          } else if (!color[next]) {
+            visit(next);
+          }
+        });
+        path.pop();
+        color[node] = BLACK;
+      };
+
+      Object.keys(edges).forEach(node => { if (!color[node]) visit(node); });
+      return cycles;
+    },
+
+    /* ---- evaluation ---- */
+
+    MAX_FIX_ALL_ITERATIONS: 25,
+
+    // Identity of a violation for "did the fix introduce something new" comparisons
+    violationKey: function(v) {
+      return v.ruleId + '|' + v.kind + '|' + v.slideId;
+    },
+
+    /**
+     * Evaluate every rule against an ordered list of slide ids and return ALL violations.
+     * Violation shape:
+     * {
+     *   ruleId, ruleType,
+     *   kind: 'missing-before' | 'missing-with' | 'misplaced',
+     *   slideId,          // the slide Fix inserts or moves
+     *   relatedSlideId,   // the slide that triggered the rule
+     *   naturalPosition,  // where the rule would naturally put slideId (see resolveFixPosition)
+     *   targetPosition,   // == naturalPosition here; refined by resolveFixPosition()
+     *   fallback, message, extra
+     * }
+     * targetPosition is the index at which slideId is inserted into the slide-id array
+     * AFTER slideId has been removed from it (when it was present).
+     */
+    evaluate: function(slideIds, rules) {
+      const idx = id => slideIds.indexOf(id);
+      const byIdx = (a, b) => idx(a) - idx(b);
+      const out = [];
+      const mk = (rule, kind, slideId, relatedSlideId, pos, extra) => ({
+        ruleId: rule.id,
+        ruleType: rule.type,
+        kind: kind,
+        slideId: slideId,
+        relatedSlideId: relatedSlideId,
+        naturalPosition: pos,
+        targetPosition: pos,
+        fallback: false,
+        message: null,
+        extra: extra || null
+      });
+
+      (rules || []).forEach(rule => {
+        const p = idx(rule.slideId);
+        if (p === -1) return; // every rule type is conditional on its slide being in the flow
+
+        const present = rule.slides.filter(s => idx(s) !== -1);
+
+        switch (rule.type) {
+          case 'requiresBefore':
+            rule.slides.forEach(s => {
+              const i = idx(s);
+              if (i === -1) out.push(mk(rule, 'missing-before', s, rule.slideId, p));
+              else if (i > p) out.push(mk(rule, 'misplaced', s, rule.slideId, p));
+            });
+            break;
+
+          case 'requiresWith':
+            rule.slides.forEach(s => {
+              if (idx(s) === -1) out.push(mk(rule, 'missing-with', s, rule.slideId, slideIds.length));
+            });
+            break;
+
+          case 'mustFollow': {
+            const after = present.filter(s => idx(s) > p).sort(byIdx);
+            if (after.length) {
+              const last = after[after.length - 1];
+              out.push(mk(rule, 'misplaced', rule.slideId, last, idx(last)));
+            }
+            break;
+          }
+
+          case 'mustPrecede': {
+            const before = present.filter(s => idx(s) < p).sort(byIdx);
+            if (before.length) {
+              out.push(mk(rule, 'misplaced', rule.slideId, before[0], idx(before[0])));
+            }
+            break;
+          }
+
+          case 'notBetween': {
+            const before = present.filter(s => idx(s) < p).sort(byIdx);
+            const after = present.filter(s => idx(s) > p).sort(byIdx);
+            if (before.length && after.length) {
+              const first = before[0];
+              out.push(mk(rule, 'misplaced', rule.slideId, first, idx(first), { before: before[0], after: after[0] }));
+            }
+            break;
+          }
+        }
+      });
+
+      return this.dedupe(out);
+    },
+
+    // Collapse violations with the same key, keeping the lowest position.
+    // Only matters for translated legacy rules, which fan out into many rules sharing one id.
+    dedupe: function(violations) {
+      const seen = {};
+      const out = [];
+      violations.forEach(v => {
+        const key = this.violationKey(v);
+        if (!(key in seen)) {
+          seen[key] = out.length;
+          out.push(v);
+        } else if (v.naturalPosition < out[seen[key]].naturalPosition) {
+          out[seen[key]] = v;
+        }
+      });
+      return out;
+    },
+
+    // Pure: the slide-id array after applying violation v at position pos
+    simulate: function(slideIds, v, pos) {
+      const arr = slideIds.slice();
+      const i = arr.indexOf(v.slideId);
+      if (i !== -1) arr.splice(i, 1);
+      arr.splice(pos, 0, v.slideId);
+      return arr;
+    },
+
+    /**
+     * Where should Fix put v.slideId? Try every position, keep those that resolve v
+     * without introducing a violation that was not already there, and pick the one
+     * that (1) leaves the fewest violations, (2) is closest to the natural position,
+     * (3) is lowest. If none is clean, fall back to the natural position.
+     */
+    resolveFixPosition: function(v, slideIds, rules, baseline) {
+      baseline = baseline || this.evaluate(slideIds, rules);
+      const baseKeys = baseline.map(b => this.violationKey(b));
+      const key = this.violationKey(v);
+      const isPresent = slideIds.indexOf(v.slideId) !== -1;
+      const max = isPresent ? slideIds.length - 1 : slideIds.length;
+      let best = null;
+
+      for (let pos = 0; pos <= max; pos++) {
+        const keys = this.evaluate(this.simulate(slideIds, v, pos), rules).map(x => this.violationKey(x));
+        if (keys.indexOf(key) !== -1) continue;                     // still violated
+        if (keys.some(k => baseKeys.indexOf(k) === -1)) continue;   // introduces a new violation
+        const score = [keys.length, Math.abs(pos - v.naturalPosition), pos];
+        if (!best || this._lexLess(score, best.score)) best = { pos: pos, score: score };
+      }
+
+      return best
+        ? { targetPosition: best.pos, fallback: false }
+        : { targetPosition: v.naturalPosition, fallback: true };
+    },
+
+    _lexLess: function(a, b) {
+      for (let i = 0; i < a.length; i++) {
+        if (a[i] !== b[i]) return a[i] < b[i];
+      }
+      return false;
+    }
+  },
+
   /* UI ELEMENTS -----------------------------------------*/
   ui: {
     elements: {},
@@ -15336,6 +15640,7 @@ const customFlows = {
         // Management screen elements
         managementView: modalRoot.querySelector('[data-ui-id="flowManagementView"]'),
         managementCreateButton: modalRoot.querySelector('[data-sub-type="com.idc.customFlows.management.createButton"]'),
+        managementLimitMessage: modalRoot.querySelector('[data-type="com.idc.customFlows.management.limitMessage"]'),
         managementSearchInput: modalRoot.querySelector('[data-type="com.idc.customFlows.management.searchInput"]'),
         managementTableBody: modalRoot.querySelector('[data-type="com.idc.customFlows.management.tableBody"]'),
         managementFlowRowTemplate: modalRoot.querySelector('[data-type="' + customFlows.constants.SELECTORS.MANAGEMENT_FLOW_ROW + '"][data-template="true"]'),
@@ -15351,7 +15656,6 @@ const customFlows = {
         validationErrorDetails: modalRoot.querySelector('[data-type="com.idc.customFlows.validationError.details"]'),
         validationErrorList: modalRoot.querySelector('[data-type="com.idc.customFlows.validationError.list"]'),
         validationErrorToggle: modalRoot.querySelector('[data-type="com.idc.customFlows.validationError.toggleButton"]'),
-        validationErrorClose: modalRoot.querySelector('[data-type="com.idc.customFlows.validationError.closeButton"]'),
         validationErrorFixAllButton: modalRoot.querySelector('[data-type="com.idc.customFlows.validationError.fixAllButton"]'),
         previewRoot: previewRoot,
         previewBackdrop: previewRoot ? previewRoot.querySelector('[data-type="com.idc.customFlows.preview.backdrop"]') : null,
@@ -15411,6 +15715,7 @@ const customFlows = {
 
       // Bind events
       this.bindEvents();
+      this.bindVariantPickerEvents();
 
       // After open function
 
@@ -15550,16 +15855,7 @@ const customFlows = {
     bindValidationErrorEvents: function(el) {
       if (el.validationErrorSummary) {
         el.validationErrorSummary.addEventListener('click', (e) => {
-          // Don't toggle if clicking close button
-          if (e.target === el.validationErrorClose) return;
           customFlows.ui.toggleValidationError();
-        });
-      }
-
-      if (el.validationErrorClose) {
-        el.validationErrorClose.addEventListener('click', (e) => {
-          e.stopPropagation();
-          customFlows.helpers.clearValidationUI();
         });
       }
 
@@ -15741,8 +16037,10 @@ const customFlows = {
         const slides = customFlows.api.getAllSlides();
         candidateItems = slides.map(slide => ({ source: 'current', id: slide.id }));
       } else if (activeSource.startsWith('related:')) {
+        const sourcesCfg = clm.vars.customFlowsMaker.sources;
+        const relSourceEnabled = !(sourcesCfg && sourcesCfg.related && sourcesCfg.related.active === false);
         const itemId = activeSource.slice('related:'.length);
-        const relItem = customFlows.api.getRelatedCLMItem(itemId);
+        const relItem = relSourceEnabled ? customFlows.api.getRelatedCLMItem(itemId) : null; // disabled source lists nothing
         if (relItem) {
           if (relItem.type === 'pdf' && relItem.pages && relItem.pages.totalPages) {
             // PDF: one item per page
@@ -15762,14 +16060,31 @@ const customFlows = {
       // Use DocumentFragment for batch DOM operations (single reflow)
       const fragment = document.createDocumentFragment();
       
+      const labels = clm.vars.customFlowsMaker.labels || {};
+
       candidateItems.forEach(item => {
         const itemKey = customFlows.api.getItemKey(item);
         const meta = customFlows.api.getItemMeta(item);
-        const thumbSrc = customFlows.api.getItemThumb(item);
+        // Variant slides show the first option's thumbnail and open the picker on Add
+        const variantOptions = item.source === 'current' ? customFlows.api.getSlideVariants(item.id) : [];
+        const thumbSrc = variantOptions.length
+          ? customFlows.api.getItemThumb(Object.assign({}, item, { variant: variantOptions[0].id }))
+          : customFlows.api.getItemThumb(item);
+        const addHandler = () => {
+          if (variantOptions.length) customFlows.ui.openVariantPicker(item, 'add');
+          else customFlows.api.addItemToFlow(item);
+        };
 
         const slideItem = template.cloneNode(true);
         slideItem.removeAttribute('data-template');
         slideItem.setAttribute('data-slide-id', itemKey);
+
+        const badgeEl = slideItem.querySelector('[data-type="com.idc.customFlows.slideItem.variantBadge"]');
+        if (badgeEl) {
+          badgeEl.textContent = variantOptions.length
+            ? (labels.variantBadgeLabel || '##count## versions').replace('##count##', variantOptions.length)
+            : '';
+        }
 
         // Populate based on view mode
         if (viewMode === 'list') {
@@ -15802,17 +16117,17 @@ const customFlows = {
             addButton.appendChild(checkIcon);
           }
         } else {
-          // Single tap adds the item directly to the flow
+          // Single tap adds the item directly to the flow (or opens the variant picker)
           slideItem.addEventListener('click', (e) => {
             e.stopPropagation();
-            customFlows.api.addItemToFlow(item);
+            addHandler();
           });
 
           const addButton = slideItem.querySelector('[data-type="com.idc.customFlows.slideItem.addButton"]');
           if (addButton) {
             addButton.addEventListener('click', (e) => {
               e.stopPropagation();
-              customFlows.api.addItemToFlow(item);
+              addHandler();
             });
           }
         }
@@ -15883,8 +16198,10 @@ const customFlows = {
         currentOpt.textContent = labels.sourceSelectorThisPresentation;
       }
 
-      // Add related CLM options if the module is active and has items
-      const relActive = clm.vars.relatedCLMV2 && clm.vars.relatedCLMV2.active;
+      // Add related CLM options if the module is active, the source is enabled for the maker, and there are items
+      const sourcesCfg = clm.vars.customFlowsMaker.sources;
+      const relSourceEnabled = !(sourcesCfg && sourcesCfg.related && sourcesCfg.related.active === false);
+      const relActive = relSourceEnabled && clm.vars.relatedCLMV2 && clm.vars.relatedCLMV2.active;
       const relItems  = (clm.vars.relatedCLMV2 && Array.isArray(clm.vars.relatedCLMV2.items))
         ? clm.vars.relatedCLMV2.items
         : [];
@@ -15947,20 +16264,8 @@ const customFlows = {
       const el = this.elements;
       if (!el.selectedSlidesList || !el.selectedSlideItemTemplate) return;
 
-      // Capture existing indicator positions before clearing (so they can be re-inserted correctly)
-      const indicatorData = [];
+      // Clear existing slides, markers and placeholders (except templates)
       const allItems = Array.from(el.selectedSlidesList.children).filter(item => !item.hasAttribute('data-template'));
-      let slideCount = 0;
-      allItems.forEach(child => {
-        const type = child.getAttribute('data-type');
-        if (type === customFlows.constants.ITEM_TYPES.INDICATOR) {
-          indicatorData.push({ element: child, position: slideCount });
-        } else if (type === customFlows.constants.ITEM_TYPES.SLIDE) {
-          slideCount++;
-        }
-      });
-
-      // Clear existing slides AND indicators (except template)
       allItems.forEach(item => item.remove());
 
       // Render selected items
@@ -15988,6 +16293,25 @@ const customFlows = {
         // Set title
         if (title) {
           title.textContent = meta.title;
+        }
+
+        // Variant chip (slides with config.variants only): shows the chosen variant, tap to swap in place
+        const chip = slideItem.querySelector('[data-type="com.idc.customFlows.selectedSlideItem.variantChip"]');
+        if (chip) {
+          if (meta.hasVariants) {
+            const labels = clm.vars.customFlowsMaker.labels || {};
+            const state = meta.variantLabel ? 'set' : (meta.variantUnknown ? 'unknown' : 'unset');
+            chip.setAttribute('data-state', state);
+            chip.textContent = state === 'set' ? meta.variantLabel
+              : state === 'unknown' ? (labels.variantUnknownLabel || 'Version not available')
+              : (labels.variantUnsetLabel || 'Choose version');
+            chip.addEventListener('click', (e) => {
+              e.stopPropagation();
+              customFlows.ui.openVariantPicker(item, 'swap');
+            });
+          } else {
+            chip.remove();
+          }
         }
 
         // Remove button
@@ -16023,11 +16347,6 @@ const customFlows = {
         el.selectedSlidesList.appendChild(slideItem);
       });
 
-      // Re-insert indicators at their original positions
-      indicatorData.forEach(({ element, position }) => {
-        customFlows.api.insertIndicatorAtPosition(element, position);
-      });
-
       // Append empty slot placeholders to fill up to minimum visible slots
       const MIN_PLACEHOLDER_SLOTS = 6;
       if (el.selectedSlidePlaceholderTemplate) {
@@ -16042,6 +16361,10 @@ const customFlows = {
           el.selectedSlidesList.appendChild(placeholder);
         }
       }
+
+      // Re-draw violation markers from the last validation (idempotent; callers that mutate the
+      // flow run validation right after and redraw again)
+      customFlows.api.renderViolationMarkers(customFlows.state.lastViolations);
 
       // Update slide count
       this.updateFlowMeta();
@@ -16254,12 +16577,13 @@ const customFlows = {
 
         if (numberEl) numberEl.textContent = (index + 1);
         
+        const displayTitle = customFlows.ui.formatItemTitle(meta);
         if (thumbEl) {
           thumbEl.src = customFlows.api.getItemThumb(flowItem);
-          thumbEl.alt = meta.title;
+          thumbEl.alt = displayTitle;
         }
 
-        if (titleEl) titleEl.textContent = meta.title;
+        if (titleEl) titleEl.textContent = displayTitle;
 
         listEl.appendChild(item);
       });
@@ -16288,7 +16612,7 @@ const customFlows = {
       // Preview is available as long as there are slides and no flow errors —
       // a missing flow name is not a blocker for preview.
       const isEmpty = customFlows.state.selectedItems.length === 0;
-      const violations = customFlows.api.validateFlow();
+      const violations = customFlows.api.validateFlow(null, { resolve: false });
       const hasViolations = violations.length > 0;
       const shouldDisable = isEmpty || hasViolations;
 
@@ -16298,6 +16622,87 @@ const customFlows = {
         el.previewButton.removeAttribute('disabled');
       }
 
+    },
+
+    // "Slide title · Variant label" (title alone when the item has no variant)
+    formatItemTitle: function(meta) {
+      if (!meta) return '';
+      return meta.variantLabel ? meta.title + ' · ' + meta.variantLabel : meta.title;
+    },
+
+    /* ---- variant picker ---- */
+
+    getVariantPickerElements: function() {
+      const root = this.elements.root;
+      const picker = root ? root.querySelector('[data-type="com.idc.customFlows.variantPicker"]') : null;
+      if (!picker) return null;
+      return {
+        picker: picker,
+        backdrop: picker.querySelector('[data-type="com.idc.customFlows.variantPicker.backdrop"]'),
+        title: picker.querySelector('[data-type="com.idc.customFlows.variantPicker.title"]'),
+        options: picker.querySelector('[data-type="com.idc.customFlows.variantPicker.options"]'),
+        optionTemplate: picker.querySelector('[data-type="com.idc.customFlows.variantPicker.option"][data-template="true"]'),
+        cancelButton: picker.querySelector('[data-type="com.idc.customFlows.variantPicker.cancelButton"]')
+      };
+    },
+
+    bindVariantPickerEvents: function() {
+      const p = this.getVariantPickerElements();
+      if (!p) return;
+      [p.backdrop, p.cancelButton].forEach(el => {
+        if (el) el.addEventListener('click', (e) => { e.stopPropagation(); customFlows.ui.closeVariantPicker(); });
+      });
+    },
+
+    /**
+     * Open the variant picker for a current-presentation item.
+     * mode 'add'  -> the chosen variant is added to the flow as a new item
+     * mode 'swap' -> the item already in the flow gets its variant replaced in place
+     */
+    openVariantPicker: function(item, mode) {
+      const p = this.getVariantPickerElements();
+      if (!p || !item || item.source !== 'current') return;
+      const options = customFlows.api.getSlideVariants(item.id);
+      if (!options.length) return;
+
+      const labels = clm.vars.customFlowsMaker.labels || {};
+      const meta = customFlows.api.getItemMeta({ source: 'current', id: item.id });
+      if (p.title) {
+        p.title.textContent = (labels.variantPickerTitle || 'Choose a version of ##slide##').replace('##slide##', meta.title);
+      }
+
+      if (p.options && p.optionTemplate) {
+        p.options.querySelectorAll('[data-type="com.idc.customFlows.variantPicker.option"]:not([data-template="true"])').forEach(n => n.remove());
+        options.forEach(opt => {
+          const optionEl = p.optionTemplate.cloneNode(true);
+          optionEl.removeAttribute('data-template');
+          optionEl.setAttribute('data-variant-id', opt.id);
+          if (mode === 'swap' && item.variant === opt.id) optionEl.setAttribute('data-selected', 'true');
+
+          const img = optionEl.querySelector('[data-type="com.idc.customFlows.variantPicker.option.thumb"] img');
+          const label = optionEl.querySelector('[data-type="com.idc.customFlows.variantPicker.option.label"]');
+          if (img) { img.src = customFlows.api.getItemThumb({ source: 'current', id: item.id, variant: opt.id }); img.alt = opt.label; }
+          if (label) label.textContent = opt.label;
+
+          optionEl.addEventListener('click', (e) => {
+            e.stopPropagation();
+            customFlows.ui.closeVariantPicker();
+            if (mode === 'swap') {
+              customFlows.api.setItemVariant(customFlows.api.getItemKey(item), opt.id);
+            } else {
+              customFlows.api.addItemToFlow(Object.assign({}, item, { variant: opt.id }));
+            }
+          });
+          p.options.appendChild(optionEl);
+        });
+      }
+
+      p.picker.setAttribute('data-visible', 'true');
+    },
+
+    closeVariantPicker: function() {
+      const p = this.getVariantPickerElements();
+      if (p) p.picker.setAttribute('data-visible', 'false');
     },
 
     openSlideThumb: function(slideIdOrItem) {
@@ -16324,7 +16729,7 @@ const customFlows = {
     // Helper to determine if action buttons should be disabled
     shouldDisableActionButtons: function() {
       const isEmpty = customFlows.state.selectedItems.length === 0;
-      const violations = customFlows.api.validateFlow();
+      const violations = customFlows.api.validateFlow(null, { resolve: false });
       const hasViolations = violations.length > 0;
       
       // Check flow name validation
@@ -16341,7 +16746,8 @@ const customFlows = {
       // Determine initial view based on call mode and intent
       let targetView = 'management'; // Default for media mode
       
-      if (clm.vars.session.isAnActualCall) {
+      const launchViewActive = !(clm.vars.customFlowsMaker.launchView && clm.vars.customFlowsMaker.launchView.active === false);
+      if (clm.vars.session.isAnActualCall && launchViewActive) {
         // Call mode: Default to launch view
         targetView = 'launch';
       }
@@ -16453,17 +16859,23 @@ const customFlows = {
         violations.forEach(v => {
           const li = document.createElement('li');
           
-          // Create violation text container
+          // Create violation text container: rule id (traceability) + plain-language message
           const textContainer = document.createElement('div');
           textContainer.className = 'violation-text';
-          textContainer.innerHTML = `
-            <span class="rule">${v.rule}</span>
-            <span class="violation">${v.violation}</span>
-          `;
+          if (!v.legacy && v.ruleId) {
+            const ruleEl = document.createElement('span');
+            ruleEl.className = 'rule';
+            ruleEl.textContent = (labels.ruleIdPrefix ? labels.ruleIdPrefix + ' ' : '') + v.ruleId;
+            textContainer.appendChild(ruleEl);
+          }
+          const messageEl = document.createElement('span');
+          messageEl.className = 'violation';
+          messageEl.textContent = v.message || v.violation || '';
+          textContainer.appendChild(messageEl);
           li.appendChild(textContainer);
           
           // Add Apply button if the violation can be auto-fixed
-          if (v.slideId && v.insertPosition !== undefined) {
+          if (v.slideId && v.targetPosition !== undefined) {
             fixableCount++;
             const applyBtn = document.createElement('button');
             applyBtn.className = 'apply-fix-btn';
@@ -16553,13 +16965,14 @@ const customFlows = {
         const thumb = previewSlide.querySelector('[data-type="com.idc.customFlows.previewSlideItem.thumb"] img');
         const description = previewSlide.querySelector('[data-type="com.idc.customFlows.previewSlideItem.description"]');
 
+        const displayTitle = customFlows.ui.formatItemTitle(meta);
         if (thumb) {
           thumb.src = customFlows.api.getItemThumb(item);
-          thumb.alt = meta.title;
+          thumb.alt = displayTitle;
         }
 
         if (description) {
-          description.textContent = meta.title;
+          description.textContent = displayTitle;
         }
 
         el.previewCarouselInner.appendChild(previewSlide);
@@ -16699,6 +17112,16 @@ const customFlows = {
         existingRows.forEach(row => row.remove());
       }
       
+      // maxFlows: disable Create once the limit is reached
+      const limit = customFlows.api.canCreateFlow();
+      if (el.managementCreateButton) {
+        if (limit.allowed) el.managementCreateButton.removeAttribute('disabled');
+        else el.managementCreateButton.setAttribute('disabled', 'true');
+      }
+      if (el.managementLimitMessage) {
+        el.managementLimitMessage.textContent = limit.allowed ? '' : customFlows.api.getMaxFlowsMessage();
+      }
+
       // Show/hide states
       const isEmpty = flowsArray.length === 0;
       const hasNoResults = !isEmpty && filteredFlows.length === 0;
@@ -16980,6 +17403,12 @@ const customFlows = {
     navigateToEditor: function(flowId) {
       const el = customFlows.ui.elements;
 
+      // New flow while the maxFlows limit is reached: refuse (the Create button is normally disabled already)
+      if (!flowId && !this.canCreateFlow().allowed) {
+        alert(this.getMaxFlowsMessage());
+        return;
+      }
+
       customFlows.state.editingFlowId = flowId || null;
 
       // Always reset source to 'current' when entering the editor
@@ -17022,6 +17451,29 @@ const customFlows = {
       this.navigateTo('edit');
     },
     
+    // ---- limits (config.customFlowsMaker.maxFlows / maxFlowsPerAccount) -------------
+
+    // Can another flow be created? { allowed, count, max } (max null = unlimited)
+    canCreateFlow: function() {
+      const max = clm.vars.customFlowsMaker.maxFlows;
+      const count = Object.keys(clm.persistentData.customFlows.flows || {}).length;
+      const allowed = !(typeof max === 'number' && max > 0 && count >= max);
+      return { allowed: allowed, count: count, max: max };
+    },
+
+    getMaxFlowsMessage: function() {
+      const labels = clm.vars.customFlowsMaker.labels || {};
+      return (labels.maxFlowsReachedMessage || 'You have reached the maximum of ##count## flows')
+        .replace('##count##', clm.vars.customFlowsMaker.maxFlows);
+    },
+
+    // Other flows (not flowId) assigned to accountId
+    getOtherFlowsForAccount: function(accountId, flowId) {
+      return Object.values(clm.persistentData.customFlows.flows || {}).filter(f =>
+        f.id !== flowId && (f.assignedAccounts || []).some(a => a.id === accountId)
+      );
+    },
+
     /**
      * Delete a flow with confirmation
      * @param {String} flowId - Flow ID to delete
@@ -17103,15 +17555,46 @@ const customFlows = {
         return;
       }
       
+      // maxFlowsPerAccount: an account that already holds the maximum in OTHER flows must give one up.
+      // The rep is asked per account; declining skips that account and leaves everything else unchanged.
+      const maxPerAccount = clm.vars.customFlowsMaker.maxFlowsPerAccount;
+      const previouslyAssigned = (flow.assignedAccounts || []).map(a => a.id);
+      const now = Date.now();
+      let accepted = selectedAccounts;
+
+      if (typeof maxPerAccount === 'number' && maxPerAccount > 0) {
+        accepted = [];
+        for (const account of selectedAccounts) {
+          if (previouslyAssigned.indexOf(account.id) !== -1) { accepted.push(account); continue; } // already ours
+          const others = this.getOtherFlowsForAccount(account.id, flowId);
+          if (others.length < maxPerAccount) { accepted.push(account); continue; }
+
+          const prompt = (labels.maxFlowsPerAccountPrompt || '##account## already has a flow assigned. Replace it with "##flowName##"?')
+            .replace('##account##', account.name || account.id)
+            .replace('##flowName##', flow.name)
+            .replace('##count##', others.length);
+          if (!confirm(prompt)) continue; // declined: this account keeps its current flow(s)
+
+          // Free the slot: unassign the account from its other flow(s), oldest first, down to max-1
+          others.sort((a, b) => (a.lastUpdated || 0) - (b.lastUpdated || 0));
+          const toRelease = others.length - (maxPerAccount - 1);
+          others.slice(0, toRelease).forEach(other => {
+            other.assignedAccounts = (other.assignedAccounts || []).filter(a => a.id !== account.id);
+            other.lastUpdated = now;
+          });
+          accepted.push(account);
+        }
+      }
+
       // Update assignedAccounts array (store only id and name)
-      clm.persistentData.customFlows.flows[flowId].assignedAccounts = selectedAccounts.map(account => ({
+      clm.persistentData.customFlows.flows[flowId].assignedAccounts = accepted.map(account => ({
         id: account.id,
         name: account.name
       }));
-      
+
       // Update lastUpdated timestamp
-      clm.persistentData.customFlows.flows[flowId].lastUpdated = Date.now();
-      
+      clm.persistentData.customFlows.flows[flowId].lastUpdated = now;
+
       // Save to storage
       await storage.persistentData.update();
       
@@ -17334,6 +17817,11 @@ const customFlows = {
         return { success: false, error: 'flowNameInvalidChars' };
       }
       
+      // maxFlows
+      if (!this.canCreateFlow().allowed) {
+        return { success: false, error: 'maxFlowsReached', message: this.getMaxFlowsMessage() };
+      }
+
       // Make name unique if duplicate exists
       const uniqueFlowName = this.makeFlowNameUnique(flowName);
 
@@ -17457,6 +17945,46 @@ const customFlows = {
     /**
      * Resolve the thumbnail path for any flow item object.
      */
+    // ---- variants -----------------------------------------------------
+
+    // Variant options declared on a slide entry (config.slides[].variants.options), or []
+    getSlideVariants: function(slideId) {
+      const slide = this.getSlideById(slideId);
+      return (slide && slide.variants && Array.isArray(slide.variants.options)) ? slide.variants.options : [];
+    },
+
+    getVariantOption: function(slideId, variantId) {
+      if (!variantId) return null;
+      return this.getSlideVariants(slideId).find(o => o.id === variantId) || null;
+    },
+
+    // Adds hasVariants / variant / variantLabel / variantUnknown to an item meta object
+    _addVariantMeta: function(meta, slideId, variantId) {
+      const options = this.getSlideVariants(slideId);
+      meta.hasVariants = options.length > 0;
+      meta.variant = variantId || null;
+      const option = variantId ? options.find(o => o.id === variantId) : null;
+      meta.variantLabel = option ? option.label : null;
+      meta.variantUnknown = !!(variantId && meta.hasVariants && !option); // config changed after the flow was saved
+      return meta;
+    },
+
+    // Thumbnail for a slide of this presentation, honouring the chosen variant
+    _slideThumb: function(slideId, variantId) {
+      const base = util.getSharedResourcesPath() + 'img/thumbnails/';
+      const option = this.getVariantOption(slideId, variantId);
+      return base + ((option && option.thumb) ? option.thumb : slideId + '.png');
+    },
+
+    // Change the variant of an item already in the flow. Position and validation are untouched.
+    setItemVariant: function(itemKey, variantId) {
+      const item = customFlows.state.selectedItems.find(i => this.getItemKey(i) === itemKey);
+      if (!item) return;
+      if (variantId) item.variant = variantId; else delete item.variant;
+      customFlows.ui.renderSelectedSlides();
+      customFlows.ui.updateDoneButtonState();
+    },
+
     getItemThumb: function(item) {
       if (!item) return '';
       if (!item.source && item.keyMessage) {
@@ -17469,7 +17997,7 @@ const customFlows = {
             return s.vaultExternalID && s.vaultExternalID.keyMessage === item.keyMessage;
           });
           if (slide) {
-            return util.getSharedResourcesPath() + 'img/thumbnails/' + slide.id + '.png';
+            return this._slideThumb(slide.id, item.variant);
           }
           return '';
         }
@@ -17499,7 +18027,7 @@ const customFlows = {
       }
       const base = util.getSharedResourcesPath();
       if (item.source === 'current') {
-        return base + 'img/thumbnails/' + item.id + '.png';
+        return this._slideThumb(item.id, item.variant);
       }
       // source === 'related'
       const relItem = this.getRelatedCLMItem(item.itemId);
@@ -17524,11 +18052,20 @@ const customFlows = {
       if (!item) return { title: '' };
       if (!item.source && item.keyMessage) {
         // Vault-ID format item
-        return { title: item.title || item.keyMessage || '' };
+        const meta = { title: item.title || item.keyMessage || '' };
+        const thisPresVaultId = clm.vars.project && clm.vars.project.vaultExternalID
+          ? clm.vars.project.vaultExternalID.presentation : null;
+        if (thisPresVaultId && item.presentation === thisPresVaultId) {
+          const slide = (clm.vars.slides || []).find(function (s) {
+            return s.vaultExternalID && s.vaultExternalID.keyMessage === item.keyMessage;
+          });
+          if (slide) this._addVariantMeta(meta, slide.id, item.variant);
+        }
+        return meta;
       }
       if (item.source === 'current') {
         const slide = this.getSlideById(item.id);
-        return { title: (slide && slide.description) ? slide.description : item.id };
+        return this._addVariantMeta({ title: (slide && slide.description) ? slide.description : item.id }, item.id, item.variant);
       }
       // source === 'related'
       const relItem = this.getRelatedCLMItem(item.itemId);
@@ -17561,6 +18098,7 @@ const customFlows = {
           presentationName: item.presentationName || null,
         };
         if (item.pageNumber != null) vaultIds.pageNumber = item.pageNumber;
+        if (item.variant) vaultIds.variant = item.variant;
         return vaultIds;
       }
       if (item.source === 'current') {
@@ -17579,6 +18117,7 @@ const customFlows = {
         };
         // Preserve pageNumber for PDF slides reconstructed from a broadcast
         if (item.pageNumber != null) currentVaultIds.pageNumber = item.pageNumber;
+        if (item.variant) currentVaultIds.variant = item.variant;
         return currentVaultIds;
       }
       // source === 'related'
@@ -17639,6 +18178,7 @@ const customFlows = {
         }
         const result = { source: 'current', id: slide.id };
         if (item.pageNumber != null) result.pageNumber = item.pageNumber;
+        if (item.variant) result.variant = item.variant;
         return result;
       }
 
@@ -17693,11 +18233,6 @@ const customFlows = {
 
     // ---- end Related CLM helpers ------------------------------------
 
-
-    getNeededPositionForSlide: function(slideId) {
-      // Returns the position where this slide should be inserted, or null if not needed
-      return customFlows.helpers.findLowestIndicatorPosition(slideId);
-    },
 
     addItemToFlow: function(item, index = -1) {
       const key = this.getItemKey(item);
@@ -17902,272 +18437,174 @@ const customFlows = {
       });
     },
 
-    /**
-     * Apply automatic fix for a validation violation
-     * @param {Object} violation - Violation object with slideId and insertPosition
-     */
-    applyFix: function(violation) {
-      if (!violation || !violation.slideId || violation.insertPosition === undefined) {
-        return;
-      }
+    // ---- validation coordinates -------------------------------------
+    // The engine works on slide ids of THIS presentation ("current-source" coordinates).
+    // state.selectedItems is a flat array that may also hold related-CLM items, so every
+    // position coming out of the engine is mapped back through these helpers.
 
-      const slideId = violation.slideId;
-      const targetItem = { source: 'current', id: slideId };
-      const targetKey = this.getItemKey(targetItem);
-      const items = customFlows.state.selectedItems;
-
-      // Get flat indices of current-source items (validation positions refer to these)
-      const currentSourceIndices = items.reduce((acc, item, idx) => {
-        if (item.source === 'current') acc.push(idx);
-        return acc;
-      }, []);
-
-      // Check if slide is already in the flow (misplaced)
-      const existingIdx = items.findIndex(i => this.getItemKey(i) === targetKey);
-
-      if (existingIdx !== -1) {
-        // Slide exists but is misplaced — remove it first
-        items.splice(existingIdx, 1);
-        // Recompute current-source indices after removal
-        const newCSI = items.reduce((acc, item, idx) => {
-          if (item.source === 'current') acc.push(idx);
-          return acc;
-        }, []);
-        const insertAt = newCSI[violation.insertPosition] !== undefined
-          ? newCSI[violation.insertPosition]
-          : items.length;
-        items.splice(insertAt, 0, targetItem);
-      } else {
-        // Insert missing slide at the correct position among current-source items
-        const insertAt = currentSourceIndices[violation.insertPosition] !== undefined
-          ? currentSourceIndices[violation.insertPosition]
-          : items.length;
-        items.splice(insertAt, 0, targetItem);
-      }
-
-      // Re-render available and selected items
-      customFlows.ui.renderAvailableSlides();
-      customFlows.ui.renderSelectedSlides();
-
-      // Re-run validation
-      this.runValidationAndSyncUI();
-
-      // Update button state
-      customFlows.ui.updateDoneButtonState();
-    },
-
-    /**
-     * Apply all automatic fixes at once
-     */
-    applyAllFixes: function() {
-      const violations = this.validateFlow();
-      
-      // Filter only fixable violations
-      const fixableViolations = violations.filter(v => v.slideId && v.insertPosition !== undefined);
-      
-      if (fixableViolations.length === 0) {
-        return;
-      }
-
-      // Group violations by slideId to handle duplicates
-      const slideFixMap = new Map();
-      
-      fixableViolations.forEach(v => {
-        // Keep the earliest (lowest) position for each slide
-        if (!slideFixMap.has(v.slideId) || v.insertPosition < slideFixMap.get(v.slideId).insertPosition) {
-          slideFixMap.set(v.slideId, v);
+    // [{ flatIndex, slideId }] for exactly the items validation sees, in flow order.
+    _currentSourceEntries: function(items) {
+      const thisPresVaultId = clm.vars.project && clm.vars.project.vaultExternalID
+        ? clm.vars.project.vaultExternalID.presentation : null;
+      const entries = [];
+      (items || []).forEach(function(item, flatIndex) {
+        let slideId = null;
+        if (item.source === 'current') {
+          slideId = item.id;
+        } else if (!item.source && item.keyMessage && thisPresVaultId && item.presentation === thisPresVaultId) {
+          const slide = (clm.vars.slides || []).find(function(s) {
+            return s.vaultExternalID && s.vaultExternalID.keyMessage === item.keyMessage;
+          });
+          slideId = slide ? slide.id : null;
         }
+        if (slideId !== null) entries.push({ flatIndex: flatIndex, slideId: slideId });
       });
-
-      // Sort violations by target position (ascending) to apply fixes in order
-      const sortedViolations = Array.from(slideFixMap.values()).sort((a, b) => a.insertPosition - b.insertPosition);
-
-      const items = customFlows.state.selectedItems;
-
-      // Apply each fix, tracking offset from previous insertions
-      let insertionOffset = 0;
-      sortedViolations.forEach(violation => {
-        const slideId = violation.slideId;
-        const targetItem = { source: 'current', id: slideId };
-        const targetKey = this.getItemKey(targetItem);
-        const adjustedPos = violation.insertPosition + insertionOffset;
-
-        // Compute current-source indices
-        const currentSourceIndices = items.reduce((acc, item, idx) => {
-          if (item.source === 'current') acc.push(idx);
-          return acc;
-        }, []);
-
-        const existingIdx = items.findIndex(i => this.getItemKey(i) === targetKey);
-
-        if (existingIdx !== -1) {
-          // Misplaced: remove then re-insert at correct position
-          items.splice(existingIdx, 1);
-          const newCSI = items.reduce((acc, item, idx) => {
-            if (item.source === 'current') acc.push(idx);
-            return acc;
-          }, []);
-          const insertAt = newCSI[adjustedPos] !== undefined ? newCSI[adjustedPos] : items.length;
-          items.splice(insertAt, 0, targetItem);
-          // Net zero: removed then re-inserted, offset unchanged
-        } else {
-          // Missing: insert at correct position
-          const insertAt = currentSourceIndices[adjustedPos] !== undefined
-            ? currentSourceIndices[adjustedPos]
-            : items.length;
-          items.splice(insertAt, 0, targetItem);
-          insertionOffset++;
-        }
-      });
-
-      // Re-render available and selected items
-      customFlows.ui.renderAvailableSlides();
-      customFlows.ui.renderSelectedSlides();
-
-      // Re-run validation
-      this.runValidationAndSyncUI();
-
-      // Update button state
-      customFlows.ui.updateDoneButtonState();
+      return entries;
     },
 
     // Convert an array of flow item objects to local slide ID strings.
     // Only items from this presentation are included; related/unresolvable items are dropped.
     _itemsToSlideIds: function(items) {
-      const thisPresVaultId = clm.vars.project && clm.vars.project.vaultExternalID
-        ? clm.vars.project.vaultExternalID.presentation : null;
-      return items
-        .filter(function(item) {
-          if (item.source === 'current') return true;
-          return !item.source && item.keyMessage && thisPresVaultId && item.presentation === thisPresVaultId;
-        })
-        .map(function(item) {
-          if (item.source === 'current') return item.id;
-          const slide = (clm.vars.slides || []).find(function(s) {
-            return s.vaultExternalID && s.vaultExternalID.keyMessage === item.keyMessage;
-          });
-          return slide ? slide.id : null;
-        })
-        .filter(function(id) { return id !== null; });
+      return this._currentSourceEntries(items).map(function(e) { return e.slideId; });
     },
 
-    validateFlow: function(slidesArray) {
-      // Get precedence rules from config
-      const rules = clm.vars.customFlowsMaker.precedenceRules || [];
+    // Current-source insert index -> flat splice index (before the current-source item at that
+    // index; after everything when the index is past the end).
+    currentIndexToFlatIndex: function(csIndex, items) {
+      const entries = this._currentSourceEntries(items);
+      return csIndex < entries.length ? entries[csIndex].flatIndex : items.length;
+    },
+
+    // Flat index for a "move here" marker: the moved card is still in the list, so shift the
+    // target past it when the target lies at or after the card's own position.
+    moveMarkerFlatIndex: function(csTarget, slideId, items) {
+      const entries = this._currentSourceEntries(items);
+      const csIdx = entries.findIndex(function(e) { return e.slideId === slideId; });
+      const adjusted = (csIdx !== -1 && csTarget >= csIdx) ? csTarget + 1 : csTarget;
+      return adjusted < entries.length ? entries[adjusted].flatIndex : items.length;
+    },
+
+    // ---- validation ---------------------------------------------------
+
+    /**
+     * Validate a flow against the configured rules.
+     * @param {Array} [slidesArray] - slide ids; defaults to the editor's current items
+     * @param {Object} [opts] - { resolve: false } skips Fix-position resolution (cheaper; use when only .length matters)
+     * @returns {Array} violations (see engine.evaluate), each with a resolved targetPosition and message
+     */
+    validateFlow: function(slidesArray, opts) {
+      const rules = customFlows.engine.getRules();
       const slides = slidesArray || this._itemsToSlideIds(customFlows.state.selectedItems);
-      const violations = [];
+      const baseline = customFlows.engine.evaluate(slides, rules);
 
-      // Check each rule
-      rules.forEach(rule => {
-        const violation = this.checkPrecedenceRule(rule, slides);
-        if (violation) {
-          violations.push(violation);
-        }
-      });
+      if (opts && opts.resolve === false) {
+        return baseline.map(v => this._decorateViolation(v));
+      }
 
-      return violations;
+      return baseline.map(v => this._decorateViolation(
+        Object.assign({}, v, customFlows.engine.resolveFixPosition(v, slides, rules, baseline))
+      ));
     },
 
-    checkPrecedenceRule: function(rule, slides) {
-      const { slideId, mustBeBefore, mustBeAfter, exceptions = [], description } = rule;
-      
-      // Find the position of the rule's slide
-      const slideIndex = slides.indexOf(slideId);
-      
-      // If the slide is not in the flow, check if it's required by other slides
-      if (slideIndex === -1) {
-        // For mustBeBefore rules: check if any slides that should come after this slide are present
-        if (mustBeBefore && mustBeBefore.length > 0) {
-          for (let i = 0; i < slides.length; i++) {
-            const currentSlide = slides[i];
-            
-            // Skip if this slide is in the exceptions list
-            if (exceptions.includes(currentSlide)) {
-              continue;
-            }
-            
-            // Check if this slide should come after the rule slide
-            if (mustBeBefore.includes('*') || mustBeBefore.includes(currentSlide)) {
-              // Found a violation: a slide that requires the rule slide to be before it exists, but rule slide is missing
-              const currentSlideData = this.getSlideById(currentSlide);
-              const ruleSlideData = this.getSlideById(slideId);
-              
-              return {
-                rule: description || `${slideId} must be before other slides`,
-                violation: `"${currentSlideData ? currentSlideData.description : currentSlide}" is present but "${ruleSlideData ? ruleSlideData.description : slideId}" is missing`,
-                slideId: slideId,
-                conflictingSlideId: currentSlide,
-                insertPosition: i, // Position where the missing slide should be inserted
-                missingSlide: true
-              };
-            }
-          }
-        }
-        
-        // If no violations found for missing slide, return null
-        return null;
+    // Fill in the rep-facing message and the deprecated field aliases.
+    _decorateViolation: function(v) {
+      const rule = customFlows.engine.getRules().find(r => r.id === v.ruleId) || {};
+      const labels = clm.vars.customFlowsMaker.labels || {};
+      const title = id => { const s = this.getSlideById(id); return s ? s.description : (id || ''); };
+
+      const DEFAULTS = {
+        'requiresBefore|missing-before': ['ruleMessageMissingBefore', '##related## requires ##slide## before it'],
+        'requiresBefore|misplaced': ['ruleMessageMisplacedBefore', '##slide## must come before ##related##'],
+        'requiresWith|missing-with': ['ruleMessageMissingWith', '##related## requires ##slide## in the flow'],
+        'mustFollow|misplaced': ['ruleMessageMustFollow', '##slide## must come after ##related##'],
+        'mustPrecede|misplaced': ['ruleMessageMustPrecede', '##slide## must come before ##related##'],
+        'notBetween|misplaced': ['ruleMessageNotBetween', '##slide## cannot be placed between ##before## and ##after##']
+      };
+      const def = DEFAULTS[v.ruleType + '|' + v.kind] || [null, '##slide##'];
+      const template = rule.message || (def[0] && labels[def[0]]) || def[1];
+
+      v.message = template
+        .replace(/##slide##/g, title(v.slideId))
+        .replace(/##related##/g, title(v.relatedSlideId))
+        .replace(/##before##/g, v.extra ? title(v.extra.before) : '')
+        .replace(/##after##/g, v.extra ? title(v.extra.after) : '');
+      v.legacy = !!rule.legacy;
+
+      // @deprecated aliases kept for external customFlows.validate() consumers
+      v.rule = v.legacy && rule.message ? rule.message : v.ruleId;
+      v.violation = v.message;
+      v.conflictingSlideId = v.relatedSlideId;
+      v.insertPosition = v.targetPosition;
+      v.missingSlide = v.kind !== 'misplaced';
+      v.misplacedSlide = v.kind === 'misplaced';
+      return v;
+    },
+
+    // ---- fixes --------------------------------------------------------
+
+    // Mutate state.selectedItems for one violation (remove the slide if present, then insert
+    // at the mapped flat index). No rendering.
+    _applyFixToItems: function(v) {
+      const items = customFlows.state.selectedItems;
+      const key = this.getItemKey({ source: 'current', id: v.slideId });
+      const existing = items.findIndex(i => this.getItemKey(i) === key);
+      if (existing !== -1) items.splice(existing, 1);
+      items.splice(this.currentIndexToFlatIndex(v.targetPosition, items), 0, { source: 'current', id: v.slideId });
+    },
+
+    _renderAfterFix: function() {
+      customFlows.ui.renderAvailableSlides();
+      customFlows.ui.renderSelectedSlides();
+      this.runValidationAndSyncUI();
+      customFlows.ui.updateDoneButtonState();
+    },
+
+    /**
+     * Apply the fix for one violation (insert a missing slide or move a misplaced one).
+     * The violation is re-resolved against the live flow first, since a banner/marker may
+     * hold an object from an earlier render.
+     */
+    applyFix: function(violation) {
+      if (!violation || !violation.slideId) return;
+
+      const key = customFlows.engine.violationKey(violation);
+      const fresh = this.validateFlow().find(v => customFlows.engine.violationKey(v) === key);
+      if (!fresh) {
+        this.runValidationAndSyncUI(); // already resolved by an earlier action
+        return;
       }
 
-      // Check mustBeBefore constraints
-      if (mustBeBefore && mustBeBefore.length > 0) {
-        for (let i = 0; i < slideIndex; i++) {
-          const beforeSlide = slides[i];
-          
-          // Skip if this slide is in the exceptions list
-          if (exceptions.includes(beforeSlide)) {
-            continue;
-          }
-          
-          // Check if wildcard "*" means all slides
-          if (mustBeBefore.includes('*') || mustBeBefore.includes(beforeSlide)) {
-            // Found a violation: a slide that should come after is actually before
-            const beforeSlideData = this.getSlideById(beforeSlide);
-            const ruleSlideData = this.getSlideById(slideId);
-            
-            // Find the correct position (before the first violating slide)
-            const correctPosition = i;
-            
-            return {
-              rule: description || `${slideId} must be before other slides`,
-              violation: `"${beforeSlideData ? beforeSlideData.description : beforeSlide}" appears before "${ruleSlideData ? ruleSlideData.description : slideId}"`,
-              slideId: slideId,
-              conflictingSlideId: beforeSlide,
-              insertPosition: correctPosition,
-              misplacedSlide: true // Slide exists but in wrong position
-            };
-          }
-        }
+      this._applyFixToItems(fresh);
+      this._renderAfterFix();
+    },
+
+    /**
+     * Fix All: validate -> apply the first fixable violation -> re-validate, until the flow is
+     * clean or the iteration bound is hit. Each step re-resolves positions on the updated flow,
+     * so cascades (a required slide that requires more slides) settle correctly.
+     */
+    applyAllFixes: function() {
+      const MAX = customFlows.engine.MAX_FIX_ALL_ITERATIONS;
+      const KIND_ORDER = { 'missing-before': 0, 'missing-with': 1, 'misplaced': 2 };
+      let iterations = 0;
+      let violations = this.validateFlow();
+
+      while (violations.length > 0 && iterations < MAX) {
+        iterations++;
+        const next = violations.slice().sort((a, b) =>
+          ((a.fallback ? 1 : 0) - (b.fallback ? 1 : 0)) ||      // clean fixes first
+          (KIND_ORDER[a.kind] - KIND_ORDER[b.kind]) ||          // add required content before reordering
+          (a.targetPosition - b.targetPosition)                 // then left to right (stable sort keeps rule order)
+        )[0];
+        this._applyFixToItems(next);
+        violations = this.validateFlow();
       }
 
-      // Check mustBeAfter constraints
-      if (mustBeAfter && mustBeAfter.length > 0) {
-        for (let i = slideIndex + 1; i < slides.length; i++) {
-          const afterSlide = slides[i];
-          
-          // Skip if this slide is in the exceptions list
-          if (exceptions.includes(afterSlide)) {
-            continue;
-          }
-          
-          // Check if wildcard "*" means all slides or specific slide
-          if (mustBeAfter.includes('*') || mustBeAfter.includes(afterSlide)) {
-            // Found a violation: a slide that should come before is actually after
-            const afterSlideData = this.getSlideById(afterSlide);
-            const ruleSlideData = this.getSlideById(slideId);
-            
-            return {
-              rule: description || `${slideId} must be after other slides`,
-              violation: `"${afterSlideData ? afterSlideData.description : afterSlide}" appears after "${ruleSlideData ? ruleSlideData.description : slideId}"`,
-              slideId: slideId,
-              conflictingSlideId: afterSlide,
-              insertPosition: slideIndex + 1, // Should be after current position
-              misplacedSlide: true
-            };
-          }
-        }
+      if (violations.length > 0) {
+        util.log('customFlows.applyAllFixes(): ' + violations.length + ' violation(s) left after ' + iterations + ' iterations', 'warn');
       }
 
-      return null;
+      this._renderAfterFix();
     },
 
     showValidationError: function(violations) {
@@ -18175,11 +18612,13 @@ const customFlows = {
         return;
       }
 
+      customFlows.state.lastViolations = violations;
+
       // Use the UI method to show the error box
       customFlows.ui.showValidationError(violations);
 
-      // Show visual indicators for missing slides
-      this.showMissingSlideIndicators(violations);
+      // Timeline markers (ghost cards / move markers / flagged cards)
+      this.renderViolationMarkers(violations);
     },
 
     /**
@@ -18196,59 +18635,94 @@ const customFlows = {
       return violations;
     },
 
-    showMissingSlideIndicators: function(violations) {
-      // Remove any existing indicators
-      const existingIndicators = customFlows.ui.elements.selectedSlidesList.querySelectorAll('[data-type="' + customFlows.constants.ITEM_TYPES.INDICATOR + '"]:not([data-template="true"])');
-      existingIndicators.forEach(indicator => indicator.remove());
+    /**
+     * Draw one marker per violation in the timeline, at the position Fix will use:
+     *   missing-before  ghost card "Slide Needed"          -> Fix inserts the slide there
+     *   missing-with    ghost card "Also Needed · with X"  -> Fix inserts the slide there
+     *   misplaced       real card flagged "Out of order" + slim "Move X here" marker at the target
+     * Markers are recomputed from scratch on every call (no DOM state is carried over).
+     */
+    renderViolationMarkers: function(violations) {
+      const list = customFlows.ui.elements.selectedSlidesList;
+      if (!list) return;
+      const SLIDE = customFlows.constants.ITEM_TYPES.SLIDE;
+      const INDICATOR = customFlows.constants.ITEM_TYPES.INDICATOR;
 
-      // Add indicators for missing or misplaced slides
-      violations.forEach(violation => {
-        if (violation.insertPosition !== undefined && (violation.missingSlide || violation.misplacedSlide)) {
-          const indicator = this.createMissingSlideIndicator(violation);
-          this.insertIndicatorAtPosition(indicator, violation.insertPosition);
+      list.querySelectorAll('[data-type="' + INDICATOR + '"]:not([data-template="true"])').forEach(n => n.remove());
+      list.querySelectorAll('[data-type="' + SLIDE + '"][data-violation]').forEach(c => c.removeAttribute('data-violation'));
+
+      // Markers only make sense while the editor is showing; openPreview() from other views also validates.
+      if (!violations || violations.length === 0 || customFlows.state.activeView !== 'edit') return;
+
+      const items = customFlows.state.selectedItems;
+      const cards = Array.from(list.querySelectorAll('[data-type="' + SLIDE + '"]:not([data-template="true"])'));
+      const firstPlaceholder = list.querySelector('[data-type="com.idc.customFlows.selectedSlidePlaceholder"]:not([data-template="true"])');
+      const seen = {};
+
+      violations.forEach(v => {
+        if (v.targetPosition === undefined || !v.slideId) return;
+
+        const flat = v.kind === 'misplaced'
+          ? this.moveMarkerFlatIndex(v.targetPosition, v.slideId, items)
+          : this.currentIndexToFlatIndex(v.targetPosition, items);
+
+        if (v.kind === 'misplaced') {
+          const card = list.querySelector('[data-type="' + SLIDE + '"][data-slide-id="' + this.getItemKey({ source: 'current', id: v.slideId }) + '"]');
+          if (card) card.setAttribute('data-violation', 'misplaced');
         }
+
+        // Same slot, same slide, same action from several rules => one marker
+        const dedupeKey = v.kind + '|' + v.slideId + '|' + flat;
+        if (seen[dedupeKey]) return;
+        seen[dedupeKey] = true;
+
+        const marker = this.createViolationMarker(v);
+        if (flat < cards.length) list.insertBefore(marker, cards[flat]);
+        else if (firstPlaceholder) list.insertBefore(marker, firstPlaceholder);
+        else list.appendChild(marker);
       });
     },
 
-    createMissingSlideIndicator: function(violation) {
+    createViolationMarker: function(v) {
+      const labels = clm.vars.customFlowsMaker.labels || {};
       const template = customFlows.ui.elements.missingSlideIndicatorTemplate;
-      const indicator = template.cloneNode(true);
-      indicator.removeAttribute('data-template');
-      indicator.setAttribute('data-slide-id', violation.slideId);
-      
-      const slideData = this.getSlideById(violation.slideId);
-      const titleEl = indicator.querySelector('[data-type="com.idc.customFlows.missingSlideIndicator.slideTitle"]');
-      titleEl.textContent = slideData ? slideData.description : violation.slideId;
+      const marker = template.cloneNode(true);
+      marker.removeAttribute('data-template');
+      marker.setAttribute('data-slide-id', v.slideId);
+      marker.setAttribute('data-kind', v.kind);
+      marker.setAttribute('data-rule-id', v.ruleId || '');
 
-      // Bind FIX button — inserts the required slide at the indicated position
-      const fixButton = indicator.querySelector('[data-type="com.idc.customFlows.missingSlideIndicator.fixButton"]');
+      const slideTitle = id => { const s = this.getSlideById(id); return s ? s.description : (id || ''); };
+      const labelEl = marker.querySelector('[data-type="com.idc.customFlows.missingSlideIndicator.label"]');
+      const titleEl = marker.querySelector('[data-type="com.idc.customFlows.missingSlideIndicator.slideTitle"]');
+      const detailEl = marker.querySelector('[data-type="com.idc.customFlows.missingSlideIndicator.detail"]');
+
+      let label, detail;
+      if (v.kind === 'missing-with') {
+        label = labels.alsoNeededLabel || 'Also Needed';
+        detail = (labels.alsoNeededWithLabel || 'with ##related##').replace(/##related##/g, slideTitle(v.relatedSlideId));
+      } else if (v.kind === 'misplaced') {
+        label = (labels.moveHereLabel || 'Move here').replace(/##slide##/g, slideTitle(v.slideId));
+        detail = v.legacy ? '' : ((labels.ruleIdPrefix ? labels.ruleIdPrefix + ' ' : '') + (v.ruleId || ''));
+      } else {
+        label = labels.missingSlideLabel || 'Slide Needed';
+        detail = v.legacy ? '' : ((labels.ruleIdPrefix ? labels.ruleIdPrefix + ' ' : '') + (v.ruleId || ''));
+      }
+
+      if (labelEl) labelEl.textContent = label;
+      if (titleEl) titleEl.textContent = slideTitle(v.slideId);
+      if (detailEl) detailEl.textContent = detail;
+      marker.setAttribute('title', v.message || '');
+
+      const fixButton = marker.querySelector('[data-type="com.idc.customFlows.missingSlideIndicator.fixButton"]');
       if (fixButton) {
         fixButton.addEventListener('click', (e) => {
           e.stopPropagation();
-          customFlows.api.applyFix(violation);
+          customFlows.api.applyFix(v);
         });
       }
-      
-      return indicator;
-    },
 
-    insertIndicatorAtPosition: function(indicator, position) {
-      const slideItems = Array.from(customFlows.ui.elements.selectedSlidesList.querySelectorAll('[data-type="' + customFlows.constants.ITEM_TYPES.SLIDE + '"]:not([data-template="true"])'));
-      
-      if (position === 0) {
-        // Insert at the beginning
-        if (slideItems.length > 0) {
-          slideItems[0].parentNode.insertBefore(indicator, slideItems[0]);
-        } else {
-          customFlows.ui.elements.selectedSlidesList.appendChild(indicator);
-        }
-      } else if (position >= slideItems.length) {
-        // Insert at the end
-        customFlows.ui.elements.selectedSlidesList.appendChild(indicator);
-      } else {
-        // Insert before the slide at the position
-        slideItems[position].parentNode.insertBefore(indicator, slideItems[position]);
-      }
+      return marker;
     },
 
     handleSaveFlow: async function() {
@@ -18318,6 +18792,10 @@ const customFlows = {
         
       } else {
         // Create new flow
+        if (!this.canCreateFlow().allowed) {
+          alert(this.getMaxFlowsMessage());
+          return;
+        }
         const flowId = this.generateFlowId();
         
         // Check if account info was pre-populated (e.g., from AI chat)
@@ -18558,7 +19036,17 @@ const customFlows = {
     if (this.state.initialized) return;
     
     this.state.initialized = true;
+    this.engine.getRules(); // normalize rules at load so config problems (cycles, unknown slides) are logged early
     this.ui.init();
+
+    // launchView.active === false: in call mode the maker is not opened by the rep; project code launches
+    // flows itself via smartNext.api.launchFlowAndShowUI(flowId). Disable the utilities button.
+    const cfg = clm.vars.customFlowsMaker;
+    if (clm.vars.session.isAnActualCall && cfg.launchView && cfg.launchView.active === false) {
+      const openButtonId = (cfg.components && cfg.components.openButton && cfg.components.openButton.id) || 'utilFlowsBtn';
+      const openButton = document.getElementById(openButtonId);
+      if (openButton) openButton.setAttribute('data-view-state', 'disabled');
+    }
   },
 
   /**
@@ -18675,8 +19163,11 @@ const customFlows = {
    * const violations = customFlows.validate(['slide01', 'slide03', 'slide08']);
    * if (violations.length > 0) {
    *   console.log('Flow has', violations.length, 'violations');
-   *   violations.forEach(v => console.log(v.rule, v.violation));
+   *   violations.forEach(v => console.log(v.ruleId, v.kind, v.slideId, v.targetPosition, v.message));
    * }
+   * Each violation: { ruleId, kind: 'missing-before'|'missing-with'|'misplaced', slideId, relatedSlideId,
+   * targetPosition, message }. The fields rule, violation, insertPosition, missingSlide, misplacedSlide and
+   * conflictingSlideId are kept as @deprecated aliases.
    */
   validate: function(slides) {
     if (!Array.isArray(slides)) {
@@ -18692,10 +19183,11 @@ const customFlows = {
   afterClose: function() {
     const el = customFlows.ui.elements;
     
-    // 1. Close preview if open
+    // 1. Close preview / variant picker if open
     if (customFlows.state.preview && customFlows.state.preview.isOpen) {
       customFlows.api.closePreview();
     }
+    customFlows.ui.closeVariantPicker();
 
     // 2. Hide track immediately to prevent flash on next open
     if (el.root) {
@@ -24427,6 +24919,7 @@ const clm = {
           },
         },
         doNotConsiderInMainSequence: null,
+        variants: null, // { options: [{ id, label, thumb }] } — selectable in the Custom Flows Maker
       },
     ],
     dynamicPresentation: {
@@ -25005,6 +25498,18 @@ const clm = {
         },
       },
       labels: {},
+      maxFlows: null,
+      maxFlowsPerAccount: null,
+      launchView: {
+        active: null,
+      },
+      sources: {
+        related: {
+          active: null,
+        },
+      },
+      groups: {},
+      rules: [],
       precedenceRules: [],
     },
     pdfViewer: {
@@ -25098,6 +25603,11 @@ const clm = {
       expanded: false,      // Whether the chat panel has been expanded to fill available height
       currentAccount: null, // Selected account record persisted across slides
       usedQuestions: [], // To track which suggested questions have been used
+    },
+    customFlows: {
+      // Set by smartNext right before navigating to a flow item that carries a variant;
+      // consumed once by setBodyVars() on the target slide (-> <body data-variant>)
+      activeVariant: null, // { keyMessage, variant } | null
     },
     clickstreamTracking: {
       trackedItemsIDs: [],
@@ -25226,8 +25736,9 @@ const clm = {
         ai.init();
       }
 
-      //smart next (after getDataForContextObjects so account.id is available for auto-launch)
-      if (this.vars.ai.active) {
+      //smart next (after getDataForContextObjects so account.id is available for auto-launch).
+      //Needed by the AI assistant and by the Custom Flows Maker (flow launch bar); does not depend on the AI bundle.
+      if (this.vars.ai.active || this.vars.customFlowsMaker.active) {
         smartNext.init();
       }
 
@@ -25523,6 +26034,13 @@ const clm = {
 
       //do not consider in main sequence
       newSlide.doNotConsiderInMainSequence = util.readSetting(slide, "doNotConsiderInMainSequence", "boolean", false);
+
+      //variants (Custom Flows Maker): { options: [{ id, label, thumb }] }
+      if (slide.hasOwnProperty("variants")) {
+        newSlide.variants = util.readSetting(slide, "variants", "object", null);
+      } else {
+        newSlide.variants = null;
+      }
 
       //references settings
       if (slide.hasOwnProperty("references")) {
@@ -26399,8 +26917,18 @@ const clm = {
       //labels
       vars.customFlowsMaker.labels = util.readSetting(com_idc_params, "customFlowsMaker.labels", "object", {});
       
-      //precedenceRules
-      vars.customFlowsMaker.precedenceRules = util.readSetting(com_idc_params, "customFlowsMaker.precedenceRules", "object", []);
+      //limits (null = unlimited)
+      vars.customFlowsMaker.maxFlows = util.readSetting(com_idc_params, "customFlowsMaker.maxFlows", "number", null, false);
+      vars.customFlowsMaker.maxFlowsPerAccount = util.readSetting(com_idc_params, "customFlowsMaker.maxFlowsPerAccount", "number", null, false);
+
+      //launch view + sources
+      vars.customFlowsMaker.launchView.active = util.readSetting(com_idc_params, "customFlowsMaker.launchView.active", "boolean", true, false);
+      vars.customFlowsMaker.sources.related.active = util.readSetting(com_idc_params, "customFlowsMaker.sources.related.active", "boolean", true, false);
+
+      //rules (groups + typed rules + legacy precedenceRules, normalized by customFlows.engine)
+      vars.customFlowsMaker.groups = util.readSetting(com_idc_params, "customFlowsMaker.groups", "object", {}, false);
+      vars.customFlowsMaker.rules = util.readSetting(com_idc_params, "customFlowsMaker.rules", "object", [], false);
+      vars.customFlowsMaker.precedenceRules = util.readSetting(com_idc_params, "customFlowsMaker.precedenceRules", "object", [], false);
     }
 
     //pdf viewer
@@ -27711,6 +28239,17 @@ const clm = {
 
     //is standalone modal group active
     document.querySelector("body").setAttribute("data-active-standalone-group", this.sessionData.session.selectedStandaloneGroup);
+
+    //custom flows variant: set data-variant when this slide was opened from a flow item that carries one.
+    //The value is consumed (one-shot) so a later navigation to the same slide via menus is not affected;
+    //the attribute itself is never removed here so that later setBodyVars() calls on the same page keep it.
+    const activeVariant = this.sessionData.customFlows ? this.sessionData.customFlows.activeVariant : null;
+    if (activeVariant && activeVariant.variant && currentSlide && currentSlide.vaultExternalID
+        && currentSlide.vaultExternalID.keyMessage === activeVariant.keyMessage) {
+      document.querySelector("body").setAttribute("data-variant", activeVariant.variant);
+      this.sessionData.customFlows.activeVariant = null;
+      storage.sessionData.update();
+    }
   },
 
   /*navigation --------------------------------------------*/
