@@ -1,6 +1,6 @@
 "use strict";
 
-const BUILD_ID = "kona library __20260918-185031-ymdzlfx__";
+const BUILD_ID = "kona library __20260919-144544-yeftm8h__";
 console.log("%cBuild:", "color:#888", BUILD_ID);
 
 (function (global) {
@@ -2224,9 +2224,15 @@ const ui = {
         let vars = clm.vars;
 
         //check components
-        let modalEl = document.querySelector(`#${vars.references.components.modal.id}`);
+        let modalEl = null;
+        if (vars.references.components.modal.id) {
+          modalEl = document.querySelector(`#${vars.references.components.modal.id}`);
+        }
         if (!modalEl) {
-          util.log(`ui.core.references.init(): modal not found`, "error");
+          //only log an error if the modal id is set, but quit anyway
+          if (vars.references.components.modal.id) {
+            util.log(`ui.core.references.init(): modal not found`, "error");
+          }
           return;
         }
 
@@ -16064,7 +16070,6 @@ const customFlows = {
     renderLaunchScreen: function() {
       const currentAccountId = clm.vars.metadata.account?.id;
       if (!currentAccountId) {
-        util.log('customFlows.ui.renderLaunchScreen: No current account ID', 'warn');
         return;
       }
 
@@ -20097,7 +20102,10 @@ const relatedCLMV2 = {
 
       // Verify modal exists
       if (!this.elements.modal) {
-        util.log('relatedCLMV2: Modal element not found');
+        //only log an error if the modal id is set, but quit anyway
+        if (vars.relatedCLMV2.components.modal.id) {
+          util.log('relatedCLMV2: Modal element not found');
+        }
         return;
       }
 
@@ -20172,7 +20180,6 @@ const relatedCLMV2 = {
       let items = vars.relatedCLMV2.items || [];
 
       if (items.length === 0) {
-        util.log('relatedCLMV2: No items configured');
         return;
       }
 
@@ -20386,8 +20393,8 @@ const relatedCLMV2 = {
     populateFilters: function () {
       let vars = clm.vars;
       
+      //filters bar is optional
       if (!this.elements.filtersContainer || !this.elements.filterTemplate) {
-        util.log('relatedCLMV2: Filter bar elements not found');
         return;
       }
 
@@ -21015,10 +21022,6 @@ const messenger = {
 
     // Extract and store current presentation ID
     this.state.currentPresentationId = this.helpers.getCurrentPresentationId();
-
-    if (!this.state.currentPresentationId) {
-      util.log('[messenger.init] Warning: Unable to determine presentation ID. Targeted messaging will not work.', 'warn');
-    }
 
     this.state.initialized = true;
     
