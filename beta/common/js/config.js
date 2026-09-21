@@ -898,14 +898,14 @@ let com_idc_params = {
       "previewSequenceEmpty": "0 of 0",
       "previewSequenceFormat": "##current## of ##total##",
       "validationErrorTitle": "Flow Validation Error",
-      "validationErrorMessage": "This flow violates the following precedence rules. Please fix these issues before continuing:",
+      "validationErrorMessage": "This flow breaks the following rules. Please fix these issues before continuing:",
       "validationErrorCount": "validation error",
       "validationErrorCountPlural": "validation errors",
       "validationErrorCountSuffix": "found",
       "validationErrorCountMessage": "Flow validation errors found",
       "applyFix": "Fix",
       "fixAllButton": "Fix All",
-      "missingSlideLabel": "Needed",
+      "missingSlideLabel": "Slide Needed",
       "lastUpdatedPrefix": "Last updated:",
       "slideSingular": "slide",
       "slidePlural": "slides",
@@ -945,8 +945,39 @@ let com_idc_params = {
       "accountsNone": "None",
       "accountsMoreCount": "+##count## more",
       "unassignedLabel": "Not assigned",
-      "slidePlaceholderTitle": "SLIDE TITLE"
+      "slidePlaceholderTitle": "SLIDE TITLE",
+      "fixButton": "FIX",
+      "alsoNeededLabel": "Also Needed",
+      "alsoNeededWithLabel": "with ##related##",
+      "moveHereLabel": "Move here",
+      "outOfOrderLabel": "Out of order",
+      "ruleIdPrefix": "Rule",
+      "ruleMessageMissingBefore": "##related## requires ##slide## before it",
+      "ruleMessageMisplacedBefore": "##slide## must come before ##related##",
+      "ruleMessageMissingWith": "##related## requires ##slide## in the flow",
+      "ruleMessageMustFollow": "##slide## must come after ##related##",
+      "ruleMessageMustPrecede": "##slide## must come before ##related##",
+      "ruleMessageNotBetween": "##slide## cannot be placed between ##before## and ##after##",
+      "variantBadgeLabel": "##count## versions",
+      "variantPickerTitle": "Choose a version of ##slide##",
+      "variantPickerCancel": "Cancel",
+      "variantUnknownLabel": "Version not available",
+      "variantUnsetLabel": "Choose version",
+      "maxFlowsReachedMessage": "You have reached the maximum of ##count## flows",
+      "maxFlowsPerAccountPrompt": "##account## already has a flow assigned. Replace it with \"##flowName##\"?"
     },
+    "maxFlows": null,
+    "maxFlowsPerAccount": null,
+    "launchView": {
+      "active": true
+    },
+    "sources": {
+      "related": {
+        "active": true
+      }
+    },
+    "groups": {},
+    "rules": [],
     "precedenceRules": []
   },
   "pdfViewer": {
