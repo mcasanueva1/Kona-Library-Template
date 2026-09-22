@@ -1,6 +1,6 @@
 "use strict";
 
-const BUILD_ID = "kona library __20260921-184140-sm6hphe__";
+const BUILD_ID = "kona library __20260922-212007-xivsnox__";
 console.log("%cBuild:", "color:#888", BUILD_ID);
 
 (function (global) {
@@ -4596,7 +4596,7 @@ const smartNext = {
   currentFlow: {
     id: null,             // Flow ID (e.g., 'flow_1710760800000_abc')
     name: null,           // Flow name
-    sequence: null,       // Array of vault-ID items ({ presentation, keyMessage, title, localPath, pageNumber? })
+    sequence: null,       // Array of stored flow items ({ presentation, keyMessage, slideId?, title, localPath, pageNumber?, variant? })
     index: null,          // Current position in flow
     isBroadcastFlow: false, // True when flow was received via broadcast (prevents re-broadcasting in setCurrentFlow)
     ownerPresentation: null, // Vault external ID of the presentation that originally created the flow
@@ -4707,12 +4707,13 @@ const smartNext = {
         // Broadcast flows are already in vault-ID format from the originating presentation.
         // Use items as-is — do NOT re-normalize against this presentation's slide config,
         // which would incorrectly remap items to local slides sharing the same slide ID.
+        // Items without a keyMessage cannot be addressed from another presentation: skipped.
         vaultItems = items.filter(function (i) { return i && i.keyMessage; });
       } else if (typeof customFlows !== "undefined" && customFlows.api && customFlows.api.getItemVaultIds) {
         vaultItems = items.map(function (i) { return customFlows.api.getItemVaultIds(i); }).filter(function (v) { return v !== null; });
       } else {
         // customFlows not available — items must already be in vault-ID format
-        vaultItems = items.filter(function (i) { return i && i.keyMessage; });
+        vaultItems = items.filter(function (i) { return i && (i.keyMessage || i.slideId); });
       }
 
       if (vaultItems.length === 0) {
@@ -4740,9 +4741,12 @@ const smartNext = {
         const currentSlide = (clm.vars.slides || []).find(function (s) { return s.id === currentSlideId; });
         const currentSlideKeyMessage = currentSlide && currentSlide.vaultExternalID
           ? currentSlide.vaultExternalID.keyMessage : null;
-        const currentIndexInFlow = (thisPresVaultId && currentSlideKeyMessage)
-          ? vaultItems.findIndex(function (i) { return i.presentation === thisPresVaultId && i.keyMessage === currentSlideKeyMessage; })
-          : -1;
+        // match by keyMessage, or by slideId when the config carries no keyMessage ids
+        const currentIndexInFlow = vaultItems.findIndex(function (i) {
+          if ((i.presentation || null) !== (thisPresVaultId || null)) return false;
+          if (currentSlideKeyMessage && i.keyMessage) return i.keyMessage === currentSlideKeyMessage;
+          return !!i.slideId && i.slideId === currentSlideId;
+        });
         if (currentIndexInFlow !== -1) {
           smartNext.currentFlow.index = currentIndexInFlow;
         } else {
@@ -5099,10 +5103,12 @@ const smartNext = {
 
         // Check if item was visited via direct navigation (only for items from this presentation)
         let isVisitedByNavHistory = false;
-        if (_thisPresVaultId && flowItem.presentation === _thisPresVaultId) {
-          const navSlide = (clm.vars.slides || []).find(function (s) {
-            return s.vaultExternalID && s.vaultExternalID.keyMessage === flowItem.keyMessage;
-          });
+        if ((flowItem.presentation || null) === (_thisPresVaultId || null)) {
+          const navSlide = hasCustomFlows
+            ? customFlows.api.resolveStoredItemSlide(flowItem)
+            : (flowItem.keyMessage ? (clm.vars.slides || []).find(function (s) {
+                return s.vaultExternalID && s.vaultExternalID.keyMessage === flowItem.keyMessage;
+              }) : null);
           isVisitedByNavHistory = !!(navSlide && navigationHistory.includes(navSlide.id));
         }
 
@@ -5207,19 +5213,25 @@ const smartNext = {
     navigateToFlowItem: function (item) {
       if (!item) return;
 
-      // Hand the item's variant (if any) to the target slide: clm.setBodyVars() turns it into
-      // <body data-variant="..."> on load, which the slide's multi/tab resolves via selectorAttribute.
-      if (!clm.sessionData.customFlows) clm.sessionData.customFlows = {}; // session stored before this key existed
-      clm.sessionData.customFlows.activeVariant = item.variant
-        ? { keyMessage: item.keyMessage, variant: item.variant }
-        : null;
-      storage.sessionData.update();
-
       const currentPresVaultId = clm.vars.project && clm.vars.project.vaultExternalID
         ? clm.vars.project.vaultExternalID.presentation : null;
-      const isCurrentPres = !!(currentPresVaultId && item.presentation === currentPresVaultId);
+      const isCurrentPres = (item.presentation || null) === (currentPresVaultId || null);
       const isBrowserMode = clm.vars.options.browserMode.active;
       const isPdf = item.pageNumber !== undefined;
+
+      // Slide of this presentation the item points to (by keyMessage, or by slideId when the config has none)
+      const localSlide = !isCurrentPres ? null
+        : (typeof customFlows !== 'undefined' && customFlows.api ? customFlows.api.resolveStoredItemSlide(item)
+          : (clm.vars.slides || []).find(function (s) { return item.keyMessage && s.vaultExternalID && s.vaultExternalID.keyMessage === item.keyMessage; }) || null);
+
+      // Hand the item's variant (if any) to the target slide: clm.setBodyVars() turns it into
+      // <body data-variant="..."> on load, which the slide's multi/tab resolves via selectorAttribute.
+      // Matched by keyMessage, or by slideId inside this presentation when there is no keyMessage.
+      if (!clm.sessionData.customFlows) clm.sessionData.customFlows = {}; // session stored before this key existed
+      clm.sessionData.customFlows.activeVariant = item.variant
+        ? { keyMessage: item.keyMessage || null, slideId: localSlide ? localSlide.id : null, variant: item.variant }
+        : null;
+      storage.sessionData.update();
 
       // Helper: send targeted pdfPage message to a different presentation
       const sendPdfPageMessage = function () {
@@ -5270,14 +5282,11 @@ const smartNext = {
       // --- Presentation item ---
       } else {
         if (isCurrentPres) {
-          // Same presentation: find local slide and navigate
-          const slide = (clm.vars.slides || []).find(function (s) {
-            return s.vaultExternalID && s.vaultExternalID.keyMessage === item.keyMessage;
-          });
-          if (slide) {
-            com.idc.clm.gotoSlide(slide.id);
+          // Same presentation: navigate to the resolved local slide
+          if (localSlide) {
+            com.idc.clm.gotoSlide(localSlide.id);
           } else {
-            util.log('[smartNext] navigateToFlowItem: slide not found for keyMessage ' + item.keyMessage, 'warn');
+            util.log('[smartNext] navigateToFlowItem: slide not found for item ' + (item.keyMessage || item.slideId || item.title), 'warn');
           }
         } else {
           // Different presentation: navigate directly
@@ -15158,6 +15167,7 @@ const customFlows = {
     sortColumn: 'updated',     // Current sort column: 'name' | 'slides' | 'updated'
     sortDirection: 'desc',     // Current sort direction: 'asc' | 'desc'
     lastViolations: [],        // Violations from the last validation run (markers are re-drawn from these after each render)
+    fixAllUnresolved: false,   // Transient: set by applyAllFixes() when it had to give up; consumed by the next banner render
     preview: {
       isOpen: false,
       currentIndex: 0,
@@ -15189,6 +15199,7 @@ const customFlows = {
     // Helper to clear validation errors and remove all missing slide indicators
     clearValidationUI: function() {
       customFlows.state.lastViolations = [];
+      customFlows.state.fixAllUnresolved = false;
       customFlows.ui.hideValidationError();
       customFlows.api.renderViolationMarkers([]);
     },
@@ -15306,11 +15317,13 @@ const customFlows = {
     RULE_TYPES: ['requiresBefore', 'requiresWith', 'mustFollow', 'mustPrecede', 'notBetween'],
     MAX_GROUP_DEPTH: 5,
 
-    _rules: null, // normalized rule cache (derived from config, built once)
+    _rules: null,        // normalized rule cache (derived from config, built once)
+    _configErrors: null, // rules dropped at load for unknown references: [{ ruleId, reason }], built with _rules
 
     /**
      * Normalized rules from config (cached). Shape of each rule:
      * { id, slideId, type, slides: [expanded slide ids], slidesRef: [config entries], message, legacy }
+     * Rules that reference a slide id or group that does not exist are NOT in this list (see getConfigErrors).
      */
     getRules: function() {
       if (!this._rules) {
@@ -15320,8 +15333,24 @@ const customFlows = {
     },
 
     /**
+     * Rules excluded from evaluation because the config references an unknown slide id or group
+     * (one entry per problem, so a rule with two bad ids has two entries): [{ ruleId, reason }].
+     * Empty on a clean config. The Maker shows a configuration-error strip while this is non-empty.
+     */
+    getConfigErrors: function() {
+      this.getRules();
+      return this._configErrors || [];
+    },
+
+    /**
      * Build the normalized rule list from a customFlowsMaker config block:
      * typed `rules` + translated legacy `precedenceRules`, with groups expanded.
+     *
+     * Every slideId, every `slides` entry and every group member is checked against the slide ids of
+     * this presentation. A rule with an unknown reference is dropped (a typo would otherwise fire on
+     * nothing, insert ghost items with no slide, and make the flow "valid" only until save drops them);
+     * all problems go out in ONE console error listing rule id + the exact unknown string.
+     * No fuzzy matching: the integrator fixes the id in config.
      */
     buildRules: function(cfg) {
       cfg = cfg || {};
@@ -15332,9 +15361,44 @@ const customFlows = {
         this.translateLegacyRule(legacy, i).forEach(r => raw.push(r));
       });
 
-      const rules = raw
-        .map((r, i) => this.normalizeRule(r, i, groups))
-        .filter(r => r !== null);
+      const known = customFlows.api.getAllSlides().map(s => s.id);
+      const canValidate = known.length > 0; // no slides in config: nothing to compare against, keep every rule
+      const groupProblems = canValidate ? this.findGroupProblems(groups, known) : {};
+      const errors = [];
+      const seenIds = {};
+
+      Object.keys(groupProblems).forEach(name => {
+        util.log('customFlows.engine: group "' + name + '" has unknown slide id(s): ' + groupProblems[name].map(p => '"' + p.id + '"').join(', ') +
+          ' - every rule using this group is disabled', 'warn');
+      });
+
+      const rules = raw.map((r, i) => {
+        const rule = this.normalizeRule(r, i, groups);
+        if (!rule) return null;
+
+        if (!rule.legacy) { // legacy entries share one id per config entry by design
+          if (seenIds[rule.id] !== undefined) {
+            util.log('customFlows.engine: duplicate rule id "' + rule.id + '" (rules #' + seenIds[rule.id] + ' and #' + i + ') - use unique ids', 'warn');
+          } else {
+            seenIds[rule.id] = i;
+          }
+        }
+
+        const problems = canValidate ? this.findUnknownReferences(rule, known, groups, groupProblems) : [];
+        if (problems.length) {
+          problems.forEach(reason => errors.push({ ruleId: rule.id, reason: reason }));
+          return null;
+        }
+        return rule;
+      }).filter(r => r !== null);
+
+      this._configErrors = errors;
+      if (errors.length) {
+        const disabled = errors.map(e => e.ruleId).filter((id, i, arr) => arr.indexOf(id) === i);
+        util.log('customFlows.engine: ' + disabled.length + ' business rule(s) disabled - unknown references in customFlowsMaker config: '
+          + errors.map(e => e.ruleId + ': ' + e.reason).join('; ')
+          + '. Fix the ids in customFlowsMaker.rules / groups (they must match slides[].id)', 'error');
+      }
 
       this.detectRequiresBeforeCycles(rules).forEach(cycle => {
         util.log('customFlows.engine: requiresBefore cycle detected: ' + cycle.join(' -> '), 'warn');
@@ -15343,23 +15407,63 @@ const customFlows = {
       return rules;
     },
 
+    /**
+     * Unknown members per group, following nested groups: { groupName: [{ id, via }] }.
+     * `via` is the nested group the bad id came through (null for a direct member).
+     */
+    findGroupProblems: function(groups, known) {
+      const isGroup = name => Object.prototype.hasOwnProperty.call(groups, name);
+      const memo = {};
+      const collect = (name, depth) => {
+        if (memo[name]) return memo[name];
+        memo[name] = []; // placeholder guards against group cycles
+        if (depth > this.MAX_GROUP_DEPTH) return memo[name];
+        const problems = [];
+        (groups[name] || []).forEach(member => {
+          if (isGroup(member)) {
+            collect(member, depth + 1).forEach(p => problems.push({ id: p.id, via: p.via || member }));
+          } else if (known.indexOf(member) === -1) {
+            problems.push({ id: member, via: null });
+          }
+        });
+        memo[name] = problems;
+        return problems;
+      };
+      const out = {};
+      Object.keys(groups).forEach(name => {
+        const problems = collect(name, 0);
+        if (problems.length) out[name] = problems;
+      });
+      return out;
+    },
+
+    // Reasons a normalized rule cannot be trusted: its slideId, a `slides` entry, or a member of a
+    // group it uses is not a slide id of this presentation. Empty when the rule is clean.
+    findUnknownReferences: function(rule, known, groups, groupProblems) {
+      const isGroup = name => Object.prototype.hasOwnProperty.call(groups, name);
+      const out = [];
+      if (known.indexOf(rule.slideId) === -1) {
+        out.push('unknown slide id "' + rule.slideId + '" (slideId)');
+      }
+      rule.slidesRef.forEach(entry => {
+        if (isGroup(entry)) {
+          (groupProblems[entry] || []).forEach(p => {
+            out.push('unknown slide id "' + p.id + '" (via group "' + (p.via || entry) + '")');
+          });
+        } else if (known.indexOf(entry) === -1) {
+          out.push('unknown slide id "' + entry + '"');
+        }
+      });
+      return out;
+    },
+
     normalizeRule: function(r, i, groups) {
       if (!r || !r.slideId || this.RULE_TYPES.indexOf(r.type) === -1) {
         util.log('customFlows.engine: invalid rule #' + i + ' (needs slideId and a known type)', 'warn');
         return null;
       }
       const id = r.id || (r.type + ':' + r.slideId + ':' + i);
-      const known = customFlows.api.getAllSlides().map(s => s.id);
       const slides = this.expandSlides(r.slides, groups, r.slideId);
-
-      if (known.length) {
-        if (known.indexOf(r.slideId) === -1) {
-          util.log('customFlows.engine: rule ' + id + ' targets unknown slide ' + r.slideId, 'warn');
-        }
-        slides.filter(s => known.indexOf(s) === -1).forEach(s => {
-          util.log('customFlows.engine: rule ' + id + ' references unknown slide ' + s, 'warn');
-        });
-      }
 
       return {
         id: id,
@@ -15657,6 +15761,8 @@ const customFlows = {
         validationErrorList: modalRoot.querySelector('[data-type="com.idc.customFlows.validationError.list"]'),
         validationErrorToggle: modalRoot.querySelector('[data-type="com.idc.customFlows.validationError.toggleButton"]'),
         validationErrorFixAllButton: modalRoot.querySelector('[data-type="com.idc.customFlows.validationError.fixAllButton"]'),
+        validationErrorManualHint: modalRoot.querySelector('[data-type="com.idc.customFlows.validationError.manualHint"]'),
+        configRuleError: modalRoot.querySelector('[data-type="com.idc.customFlows.configRuleError"]'),
         previewRoot: previewRoot,
         previewBackdrop: previewRoot ? previewRoot.querySelector('[data-type="com.idc.customFlows.preview.backdrop"]') : null,
         previewCloseButton: previewRoot ? previewRoot.querySelector('[data-type="com.idc.customFlows.preview.closeButton"]') : null,
@@ -15716,6 +15822,9 @@ const customFlows = {
       // Bind events
       this.bindEvents();
       this.bindVariantPickerEvents();
+
+      // Rules dropped at load for unknown slide/group ids: the integrator must see it, in every mode
+      this.renderConfigRuleError();
 
       // After open function
 
@@ -16836,19 +16945,50 @@ const customFlows = {
       this.updateDoneButtonState();
     },
 
-    showValidationError: function(violations) {
+    /**
+     * One banner row per timeline marker: violations from different rules that ask for the
+     * same action (same kind, slide and target slot) collapse into the first one, which keeps
+     * its Apply action and gets `ruleCount` (> 1 when siblings were folded in). The engine
+     * still returns per-rule violations; this is display-only.
+     */
+    collapseViolationsForBanner: function(violations) {
+      const seen = {};
+      const rows = [];
+      (violations || []).forEach(v => {
+        const key = v.kind + '|' + v.slideId + '|' + v.targetPosition;
+        if (key in seen) {
+          rows[seen[key]].ruleCount++;
+          return;
+        }
+        seen[key] = rows.length;
+        rows.push(Object.assign({}, v, { ruleCount: 1 }));
+      });
+      return rows;
+    },
+
+    // opts.fixAllUnresolved: true when a Fix All pass just gave up (see api.applyAllFixes)
+    showValidationError: function(violations, opts) {
       const el = this.elements;
       if (!el.validationError || !violations || violations.length === 0) {
         return;
       }
+      opts = opts || {};
+
+      const rows = this.collapseViolationsForBanner(violations);
+      const count = rows.length;
+      const labels = clm.vars.customFlowsMaker.labels || {};
 
       // Update message
-      const count = violations.length;
-      const labels = clm.vars.customFlowsMaker.labels || {};
       if (el.validationErrorMessage) {
         const errorText = customFlows.helpers.pluralLabel(count, labels, 'validationErrorCount', 'validationErrorCountPlural', 'validation error', 'validation errors');
         const suffix = labels.validationErrorCountSuffix || 'found';
         el.validationErrorMessage.textContent = `${count} ${errorText} ${suffix}`;
+      }
+
+      // "Resolve by hand" hint, only after a Fix All pass that could not clean the flow
+      if (el.validationErrorManualHint) {
+        el.validationErrorManualHint.textContent = labels.fixAllManual || 'Some errors cannot be fixed automatically — adjust the highlighted slides by hand';
+        el.validationErrorManualHint.style.display = opts.fixAllUnresolved ? '' : 'none';
       }
 
       // Populate violations list
@@ -16856,7 +16996,7 @@ const customFlows = {
         el.validationErrorList.innerHTML = '';
         let fixableCount = 0;
         
-        violations.forEach(v => {
+        rows.forEach(v => {
           const li = document.createElement('li');
           
           // Create violation text container: rule id (traceability) + plain-language message
@@ -16870,7 +17010,11 @@ const customFlows = {
           }
           const messageEl = document.createElement('span');
           messageEl.className = 'violation';
-          messageEl.textContent = v.message || v.violation || '';
+          let message = v.message || v.violation || '';
+          if (v.ruleCount > 1) {
+            message += ' — ' + (labels.ruleRequiredByMultiple || 'required by ##count## rules').replace(/##count##/g, v.ruleCount);
+          }
+          messageEl.textContent = message;
           textContainer.appendChild(messageEl);
           li.appendChild(textContainer);
           
@@ -16916,6 +17060,44 @@ const customFlows = {
 
       // Keep action buttons synced even when only validation visibility changes.
       this.updateDoneButtonState();
+    },
+
+    /**
+     * Red strip above the available slides while engine.getConfigErrors() is non-empty (rules disabled
+     * at load because config references a slide id or group that does not exist). Integrator-facing:
+     * rendered once at init, in every mode, with the rule list in the tooltip and the details in the
+     * console. The element is created when the common HTML does not carry it (stale cache, older template).
+     */
+    renderConfigRuleError: function() {
+      const el = this.elements;
+      if (!el.root) return;
+      const errors = customFlows.engine.getConfigErrors();
+      let strip = el.configRuleError;
+
+      if (errors.length === 0) {
+        if (strip) strip.style.display = 'none';
+        return;
+      }
+
+      if (!strip) {
+        strip = document.createElement('div');
+        strip.setAttribute('data-type', 'com.idc.customFlows.configRuleError');
+        const anchor = el.root.querySelector('[data-type="com.idc.customFlows.availableSlides"]');
+        if (anchor && anchor.parentNode) {
+          anchor.parentNode.insertBefore(strip, anchor);
+        } else {
+          el.root.appendChild(strip);
+        }
+        el.configRuleError = strip;
+      }
+
+      const labels = clm.vars.customFlowsMaker.labels || {};
+      const disabled = errors.map(e => e.ruleId).filter((id, i, arr) => arr.indexOf(id) === i);
+      strip.textContent = (labels.configRuleError || 'Configuration error: ##count## business rule(s) disabled — see console')
+        .replace(/##count##/g, disabled.length);
+      strip.setAttribute('title', errors.map(e => e.ruleId + ': ' + e.reason).join('\n'));
+      strip.setAttribute('data-rule-count', String(disabled.length));
+      strip.style.display = '';
     },
 
     hideValidationError: function() {
@@ -17112,11 +17294,12 @@ const customFlows = {
         existingRows.forEach(row => row.remove());
       }
       
-      // maxFlows: disable Create once the limit is reached
+      // maxFlows: once the limit is reached the Create button gives way to the limit pill (same slot in the header)
       const limit = customFlows.api.canCreateFlow();
       if (el.managementCreateButton) {
         if (limit.allowed) el.managementCreateButton.removeAttribute('disabled');
         else el.managementCreateButton.setAttribute('disabled', 'true');
+        el.managementCreateButton.style.display = limit.allowed ? '' : 'none';
       }
       if (el.managementLimitMessage) {
         el.managementLimitMessage.textContent = limit.allowed ? '' : customFlows.api.getMaxFlowsMessage();
@@ -17915,6 +18098,52 @@ const customFlows = {
       return items.find(i => i.id === itemId) || null;
     },
 
+    // ---- stored (vault-id) items -------------------------------------
+    // A saved flow item is { presentation, keyMessage, slideId?, title, localPath, presentationName, pageNumber?, variant? }.
+    // keyMessage is the cross-presentation identity (multi-presentation flows, Smart Next broadcast); slideId is the
+    // in-presentation identity, written for every slide of this presentation so a flow survives the save/edit
+    // round-trip when the config carries no keyMessage ids. Records saved before slideId existed with a null
+    // keyMessage are resolved through localPath, which the save path derives from the slide folder.
+
+    isStoredItem: function(item) {
+      return !!item && typeof item === 'object' && !item.source && ('keyMessage' in item || 'slideId' in item);
+    },
+
+    thisPresentationVaultId: function() {
+      return (clm.vars.project && clm.vars.project.vaultExternalID && clm.vars.project.vaultExternalID.presentation) || null;
+    },
+
+    // true when a stored item was saved from this presentation (both ids are null in a config without vault ids)
+    isStoredItemOfThisPresentation: function(item) {
+      return !!item && (item.presentation || null) === this.thisPresentationVaultId();
+    },
+
+    // Local (browser-mode) path of a slide of this presentation, as written into stored items
+    getSlideLocalPath: function(slide) {
+      const presLocalPath = (clm.vars.project && clm.vars.project.localPath != null) ? clm.vars.project.localPath : null;
+      if (presLocalPath == null || !slide || !slide.browser || !slide.browser.folder) return null;
+      return presLocalPath ? presLocalPath + '/' + slide.browser.folder : slide.browser.folder;
+    },
+
+    // Slide entry (clm.vars.slides) for a stored item of this presentation, or null.
+    // Resolution order: keyMessage, slideId, then localPath (records saved before slideId existed).
+    resolveStoredItemSlide: function(item) {
+      if (!this.isStoredItemOfThisPresentation(item)) return null;
+      const slides = this.getAllSlides();
+      let slide = null;
+      if (item.keyMessage) {
+        slide = slides.find(s => s.vaultExternalID && s.vaultExternalID.keyMessage === item.keyMessage) || null;
+      }
+      if (!slide && item.slideId) {
+        slide = this.getSlideById(item.slideId) || null;
+      }
+      if (!slide && !item.keyMessage && item.localPath != null) {
+        const matches = slides.filter(s => this.getSlideLocalPath(s) === item.localPath);
+        if (matches.length === 1) slide = matches[0];
+      }
+      return slide;
+    },
+
     /**
      * Compute a stable, unique string key for a flow item object.
      * Formats:
@@ -17925,9 +18154,12 @@ const customFlows = {
      */
     getItemKey: function(item) {
       if (!item) return null;
-      if (!item.source && item.keyMessage) {
-        // Vault-ID format item
-        return item.keyMessage + (item.pageNumber != null ? ':p' + item.pageNumber : '');
+      if (this.isStoredItem(item)) {
+        const page = item.pageNumber != null ? ':p' + item.pageNumber : '';
+        if (item.keyMessage) return item.keyMessage + page;
+        // no keyMessage: key by the slide it resolves to in this presentation
+        const slide = this.resolveStoredItemSlide(item);
+        return (slide ? 'current:' + slide.id : 'stored:' + (item.slideId || item.localPath || item.title || '')) + page;
       }
       if (item.source === 'current') {
         return 'current:' + item.id;
@@ -17987,20 +18219,15 @@ const customFlows = {
 
     getItemThumb: function(item) {
       if (!item) return '';
-      if (!item.source && item.keyMessage) {
-        // Vault-ID format item
-        const thisPresVaultId = clm.vars.project && clm.vars.project.vaultExternalID
-          ? clm.vars.project.vaultExternalID.presentation : null;
-        if (thisPresVaultId && item.presentation === thisPresVaultId) {
-          // Belongs to this presentation — look up by keyMessage in clm.vars.slides
-          const slide = (clm.vars.slides || []).find(function (s) {
-            return s.vaultExternalID && s.vaultExternalID.keyMessage === item.keyMessage;
-          });
+      if (this.isStoredItem(item)) {
+        // Stored (vault-ID) item
+        if (this.isStoredItemOfThisPresentation(item)) {
+          const slide = this.resolveStoredItemSlide(item);
           if (slide) {
             return this._slideThumb(slide.id, item.variant);
           }
-          return '';
         }
+        if (!item.keyMessage) return '';
         // Belongs to a related CLM presentation — resolve via relatedCLMV2
         const base = util.getSharedResourcesPath();
         const relItems = (clm.vars.relatedCLMV2 && Array.isArray(clm.vars.relatedCLMV2.items))
@@ -18050,16 +18277,13 @@ const customFlows = {
      */
     getItemMeta: function(item) {
       if (!item) return { title: '' };
-      if (!item.source && item.keyMessage) {
-        // Vault-ID format item
+      if (this.isStoredItem(item)) {
+        // Stored (vault-ID) item
         const meta = { title: item.title || item.keyMessage || '' };
-        const thisPresVaultId = clm.vars.project && clm.vars.project.vaultExternalID
-          ? clm.vars.project.vaultExternalID.presentation : null;
-        if (thisPresVaultId && item.presentation === thisPresVaultId) {
-          const slide = (clm.vars.slides || []).find(function (s) {
-            return s.vaultExternalID && s.vaultExternalID.keyMessage === item.keyMessage;
-          });
-          if (slide) this._addVariantMeta(meta, slide.id, item.variant);
+        const slide = this.resolveStoredItemSlide(item);
+        if (slide) {
+          if (!meta.title) meta.title = slide.description || slide.id;
+          this._addVariantMeta(meta, slide.id, item.variant);
         }
         return meta;
       }
@@ -18088,31 +18312,33 @@ const customFlows = {
      */
     getItemVaultIds: function(item) {
       if (!item) return null;
-      if (!item.source && item.keyMessage) {
-        // Already in vault-ID format — pass through directly
+      if (this.isStoredItem(item)) {
+        // Already stored format — pass through directly
         const vaultIds = {
           presentation: item.presentation || null,
-          keyMessage: item.keyMessage,
+          keyMessage: item.keyMessage || null,
           title: item.title || null,
           localPath: item.localPath || null,
           presentationName: item.presentationName || null,
         };
+        // slideId for items of this presentation (also upgrades records saved before slideId existed)
+        const slide = this.resolveStoredItemSlide(item);
+        if (slide) vaultIds.slideId = slide.id;
+        else if (item.slideId) vaultIds.slideId = item.slideId;
+        if (!vaultIds.keyMessage && !vaultIds.slideId) return null; // addressable neither across nor inside this presentation
         if (item.pageNumber != null) vaultIds.pageNumber = item.pageNumber;
         if (item.variant) vaultIds.variant = item.variant;
         return vaultIds;
       }
       if (item.source === 'current') {
         const slide = this.getSlideById(item.id);
-        if (!slide || !slide.vaultExternalID) return null;
-        const presLocalPath = (clm.vars.project && clm.vars.project.localPath != null) ? clm.vars.project.localPath : null;
-        const slideLocalPath = (presLocalPath != null && slide.browser && slide.browser.folder)
-          ? (presLocalPath ? presLocalPath + '/' + slide.browser.folder : slide.browser.folder)
-          : null;
+        if (!slide) return null;
         const currentVaultIds = {
-          presentation: clm.vars.project.vaultExternalID.presentation,
-          keyMessage: slide.vaultExternalID.keyMessage,
+          presentation: this.thisPresentationVaultId(),
+          keyMessage: (slide.vaultExternalID && slide.vaultExternalID.keyMessage) || null, // null when the config has no keyMessage id
+          slideId: slide.id,
           title: item.title || this.getItemMeta(item).title,
-          localPath: slideLocalPath,
+          localPath: this.getSlideLocalPath(slide),
           presentationName: (clm.vars.project && clm.vars.project.name) ? clm.vars.project.name : null,
         };
         // Preserve pageNumber for PDF slides reconstructed from a broadcast
@@ -18162,25 +18388,25 @@ const customFlows = {
       // Already source-based — return as-is (old stored flows or editor-created items)
       if (item.source === 'current' || item.source === 'related') return item;
 
-      if (!item.keyMessage) return null;
+      if (!this.isStoredItem(item)) return null;
 
-      const thisPresVaultId = clm.vars.project && clm.vars.project.vaultExternalID
-        ? clm.vars.project.vaultExternalID.presentation : null;
-
-      if (thisPresVaultId && item.presentation === thisPresVaultId) {
-        // Belongs to this presentation — resolve by keyMessage
-        const slide = (clm.vars.slides || []).find(function (s) {
-          return s.vaultExternalID && s.vaultExternalID.keyMessage === item.keyMessage;
-        });
-        if (!slide) {
-          util.log('customFlows.api.fromVaultId: slide not found for keyMessage ' + item.keyMessage, 'warn');
+      if (this.isStoredItemOfThisPresentation(item)) {
+        // Belongs to this presentation — resolve by keyMessage, slideId or localPath
+        const slide = this.resolveStoredItemSlide(item);
+        if (slide) {
+          const result = { source: 'current', id: slide.id };
+          if (item.pageNumber != null) result.pageNumber = item.pageNumber;
+          if (item.variant) result.variant = item.variant;
+          return result;
+        }
+        if (!item.keyMessage) {
+          util.log('customFlows.api.fromVaultId: item "' + (item.title || item.slideId || item.localPath || '') + '" has no keyMessage and matches no slide of this presentation - dropped', 'warn');
           return null;
         }
-        const result = { source: 'current', id: slide.id };
-        if (item.pageNumber != null) result.pageNumber = item.pageNumber;
-        if (item.variant) result.variant = item.variant;
-        return result;
+        // keyMessage set but not found here: try the related CLM items before giving up
       }
+
+      if (!item.keyMessage) return null;
 
       // Belongs to a related CLM presentation — resolve by vault IDs
       const relItems = (clm.vars.relatedCLMV2 && Array.isArray(clm.vars.relatedCLMV2.items))
@@ -18444,17 +18670,14 @@ const customFlows = {
 
     // [{ flatIndex, slideId }] for exactly the items validation sees, in flow order.
     _currentSourceEntries: function(items) {
-      const thisPresVaultId = clm.vars.project && clm.vars.project.vaultExternalID
-        ? clm.vars.project.vaultExternalID.presentation : null;
       const entries = [];
+      const api = this;
       (items || []).forEach(function(item, flatIndex) {
         let slideId = null;
         if (item.source === 'current') {
           slideId = item.id;
-        } else if (!item.source && item.keyMessage && thisPresVaultId && item.presentation === thisPresVaultId) {
-          const slide = (clm.vars.slides || []).find(function(s) {
-            return s.vaultExternalID && s.vaultExternalID.keyMessage === item.keyMessage;
-          });
+        } else if (api.isStoredItem(item)) {
+          const slide = api.resolveStoredItemSlide(item);
           slideId = slide ? slide.id : null;
         }
         if (slideId !== null) entries.push({ flatIndex: flatIndex, slideId: slideId });
@@ -18542,14 +18765,27 @@ const customFlows = {
 
     // ---- fixes --------------------------------------------------------
 
+    // A fix may only insert/move an id that resolves to a slide of this presentation. The engine already
+    // drops rules with unknown ids at load; this is the last line of defense (rules injected at runtime,
+    // stale caches): a flow item with no slide has no thumbnail and is silently dropped on save.
+    _fixTargetExists: function(v, context) {
+      if (this.getSlideById(v.slideId)) return true;
+      util.log('customFlows.' + context + '(): fix skipped - rule ' + v.ruleId + ' references unknown slide "' + v.slideId +
+        '" (no such slide in config); the violation stays until the config is fixed', 'warn');
+      return false;
+    },
+
     // Mutate state.selectedItems for one violation (remove the slide if present, then insert
-    // at the mapped flat index). No rendering.
-    _applyFixToItems: function(v) {
+    // at the mapped flat index). No rendering. Returns false (and leaves the items untouched)
+    // when the violation's slide id resolves to no slide.
+    _applyFixToItems: function(v, context) {
+      if (!this._fixTargetExists(v, context || '_applyFixToItems')) return false;
       const items = customFlows.state.selectedItems;
       const key = this.getItemKey({ source: 'current', id: v.slideId });
       const existing = items.findIndex(i => this.getItemKey(i) === key);
       if (existing !== -1) items.splice(existing, 1);
       items.splice(this.currentIndexToFlatIndex(v.targetPosition, items), 0, { source: 'current', id: v.slideId });
+      return true;
     },
 
     _renderAfterFix: function() {
@@ -18574,7 +18810,7 @@ const customFlows = {
         return;
       }
 
-      this._applyFixToItems(fresh);
+      this._applyFixToItems(fresh, 'applyFix'); // false: unknown slide id, the violation is re-rendered as is
       this._renderAfterFix();
     },
 
@@ -18582,26 +18818,60 @@ const customFlows = {
      * Fix All: validate -> apply the first fixable violation -> re-validate, until the flow is
      * clean or the iteration bound is hit. Each step re-resolves positions on the updated flow,
      * so cascades (a required slide that requires more slides) settle correctly.
+     *
+     * All-or-nothing: fixes only ever move/insert the rule's own slide, so two rules on one
+     * slide can be unsatisfiable together (e.g. "after A" + "before B" with A placed after B).
+     * Each iteration skips any fix that would land on a flow already seen, and gives up when
+     * none is left. If the flow does not come out clean, the original items are restored
+     * untouched and the banner tells the rep to resolve the rest by hand.
      */
     applyAllFixes: function() {
       const MAX = customFlows.engine.MAX_FIX_ALL_ITERATIONS;
       const KIND_ORDER = { 'missing-before': 0, 'missing-with': 1, 'misplaced': 2 };
+      const items = customFlows.state.selectedItems;
+      const snapshot = items.slice();
+      const stateKey = slideIds => slideIds.join('|');
+      const visited = {};
       let iterations = 0;
       let violations = this.validateFlow();
 
+      visited[stateKey(this._itemsToSlideIds(items))] = true;
+
+      // Violations whose slide id resolves to nothing are never fixable (warned once here, then skipped)
+      const unfixable = {};
+      violations.forEach(v => {
+        if (!this._fixTargetExists(v, 'applyAllFixes')) unfixable[v.slideId] = true;
+      });
+
       while (violations.length > 0 && iterations < MAX) {
         iterations++;
-        const next = violations.slice().sort((a, b) =>
+        const slideIds = this._itemsToSlideIds(items);
+        const candidates = violations.filter(v => !unfixable[v.slideId] && this.getSlideById(v.slideId)).sort((a, b) =>
           ((a.fallback ? 1 : 0) - (b.fallback ? 1 : 0)) ||      // clean fixes first
           (KIND_ORDER[a.kind] - KIND_ORDER[b.kind]) ||          // add required content before reordering
           (a.targetPosition - b.targetPosition)                 // then left to right (stable sort keeps rule order)
-        )[0];
+        );
+
+        // First candidate that leads somewhere new; skipping visited flows breaks oscillation
+        const next = candidates.find(v => {
+          const key = stateKey(customFlows.engine.simulate(slideIds, v, v.targetPosition));
+          if (visited[key]) return false;
+          visited[key] = true;
+          return true;
+        });
+        if (!next) break;
+
         this._applyFixToItems(next);
         violations = this.validateFlow();
       }
 
       if (violations.length > 0) {
-        util.log('customFlows.applyAllFixes(): ' + violations.length + ' violation(s) left after ' + iterations + ' iterations', 'warn');
+        items.splice(0, items.length, ...snapshot);
+        customFlows.state.fixAllUnresolved = true;
+        const unresolved = this.validateFlow();
+        const ruleIds = unresolved.map(v => v.ruleId).filter((id, i, arr) => arr.indexOf(id) === i);
+        util.log('customFlows.applyAllFixes(): flow restored - ' + unresolved.length + ' violation(s) cannot be fixed automatically after ' +
+          iterations + ' iteration(s) (rules: ' + ruleIds.join(', ') + ')', 'warn');
       }
 
       this._renderAfterFix();
@@ -18614,8 +18884,12 @@ const customFlows = {
 
       customFlows.state.lastViolations = violations;
 
+      // A failed Fix All flags the banner once; any later validation (i.e. a flow change) clears it
+      const fixAllUnresolved = customFlows.state.fixAllUnresolved;
+      customFlows.state.fixAllUnresolved = false;
+
       // Use the UI method to show the error box
-      customFlows.ui.showValidationError(violations);
+      customFlows.ui.showValidationError(violations, { fixAllUnresolved: fixAllUnresolved });
 
       // Timeline markers (ghost cards / move markers / flagged cards)
       this.renderViolationMarkers(violations);
@@ -19037,11 +19311,38 @@ const customFlows = {
     
     this.state.initialized = true;
     this.engine.getRules(); // normalize rules at load so config problems (cycles, unknown slides) are logged early
+
+    // Slides without a keyMessage id: flows still work inside this presentation (items are stored by slide id),
+    // but those slides cannot be addressed from other presentations. One warning here, none at save/edit time.
+    // Multi-presentation flows (sources.related.active) need every slide to carry a keyMessage and the project a
+    // presentation id: when they don't, the related source is forced off and an error is logged (console only:
+    // developer messages never use alert(), which is reserved for rep interactions).
+    const cfg = clm.vars.customFlowsMaker;
+    const slidesWithoutKeyMessage = this.api.getAllSlides()
+      .filter(function(s) { return !(s.vaultExternalID && s.vaultExternalID.keyMessage); })
+      .map(function(s) { return s.id; });
+    const hasPresentationId = !!this.api.thisPresentationVaultId();
+    if (slidesWithoutKeyMessage.length > 0 || !hasPresentationId) {
+      const missing = (slidesWithoutKeyMessage.length > 0
+        ? slidesWithoutKeyMessage.length + ' slide(s) without vaultExternalID.keyMessage: ' + slidesWithoutKeyMessage.join(', ')
+        : '') + (!hasPresentationId ? (slidesWithoutKeyMessage.length > 0 ? '; ' : '') + 'project.vaultExternalID.presentation not set' : '');
+      const relatedEnabled = !(cfg.sources && cfg.sources.related && cfg.sources.related.active === false);
+      if (relatedEnabled) {
+        cfg.sources = cfg.sources || {};
+        cfg.sources.related = cfg.sources.related || {};
+        cfg.sources.related.active = false;
+        const message = 'customFlows.init(): multi-presentation flows (customFlowsMaker.sources.related.active) need vault ids on every slide; '
+          + missing + '. Related source disabled: flows are limited to this presentation. Set the missing ids, or set sources.related.active to false';
+        util.log(message, 'error');
+      } else {
+        util.log('customFlows.init(): ' + missing + '. Flows are limited to this presentation; set the ids to enable multi-presentation flows', 'warn');
+      }
+    }
+
     this.ui.init();
 
     // launchView.active === false: in call mode the maker is not opened by the rep; project code launches
     // flows itself via smartNext.api.launchFlowAndShowUI(flowId). Disable the utilities button.
-    const cfg = clm.vars.customFlowsMaker;
     if (clm.vars.session.isAnActualCall && cfg.launchView && cfg.launchView.active === false) {
       const openButtonId = (cfg.components && cfg.components.openButton && cfg.components.openButton.id) || 'utilFlowsBtn';
       const openButton = document.getElementById(openButtonId);
@@ -25736,9 +26037,8 @@ const clm = {
         ai.init();
       }
 
-      //smart next (after getDataForContextObjects so account.id is available for auto-launch).
-      //Needed by the AI assistant and by the Custom Flows Maker (flow launch bar); does not depend on the AI bundle.
-      if (this.vars.ai.active || this.vars.customFlowsMaker.active) {
+      //smart next (after getDataForContextObjects so account.id is available for auto-launch)
+      if (this.vars.ai.active) {
         smartNext.init();
       }
 
@@ -28243,9 +28543,12 @@ const clm = {
     //custom flows variant: set data-variant when this slide was opened from a flow item that carries one.
     //The value is consumed (one-shot) so a later navigation to the same slide via menus is not affected;
     //the attribute itself is never removed here so that later setBodyVars() calls on the same page keep it.
+    //Matched by keyMessage, or by slideId when the config carries no keyMessage ids (never null === null).
     const activeVariant = this.sessionData.customFlows ? this.sessionData.customFlows.activeVariant : null;
-    if (activeVariant && activeVariant.variant && currentSlide && currentSlide.vaultExternalID
-        && currentSlide.vaultExternalID.keyMessage === activeVariant.keyMessage) {
+    const variantByKeyMessage = !!(activeVariant && activeVariant.keyMessage && currentSlide && currentSlide.vaultExternalID
+        && currentSlide.vaultExternalID.keyMessage === activeVariant.keyMessage);
+    const variantBySlideId = !!(activeVariant && activeVariant.slideId && currentSlide && currentSlide.id === activeVariant.slideId);
+    if (activeVariant && activeVariant.variant && (variantByKeyMessage || variantBySlideId)) {
       document.querySelector("body").setAttribute("data-variant", activeVariant.variant);
       this.sessionData.customFlows.activeVariant = null;
       storage.sessionData.update();

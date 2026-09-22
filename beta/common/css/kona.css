@@ -1,6 +1,6 @@
 /* 
  * Kona CSS Build
- * kona library __20260921-184140-sm6hphe__
+ * kona library __20260922-212007-xivsnox__
  */
 
 
@@ -5439,6 +5439,30 @@ body[data-ai-open="true"] [data-type="com.idc.ai.orb.placeholder"] [data-type="c
   }
 }
 
+/* CONFIG ERROR STRIP
+  Rules disabled at load because config references a slide id or group that does not exist.
+  Integrator-facing: sits above the available slides so it cannot be missed during setup.
+  ============================================ */
+
+#customFlowsMaker [data-type="com.idc.customFlows.configRuleError"] {
+  flex-shrink: 0;
+  margin: 10px 10px 0 10px;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+@layer low-priority {
+  #customFlowsMaker [data-type="com.idc.customFlows.configRuleError"] {
+    background: #c62828;
+    color: #fff;
+    border-radius: 8px;
+  }
+}
+
 /* AVAILABLE SLIDES GRID
   ============================================ */
 
@@ -6145,6 +6169,7 @@ body[data-ai-open="true"] [data-type="com.idc.ai.orb.placeholder"] [data-type="c
 
 #customFlowsMaker [data-type="com.idc.customFlows.validationError.summary"] {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 8px;
   padding: 7px 12px;
@@ -6212,6 +6237,19 @@ body[data-ai-open="true"] [data-type="com.idc.ai.orb.placeholder"] [data-type="c
 
 #customFlowsMaker [data-type="com.idc.customFlows.validationError"][data-expanded="true"] [data-type="com.idc.customFlows.validationError.toggleButton"] {
   transform: rotate(180deg);
+}
+
+/* Shown after a Fix All pass that could not clean the flow; full-width second line of the summary */
+#customFlowsMaker [data-type="com.idc.customFlows.validationError.manualHint"] {
+  flex-basis: 100%;
+  margin-top: -2px;
+  font-size: 12px;
+  line-height: 1.3;
+}
+@layer low-priority {
+  #customFlowsMaker [data-type="com.idc.customFlows.validationError.manualHint"] {
+    color: rgba(0, 0, 0, 0.65);
+  }
 }
 
 #customFlowsMaker [data-type="com.idc.customFlows.validationError.details"] {
@@ -7224,18 +7262,45 @@ body[data-ai-open="true"] [data-type="com.idc.ai.orb.placeholder"] [data-type="c
   opacity: 0.4;
   pointer-events: none;
 }
-/* "Maximum of N flows reached" next to the Create button */
+/* "Maximum of N flows reached": a pill that takes the Create button's slot once the limit is reached
+   (the button is hidden by renderManagementScreen) */
 #customFlowsMaker [data-type="com.idc.customFlows.management.limitMessage"] {
-  font-size: 11px;
-  line-height: 1.3;
-  max-width: 180px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 16px;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.2;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+#customFlowsMaker [data-type="com.idc.customFlows.management.limitMessage"]::before {
+  content: "!";
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
 }
 #customFlowsMaker [data-type="com.idc.customFlows.management.limitMessage"]:empty {
   display: none;
 }
 @layer low-priority {
   #customFlowsMaker [data-type="com.idc.customFlows.management.limitMessage"] {
-    color: rgba(0, 0, 0, 0.6);
+    border-radius: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    background: rgba(0, 0, 0, 0.05);
+    color: rgba(0, 0, 0, 0.7);
+  }
+  #customFlowsMaker [data-type="com.idc.customFlows.management.limitMessage"]::before {
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.75);
+    color: #fff;
   }
 }
 /* Management Search Bar - Inline in header */

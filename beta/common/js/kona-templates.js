@@ -8227,6 +8227,17 @@ com.idc.templates = {
                     "type": "DIV",
                     "attributes": [
                       {
+                        "data-type": "com.idc.customFlows.configRuleError"
+                      },
+                      {
+                        "style": "display: none;"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "DIV",
+                    "attributes": [
+                      {
                         "data-type": "com.idc.customFlows.availableSlides"
                       }
                     ],
@@ -8727,6 +8738,26 @@ com.idc.templates = {
                                       {
                                         "type": "#text",
                                         "text": "▼"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "SPAN",
+                                    "attributes": [
+                                      {
+                                        "data-type": "com.idc.customFlows.validationError.manualHint"
+                                      },
+                                      {
+                                        "data-label": "fixAllManual"
+                                      },
+                                      {
+                                        "style": "display: none;"
+                                      }
+                                    ],
+                                    "childNodes": [
+                                      {
+                                        "type": "#text",
+                                        "text": "Some errors cannot be fixed automatically — adjust the highlighted slides by hand"
                                       }
                                     ]
                                   }
