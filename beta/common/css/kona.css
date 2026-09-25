@@ -1,6 +1,6 @@
 /* 
  * Kona CSS Build
- * kona library __20260925-123555-sgcm89a__
+ * kona library __20260925-183113-vlwn7rh__
  */
 
 
@@ -8343,9 +8343,10 @@ body[data-ai-open="true"] [data-type="com.idc.ai.orb.placeholder"] [data-type="c
   position: fixed;
   inset: 0;
   opacity: 0;
-  pointer-events: none;
+  visibility: hidden;
   z-index: var(--z-backdrop);
-  transition: opacity var(--transition-base);
+  /* visibility flips after the fade-out, so the closed layer is truly hidden (not just transparent) */
+  transition: opacity var(--transition-base), visibility 0s linear 0.2s;
 }
 @layer low-priority {
   #accountSelector [data-type="com.idc.accountSelector.backdrop"]{
@@ -8355,7 +8356,8 @@ body[data-ai-open="true"] [data-type="com.idc.ai.orb.placeholder"] [data-type="c
 
 #accountSelector[data-state="open"] [data-type="com.idc.accountSelector.backdrop"]{
   opacity: 1;
-  pointer-events: auto;
+  visibility: visible;
+  transition: opacity var(--transition-base), visibility 0s;
 }
 
 /* Panel modal */
@@ -8369,10 +8371,12 @@ body[data-ai-open="true"] [data-type="com.idc.ai.orb.placeholder"] [data-type="c
   overflow: hidden;
 
   opacity: 0;
-  pointer-events: none;
+  visibility: hidden;
   z-index: var(--z-modal);
 
-  transition: opacity var(--transition-base), transform var(--transition-base);
+  /* visibility (not pointer-events) hides the closed panel: iOS WebKit does not always
+     re-register the list's touch-scroll area when only pointer-events changes */
+  transition: opacity var(--transition-base), transform var(--transition-base), visibility 0s linear 0.2s;
 
   display: flex;
   flex-direction: column;
@@ -8388,8 +8392,9 @@ body[data-ai-open="true"] [data-type="com.idc.ai.orb.placeholder"] [data-type="c
 
 #accountSelector[data-state="open"] [data-type="com.idc.accountSelector.panel"]{
   opacity: 1;
-  pointer-events: auto;
+  visibility: visible;
   transform: translate(-50%, -50%) scale(1);
+  transition: opacity var(--transition-base), transform var(--transition-base), visibility 0s;
 }
 
 /* Header */
@@ -8523,14 +8528,18 @@ body[data-ai-open="true"] [data-type="com.idc.ai.orb.placeholder"] [data-type="c
 /* List wrapper with shadows */
 #accountSelector [data-type="com.idc.accountSelector.listWrapper"]{
   flex: 1 1 auto;
+  min-height: 0;
   position: relative;
   overflow: hidden;
 }
 
-/* List scroll */
+/* List scroll - pinned to the wrapper instead of height: 100%, which older WebKit
+   does not resolve against a flex item's height */
 #accountSelector [data-type="com.idc.accountSelector.list"]{
-  height: 100%;
+  position: absolute;
+  inset: 0;
   overflow: auto;
+  -webkit-overflow-scrolling: touch;
   list-style: none;
   margin: 0;
   padding: 0;

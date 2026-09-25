@@ -1,6 +1,6 @@
 "use strict";
 
-const BUILD_ID = "kona library __20260925-123555-sgcm89a__";
+const BUILD_ID = "kona library __20260925-183113-vlwn7rh__";
 console.log("%cBuild:", "color:#888", BUILD_ID);
 
 (function (global) {
@@ -19879,8 +19879,11 @@ const accountSelector = {
     this.state.isOpen = true;
 
     // Focus search input (use appropriate input based on mode)
+    // Not on touch devices: a focused input inside the fixed panel freezes the list's
+    // touch scrolling on iOS until focus moves elsewhere (and it pops the keyboard over the list)
     const searchInput = this.state.multiSelectMode ? this.elements.searchMulti : this.elements.search;
-    if (searchInput) {
+    const isTouch = window.matchMedia && window.matchMedia("(pointer: coarse)").matches;
+    if (searchInput && !isTouch) {
       requestAnimationFrame(() => searchInput.focus());
     }
   },
