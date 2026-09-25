@@ -880,6 +880,8 @@ let com_idc_params = {
       "flowNameLabel": "Flow Name",
       "flowNamePlaceholder": "Untitled Flow",
       "backToAllFlowsButton": "BACK TO ALL FLOWS",
+      "leaveEditorConfirm": "You have unsaved changes that will be lost. Are you sure you want to go back to all flows?",
+      "closeEditorConfirm": "You have unsaved changes that will be lost. Are you sure you want to close?",
       "titleLabel": "Custom Flow for",
       "accountNamePlaceholder": "Select Account",
       "gridViewTitle": "Grid View",
