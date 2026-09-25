@@ -1,6 +1,6 @@
 "use strict";
 
-const BUILD_ID = "kona library __20260922-212007-xivsnox__";
+const BUILD_ID = "kona library __20260925-123555-sgcm89a__";
 console.log("%cBuild:", "color:#888", BUILD_ID);
 
 (function (global) {
@@ -15254,6 +15254,20 @@ const customFlows = {
       return false;
     },
 
+    /**
+     * Ask the rep to confirm before leaving the editor with unsaved changes
+     * @param {String} labelKey - Label with the confirmation message
+     * @param {String} fallback - Message used when the label is missing
+     * @returns {Boolean} true if it is safe to leave (nothing to lose, or the rep confirmed)
+     */
+    confirmDiscardChanges: function(labelKey, fallback) {
+      if (customFlows.state.activeView !== 'edit' || !customFlows.helpers.hasUnsavedChanges()) {
+        return true;
+      }
+      const labels = clm.vars.customFlowsMaker.labels;
+      return confirm(labels[labelKey] || fallback);
+    },
+
     // FLIP animation for adjacent card swap triggered by arrow buttons
     // idA/firstLeftA: the slide displaced in the opposite direction
     // idB/firstLeftB: the slide that was moved
@@ -15897,7 +15911,11 @@ const customFlows = {
     bindFooterButtonEvents: function(el) {
       if (el.backButton) {
         el.backButton.addEventListener('click', () => {
-          // Navigate back to management screen
+          // Confirm before discarding unsaved edits, then navigate back to management screen
+          if (!customFlows.helpers.confirmDiscardChanges('leaveEditorConfirm',
+              'You have unsaved changes that will be lost. Are you sure you want to go back to all flows?')) {
+            return;
+          }
           customFlows.api.navigateToManagement();
         });
       }
@@ -15975,11 +15993,23 @@ const customFlows = {
         });
       }
 
+      const confirmClose = () => customFlows.helpers.confirmDiscardChanges('closeEditorConfirm',
+        'You have unsaved changes that will be lost. Are you sure you want to close?');
+
       // Note: Done button uses modal.closeButton which is handled by the modal system
-      // Add click listener to validate before closing
+      // Add click listener to confirm unsaved changes / validate before closing
       const closeButton = el.modal.querySelector('[data-sub-type="com.idc.ui.core.modal.closeButton"]');
       if (closeButton) {
         closeButton.addEventListener('click', (e) => {
+          if (e.currentTarget.getAttribute('data-view-state') == 'disabled') return;
+          // Unsaved changes: confirming discards them, so validation no longer applies
+          if (customFlows.state.activeView === 'edit' && customFlows.helpers.hasUnsavedChanges()) {
+            if (!confirmClose()) {
+              e.preventDefault();
+              e.stopImmediatePropagation();
+            }
+            return;
+          }
           // Validate flow if there are slides
           if (customFlows.state.selectedItems.length > 0) {
             const violations = customFlows.api.validateFlow();
@@ -15991,6 +16021,23 @@ const customFlows = {
             }
           }
         }, true); // Use capture phase to intercept before modal handler
+      }
+
+      // Other ways the modal closes itself: toggling its dual button and tapping the back modal
+      const modalComponents = el.modal.components || {};
+      if (modalComponents.dualButton) {
+        modalComponents.dualButton.element.addEventListener('click', (e) => {
+          if (el.modal.viewState.visible && !confirmClose()) {
+            e.stopImmediatePropagation();
+          }
+        }, true);
+      }
+      if (modalComponents.backModal) {
+        modalComponents.backModal.element.addEventListener('click', (e) => {
+          if (!el.modal.params.preventCloseOnBackModalTap && !confirmClose()) {
+            e.stopImmediatePropagation();
+          }
+        }, true);
       }
     },
 
@@ -17675,7 +17722,7 @@ const customFlows = {
       const assignedCount = (flow.assignedAccounts || []).length;
       const confirmMsg = hasAssignments
         ? (labels.deleteFlowConfirmWithAssignments || 'This flow is assigned to accounts. Are you sure you want to delete it?')
-        : (labels.deleteFlowConfirm || 'Are you sure you want to delete this flow?');
+        : (labels.deleteFlowConfirmNoAssignments || 'Are you sure you want to delete this flow?');
       
       if (!confirm(confirmMsg.replace('##flowName##', flow.name).replace('##count##', assignedCount))) {
         return;
